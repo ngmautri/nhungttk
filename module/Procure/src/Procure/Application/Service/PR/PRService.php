@@ -2,7 +2,6 @@
 namespace Procure\Application\Service\PR;
 
 use Application\Service\AbstractService;
-use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\Service\Contracts\ProcureServiceInterface;
 use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;

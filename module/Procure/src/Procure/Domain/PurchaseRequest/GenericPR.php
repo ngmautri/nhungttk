@@ -110,7 +110,7 @@ abstract class GenericPR extends BaseDoc
             throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
-        $this->recordedEvents = array();
+        $this->clearEvents();
         /**
          *
          * @var PRRowSnapshot $localSnapshot

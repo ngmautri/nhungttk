@@ -5,7 +5,7 @@ use Application\Notification;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Domain\Contracts\FormActions;
 use Procure\Application\Command\TransactionalCommandHandler;
-use Procure\Application\Command\AP\SaveCopyFromPOCmdHandler;
+use Procure\Application\Command\Doctrine\AP\SaveCopyFromPOCmdHandler;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Command\Options\SaveCopyFromCmdOptions;
 use Procure\Application\DTO\Ap\ApDTO;
@@ -139,7 +139,7 @@ class ApController extends ProcureCRUDController
             $source_token = $data['source_token'];
             $version = $data['version'];
 
-            $options = new CreateHeaderCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__);
+            $options = new CreateHeaderCmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
 
             $rootEntity = $apService->createFromPO($source_id, $source_token, $options);
 
@@ -147,7 +147,7 @@ class ApController extends ProcureCRUDController
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new SaveCopyFromCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__, $rootEntity);
+            $options = new SaveCopyFromCmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromPOCmdHandler();
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
@@ -183,7 +183,7 @@ class ApController extends ProcureCRUDController
         }
 
         $redirectUrl = sprintf("/procure/ap/view?entity_token=%s&entity_id=%s", $cmd->getOutput()->getToken(), $cmd->getOutput()->getId());
-        $this->flashMessenger()->addMessage($notification->successMessage(true));
+        $this->flashMessenger()->addMessage($notification->successMessage());
 
         return $this->redirect()->toUrl($redirectUrl);
     }

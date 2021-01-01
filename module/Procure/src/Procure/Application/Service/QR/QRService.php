@@ -2,7 +2,7 @@
 namespace Procure\Application\Service\QR;
 
 use Application\Service\AbstractService;
-use Procure\Application\DTO\Qr\QrDTO;
+use Procure\Application\Service\Contracts\ProcureServiceInterface;
 use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
@@ -24,16 +24,26 @@ use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class QRService extends AbstractService
+class QRService extends AbstractService implements ProcureServiceInterface
 {
 
-    public function getDocHeaderByTokenId($id, $token)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocHeaderByTokenId()
+     */
+    public function getDocHeaderByTokenId($id, $token, $locale = 'en_EN')
     {
         $rep = new QRQueryRepositoryImpl($this->getDoctrineEM());
         return $rep->getHeaderById($id, $token);
     }
 
-    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenId()
+     */
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {
         $rep = new QRQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
@@ -81,7 +91,12 @@ class QRService extends AbstractService
         return $rootEntity;
     }
 
-    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getRootEntityOfRow()
+     */
+    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $locale = 'en_EN')
     {
         $rep = new QRQueryRepositoryImpl($this->getDoctrineEM());
 
@@ -110,4 +125,10 @@ class QRService extends AbstractService
             "localDTO" => $localDTO
         ];
     }
+
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null, $locale = 'en_EN')
+    {}
+
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN')
+    {}
 }

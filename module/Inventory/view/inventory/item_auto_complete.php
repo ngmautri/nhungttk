@@ -32,9 +32,10 @@ $( "#item_name" ).autocomplete({
         $( "#pr_row_url" ).val("");
         $( "#pr_row_detail" ).hide();
         $( "#pr_item_name" ).val("");
-        
+
         $( "#item" ).val(ui.item.hit.id);
-       // alert($( "#item" ).val());
+        $("#docUnit" ).val(ui.item.hit.standardUnitName);
+
 
         $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.hit.id+'&token='+ui.item.hit.token);
 
@@ -54,7 +55,7 @@ $( "#item_name" ).autocomplete({
     var item_detail_html = '<span style="font-size: 10pt; padding-top:0px; color:navy;font-weight: bold;">' + item_detail + '</span><br>';
     var item_detail_html = item_detail_html + '<span style="color:gray; font-size: 9pt; padding-top:0px;">' + result.hit.manufacturerCode + '</span>';
     var item_detail_html = item_detail_html + '<span style="color:gray; font-size: 9pt; padding-top:0px;"> | ' + result.hit.manufacturerModel + '</span>';
-    
+
     var n_html = '<span style="color:graytext;font-size: 8pt; border-bottom: thin solid gray; align:right">' + result.n + '</span>';
     var tbl_html = '<table style="Padding-left:5px" ><tr><td>'+img+'</td><td style="padding: 1pt 1pt 1pt 5pt">' + item_detail_html + '<br><br>'+n_html +'</td></tr></table>'
 
@@ -70,7 +71,7 @@ echo $item_url_val;
 ?>
 
 function showSelectedItem(){
-   var url= $('#item_url').text();   
+   var url= $('#item_url').text();
    showJqueryDialog('Item Detail','1750',$(window).height()-40, url,'j_loaded_data', true);
 }
 
@@ -88,6 +89,7 @@ function selectItem(id, token,target, name, target_name, context = null){
 
 
       $("#item" ).val(id);
+
       $('#item_url').text('/inventory/item/show1?tab_idx=9&entity_id='+id+'&token='+token);
 
       $('#item_detail').show();

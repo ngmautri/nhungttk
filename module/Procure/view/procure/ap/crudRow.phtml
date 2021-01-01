@@ -179,16 +179,17 @@ echo $error_msg;
                             ?>">
                            </div>
                            <div class="col-sm-2">
+                              <!-- handle unchecked checkbox-->
+                              <input type="hidden" name="isActive" value="0">
                               <input
                                  <?php
-
                                 if (! $dto == null) :
                                     echo ($dto->getIsActive() == "1") ? "checked" : "";
                                 else :
                                     echo "checked";
                                 endif;
                                 ?>
-                                 type="checkbox" name="isActive" value="1">
+                                 type="checkbox" name="isActive" value='1'>
                               &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
                            </div>
                         </div>
@@ -353,15 +354,14 @@ echo $wh_option;
                               <div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_factor"></div>
                            </div>
                         </div>
-                          <hr style="margin: 5pt 1pt 5pt 1pt;">
-
+                        <hr style="margin: 5pt 1pt 5pt 1pt;">
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2"><?php
 
                         echo $this->translate("Document Unit");
                         ?></label>
                            <div class="col-sm-3">
-                              <select  tabindex="5"  name="docUnit" id="docUnit" class="form-control input-sm">
+                              <select tabindex="5" name="docUnit" id="docUnit" class="form-control input-sm">
                                  <option value=""><?php
 
                                 echo $this->translate("Select doc unit");
@@ -566,7 +566,7 @@ echo $cost_center_option;
 <script type="text/javascript">
 
 
-$('#quantity').bind('change', function() {
+$('#docQuantity').bind('change', function() {
    	$('#net_amount').val($('#docUnitPrice').val() * $('#docQuantity').val());
    	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
 

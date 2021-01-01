@@ -24,7 +24,7 @@ class ItemSearchQueryTest extends PHPUnit_Framework_TestCase
 
             $searcher = new ItemSearchQueryImpl();
             $queryFilter = new ItemQueryFilter();
-            $results = $searcher->queryForAutoCompletion("2-5", $queryFilter);
+            $results = $searcher->queryForAutoCompletion("820004043", $queryFilter);
             var_dump(($results));
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());

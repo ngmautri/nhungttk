@@ -7,6 +7,7 @@ use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Domain\QuotationRequest\QRSnapshot;
 
 /**
  *
@@ -115,38 +116,6 @@ class Toolbar
                 }
                 break;
 
-                break;
-        }
-
-        return $toolbar;
-    }
-
-    public static function showToolbarQR(QrDTO $headerDTO, $action, $view)
-    {
-        $po_url = sprintf("/procure/po/create-from-qr?source_id=%s&source_token=%s", $headerDTO->getId(), $headerDTO->getToken());
-        $poBtn = sprintf('<a title="PO from Quotation" class="btn btn-default btn-sm" href="%s"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $po_url, $view->translate("Create PO"));
-        $review_url = sprintf("/procure/qr/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
-        $reviewBtn = \sprintf('<a class="btn btn-default btn-sm" href="%s"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $review_url, $view->translate("Review & Post"));
-        $postBtn = sprintf(' <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmPost();" href="javascript:;">
-<i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', $view->translate("Post"));
-
-        switch ($headerDTO->getDocStatus()) {
-
-            case ProcureDocStatus::DRAFT:
-                if ($action == Constants::FORM_ACTION_SHOW) {
-                    $toolbar = $reviewBtn;
-                }
-
-                if ($action == Constants::FORM_ACTION_REVIEW) {
-                    $toolbar = $postBtn;
-                }
-                break;
-
-            case ProcureDocStatus::POSTED:
-                $toolbar = \sprintf("%s", $poBtn);
-                if ($action == Constants::FORM_ACTION_REVERSE) {
-                    $toolbar = "";
-                }
                 break;
         }
 

@@ -47,7 +47,8 @@ class PORowSnapshotAssembler
         "conversionFactor",
         "standardConvertFactor",
         "descriptionText",
-        "taxRate"
+        "taxRate",
+        "exwUnitPrice"
     );
 
     public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)

@@ -24,6 +24,8 @@ class PRSnapshotAssembler
         "incoterm",
         "incotermPlace",
         "paymentTerm",
+        "warehouse",
+        "department",
         "remarks",
         "pmtTerm"
     );

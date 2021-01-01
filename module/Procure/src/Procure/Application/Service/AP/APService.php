@@ -3,7 +3,6 @@ namespace Procure\Application\Service\AP;
 
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
-use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Application\Service\AP\Output\ApRowFormatter;
 use Procure\Application\Service\AP\Output\ApSaveAsExcel;

@@ -1,256 +1,118 @@
 <?php
 namespace Procure\Domain\QuotationRequest;
 
-use Procure\Application\DTO\Qr\QrDTO;
-use Procure\Application\DTO\Qr\QrDTOAssembler;
-use Procure\Domain\GenericDoc;
+use Application\Domain\Shared\AbstractDTO;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QRSnapshotAssembler
 {
 
-    const EXCLUDED_FIELDS = 1;
+    private static $defaultIncludedFields = array(
+        "isActive",
+        "vendor",
+        "contractNo",
+        "contractDate",
+        "docDate",
+        "docNumber",
+        "docCurrency",
+        "exchangeRate",
+        "incoterm",
+        "incotermPlace",
+        "paymentTerm",
+        "warehouse",
+        "department",
+        "remarks",
+        "pmtTerm"
+    );
 
-    const EDITABLE_FIELDS = 2;
+    private static $defaultExcludedFields = array(
+        "id",
+        "uuid",
+        "token",
+        "checksum",
+        "createdBy",
+        "createdOn",
+        "lastChangeOn",
+        "lastChangeBy",
+        "sysNumber",
+        "company",
+        "itemType",
+        "revisionNo",
+        "currencyIso3",
+        "vendorName",
+        "docStatus",
+        "workflowStatus",
+        "transactionStatus",
+        "paymentStatus",
+        "paymentStatus"
+    );
 
-    /**
-     *
-     * @return array;
-     */
-    public static function findMissingPropertiesOfSnapshot()
+    public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        $missingProperties = array();
-        $entity = new GenericDoc();
-        $dto = new QRSnapshot();
-
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
+        return GenericObjectAssembler::updateAllFieldsFromArray($snapShot, $data);
     }
 
-    public static function findMissingPropsInEntity()
+    public static function updateIncludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
     {
-        $missingProperties = array();
-        $baseObj = new GenericDoc();
-
-        $reflectionClass = new \ReflectionClass($baseObj);
-        $baseProps = $reflectionClass->getProperties();
-
-        $entity = QrDTOAssembler::getEntity();
-
-        foreach ($baseProps as $property) {
-            $propertyName = $property->getName();
-            if (! property_exists($entity, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
     }
 
-    /**
-     *
-     * @return array;
-     */
-    public static function findMissingPropsInGenericDoc()
+    public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        $missingProperties = array();
-
-        $entityProps = QrDTOAssembler::createDTOProperities();
-        $dto = new GenericDoc();
-
-        foreach ($entityProps as $property) {
-            $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultIncludedFields);
     }
 
-    /**
-     *
-     * @param QRSnapshot $snapShot
-     * @param QrDTO $dto
-     * @param array $editableProperties
-     * @return NULL|\Procure\Domain\QuotationRequest\QRSnapshot
-     */
-    public static function updateSnapshotFieldsFromDTO(QRSnapshot $snapShot, QrDTO $dto, $editableProperties)
+    public static function updateExcludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
     {
-        if ($dto == null || ! $snapShot instanceof QRSnapshot || $editableProperties == null)
-            return null;
-
-        $reflectionClass = new \ReflectionClass($dto);
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-
-            if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
-
-                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($dto);
-                }
-            }
-        }
-        return $snapShot;
+        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
     }
 
-    /**
-     * generete fields.
-     */
-    public static function createProperities()
+    public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        $entity = new QRSnapshot();
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "protected $" . $propertyName . ";";
-        }
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultExcludedFields);
     }
 
-    /**
-     *
-     * @param array $data
-     * @return NULL|\Procure\Domain\PurchaseOrder\POSnapshot
-     */
-    public static function createSnapshotFromArray($data)
+    // from Object
+    // =============================
+    public static function updateAllFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        if ($data == null)
-            return null;
-
-        $snapShot = new QRSnapshot();
-
-        foreach ($data as $property => $value) {
-            if (property_exists($snapShot, $property)) {
-
-                if ($value == null || $value == "") {
-                    $snapShot->$property = null;
-                } else {
-                    $snapShot->$property = $value;
-                }
-            }
-        }
-        return $snapShot;
+        return GenericObjectAssembler::updateAllFieldsFrom($snapShot, $data);
     }
 
-    public static function createSnapshotFromDTO(QrDTO $dto)
+    public static function updateIncludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
     {
-        if (! $dto instanceof QrDTO)
-            return null;
-
-        $snapShot = new QRSnapshot();
-
-        $reflectionClass = new \ReflectionClass(get_class($dto));
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-                $snapShot->$propertyName = $property->getValue($dto);
-            }
-        }
-        return $snapShot;
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
     }
 
-    /**
-     *
-     * @deprecated
-     * @param QrDTO $dto
-     * @param QRSnapshot $snapShot
-     * @param string $editMode
-     * @return NULL|\Procure\Domain\QuotationRequest\QRSnapshot
-     */
-    public static function updateSnapshotFromDTO(QrDTO $dto, QRSnapshot $snapShot, $editMode = self::EDITABLE_FIELDS)
+    public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        if (! $dto instanceof QrDTO || ! $snapShot instanceof QRSnapshot)
-            return null;
+        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
+    }
 
-        $reflectionClass = new \ReflectionClass($dto);
-        $props = $reflectionClass->getProperties();
+    public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
+    }
 
-        $excludedProperties = array(
-            "id",
-            "uuid",
-            "token",
-            "checksum",
-            "createdBy",
-            "createdOn",
-            "lastChangeOn",
-            "lastChangeBy",
-            "sysNumber",
-            "company",
-            "itemType",
-            "revisionNo",
-            "currencyIso3",
-            "vendorName",
-            "docStatus",
-            "workflowStatus",
-            "transactionStatus",
-            "paymentStatus"
-        );
+    public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+    }
 
-        $editableProperties = array(
-            "isActive",
-            "vendor",
-            "contractNo",
-            "contractDate",
-            "docCurrency",
-            "exchangeRate",
-            "incoterm",
-            "incotermPlace",
-            "paymentTerm",
-            "remarks"
-        );
+    // Entity from Object
+    // =============================
+    public static function updateEntityExcludedDefaultFieldsFrom(GenericQR $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+    }
 
-        // $snapShot->getPay;
-
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-
-            if ($editMode == self::EXCLUDED_FIELDS) {
-                if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
-
-                    if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                        $snapShot->$propertyName = null;
-                    } else {
-                        $snapShot->$propertyName = $property->getValue($dto);
-                    }
-                }
-            }
-
-            if ($editMode == self::EDITABLE_FIELDS) {
-                if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
-
-                    if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                        $snapShot->$propertyName = null;
-                    } else {
-                        $snapShot->$propertyName = $property->getValue($dto);
-                    }
-                }
-            }
-        }
-        return $snapShot;
+    public static function updateEntityAllFieldsFrom(GenericQR $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateAllFieldsFrom($snapShot, $data);
     }
 }

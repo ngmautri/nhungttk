@@ -7,11 +7,12 @@ use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface;
 use Inventory\Infrastructure\Mapper\ItemMapper;
 use InvalidArgumentException;
+use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCmdRepositoryInterface
 {
@@ -25,10 +26,7 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
      */
     public function store(GenericItem $rootEntity, $generateSysNumber = True)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("GenericItem not retrieved.");
-        }
-
+        Assert::notNull($rootEntity, "GenericItem not retrieved.");
         $rootSnapshot = $this->_getRootSnapshot($rootEntity);
 
         $increaseVersion = false;
@@ -36,12 +34,12 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
         /**
          *
          * @var \Application\Entity\NmtInventoryItem $entity ;
-         *     
+         *
          */
-        if ($rootSnapshot->getId() > 0) {
-            $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());
+        if ($rootEntity->getId() > 0) {
+            $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
             if ($entity == null) {
-                throw new InvalidArgumentException(sprintf("Doctrine entity not found. %s", $rootSnapshot->getId()));
+                throw new InvalidArgumentException(sprintf("Doctrine entity not found. %s", $rootEntity->getId()));
             }
 
             // just in case, it is not updated.
@@ -85,10 +83,6 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
      */
     private function _getRootSnapshot(GenericItem $rootEntity)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("Root entity not given!");
-        }
-
         /**
          *
          * @var ItemSnapshot $rootSnapshot ;

@@ -1,49 +1,47 @@
 <?php
 namespace Inventory\Domain\Item;
 
+use Application\Domain\Shared\AbstractDTO;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Application\DTO\Item\ItemDTOAssembler;
-use Procure\Domain\GenericDoc;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemSnapshotAssembler
 {
 
-    const EXCLUDED_FIELDS = 1;
-
-    const EDITABLE_FIELDS = 2;
-
     const AUTO_GENERATED_FIELDS = [
+        "movementDate",
+        "isActive",
+        "warehouse",
+        "targetWarehouse",
+        "remarks"
+    ];
+
+    private static $defaultIncludedFields = [
+        "movementDate",
+        "isActive",
+        "warehouse",
+        "targetWarehouse",
+        "remarks"
+    ];
+
+    private static $defaultExcludedFields = [
         "id",
-        "isStocked",
-        "isFixedAsset",
-        "isSparepart",
-        "createdOn",
-        "lastPurchasePrice",
-        "lastPurchaseCurrency",
-        "lastPurchaseDate",
-        "lastChangeOn",
+        "uuid",
         "token",
         "checksum",
-        "sysNumber",
-        "revisionNo",
-        "avgUnitPrice",
-        "uuid",
         "createdBy",
+        "createdOn",
+        "lastChangeOn",
         "lastChangeBy",
+        "sysNumber",
         "company",
-
-        "lastPrRow",
-        "lastPoRow",
-        "lastApInvoiceRow",
-        "lastTrxRow",
-        "lastPurchasing",
         "itemType",
-
+        "revisionNo",
         "qoList",
         "procureGrList",
         "batchNoList",
@@ -56,7 +54,9 @@ class ItemSnapshotAssembler
         "apList",
         "serialNoList",
         "batchList",
-        "fifoLayerList"
+        "fifoLayerList",
+        "backwardAssociationList",
+        "associationList"
     ];
 
     public static function createFromQueryHit($hit)
@@ -97,73 +97,75 @@ class ItemSnapshotAssembler
         }
     }
 
-    /**
-     *
-     * @return array;
-     */
-    public static function findMissingPropertiesOfSnapshot()
+    // Snapshot from Array
+    // =============================
+    public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        $missingProperties = array();
-        $entity = new GenericDoc();
-        $dto = new ItemSnapshot();
-
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
+        return GenericObjectAssembler::updateAllFieldsFromArray($snapShot, $data);
     }
 
-    public static function findMissingPropsInEntity()
+    public static function updateIncludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
     {
-        $missingProperties = array();
-        $baseObj = new BaseItem();
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
+    }
 
-        $reflectionClass = new \ReflectionClass($baseObj);
-        $baseProps = $reflectionClass->getProperties();
+    public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultIncludedFields);
+    }
 
-        $entity = ItemDTOAssembler::getEntity();
+    public static function updateExcludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
+    }
 
-        foreach ($baseProps as $property) {
-            $propertyName = $property->getName();
-            if (! property_exists($entity, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
+    public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultExcludedFields);
+    }
+
+    // Snapshot from Object
+    // =============================
+    public static function updateAllFieldsFrom(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateAllFieldsFrom($snapShot, $data);
+    }
+
+    public static function updateIncludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
+    {
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
+    }
+
+    public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
+    }
+
+    public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
+    }
+
+    public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+    }
+
+    // Entity from Object
+    // =============================
+    public static function updateEntityExcludedDefaultFieldsFrom(GenericItem $entity, $data)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFrom($entity, $data, self::$defaultExcludedFields);
+    }
+
+    public static function updateEntityAllFieldsFrom(GenericItem $entity, $data)
+    {
+        return GenericObjectAssembler::updateAllFieldsFrom($entity, $data);
     }
 
     /**
      *
-     * @return array;
-     */
-    public static function findMissingPropsInBaseItem()
-    {
-        $missingProperties = array();
-
-        $entityProps = ItemDTOAssembler::createDTOProperities();
-        $dto = new BaseItem();
-
-        foreach ($entityProps as $property) {
-            $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
-    }
-
-    /**
-     *
+     * @deprecated
      * @param ItemSnapshot $snapShot
      * @param ItemDTO $dto
      * @param array $editableProperties
@@ -195,6 +197,7 @@ class ItemSnapshotAssembler
 
     /**
      *
+     * @deprecated
      * @param ItemSnapshot $snapShot
      * @param ItemDTO $dto
      * @param array $excludedProperties
@@ -227,21 +230,6 @@ class ItemSnapshotAssembler
             }
         }
         return $snapShot;
-    }
-
-    /**
-     * generete fields.
-     */
-    public static function createProperities()
-    {
-        $entity = new ItemSnapshot();
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "protected $" . $propertyName . ";";
-        }
     }
 
     public static function updateSnapshotFromDTO($snapShot, $dto)

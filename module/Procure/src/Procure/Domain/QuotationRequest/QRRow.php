@@ -3,14 +3,18 @@ namespace Procure\Domain\QuotationRequest;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
+use Application\Domain\Shared\Command\CommandOptions;
+use PHPUnit\Framework\Assert;
 use Procure\Application\DTO\Qr\QrRowDTO;
+use Procure\Domain\GenericDoc;
 use Procure\Domain\GenericRow;
 
 /**
  * Quotation Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QRRow extends GenericRow
 {
@@ -24,6 +28,45 @@ class QRRow extends GenericRow
     // =================================
     private function __construct()
     {}
+
+    public static function cloneFrom(QRDoc $rootDoc, QRRow $sourceObj, CommandOptions $options)
+    {
+        Assert::isInstanceOf($rootDoc, QRDoc::class, "QR is required!");
+        Assert::isInstanceOf($sourceObj, QRRow::class, "QR row is required!");
+        Assert::notNull($options, "No Options is found");
+
+        /**
+         *
+         * @var QRRow $instance
+         */
+        $instance = new self();
+
+        $exculdedProps = [
+            'rowIdentifer'
+        ];
+
+        $instance = $sourceObj->convertExcludeFieldsTo($instance, $exculdedProps);
+        $instance->initRow($options);
+        return $instance;
+    }
+
+    protected function createVO(GenericDoc $rootDoc)
+    {
+        $this->createUomVO();
+        $this->createQuantityVO();
+    }
+
+    public static function createFromSnapshot(QRDoc $rootDoc, QRRowSnapshot $snapshot)
+    {
+        Assert::isInstanceOf($rootDoc, QRDoc::class, "PR is required!");
+        Assert::isInstanceOf($snapshot, QRRowSnapshot::class, "PR row snapshot is required!");
+
+        $instance = new self();
+
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        $instance->createVO($rootDoc);
+        return $instance;
+    }
 
     /**
      *
@@ -82,37 +125,6 @@ class QRRow extends GenericRow
     public static function createInstance()
     {
         return new self();
-    }
-
-    public static function createSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-
-            if ($property->class == $reflectionClass->getName()) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
     }
 
     /**

@@ -164,14 +164,13 @@ class APRow extends GenericRow
         $instance = new self();
 
         $instance = $sourceObj->convertTo($instance);
+        $instance->initRow($options);
+
         $instance->setDocType(ProcureDocType::INVOICE_FROM_PO); // important.
         $instance->setPoRow($sourceObj->getId()); // Important
-
         $instance->setGlAccount($sourceObj->getItemInventoryGL());
         $instance->setCostCenter($sourceObj->getItemCostCenter());
         $instance->setWarehouse($sourceObj->getWarehouse());
-
-        $instance->initRow($options);
 
         return $instance;
     }

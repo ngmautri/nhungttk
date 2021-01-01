@@ -10,9 +10,11 @@ use Procure\Application\Helper\OptionList;
 use Procure\Application\Helper\Toolbar;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Contracts\ProcureDocStatus;
+use Procure\Domain\QuotationRequest\QRSnapshot;
+use Procure\Domain\QuotationRequest\QRRowSnapshot;
 
-/**@var \Procure\Application\DTO\Qr\QrDTO $headerDTO ;*/
-/**@var \Procure\Application\DTO\Qr\QrRowDTO $rowDTO ;*/
+/**@var QRSnapshot $headerDTO ;*/
+/**@var QRRowSnapshot $rowDTO ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
 // var_dump($headerDTO);

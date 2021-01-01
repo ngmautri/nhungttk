@@ -7,6 +7,7 @@ use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Domain\QuotationRequest\QRSnapshot;
 
 /**
  *
@@ -124,7 +125,7 @@ class Toolbar
         return $toolbar;
     }
 
-    public static function showToolbarQR(QrDTO $headerDTO, $action, $view)
+    public static function showToolbarQR(QRSnapshot $headerDTO, $action, $view)
     {
         $po_url = sprintf("/procure/po/create-from-qr?source_id=%s&source_token=%s", $headerDTO->getId(), $headerDTO->getToken());
         $poBtn = sprintf('<a title="PO from Quotation" class="btn btn-default btn-sm" href="%s"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $po_url, $view->translate("Create PO"));

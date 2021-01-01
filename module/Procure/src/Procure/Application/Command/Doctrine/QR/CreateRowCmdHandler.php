@@ -1,0 +1,79 @@
+<?php
+namespace Procure\Application\Command\Doctrine\QR;
+
+use Application\Application\Command\Doctrine\AbstractCommand;
+use Application\Application\Command\Doctrine\AbstractCommandHandler;
+use Application\Domain\Shared\Command\CommandInterface;
+use Procure\Application\Command\Doctrine\VersionChecker;
+use Procure\Application\Command\Options\CreateRowCmdOptions;
+use Procure\Application\Service\SharedServiceFactory;
+use Procure\Application\Service\QR\QRRowSnapshotModifier;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\QuotationRequest\QRDoc;
+use Procure\Domain\QuotationRequest\QRRowSnapshot;
+use Procure\Domain\QuotationRequest\QRRowSnapshotAssembler;
+use Webmozart\Assert\Assert;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
+class CreateRowCmdHandler extends AbstractCommandHandler
+{
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Command\AbstractCommandHandler::run()
+     */
+    public function run(CommandInterface $cmd)
+    {
+        /**
+         *
+         * @var CreateRowCmdOptions $options ;
+         * @var AbstractCommand $cmd ;
+         * @var CreateRowCmdOptions $options ;
+         * @var QRRowSnapshot $snapshot ;
+         * @var QRDoc $rootEntity ;
+         *
+         */
+        Assert::isInstanceOf($cmd, AbstractCommand::class);
+        Assert::isInstanceOf($cmd->getOptions(), CreateRowCmdOptions::class);
+        Assert::notNull($cmd->getData(), 'Input data in emty');
+
+        $options = $cmd->getOptions();
+        $rootEntity = $options->getRootEntity();
+
+        Assert::isInstanceOf($rootEntity, PRDoc::class);
+
+        try {
+            $snapshot = new QRRowSnapshot();
+            QRRowSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            $this->setOutput($snapshot);
+
+            $snapshot = QRRowSnapshotModifier::modify($snapshot, $cmd->getDoctrineEM(), $options->getLocale());
+            $sharedService = SharedServiceFactory::createForQR($cmd->getDoctrineEM());
+            $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);
+
+            // event dispatch
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
+            }
+            // ================
+
+            $m = sprintf("[OK] QR Row # %s created", $localSnapshot->getId());
+            $cmd->addSuccess($m);
+
+            // Check Version
+            // ==============
+            VersionChecker::checkQRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            // ===============
+        } catch (\Exception $e) {
+
+            $cmd->addError($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
+        }
+    }
+}

@@ -61,7 +61,7 @@ class ChangeItemGroupTest extends PHPUnit_Framework_TestCase
                  * @var ItemDTO $dto ;
                  */
                 $dto = $rootEntity->makeDTO();
-                $dto->itemGroup = 14;
+                $dto->itemGroup = 13;
 
                 if ($rootEntity->getCreatedOn() == null) {
                     $dto->createdOn = '2017-01-01';

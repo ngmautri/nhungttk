@@ -31,7 +31,7 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
             // $token = "039712b8-753e-4924-8025-94e9e8432fe5";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            \var_dump($rootEntity->getBaseUom());
+            // var_dump($rootEntity->getBaseUom());
             $fifo = $rootEntity->getFifoLayerList();
 
             foreach ($fifo as $f) {
@@ -47,7 +47,25 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
                 }
             }
         } catch (InvalidArgumentException $e) {
-            var_dump($e->getMessage());
+            // var_dump($e->getMessage());
+        }
+    }
+
+    public function testCanGetItem()
+    {
+        try {
+            /** @var EntityManager $doctrineEM ; */
+            $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+
+            $rep = new ItemQueryRepositoryImpl($doctrineEM);
+
+            $id = 5455;
+            $token = "74058b2a-1142-4259-8910-3178e4e998a5";
+
+            $rootEntity = $rep->getRootEntityByTokenId($id, $token);
+            \var_dump($rootEntity->getStandardUnitName());
+        } catch (InvalidArgumentException $e) {
+            // var_dump($e->getMessage());
         }
     }
 }

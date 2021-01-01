@@ -21,6 +21,16 @@ use InvalidArgumentException;
 abstract class GenericDoc extends BaseDoc
 {
 
+    public function markDocAsChanged($postedBy, $postedDate)
+    {
+        $this->setLastchangeOn($postedDate);
+        $this->setLastchangeBy($postedBy);
+        $this->setIsPosted(0);
+        $this->setIsActive(1);
+        $this->setIsDraft(1);
+        $this->setIsReversed(0);
+    }
+
     private $exculdedProps = [
         "rowIdArray",
         "instance",

@@ -1,0 +1,370 @@
+<?php
+use Application\Application\Helper\ErrorMessage;
+use Application\Application\Helper\OptionHelper;
+use Application\Application\Helper\OptionList;
+use Inventory\Application\DTO\Transaction\TrxDTO;
+use Inventory\Application\DTO\Transaction\TrxRowDTO;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===========================================
+ *
+ * @var TrxDTO $headerDTO ;
+ * @var TrxRowDTO $dto ;
+ * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ */
+
+// var_dump($headerDTO);
+
+$base_url = sprintf($this->baseUrl . "/inventory/gi/");
+$view_url = null;
+$review_url = null;
+$rowNumber = null;
+$alert = "info";
+$transactionTypeArray = [];
+$docUomName = null;
+
+$format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col-sm-10">
+<button onclick="submitForm(\'%s\');" class="btn btn-default">
+<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
+<a class="btn btn-default btn-sm" href="%s"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;%s</a>
+</div></div>';
+
+$hiddenFormInput = '';
+
+$format = '<input type="hidden" name="redirectUrl" value="%s">';
+$hiddenFormInput = $hiddenFormInput . sprintf($format, $redirectUrl);
+
+$format = '<input type="hidden" id="target_id" name="target_id" value="%s">';
+$hiddenFormInput = $hiddenFormInput . sprintf($format, $target_id);
+
+$format = '<input type="hidden" id="target_token" name="target_token" value="%s">';
+$hiddenFormInput = $hiddenFormInput . sprintf($format, $target_token);
+
+$format = '<input type="hidden" id="entity_id" name="entity_id" value="%s">';
+$hiddenFormInput = $hiddenFormInput . sprintf($format, $entity_id);
+
+$format = '<input type="hidden" id="entity_token" name="entity_token" value="%s">';
+$hiddenFormInput = $hiddenFormInput . sprintf($format, $entity_token);
+
+$format = '<input type="hidden" id="version" name="docRevisionNo" value="%s">';
+$hiddenFormInput = $hiddenFormInput . sprintf($format, $docRevisionNo);
+
+// var_dump($headerDTO);
+if ($headerDTO !== null) {
+    $headerDTO_id = $headerDTO->getId();
+    $headerDTO_token = $headerDTO->getToken();
+    $transactionTypeArray = $transactionType[$headerDTO->getMovementType()];
+
+    $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $headerDTO_token, $headerDTO_id);
+    $review_url = sprintf($base_url . "review?entity_id=%s&entity_token=%s", $headerDTO_id, $headerDTO_token);
+    $add_url = sprintf($base_url . "add-row?target_id=%s&token=%s", $headerDTO_id, $headerDTO_token);
+    $view_url = sprintf($base_url . "view?entity_id=%s&entity_token=%s", $headerDTO_id, $headerDTO_token);
+
+    $rowNumber = $headerDTO->getTotalRows() + 1;
+}
+
+if ($dto != null) {
+    $docUomName = $dto->getDocUnit();
+}
+
+$cost_center = null;
+
+$item_view_url = null;
+$item_view_javascript = null;
+if ($dto !== null) {
+    $rowNumber = $dto->getRowNumber();
+    $cost_center = $dto->getCostCenter();
+    $format = '/inventory/item/show1?tab_idx=0&entity_id=%s&token=%s';
+    $item_view_url = sprintf($format, $dto->getItem(), $dto->getItemToken());
+
+    $format = ' $("#item_name" ).val("%s");' . "\n";
+    $format = $format . ' $("#item_url" ).text("%s");' . "\n";
+    $format = $format . ' $("#item_detail").show()' . "\n";
+    $item_view_javascript = sprintf($format, $dto->itemName, $item_view_url);
+}
+
+$cost_center_option = OptionList::createCostCenterOption($nmtPlugin->costCenterList(), $cost_center);
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
+$uomList = $sharedCollection->getUomCollection();
+$uom_option = OptionHelper::createUomNameOption($uomList, $docUomName);
+
+$current_step = "STEP2";
+
+// =====================================================
+
+?>
+<div id="wrapper" class="toggled">
+   <!-- Sidebar -->
+   <div id="sidebar-wrapper" style="font-size: 9.5pt;">
+					<?php
+    $current_step = "STEP2";
+    include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
+    include (ROOT . '/module/Inventory/view/inventory/trx_summary.php');
+
+    ?>
+   </div>
+   <!-- /#sidebar-wrapper -->
+   <!-- Page Content -->
+   <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+      <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+         <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle">
+            <span title="Hide Menu">
+               <i class="fa fa-chevron-left" aria-hidden="true"></i>
+               Menu
+               <span>
+
+         </a>
+         <div id="tabs" style="font-size: 10pt">
+            <ul>
+               <li>
+                  <a href="#general">
+                     <small>
+                        <i class="glyphicon glyphicon-plus"> </i>
+                        </i>
+                     </small>&nbsp;<?php
+                    echo $form_title;
+                    ?></a>
+               </li>
+               <li>
+                  <a href="">
+                     <small>
+                        <i class="glyphicon glyphicon-list"> </i>
+                        </i>
+                     </small>
+                     &nbsp;Current Rows
+                  </a>
+               </li>
+               <li>
+                  <a title="<?php
+                echo $this->translate("Change Logs");
+                ?>" href="">
+                     <span class="glyphicon glyphicon-list"></span>
+                     &nbsp;Log
+                  </a>
+               </li>
+            </ul>
+            <div id="general" style="font-size: 9pt">
+               <!-- Tab1 -->
+
+						<?php
+    echo $error_msg;
+    ?>
+
+					<!-- for all case: -->
+               <form id="New_Trx_Row" class="form-horizontal" action="<?php
+            echo $form_action;
+            ?>" method="post" enctype="multipart/form-data">
+              <?php
+            echo $hiddenFormInput;
+            ?>
+
+			<!-- for all case: -->
+                  <div id="new_row" class="collapse in">
+                     <div class="form-group margin-bottom">
+                        <label class="control-label col-sm-2"></label>
+                        <div class="col-sm-3">
+                           <input
+                              <?php
+
+                            if (! $dto == null) :
+                                echo ($dto->getIsActive() == "1") ? "checked" : "";
+                            else :
+                                echo "checked";
+                            endif;
+                            ?>
+                              type="checkbox" name="isActive" value="1">
+                           &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom  required">
+                        <label class="control-label col-sm-2">Issue for Item: </label>
+                        <div class="col-sm-3">
+                           <input tabindex="2" class="form-control" type="text" id="issueForName" placeholder="Enter keyword to search item..." name="issueForName"
+                              value="<?php
+
+                            if (! $dto == null) :
+                                echo $dto->getIssueFor();endif;
+
+                            ?>">
+                           <input type="hidden" id="issueFor" placeholder="" name="issueFor" value="<?php
+                        if (! $dto == null) :
+                            echo $dto->getIssueFor();
+                        endif;
+
+                        ?>">
+                           <div id="issue_for_url" style="display: none;"></div>
+                        </div>
+                        <div class="col-sm-1" style="margin: 0px">
+                           <span title="<?php
+
+                        echo $this->translate("Item Detail");
+                        ?>" id="issue_for_detail" style="display: none;">
+                              &nbsp;&nbsp;
+                              <a style="color: #0080ff;" href="javascript:;" onclick="showSelectedIssueForItem();">
+                                 <i style="color: navy" class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                              </a>
+                              <br>
+                           </span>
+                        </div>
+                        <div class="col-sm-2" style="margin: 0px">
+                           <a style="color: #0080ff;" href="javascript:;" onclick="showJqueryDialog('Select Item','1350',$(window).height()-50, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">
+                              Select&nbsp;&nbsp;
+                              <i class="glyphicon glyphicon-folder-open"></i>
+                           </a>
+                        </div>
+                        <div class="col-sm-3">
+                           <a target="_blank" style="font-size: 9pt;" href="/inventory/item/list">Item List&nbsp;&nbsp;</a>
+                           <small>
+                              <i class="glyphicon glyphicon-new-window"></i>
+                           </small>
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom required">
+                        <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
+                        <div class="col-sm-3">
+                           <input tabindex="3" class="form-control input-sm" type="text" id="docQuantity" name="docQuantity" value="<?php
+
+                        echo (! $dto == null) ? $dto->getDocQuantity() : "";
+                        ?>">
+                        </div>
+                     </div>
+                     <hr style="margin: 5pt 1pt 5pt 1pt;">
+                     <div class="form-group margin-bottom required">
+                        <label class="control-label col-sm-2"><?php
+
+                        echo $this->translate("Document Unit");
+                        ?></label>
+                        <div class="col-sm-3">
+                           <select tabindex="4" name="docUnit" id="docUnit" class="form-control input-sm">
+                              <option value=""><?php
+
+                            echo $this->translate("Select doc unit");
+                            ?></option>
+                    <?php
+                    echo $uom_option;
+                    ?>
+               </select>
+                        </div>
+                        <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
+                        <div class="col-sm-1">
+                           <input tabindex="5" class="form-control input-sm" type="text" name="standardConvertFactor" id="standardConvertFactor" value="<?php
+
+                        echo (! $dto == null) ? $dto->getStandardConvertFactor() : "1";
+                        ?>">
+                        </div>
+                        <div class="col-sm-3">
+                           <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to item standard unit.</span>
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom  required">
+                        <label class="control-label col-sm-2">Item: </label>
+                        <div class="col-sm-3">
+                           <input tabindex="6" class="form-control" type="text" id="item_name" placeholder="Enter keyword to search item..." name="item_name"
+                              value="<?php
+
+                            if (! $dto == null) :
+                                echo $dto->getItemName();endif;
+
+                            ?>">
+                           <input type="hidden" id="item" placeholder="" name="item" value="<?php
+                        if (! $dto == null) :
+                            echo $dto->getItem();
+                        endif;
+
+                        ?>">
+                           <div id="item_url" style="display: none;"></div>
+                        </div>
+                        <div class="col-sm-1" style="margin: 0px">
+                           <span title="<?php
+
+                        echo $this->translate("Item Detail");
+                        ?>" id="item_detail" style="display: none;">
+                              &nbsp;&nbsp;
+                              <a style="color: #0080ff;" href="javascript:;" onclick="showSelectedItem();">
+                                 <i style="color: navy" class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                              </a>
+                              <br>
+                           </span>
+                        </div>
+                        <div class="col-sm-2" style="margin: 0px">
+                           <a style="color: #0080ff;" href="javascript:;" onclick="showJqueryDialog('Select Item','1350',$(window).height()-50, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">
+                              Select&nbsp;&nbsp;
+                              <i class="glyphicon glyphicon-folder-open"></i>
+                           </a>
+                        </div>
+                        <div class="col-sm-3">
+                           <a target="_blank" style="font-size: 9pt;" href="/inventory/item/list">Item List&nbsp;&nbsp;</a>
+                           <small>
+                              <i class="glyphicon glyphicon-new-window"></i>
+                           </small>
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom required">
+                        <label class="control-label col-sm-2" for="inputTag"><?php
+
+                        echo $this->translate("Cost Center");
+                        ?>:</label>
+                        <div class="col-sm-3">
+                           <select name="costCenter" class="form-control input-sm">
+                              <option value=""><?php
+
+                            echo $this->translate("Select Cost Center");
+                            ?></option>
+   	    							<?php
+            echo $cost_center_option;
+            ?>
+   					</select>
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom">
+                        <label class="control-label col-sm-2">Remark:</label>
+                        <div class="col-sm-8">
+                           <input tabindex="9" class="form-control input-sm" type="text" placeholder="" name="remarks" value="<?php
+
+                        echo (! $dto == null) ? $dto->getRemarks() : "";
+                        ?>">
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom">
+                        <label class="control-label col-sm-2" for="inputTag"></label>
+                        <div class="col-sm-3">
+                           <a tabindex="10" class="btn btn-default btn-sm" onclick="submitForm('New_Trx_Row');" href="javascript:;">
+                              <small>
+                                 <i class="glyphicon glyphicon-floppy-disk"></i>
+                              </small>
+                              &nbsp;Save
+                           </a>
+                           <a tabindex="11" class="btn btn-default btn-sm" href="<?php
+                        echo $review_url;
+                        ?>">
+                              <small>
+                                 <i class="glyphicon glyphicon-remove"></i>
+                              </small>
+                              &nbsp;Cancel
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </form>
+               <!-- end tab -->
+            </div>
+         </div>
+      </div>
+      <!-- /#page-content-wrapper -->
+   </div>
+   <!-- /#wrapper -->
+   <script type="text/javascript">
+ 	$( "#issueForName" ).focus();
+
+    $('#quantity').bind('change', function() {
+         });
+
+  </script>
+
+ <?php
+include (ROOT . '/module/Inventory/view/inventory/item_auto_complete_1.php');
+include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');
+?>

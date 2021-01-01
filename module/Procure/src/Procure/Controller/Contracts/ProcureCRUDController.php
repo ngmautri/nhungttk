@@ -108,7 +108,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'version' => $rootEntity->getRevisionNo(),
                 'action' => $action,
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -140,6 +141,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $msg = sprintf($cmd->getNotification()->successMessage());
             $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
             $this->logException($e);
             $msg = $e->getMessage();
             $redirectUrl = sprintf($this->getBaseUrl() . "/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
@@ -161,7 +163,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'version' => $rootEntity->getRevisionNo(),
                 'action' => $action,
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -217,7 +220,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
             'localCurrencyId' => $this->getLocalCurrencyId(),
-            'defaultWarehouseId' => $this->getDefautWarehouseId()
+            'defaultWarehouseId' => $this->getDefautWarehouseId(),
+            'companyVO' => $this->getCompanyVO()
         ));
 
         $viewModel->setTemplate($viewTemplete);
@@ -301,7 +305,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'action' => $action,
                 'sharedCollection' => $this->getSharedCollection(),
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -366,7 +371,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_title' => $form_title,
                 'action' => $action,
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -413,7 +419,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_title' => $form_title,
                 'action' => $action,
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -477,7 +484,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'action' => $action,
                 'sharedCollection' => $this->getSharedCollection(),
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -531,7 +539,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'action' => $action,
                 'sharedCollection' => $this->getSharedCollection(),
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -608,7 +617,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'action' => $action,
                 'sharedCollection' => $this->getSharedCollection(),
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -686,7 +696,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'action' => $action,
                 'sharedCollection' => $this->getSharedCollection(),
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -808,7 +819,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_title' => $form_title,
                 'action' => $action,
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -856,7 +868,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_title' => $form_title,
                 'action' => $action,
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -913,7 +926,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
             'localCurrencyId' => $this->getLocalCurrencyId(),
-            'defaultWarehouseId' => $this->getDefautWarehouseId()
+            'defaultWarehouseId' => $this->getDefautWarehouseId(),
+            'companyVO' => $this->getCompanyVO()
         ));
 
         $viewModel->setTemplate($viewTemplete);

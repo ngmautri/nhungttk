@@ -8,11 +8,12 @@ use Procure\Domain\QuotationRequest\QRDoc;
 use Procure\Domain\QuotationRequest\QRRow;
 use Procure\Domain\QuotationRequest\Repository\QrQueryRepositoryInterface;
 use Procure\Infrastructure\Mapper\QrMapper;
+use Procure\Domain\QuotationRequest\Factory\QRFactory;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QRQueryRepositoryImpl extends AbstractDoctrineRepository implements QrQueryRepositoryInterface
 {
@@ -116,7 +117,7 @@ WHERE id = %s";
             return null;
         }
 
-        return QRDoc::makeFromSnapshot($snapshot);
+        return QRFactory::constructFromDB($snapshot);
     }
 
     /**
@@ -151,7 +152,7 @@ WHERE id = %s";
         $rows = $this->getRowsById($id);
 
         if (count($rows) == 0) {
-            $rootEntity = QRDoc::makeFromSnapshot($rootSnapshot);
+            $rootEntity = QRFactory::constructFromDB($rootSnapshot);
             return $rootEntity;
         }
 
@@ -188,7 +189,7 @@ WHERE id = %s";
         $rootSnapshot->taxAmount = $taxAmount;
         $rootSnapshot->grossAmount = $grossAmount;
 
-        $rootEntity = QRDoc::makeFromSnapshot($rootSnapshot);
+        $rootEntity = QRFactory::constructFromDB($rootSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);
         return $rootEntity;

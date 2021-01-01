@@ -1,17 +1,15 @@
 <?php
-namespace Procure\Application\Command\AP;
+namespace Procure\Application\Command\Doctrine\AP;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
-use Application\Domain\Shared\Command\AbstractCommandHandler;
+use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Options\SaveCopyFromCmdOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\AccountPayable\APDoc;
+use Procure\Domain\AccountPayable\APFromPO;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
-use Procure\Domain\PurchaseOrder\GenericPO;
 use Webmozart\Assert\Assert;
-use Procure\Domain\AccountPayable\Factory\APFactory;
 
 /**
  *
@@ -27,7 +25,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
         /**
          *
          * @var AbstractCommand $cmd ;
-         * @var APDoc $rootEntity ;
+         * @var APFromPO $rootEntity ;
          * @var SaveCopyFromCmdOptions $options ;
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
@@ -36,7 +34,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
         Assert::isInstanceOf($options, SaveCopyFromCmdOptions::class);
 
         $rootEntity = $options->getRootEntity();
-        Assert::isInstanceOf($rootEntity, GenericPO::class);
+        Assert::isInstanceOf($rootEntity, APFromPO::class);
 
         try {
             // ====================
@@ -49,6 +47,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
                 "docNumber",
                 "docDate",
                 "postingDate",
+                "grDate",
                 "warehouse",
                 "pmtTerm",
                 "paymentMethod",
@@ -59,16 +58,16 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
             $snapshot = APSnapshotAssembler::updateIncludedFieldsFromArray($snapshot, $cmd->getData(), $includedFields);
 
             $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
-            APFactory::save
-            $rootSnapshot = $rootEntity->s($snapshot, $options, $sharedService);
+            $rootSnapshot = $rootEntity->saveFromPO($snapshot, $options, $sharedService);
 
             $snapshot->id = $rootSnapshot->getId();
             $snapshot->token = $rootSnapshot->getToken();
             $this->setOutput($snapshot);
 
-            $m = sprintf("[OK] GR # %s copied from Quote and saved!", $rootSnapshot->getId());
+            $m = sprintf("[OK] AP # %s copied from PO and saved!", $rootSnapshot->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
+
             $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }

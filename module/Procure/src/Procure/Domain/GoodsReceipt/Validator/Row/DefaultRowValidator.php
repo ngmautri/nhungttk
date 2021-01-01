@@ -14,7 +14,7 @@ use Procure\Domain\AbstractRow;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class DefaultRowValidator extends AbstractValidator implements RowValidatorInterface
 {
@@ -68,8 +68,8 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             }
 
             // ======= CONVERSION FACTORY ==========
-            if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
-                $localEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
+            if (! $spec->isSatisfiedBy($localEntity->getStandardConvertFactor())) {
+                $localEntity->addError("Standard convert factor is not valid! " . $localEntity->getStandardConvertFactor());
             }
             // ======= EXW PRICE ==========
             if (! $spec->isSatisfiedBy($localEntity->getExwUnitPrice())) {

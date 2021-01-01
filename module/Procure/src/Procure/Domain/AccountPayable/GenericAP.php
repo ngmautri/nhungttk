@@ -31,16 +31,6 @@ abstract class GenericAP extends BaseDoc
 
     abstract public function specify();
 
-    public function markDocAsChanged($postedBy, $postedDate)
-    {
-        $this->setLastchangeOn($postedDate);
-        $this->setLastchangeBy($postedBy);
-        $this->setIsPosted(0);
-        $this->setIsActive(1);
-        $this->setIsDraft(1);
-        $this->setIsReversed(0);
-    }
-
     /**
      *
      * @return NULL[]|\Procure\Domain\AccountPayable\GenericAP[]

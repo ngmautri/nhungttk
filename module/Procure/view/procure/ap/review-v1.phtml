@@ -1104,7 +1104,7 @@ echo $hoverMode;
                 //alert(sent_list);
 
                   $.ajax({
-                      url: '/procure/po/update-row',
+                      url: '/procure/ap/inline-update-row',
                       data: {
                           sent_list: sent_list
                       },
@@ -1188,6 +1188,8 @@ echo $hoverMode;
 
        { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
   		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
+  	       { title: "Asset", dataType: "string", dataIndx: "isFixedAsset", width:10,editable: false },
+
        { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
        { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
        { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },

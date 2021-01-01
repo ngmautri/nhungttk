@@ -23,7 +23,7 @@ $review_url = null;
 $rowNumber = null;
 $pr_item_name = null;
 $alert = "info";
-$docUomName = null;
+$docUomName = 'each';
 
 // var_dump($headerDTO);
 if ($headerDTO !== null) {
@@ -36,7 +36,7 @@ if ($headerDTO !== null) {
     $rowNumber = $headerDTO->getTotalRows() + 1;
 }
 
-if ($dto !== null) {
+if ($dto != null) {
     $rowNumber = $dto->getRowNumber();
     if ($dto->getPrRow() != null) {
         $pr_item_name = $dto->itemName . ' || ' . $dto->getPrNumber();
@@ -434,7 +434,7 @@ echo $error_msg;
 <script>
 
     $( "#pr_item_name").focus(function() {
-	  $( this ).next( "span" ).css( "display", "inline" ).fadeOut( 5000 );
+	  //$( this ).next( "span" ).css( "display", "inline" ).fadeOut( 5000 );
     });
 
     $('#unit_price').bind('change', function() {

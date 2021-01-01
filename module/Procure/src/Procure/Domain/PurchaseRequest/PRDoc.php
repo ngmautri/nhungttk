@@ -3,12 +3,12 @@ namespace Procure\Domain\PurchaseRequest;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Pr\PrHeaderCreated;
 use Procure\Domain\Event\Pr\PrHeaderUpdated;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
 use Procure\Domain\PurchaseRequest\Validator\ValidatorFactory;
@@ -17,7 +17,6 @@ use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
-use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
  *
@@ -141,13 +140,12 @@ final class PRDoc extends GenericPR
      * @param array $params
      * @param SharedService $sharedService
      * @throws \RuntimeException
-     * @throws OperationFailedException
      * @return \Procure\Domain\PurchaseRequest\GenericPR
      */
     public static function updateFrom(GenericPR $rootEntity, PRSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
         Assert::notEq($rootEntity->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is already posted! %s", $rootEntity->getId()));
-        Assert::notNull($snapshot, "AP snapshot not found");
+        Assert::notNull($snapshot, "PR snapshot not found");
         Assert::notNull($options, "Command options not found");
         $validationService = ValidatorFactory::create($sharedService);
 
@@ -173,11 +171,6 @@ final class PRDoc extends GenericPR
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $rootSnapshot = $rep->storeHeader($rootEntity, false);
-
-        if ($rootSnapshot == null) {
-            throw new OperationFailedException(sprintf("%s-%s", "Error orcured when creating PR!", __FUNCTION__));
-        }
-
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($rootSnapshot->getId());

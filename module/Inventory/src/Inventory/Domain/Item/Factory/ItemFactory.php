@@ -3,6 +3,7 @@ namespace Inventory\Domain\Item\Factory;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Item\ItemCreated;
 use Inventory\Domain\Event\Item\ItemUpdated;
@@ -18,6 +19,7 @@ use Inventory\Domain\Service\SharedService;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use RuntimeException;
+use Inventory\Domain\Item\ItemSnapshotAssembler;
 
 /**
  *
@@ -34,13 +36,8 @@ class ItemFactory
         }
 
         $itemTypeId = $snapshot->getItemTypeId();
-
-        if (! \in_array($itemTypeId, ItemType::getSupportedType())) {
-            throw new InvalidArgumentException("Item type empty or not supported! #" . $snapshot->getItemTypeId());
-        }
-
         $instance = self::_createItem($itemTypeId);
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
         $instance->createUom();
 
         return $instance;
@@ -92,14 +89,9 @@ class ItemFactory
     public static function createFrom(ItemSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
         Assert::notNull($snapshot, "ItemSnapshot not found");
-        $itemTypeId = $snapshot->getItemTypeId();
-
-        if (! \in_array($itemTypeId, ItemType::getSupportedType())) {
-            throw new InvalidArgumentException("Item type empty or not supported! #" . $snapshot->getItemTypeId());
-        }
-
         Assert::notNull($sharedService, "SharedService service not found");
 
+        $itemTypeId = $snapshot->getItemTypeId();
         $item = self::_createItem($itemTypeId);
 
         $createdDate = new \Datetime();
@@ -110,7 +102,7 @@ class ItemFactory
          *
          * @var GenericItem $item
          */
-        SnapshotAssembler::makeFromSnapshot($item, $snapshot);
+        GenericObjectAssembler::updateAllFieldsFrom($item, $snapshot);
 
         $item->specifyItem(); // important
         $item->createUom();
@@ -131,10 +123,6 @@ class ItemFactory
         $rootSnapshot = $sharedService->getPostingService()
             ->getCmdRepository()
             ->store($item, true);
-
-        if ($rootSnapshot == null) {
-            throw new RuntimeException(sprintf("Error orcured when creating Item #%s", $item->getId()));
-        }
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -160,23 +148,12 @@ class ItemFactory
      * @throws RuntimeException
      * @return \Inventory\Domain\Item\GenericItem
      */
-    public static function updateFrom(ItemSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
+    public static function updateFrom(GenericItem $rootEntity, ItemSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if (! $snapshot instanceof ItemSnapshot) {
-            throw new InvalidArgumentException("ItemSnapshot not found!");
-        }
-
-        $itemTypeId = $snapshot->getItemTypeId();
-
-        if (! \in_array($itemTypeId, ItemType::getSupportedType())) {
-            throw new InvalidArgumentException("Item type empty or not supported! #" . $snapshot->getItemTypeId());
-        }
-
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        $item = self::_createItem($itemTypeId);
+        Assert::notNull($rootEntity, "GenericItem not found.");
+        Assert::notNull($snapshot, "ItemSnapshot not found!");
+        Assert::notNull($options, "Cmd options not found!");
+        Assert::notNull($options, "SharedService service not found!");
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
@@ -186,18 +163,17 @@ class ItemFactory
          *
          * @var GenericItem $item
          */
-        SnapshotAssembler::makeFromSnapshot($item, $snapshot);
+        ItemSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);
+        $rootEntity->specifyItem();
 
-        $item->specifyItem();
+        $validators = ValidatorFactory::create($rootEntity->getItemTypeId(), $sharedService);
+        $rootEntity->validate($validators);
 
-        $validators = ValidatorFactory::create($itemTypeId, $sharedService);
-        $item->validate($validators);
-
-        if ($item->hasErrors()) {
-            throw new \RuntimeException($item->getNotification()->errorMessage());
+        if ($rootEntity->hasErrors()) {
+            throw new \RuntimeException($rootEntity->getNotification()->errorMessage());
         }
 
-        $item->recordedEvents = array();
+        $rootEntity->clearEvents();
 
         /**
          *
@@ -205,11 +181,7 @@ class ItemFactory
          */
         $rootSnapshot = $sharedService->getPostingService()
             ->getCmdRepository()
-            ->store($item, false);
-
-        if ($rootSnapshot == null) {
-            throw new RuntimeException(sprintf("Error orcured when creating Item #%s", $item->getId()));
-        }
+            ->store($rootEntity, false);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -220,14 +192,19 @@ class ItemFactory
         $defaultParams->setUserId($options->getUserId());
 
         $event = new ItemUpdated($target, $defaultParams, $params);
-        $item->addEvent($event);
+        $rootEntity->addEvent($event);
 
-        return $item;
+        return $rootEntity;
     }
 
     private static function _createItem($itemTypeId)
     {
         $item = null;
+
+        if (! \in_array($itemTypeId, ItemType::getSupportedType())) {
+            throw new InvalidArgumentException("Item type empty or not supported! #" . $itemTypeId);
+        }
+
         switch ($itemTypeId) {
 
             case ItemType::INVENTORY_ITEM_TYPE:

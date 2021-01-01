@@ -28,6 +28,7 @@ class APRowSnapshotAssembler
         "docQuantity",
         "docUnit",
         "docUnitPrice",
+        "exwUnitPrice",
         "conversionFactor",
         "standardConvertFactor",
         "descriptionText",

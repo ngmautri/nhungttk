@@ -53,7 +53,7 @@ class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $m = sprintf("WH-GR #%s copied from PO-GR #%s and posted!", $rootEntity->getId());
+            $m = sprintf("WH-GR #%s copied from PO-GR #%s and posted!", $rootEntity->getId(), $sourceObj->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
             $cmd->addError($e->getMessage());

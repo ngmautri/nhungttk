@@ -84,6 +84,9 @@ abstract class GenericRow extends BaseRow
 
     protected $localGrossAmountVO;
 
+    protected function createWarehouseVO()
+    {}
+
     protected function createUomVO()
     {
         // UOM VO

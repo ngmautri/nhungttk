@@ -45,7 +45,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
         $rootEntity = $options->getRootEntity();
 
-        Assert::isInstanceOf($rootEntity, PRODoc::class);
+        Assert::isInstanceOf($rootEntity, PRDoc::class);
 
         Assert::notEq($rootEntity->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is already posted! %s", $rootEntity->getId()));
 

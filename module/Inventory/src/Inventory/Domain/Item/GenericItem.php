@@ -7,6 +7,7 @@ use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Validator\Item\ItemValidatorCollection;
 use InvalidArgumentException;
 use Application\Domain\Shared\Uom\Uom;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
  *
@@ -20,8 +21,7 @@ abstract class GenericItem extends BaseItem
 
     public function createUom()
     {
-        if ($this->getStandardUnitName() == null)
-        {
+        if ($this->getStandardUnitName() == null) {
             return;
         }
         $this->baseUom = new Uom($this->getStandardUnitName());
@@ -29,7 +29,7 @@ abstract class GenericItem extends BaseItem
 
     public function makeSnapshot()
     {
-        return SnapshotAssembler::createSnapshotFrom($this, new ItemSnapshot());
+        return GenericObjectAssembler::updateAllFieldsFrom(new ItemSnapshot(), $this);
     }
 
     public function makeDTO()

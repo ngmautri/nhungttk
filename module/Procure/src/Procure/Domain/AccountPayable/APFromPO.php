@@ -101,7 +101,7 @@ final class APFromPO extends GenericAP
      */
     public function saveFromPO(APSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        Assert::notEq($this->getDocStatus(), ProcureTrxStatus::DRAFT, sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
+        Assert::eq($this->getDocStatus(), ProcureDocStatus::DRAFT, sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
         Assert::eq($this->getDocType(), ProcureDocType::INVOICE_FROM_PO, sprintf("Doctype is not vadid! %s", __FUNCTION__));
 
         Assert::notNull($this->getDocRows(), sprintf("PO Entity is empty! %s", __FUNCTION__));
@@ -125,8 +125,7 @@ final class APFromPO extends GenericAP
         // update warehouse for row.
         $this->refreshRows($snapshot);
 
-        $createdDate = new \Datetime();
-        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->initDoc($options);
 
         $this->validate($validationService);
         if ($this->hasErrors()) {

@@ -82,7 +82,6 @@ class ItemMapper
         $entity->setIsModel($snapshot->isModel);
         $entity->setCanOrder($snapshot->canOrder);
         $entity->setModelDetail($snapshot->modelDetail);
-
         $entity->setHsCode($snapshot->hsCode);
         $entity->setHsCodeDescription($snapshot->hsCodeDescription);
         $entity->setStandardWeightInKg($snapshot->standardWeightInKg);

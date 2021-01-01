@@ -7,6 +7,7 @@ use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
+use Inventory\Application\Command\VersionChecker;
 use Inventory\Application\Command\Item\Options\UpdateItemOptions;
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Item\GenericItem;
@@ -16,14 +17,12 @@ use Inventory\Domain\Item\Factory\ItemFactory;
 use Inventory\Domain\Service\ItemPostingService;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Infrastructure\Doctrine\ItemCmdRepositoryImpl;
-use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
-use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UpdateLogisticDataCmdHandler extends AbstractCommandHandler
 {
@@ -31,7 +30,7 @@ class UpdateLogisticDataCmdHandler extends AbstractCommandHandler
     /**
      *
      * {@inheritdoc}
-     * @see \Application\Application\Command\AbstractDoctrineCmdHandler::run()
+     * @see \Application\Domain\Shared\Command\AbstractCommandHandler::run()
      */
     public function run(CommandInterface $cmd)
     {
@@ -118,18 +117,9 @@ class UpdateLogisticDataCmdHandler extends AbstractCommandHandler
 
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
 
-            $newRootEntity = ItemFactory::updateFrom($newSnapshot, $options, $params, $sharedService);
+            $newRootEntity = ItemFactory::updateFrom($rootEntity, $newSnapshot, $options, $params, $sharedService);
 
-            // No Check Version when Posting when posting.
-            $queryRep = new ItemQueryRepositoryImpl($cmd->getDoctrineEM());
-
-            // time to check version - concurency
-            $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
-
-            // revision numner has been increased.
-            if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! %s", $version, $currentVersion, ""));
-            }
+            VersionChecker::checkItemVersion($cmd->getDoctrineEM(), $rootEntityId, $version);
 
             // event dispatch
             // ================

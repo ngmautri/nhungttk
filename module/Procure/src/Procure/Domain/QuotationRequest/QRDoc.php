@@ -4,17 +4,16 @@ namespace Procure\Domain\QuotationRequest;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Qr\QrHeaderCreated;
-use Procure\Domain\Event\Qr\QrHeaderUpdated;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
-use Procure\Domain\Service\QrPostingService;
+use Procure\Domain\QuotationRequest\Repository\QrCmdRepositoryInterface;
+use Procure\Domain\QuotationRequest\Validator\ValidatorFactory;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Shared\Constants;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Ramsey\Uuid\Uuid;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -32,6 +31,71 @@ final class QRDoc extends GenericQR
     // ====================
     private function __construct()
     {}
+
+    public function cloneAndSave(CommandOptions $options, SharedService $sharedService)
+    {
+        $rows = $this->getDocRows();
+        Assert::notNull($rows, "GR Entity is empty!");
+        $validationService = ValidatorFactory::create($sharedService);
+        Assert::notNull($validationService, "Validation can not created!");
+
+        $instance = new self();
+
+        $exculdedProps = [
+            "id",
+            "uuid",
+            "token",
+            "docRows",
+            "rowIdArray",
+            "instance"
+        ];
+
+        $instance = $this->convertExcludeFieldsTo($instance, $exculdedProps);
+
+        // overwrite.
+        $instance->initDoc($options);
+        $instance->setDocType(ProcureDocType::QUOTE);
+        $instance->setBaseDocId($this->getId());
+        $instance->setBaseDocType($this->getDocType());
+
+        $instance->validateHeader($validationService->getHeaderValidators());
+
+        foreach ($rows as $r) {
+
+            $localEntity = QRRow::cloneFrom($instance, $r, $options);
+            $instance->addRow($localEntity);
+            $instance->validateRow($localEntity, $validationService->getRowValidators());
+        }
+
+        if ($instance->hasErrors()) {
+            throw new \RuntimeException($instance->getErrorMessage());
+        }
+
+        $this->clearEvents();
+        /**
+         *
+         * @var QRRowSnapshot $localSnapshot
+         * @var QrCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->store($instance);
+        Assert::notNull($rootSnapshot, sprintf("Error occured when cloning QR #%s", $instance->getId()));
+
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new QrHeaderCreated($target, $defaultParams, $params);
+        $this->addEvent($event);
+        return $instance;
+    }
 
     /**
      *
@@ -71,7 +135,7 @@ final class QRDoc extends GenericQR
 
     /**
      *
-     * @return \Procure\Domain\GoodsReceipt\GRDoc
+     * @return \Procure\Domain\QuotationRequest\QRDoc
      */
     public static function getInstance()
     {
@@ -81,209 +145,12 @@ final class QRDoc extends GenericQR
         return self::$instance;
     }
 
-    public static function createSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-
-            if ($property->class == $reflectionClass->getName()) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
-    }
-
     /**
      *
-     * @param QRSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param SharedService $sharedService
-     * @param QrPostingService $postingService
-     * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
-     * @return \Procure\Domain\QuotationRequest\QRDoc
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::doPost()
      */
-    public static function createFrom(QRSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
-    {
-        $instance = new self();
-        $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
-
-        if ($options == null) {
-            throw new InvalidArgumentException("Options is null");
-        }
-
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
-
-        $instance->clearNotification();
-
-        $instance->validateHeader($headerValidators);
-
-        if ($instance->hasErrors()) {
-            throw new ValidationFailedException($instance->getNotification()->errorMessage());
-        }
-
-        $instance->setDocType(Constants::PROCURE_DOC_TYPE_QUOTE);
-
-        $instance->initDoc($options);
-
-        $instance->clearEvents();
-
-        /**
-         *
-         * @var QRSnapshot $rootSnapshot
-         */
-        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
-
-        if ($rootSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error orcured when creating Quote #%s", $instance->getId()));
-        }
-
-        $instance->id = $rootSnapshot->getId();
-        $target = $rootSnapshot;
-        $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
-        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
-        $defaultParams->setTriggeredBy($options->getTriggeredBy());
-        $defaultParams->setUserId($options->getUserId());
-        $params = null;
-
-        $event = new QrHeaderCreated($target, $defaultParams, $params);
-
-        $instance->addEvent($event);
-        return $instance;
-    }
-
-    /**
-     *
-     * @param QRSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param array $params
-     * @param HeaderValidatorCollection $headerValidators
-     * @param SharedService $sharedService
-     * @param QrPostingService $postingService
-     * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
-     * @return \Procure\Domain\QuotationRequest\QRDoc
-     */
-    public static function updateFrom(QRSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
-    {
-        $instance = new self();
-        $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
-
-        if ($options == null) {
-            throw new InvalidArgumentException("Opptions is null");
-        }
-
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
-
-        $instance->validateHeader($headerValidators);
-
-        if ($instance->hasErrors()) {
-            throw new ValidationFailedException(sprintf("%s-%s", $instance->getNotification()->errorMessage(), __FUNCTION__));
-        }
-
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-
-        $instance->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setLastchangeBy($createdBy);
-
-        $instance->recordedEvents = array();
-
-        /**
-         *
-         * @var QRSnapshot $rootSnapshot
-         */
-        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
-
-        if ($rootSnapshot == null) {
-            throw new OperationFailedException(sprintf("%s-%s", "Error orcured when creating Quotation!", __FUNCTION__));
-        }
-
-        $instance->id = $rootSnapshot->getId();
-        $target = $rootSnapshot;
-        $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
-        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
-        $defaultParams->setTriggeredBy($options->getTriggeredBy());
-        $defaultParams->setUserId($options->getUserId());
-
-        $event = new QrHeaderUpdated($target, $defaultParams, $params);
-
-        $instance->addEvent($event);
-        return $instance;
-    }
-
-    /**
-     *
-     * @param QRSnapshot $snapshot
-     * @return void|\Procure\Domain\QuotationRequest\QRDoc
-     */
-    public static function constructFromDetailsSnapshot(QRSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof QRSnapshot) {
-            return null;
-        }
-
-        if ($snapshot->uuid == null) {
-            $snapshot->uuid = Uuid::uuid4()->toString();
-        }
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
-    }
-
-    /**
-     *
-     * @param QRSnapshot $snapshot
-     * @return NULL|\Procure\Domain\QuotationRequest\QRDoc
-     */
-    public static function constructFromSnapshot(QRSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof QRSnapshot) {
-            return null;
-        }
-
-        if ($snapshot->uuid == null) {
-            $snapshot->uuid = Uuid::uuid4()->toString();
-        }
-
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
-    }
-
-    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         /**
          *
@@ -303,13 +170,14 @@ final class QRDoc extends GenericQR
         }
         $this->clearNotification();
 
-        $this->validate($headerValidators, $rowValidators, true);
+        $this->validate($validationService, true);
 
         if ($this->hasErrors()) {
             throw new ValidationFailedException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
         }
 
-        $postingService->getCmdRepository()->post($this, true);
+        $rep = $sharedService->getPostingService();
+        $rep->post($this, true);
     }
 
     /**
@@ -317,39 +185,21 @@ final class QRDoc extends GenericQR
      * {@inheritdoc}
      * @see \Procure\Domain\GoodsReceipt\GenericGR::doReverse()
      */
-    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
+    protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         // blank
     }
 
-    private function _checkInputParams(QRSnapshot $snapshot, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
-    {
-        if (! $snapshot instanceof QRSnapshot) {
-            throw new InvalidArgumentException("QRSnapshot not found!");
-        }
-
-        if ($headerValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("postingService service not found");
-        }
-    }
-
-    protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
+    protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {}
 
-    protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
+    protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {}
 
-    protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
+    protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {}
 
-    protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
+    protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {}
 
     protected function raiseEvent()

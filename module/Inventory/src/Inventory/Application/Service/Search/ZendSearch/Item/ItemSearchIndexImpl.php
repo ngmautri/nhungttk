@@ -20,7 +20,7 @@ use RuntimeException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInterface
 {
@@ -334,7 +334,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
         $doc->addField(Field::keyword('sysNumber', $snapshot->getSysNumber()));
         $doc->addField(Field::text('remarksText', $snapshot->getRemarksText()));
         $doc->addField(Field::text('hsCode', $snapshot->getHsCode()));
-
+        $doc->addField(Field::UnIndexed('standardUnitName', $snapshot->getStandardUnitName()));
         /*
          * $doc->addField(Field::text('origin', $snapshot->getOrigin()));
          * $doc->addField(Field::text('serialMfgDate', $snapshot->getSerialMfgDate()));
@@ -350,7 +350,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
          * $doc->addField(Field::text('fifoLayerList', $snapshot->getFifoLayerList()));
          * $doc->addField(Field::text('onHandQty', $snapshot->getOnHandQty()));
          * $doc->addField(Field::text('onHandValue', $snapshot->getOnHandValue()));
-         * $doc->addField(Field::text('standardUnitName', $snapshot->getStandardUnitName()));
+         *
          * $doc->addField(Field::text('id', $snapshot->getId()));
          * $doc->addField(Field::text('warehouseId', $snapshot->getWarehouseId()));
          * $doc->addField(Field::text('isActive', $snapshot->getIsActive()));

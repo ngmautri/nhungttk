@@ -25,7 +25,7 @@ class SaveCopyFromCmdOptions extends CmdOptions
         Assert::notNull($userId, sprintf("User ID not given! %s", __METHOD__));
         Assert::notNull($triggeredBy, sprintf("Trigger not found! %s", __METHOD__));
 
-        $this->companyId = $companyId;
+        $this->companyVO = $companyVO;
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
         $this->rootEntity = $rootEntity;

@@ -2,7 +2,6 @@
 namespace Procure\Controller;
 
 use Application\Domain\Contracts\FormActions;
-use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Controller\Contracts\ProcureCRUDController;
 use Zend\View\Model\ViewModel;

@@ -51,7 +51,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
      */
     public static function postCopyFromProcureGR(GenericGR $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
-        Assert::isInstanceOf($sourceObj, GenericGR::class, sprintf("GRDoc Entity is required %s"));
+        Assert::isInstanceOf($sourceObj, GenericGR::class, sprintf("GRDoc Entity is required %s", "GenericGR"));
         Assert::eq($sourceObj->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PO GR is not posted %s", $sourceObj->getId()));
 
         $rows = $sourceObj->getDocRows();

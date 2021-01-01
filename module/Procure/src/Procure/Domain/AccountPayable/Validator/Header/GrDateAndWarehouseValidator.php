@@ -11,7 +11,7 @@ use Procure\Domain\Validator\HeaderValidatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GrDateAndWarehouseValidator extends AbstractValidator implements HeaderValidatorInterface
 {
@@ -36,7 +36,7 @@ class GrDateAndWarehouseValidator extends AbstractValidator implements HeaderVal
             $spec = $this->sharedSpecificationFactory->getDateSpecification();
 
             if (! $spec->isSatisfiedBy($rootEntity->getGrDate())) {
-                $rootEntity->addError("Good Receipt date is not correct or empty");
+                $rootEntity->addError("Good Receipt date is not correct or empty!", $rootEntity->getGrDate());
             }
 
             // ===== WAREHOUSE =======

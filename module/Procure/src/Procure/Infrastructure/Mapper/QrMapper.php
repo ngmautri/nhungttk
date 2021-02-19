@@ -12,7 +12,7 @@ use Procure\Domain\QuotationRequest\QRSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QrMapper
 {
@@ -292,7 +292,11 @@ class QrMapper
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setUuid($snapshot->uuid);
         $entity->setDocVersion($snapshot->docVersion);
-
+        $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
+        $entity->setConvertedStandardQuantity($snapshot->convertedStandardQuantity);
+        $entity->setConvertedStandardUnitPrice($snapshot->convertedStandardUnitPrice);
+        $entity->setConvertedStockUnitPrice($snapshot->convertedStockUnitPrice);
+        $entity->setConvertedStockQuantity($snapshot->convertedStockQuantity);
         // ============================
         // DATE MAPPING
         // ============================
@@ -587,7 +591,11 @@ class QrMapper
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
         $snapshot->uuid = $entity->getUuid();
         $snapshot->docVersion = $entity->getDocVersion();
-
+        $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
+        $snapshot->convertedStandardQuantity = $entity->getConvertedStandardQuantity();
+        $snapshot->convertedStandardUnitPrice = $entity->getConvertedStandardUnitPrice();
+        $snapshot->convertedStockUnitPrice = $entity->getConvertedStockUnitPrice();
+        $snapshot->convertedStockQuantity = $entity->getConvertedStockQuantity();
         // ============================
         // DATE MAPPING
         // ============================

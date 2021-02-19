@@ -180,17 +180,11 @@ final class PODoc extends GenericPO
      *
      * @param POSnapshot $snapshot
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param POPostingService $postingService
-     * @throws InvalidOperationException
-     * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
-     * @return \Procure\Domain\AccountPayable\APSnapshot
+     * @param SharedServiceInterface $sharedService
+     * @throws \RuntimeException
+     * @return \Procure\Domain\PurchaseOrder\POSnapshot
      */
-    public function saveFromQuotation(POSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    public function saveFromQuotation(POSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService)
     {
         Assert::eq($this->getDocStatus(), ProcureDocStatus::DRAFT, sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
         Assert::notNull($this->getDocRows(), sprintf("Documment is empty! %s", __FUNCTION__));
@@ -198,7 +192,6 @@ final class PODoc extends GenericPO
         Assert::eq($this->getDocType(), Constants::PROCURE_DOC_TYPE_PO_FROM_QOUTE, sprintf("Doctype is not vadid! %s", __FUNCTION__));
 
         $validationService = ValidatorFactory::create($sharedService);
-        Assert::notNull($validationService, "Validation can not created!");
 
         // Entity from Snapshot
         if ($snapshot !== null) {
@@ -214,7 +207,7 @@ final class PODoc extends GenericPO
         $createdDate = new \Datetime();
         $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
+        $this->validate($validationService);
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getErrorMessage());
         }

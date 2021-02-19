@@ -19,6 +19,8 @@ final class ItemType
 
     const FIXED_ASSET_ITEM_TYPE = "4";
 
+    const COMPOSITE_ITEM = "5";
+
     public static function getSupportedType()
     {
         $r = [];
@@ -26,6 +28,7 @@ final class ItemType
         $r[] = self::NONE_INVENTORY_ITEM_TYPE;
         $r[] = self::SERVICE_ITEM_TYPE;
         $r[] = self::FIXED_ASSET_ITEM_TYPE;
+        $r[] = self::COMPOSITE_ITEM;
         return $r;
     }
 
@@ -37,6 +40,7 @@ final class ItemType
         $r[] = self::NONE_INVENTORY_ITEM_TYPE;
         $r[] = self::SERVICE_ITEM_TYPE;
         $r[] = self::FIXED_ASSET_ITEM_TYPE;
+        $r[] = self::COMPOSITE_ITEM;
         return $r;
     }
 
@@ -47,6 +51,7 @@ final class ItemType
         $r[self::NONE_INVENTORY_ITEM_TYPE] = "None-Inventory Item";
         $r[self::SERVICE_ITEM_TYPE] = "Service";
         $r[self::FIXED_ASSET_ITEM_TYPE] = "Fixed Asset";
+        $r[self::COMPOSITE_ITEM] = "Combo-Item";
         return $r;
     }
 }

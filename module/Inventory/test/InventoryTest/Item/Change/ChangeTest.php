@@ -40,7 +40,7 @@ class ChangeTest extends PHPUnit_Framework_TestCase
              */
 
             $entity = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->findOneBy($criteria);
-            $entity->setItemTypeId(ItemType::NONE_INVENTORY_ITEM_TYPE);
+            $entity->setItemTypeId(ItemType::SERVICE_ITEM_TYPE);
             $entity->setIsFixedAsset(0);
             $entity->setIsSparepart(0);
             $entity->setIsStocked(0);

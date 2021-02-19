@@ -32,8 +32,6 @@ class APSnapshotAssembler
         "transactionStatus",
         "paymentStatus",
         "currentState",
-        "posingDate",
-        "grDate",
         "docStatus"
     );
 

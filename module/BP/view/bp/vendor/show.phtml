@@ -1,4 +1,7 @@
-<?php /**@var \Application\Entity\NmtBpVendor $entity ;*/?>
+<?php
+
+/**@var \Application\Entity\NmtBpVendor $entity ;*/
+?>
 
 
 <?php
@@ -15,53 +18,139 @@ if (count($errors) > 0) {
 }
 ?>
 <div id="tabs" style="font-size: 9.5pt">
-	<ul>
-		<li><a href="#general">General</a></li>
-		<li><a
-			href="<?php echo $this->baseUrl ?>/inventory/item-purchase/vendor?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Vendor
-				Items</a></li>
-		<li><a
-			href="<?php echo $this->baseUrl ?>/bp/vendor-attachment/get-contracts?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Contract</a></li>
-		<li><a
-			href="<?php echo $this->baseUrl ?>/bp/vendor-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Attachment</a></li>
-		<li><a
-			href="<?php echo $this->baseUrl ?>/procure/po/vendor?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PO</a></li>
+   <ul>
+      <li>
+         <a href="#general">General</a>
+      </li>
+      <li>
+         <a
+            href="<?php
 
-		<li><a
-			href="<?php echo $this->baseUrl ?>/finance/v-invoice/vendor?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">AP</a></li>
-		<li><a
-			href="<?php echo $this->baseUrl ?>/procure/po-row/row-of-vendor?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">Item</a></li>
+            echo $this->baseUrl?>/inventory/item-purchase/vendor?token=<?php
 
-		<li><a
-			href="<?php echo $this->baseUrl ?>/bp/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
-				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+            echo (! $entity == null) ? $entity->getToken() : "";
+            ?>&target_id=<?php
 
-	</ul>
+            echo (! $entity == null) ? $entity->getId() : "";
+            ?>&checksum=<?php
 
-	<div id="general" style="font-size: 9pt">
+echo (! $entity == null) ? $entity->getChecksum() : "";
+?>">Vendor Items</a>
+      </li>
+      <li>
+         <a
+            href="<?php
 
+            echo $this->baseUrl?>/bp/vendor-attachment/get-contracts?token=<?php
 
-		<div style="position: relative; float: right;">
+            echo (! $entity == null) ? $entity->getToken() : "";
+            ?>&target_id=<?php
 
-			<a class="btn btn-default btn-sm"
-				href="<?php echo $this->baseUrl ?>/bp/vendor/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
-					class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
-		</div>
-		<hr>
+            echo (! $entity == null) ? $entity->getId() : "";
+            ?>&checksum=<?php
 
+echo (! $entity == null) ? $entity->getChecksum() : "";
+?>">Contract</a>
+      </li>
+      <li>
+         <a href="<?php
 
-		<form id="Create_Vendor_Form" class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/bp/vendor/add" method="post"
-			enctype="multipart/form-data">
-			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" />
+        echo $this->baseUrl?>/bp/vendor-attachment/list1?token=<?php
 
-			<div class="form-group margin-bottom required">
+        echo (! $entity == null) ? $entity->getToken() : "";
+        ?>&target_id=<?php
 
-				<label class="control-label col-sm-2"><?php echo $this->translate("Control G/L Account");?>:</label>
-				<div class="col-sm-3">
-					<select name="gl_account_id" class="form-control input-sm">
-						<option value=""><?php echo $this->translate("Select GL Account");?></option>
+        echo (! $entity == null) ? $entity->getId() : "";
+        ?>&checksum=<?php
+
+echo (! $entity == null) ? $entity->getChecksum() : "";
+?>">Attachment</a>
+      </li>
+      <li>
+       <li>
+         <a href="<?php
+
+        echo $this->baseUrl?>/procure/po-report/get-of-vendor?vendorId=<?php
+
+        echo (! $entity == null) ? $entity->getId() : "";
+        ?>">PO</a>
+      </li>
+      <li>
+         <a href="<?php
+
+        echo $this->baseUrl?>/procure/ap-report/get-of-vendor?vendorId=<?php
+
+        echo (! $entity == null) ? $entity->getId() : "";
+        ?>">AP</a>
+      </li>
+      <li>
+         <a href="<?php
+
+        echo $this->baseUrl?>/procure/po-row/row-of-vendor?token=<?php
+
+        echo (! $entity == null) ? $entity->getToken() : "";
+        ?>&target_id=<?php
+
+        echo (! $entity == null) ? $entity->getId() : "";
+        ?>">Item</a>
+      </li>
+      <li>
+         <a href="<?php
+
+        echo $this->baseUrl?>/bp/change-log/list1?object_token=<?php
+
+        echo (! $entity == null) ? $entity->getToken() : "";
+        ?>&object_id=<?php
+
+        echo (! $entity == null) ? $entity->getId() : "";
+        ?>&class_name=<?php
+
+echo (! $entity == null) ? get_class($entity) : "";
+?>">
+            <span class="glyphicon glyphicon-list"></span>
+            &nbsp;Log
+         </a>
+      </li>
+   </ul>
+   <div id="general" style="font-size: 9pt">
+      <div style="position: relative; float: right;">
+         <a class="btn btn-default btn-sm"
+            href="<?php
+
+            echo $this->baseUrl?>/bp/vendor/edit?token=<?php
+
+            echo (! $entity == null) ? $entity->getToken() : "";
+            ?>&entity_id=<?php
+
+            echo (! $entity == null) ? $entity->getId() : "";
+            ?>&checksum=<?php
+
+    echo (! $entity == null) ? $entity->getChecksum() : "";
+    ?>">
+            <small>
+               <i class="glyphicon glyphicon-pencil"></i>
+            </small>
+            &nbsp;Edit
+         </a>
+      </div>
+      <hr>
+      <form id="Create_Vendor_Form" class="form-horizontal" action="<?php
+
+    echo $this->baseUrl?>/bp/vendor/add" method="post" enctype="multipart/form-data">
+         <input type="hidden" name="redirectUrl" value="<?php
+
+        echo $redirectUrl?>" />
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2"><?php
+
+            echo $this->translate("Control G/L Account");
+            ?>:</label>
+            <div class="col-sm-3">
+               <select name="gl_account_id" class="form-control input-sm">
+                  <option value=""><?php
+
+                echo $this->translate("Select GL Account");
+                ?></option>
    	    							<?php
             if ($gl_list !== null) :
 
@@ -87,138 +176,143 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
-				</div>
-			</div>
+            </div>
+         </div>
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2" for="inputTag">Vendor Number</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="vendorNumber" value="<?php
+
+            echo (! $entity == null) ? $entity->getVendorNumber() : "";
+            ?>">
+            </div>
+            <div class="col-sm-4">
+               <input <?php
+
+            if (! $entity == null) :
+                echo ($entity->getIsActive() == "1") ? "checked" : "";
+            else :
+                echo "checked";
+            endif;
+            ?> type="checkbox" name="isActive" value="1">
+               &nbsp;Active&nbsp;&nbsp;
+            </div>
+         </div>
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2" for="inputTag">Vendor Name:</label>
+            <div class="col-sm-6">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="vendorName" value="<?php
+
+            echo (! $entity == null) ? $entity->getVendorName() : "";
+            ?>">
+            </div>
+         </div>
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2" for="inputTag">Short name:</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="vendorShortName" value="<?php
+
+            echo (! $entity == null) ? $entity->getVendorShortname() : "";
+            ?>">
+            </div>
+         </div>
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2" for="inputTag">Keywords:</label>
+            <div class="col-sm-6">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="keywords" value="<?php
+
+            echo (! $entity == null) ? $entity->getKeywords() : "";
+            ?>">
+            </div>
+         </div>
+         <hr>
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2" for="inputTag">Street:</label>
+            <div class="col-sm-6">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="street" value="<?php
+
+            echo (! $entity == null) ? $entity->getStreet() : "";
+            ?>">
+            </div>
+         </div>
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2" for="inputTag">City:</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="city" value="<?php
+
+            echo (! $entity == null) ? $entity->getCity() : "";
+            ?>">
+            </div>
+         </div>
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2">Country:</label>
+            <div class="col-sm-3">
+               <input disabled class="form-control input-sm" type="text" id="country_name" placeholder="Please select country" name="country_name"
+                  value="<?php
+
+                if (! $entity == null) :
+                    if (! $entity->getCountry() == null) :
+                        echo $entity->getCountry()->getCountryName();endif;endif;
 
 
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag">Vendor Number</label>
-				<div class="col-sm-3">
-					<input class="form-control input-sm" type="text" id="inputTag"
-						placeholder="" name="vendorNumber"
-						value="<?php echo (!$entity == null)? $entity->getVendorNumber():"";?>">
-				</div>
+                ?>">
+               <input type="hidden" id="country_id" placeholder="" name="country_id" value="<?php
 
-				<div class="col-sm-4">
-					<input
-						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-				</div>
-			</div>
+            if (! $entity == null) :
+                if (! $entity->getCountry() == null) :
+                    echo $entity->getCountry()->getId();endif;endif;
 
-			<div class="form-group margin-bottom required">
-				<label class="control-label col-sm-2" for="inputTag">Vendor Name:</label>
-				<div class="col-sm-6">
-					<input class="form-control input-sm" type="text" id="inputTag"
-						placeholder="" name="vendorName"
-						value="<?php echo (!$entity == null)? $entity->getVendorName():"";?>">
-				</div>
 
-			</div>
+            ?>">
+            </div>
+            <a style="color: #0080ff;" href="javascript:;" onclick="showBootstrapDialog('Select Country','/application/country/list1','b_loaded_data');">
+               Select&nbsp;&nbsp;
+               <i class="glyphicon glyphicon-folder-open"></i>
+            </a>
+         </div>
+         <hr>
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2" for="inputTag">Contact Person:</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="contactPerson" value="<?php
 
-			<div class="form-group margin-bottom required">
-				<label class="control-label col-sm-2" for="inputTag">Short name:</label>
-				<div class="col-sm-3">
-					<input class="form-control input-sm" type="text" id="inputTag"
-						placeholder="" name="vendorShortName"
-						value="<?php echo (!$entity == null)? $entity->getVendorShortname():"";?>">
-				</div>
-			</div>
+            echo (! $entity == null) ? $entity->getContractPerson() : "";
+            ?>">
+            </div>
+         </div>
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2" for="inputTag">Telephone:</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="telephone" value="<?php
 
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag">Keywords:</label>
-				<div class="col-sm-6">
-					<input class="form-control input-sm" type="text" id="inputTag"
-						placeholder="" name="keywords"
-						value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
-				</div>
-			</div>
-			<hr>
+            echo (! $entity == null) ? $entity->getTelephone() : "";
+            ?>">
+            </div>
+         </div>
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2" for="inputTag">Email:</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="email" value="<?php
 
-			<div class="form-group margin-bottom required">
-				<label class="control-label col-sm-2" for="inputTag">Street:</label>
-				<div class="col-sm-6">
-					<input class="form-control input-sm" type="text" id="inputTag"
-						placeholder="" name="street"
-						value="<?php echo (!$entity == null)? $entity->getStreet():"";?>">
-				</div>
+            echo (! $entity == null) ? $entity->getEmail() : "";
+            ?>">
+            </div>
+         </div>
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2" for="inputDescription">Remarks:</label>
+            <div class="col-sm-6">
+               <textarea class="form-control input-sm" id="inputDescription" placeholder="" rows="5" name="remarks"><?php
 
-			</div>
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag">City:</label>
-				<div class="col-sm-3">
-					<input class="form-control input-sm" type="text" id="inputTag"
-						placeholder="" name="city"
-						value="<?php echo (!$entity == null)? $entity->getCity():"";?>">
-				</div>
-			</div>
-			<div class="form-group margin-bottom required">
-				<label class="control-label col-sm-2">Country:</label>
-				<div class="col-sm-3">
-					<input disabled class="form-control input-sm" type="text"
-						id="country_name" placeholder="Please select country"
-						name="country_name"
-						value="<?php if (!$entity == null): if (!$entity->getCountry() == null):echo $entity->getCountry()->getCountryName();endif;endif;?>">
-
-					<input type="hidden" id="country_id" placeholder=""
-						name="country_id"
-						value="<?php if (!$entity == null): if (!$entity->getCountry() == null):echo $entity->getCountry()->getId();endif;endif;?>">
-				</div>
-
-				<a style="color: #0080ff;" href="javascript:;"
-					onclick="showBootstrapDialog('Select Country','/application/country/list1','b_loaded_data');">Select&nbsp;&nbsp;<i
-					class="glyphicon glyphicon-folder-open"></i>
-				</a>
-
-			</div>
-			<hr>
-			<div class="form-group margin-bottom required">
-				<label class="control-label col-sm-2" for="inputTag">Contact Person:</label>
-				<div class="col-sm-3">
-					<input class="form-control input-sm" type="text" id="inputTag"
-						placeholder="" name="contactPerson"
-						value="<?php echo (!$entity == null)? $entity->getContractPerson():"";?>">
-				</div>
-
-			</div>
-			<div class="form-group margin-bottom required">
-				<label class="control-label col-sm-2" for="inputTag">Telephone:</label>
-				<div class="col-sm-3">
-					<input class="form-control input-sm" type="text" id="inputTag"
-						placeholder="" name="telephone"
-						value="<?php echo (!$entity == null)? $entity->getTelephone():"";?>">
-				</div>
-
-			</div>
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag">Email:</label>
-				<div class="col-sm-3">
-					<input class="form-control input-sm" type="text" id="inputTag"
-						placeholder="" name="email"
-						value="<?php echo (!$entity == null)? $entity->getEmail():"";?>">
-				</div>
-			</div>
-
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputDescription">Remarks:</label>
-				<div class="col-sm-6">
-					<textarea class="form-control input-sm" id="inputDescription"
-						placeholder="" rows="5" name="remarks"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-				</div>
-			</div>
-
-			<div class="form-group margin-bottom">
-				<div class="col-sm-offset-2 col-sm-10"></div>
-			</div>
-		</form>
-	</div>
+            echo (! $entity == null) ? $entity->getRemarks() : "";
+            ?></textarea>
+            </div>
+         </div>
+         <div class="form-group margin-bottom">
+            <div class="col-sm-offset-2 col-sm-10"></div>
+         </div>
+      </form>
+   </div>
 </div>
-
-
-
-
-
-
 <script>
 
 $("#Create_Vendor_Form :input").attr("disabled", "disabled");

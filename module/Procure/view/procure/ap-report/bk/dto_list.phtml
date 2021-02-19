@@ -1,12 +1,82 @@
-<?php
+;<?php
+use Procure\Application\Helper\FormHelper;
+use Procure\Application\Helper\OptionList;
+use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
+use Procure\Domain\Shared\ProcureDocStatus;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===================================
  */
-use Procure\Application\Helper\FormHelper;
 
-include (ROOT . '/module/Procure/view/procure/po-report/dto_list_declare.phtml');
+/**@var PRSnapshot $rootSnapshot ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+// echo $total_records;
+$table_body = "";
+$count = 0;
+$n = 0;
+
+$main_tab = $this->translate("INVOICE LIST");
+
+$createUrl = $this->baseUrl . "/procure/ap/create";
+$baseUrl = "/procure/ap-report/header-status";
+
+$filterUrl = $baseUrl;
+
+$result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
+$base = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort);
+
+$save_as_excel = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL);
+$save_as_openoffice = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+
+if (count($list) > 0) {
+
+    $result_msg = sprintf("%s records found!", $total_records);
+
+    if ($paginator !== null) {
+        $tmp = sprintf('Recored %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
+    }
+
+    foreach ($list as $rootSnapshot) {
+
+        $n ++;
+
+        if ($paginator !== null) {
+            $count = $paginator->minInPage - 1 + $n;
+        } else {
+            $count = $n;
+        }
+
+        $url = sprintf($this->baseUrl . "/procure/ap/view?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $title = "Show PO";
+        $icon = null;
+        $viewBtn = FormHelper::createButton($this->translate("View"), $title, $url, $icon);
+
+        $url = sprintf($this->baseUrl . "/procure/ap/update?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $title = "Edit PO";
+        $icon = 'glyphicon glyphicon-pencil';
+        $editBtn = FormHelper::createButton($this->translate("Edit"), $title, $url, $icon);
+
+        $table_body = $table_body . "<tr>";
+        $table_body = $table_body . sprintf("<td>%s</td>", $count);
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocStatus());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getSysNumber());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getVendorName());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocNumber());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocDate());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getTotalRows());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getGrossAmount());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getCurrencyIso3());
+        $table_body = $table_body . sprintf("<td>%s</td>", $viewBtn . ' ' . $editBtn);
+
+        $table_body = $table_body . "</tr>";
+    }
+}
+$filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus, $is_active, $sort_by, $sort);
 
 // ===================================
 ?>
@@ -27,7 +97,7 @@ include (ROOT . '/module/Procure/view/procure/po-report/dto_list_declare.phtml')
             <small>
                <i class="glyphicon glyphicon-plus"> </i>
             </small>
-            &nbsp;New PO
+            &nbsp;New Invoice
          </a>
          <a class="btn btn-default btn-sm" href="<?php
 
@@ -41,7 +111,7 @@ include (ROOT . '/module/Procure/view/procure/po-report/dto_list_declare.phtml')
       <div>
          <form class="form-inline" action="<?php
 
-        echo $this->baseUrl?>/procure/po-search/do" method="get" enctype="multipart/form-data">
+        echo $this->baseUrl?>/procure/ap-search/do" method="get" enctype="multipart/form-data">
             <div class="form-group" style="padding-left: 8px;">
                <input placeholder="<?php
 
@@ -83,6 +153,18 @@ include (ROOT . '/module/Procure/view/procure/po-report/dto_list_declare.phtml')
                      </select>
                   </div>
                </div>
+
+                <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">PR Year</label>
+                  <div class="col-sm-3">
+                     <select name="docYear" class="form-control input-sm">
+                        <option value="all">All</option>
+                        <?php
+                        echo OptionList::createYearOption($docYear);
+                        ?>
+                     </select>
+                  </div>
+               </div>
                <div class="form-group margin-bottom">
                   <label class="control-label col-sm-2" for="inputTag">Doc Status:</label>
                   <div class="col-sm-3">
@@ -99,8 +181,8 @@ include (ROOT . '/module/Procure/view/procure/po-report/dto_list_declare.phtml')
 
                          <option <?php
 
-                        echo $docStatus == 'amending' ? "selected='selected'" : "";
-                        ?> value="amending">Amending</option>
+                        echo $docStatus == ProcureDocStatus::REVERSED ? "selected='selected'" : "";
+                        ?> value="reversed">Reversed</option>
                      </select>
                   </div>
                </div>
@@ -230,14 +312,6 @@ echo $result_msg;
                <td>
                   <b>#</b>
                </td>
-                  <td style="width: 30pt; font-size: 8pt">
-                  <b>GR %</b>
-               </td>
-                </td>
-                  <td style="width: 30pt; font-size: 8pt">
-                  <b>AP %</b>
-               </td>
-
                <td>
                   <b>Doc.Status</b>
                </td>
@@ -276,7 +350,44 @@ echo $table_body;
 
 <?php
 // ===============================
-echo FormHelper::createPaginator($base, $paginator, "&");
-// =================================
+if (! is_null($paginator)) :
+
+    // change it only
+    $_connector_symbol = '&';
+
+    $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+    $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+    $p1 = ($paginator->page) - 1;
+    $p2 = ($paginator->page) + 1;
+
+    $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+    $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+    echo '<ul class="pagination pagination-sm">';
+
+    if ($paginator->page != 1 and $paginator->totalPages > 10) {
+        echo '<li><a href="' . $first . '"> |< </a></li>';
+        echo '<li><a href="' . $prev . '"> < </a></li>';
+    }
+
+    for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+        $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+        if ($i == $paginator->page) {
+            echo '<li><a class="active" href="#">' . $i . '</a></li>';
+        } else {
+            echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+        }
+    }
+    if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+        echo '<li><a href="' . $next . '"> > </a></li>';
+        echo '<li><a href="' . $last . '"> >| </a></li>';
+    }
+    echo '</ul>';
+endif;
+
+    // ===============================
 ?>
 

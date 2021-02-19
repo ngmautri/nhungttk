@@ -16,12 +16,11 @@ use Procure\Domain\PurchaseRequest\PRSnapshot;
 $table_body = "";
 $count = 0;
 $n = 0;
-$result_div = 'po_result_div';
 
 $main_tab = $this->translate("PURCHASE ORDER LIST");
 
-$createUrl = $this->baseUrl . "/procure/po/create";
-$baseUrl = "/procure/po-report/get-of-vendor";
+$createUrl = $this->baseUrl . "/procure/ap/create";
+$baseUrl = "/procure/ap-report/get-of-vendor";
 
 $filterUrl = $baseUrl;
 
@@ -50,34 +49,18 @@ if (count($list) > 0) {
             $count = $n;
         }
 
-        $url = sprintf($this->baseUrl . "/procure/po/view?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
-        $title = "Show PO";
+        $url = sprintf($this->baseUrl . "/procure/ap/view?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $title = "Show AP";
         $icon = null;
-        $viewBtn = FormHelper::createButton($this->translate("View"), $title, $url, $icon);
+        $viewBtn = FormHelper::createButton($this->translate("View"), $title, $url, $icon, true);
 
-        $url = sprintf($this->baseUrl . "/procure/po/update?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $url = sprintf($this->baseUrl . "/procure/ap/update?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
         $title = "Edit PO";
         $icon = 'glyphicon glyphicon-pencil';
         $editBtn = FormHelper::createButton($this->translate("Edit"), $title, $url, $icon);
 
-        if ($rootSnapshot->getTotalRows() > 0) {
-            $completion = $rootSnapshot->getCompletedGRRows() / $rootSnapshot->getTotalRows();
-        } else {
-            $completion = 0;
-        }
-        $progress_div = FormHelper::createProgressDiv($completion, null);
-
-        if ($rootSnapshot->getTotalRows() > 0) {
-            $completion1 = $rootSnapshot->getCompletedAPRows() / $rootSnapshot->getTotalRows();
-        } else {
-            $completion1 = 0;
-        }
-        $progress_div1 = FormHelper::createProgressDiv($completion1, null);
-
         $table_body = $table_body . "<tr>";
         $table_body = $table_body . sprintf("<td>%s</td>", $count);
-        $table_body = $table_body . sprintf("<td>%s</td>", $progress_div);
-        $table_body = $table_body . sprintf("<td>%s</td>", $progress_div1);
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocStatus());
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getSysNumber());
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getVendorName());
@@ -87,6 +70,7 @@ if (count($list) > 0) {
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getGrossAmount());
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getCurrencyIso3());
         $table_body = $table_body . sprintf("<td>%s</td>", $viewBtn . ' ' . $editBtn);
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getRemarks());
 
         $table_body = $table_body . "</tr>";
     }
@@ -98,9 +82,7 @@ $filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus
 
 
 
-<div id="<?php
-echo $result_div;
-?>">
+<div id="ap_result_div">
 
 
 
@@ -113,13 +95,6 @@ echo $result_msg;
          <tr>
             <td>
                <b>#</b>
-            </td>
-            <td style="width: 30pt; font-size: 8pt">
-               <b>GR %</b>
-            </td>
-            </td>
-            <td style="width: 30pt; font-size: 8pt">
-               <b>AP %</b>
             </td>
             <td>
                <b>Doc.Status</b>
@@ -148,20 +123,23 @@ echo $result_msg;
             <td>
                <b>Action</b>
             </td>
+            <td>
+               <b>Journal Text</b>
+            </td>
          </tr>
       </thead>
       <tbody>
-		<?php
-echo $table_body;
-?>
-		</tbody>
+      <?php
+    echo $table_body;
+    ?>
+      </tbody>
    </table>
 
 
 
 <?php
 // ===============================
-echo FormHelper::createPaginatorAjax($base, $paginator, "&", "po_result_div");
+echo FormHelper::createPaginatorAjax($base, $paginator, "&", "ap_result_div");
 // =================================
 ?>
 </div>

@@ -4,11 +4,10 @@ namespace Procure\Infrastructure\Doctrine;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Procure\Domain\QuotationRequest\QRDoc;
 use Procure\Domain\QuotationRequest\QRRow;
+use Procure\Domain\QuotationRequest\Factory\QRFactory;
 use Procure\Domain\QuotationRequest\Repository\QrQueryRepositoryInterface;
 use Procure\Infrastructure\Mapper\QrMapper;
-use Procure\Domain\QuotationRequest\Factory\QRFactory;
 
 /**
  *

@@ -7,7 +7,7 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\PostCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\QuotationRequest\QRDoc;
 use Webmozart\Assert\Assert;
 
 /**
@@ -28,7 +28,7 @@ class PostCmdHandler extends AbstractCommandHandler
         /**
          *
          * @var AbstractCommand $cmd ;
-         * @var PRDoc $rootEntity ;
+         * @var QRDoc $rootEntity ;
          * @var PostCmdOptions $options ;
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
@@ -38,11 +38,11 @@ class PostCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
 
         $rootEntity = $options->getRootEntity();
-        Assert::isInstanceOf($rootEntity, PRDoc::class);
+        Assert::isInstanceOf($rootEntity, QRDoc::class);
 
         try {
 
-            $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForQR($cmd->getDoctrineEM());
             $rootEntity->post($options, $sharedService);
 
             // event dispatch
@@ -52,12 +52,12 @@ class PostCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $m = sprintf("PR #%s posted", $rootEntity->getId());
+            $m = sprintf("Quotation #%s posted", $rootEntity->getId());
             $cmd->addSuccess($m);
 
             // Check Version
             // ==============
-            VersionChecker::checkPRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            VersionChecker::checkQRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
         } catch (\Exception $e) {
             $cmd->addError($e->getMessage());

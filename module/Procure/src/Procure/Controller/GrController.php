@@ -85,15 +85,10 @@ class GrController extends ProcureCRUDController
 
         if ($sort_by == null) {
             $sort_by = "sysNumber";
-            $sort_by = "sysNumber";
         }
 
-        if ($sort_by == null) {
-            $sort_by = "createdOn";
-        }
-
-        if ($sort_by == null) {
-            $sort_by = "createdOn";
+        if ($sort == null) {
+            $sort = "DESC";
         }
 
         $filter = new GrReportSqlFilter();

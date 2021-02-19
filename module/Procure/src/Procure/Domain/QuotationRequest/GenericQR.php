@@ -2,24 +2,20 @@
 namespace Procure\Domain\QuotationRequest;
 
 use Application\Application\Event\DefaultParameter;
-use Application\Domain\Service\SharedServiceInterface;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Qr\QrDTO;
-use Procure\Domain\AccountPayable\AbstractAP;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Qr\QrPosted;
 use Procure\Domain\Event\Qr\QrRowAdded;
 use Procure\Domain\Event\Qr\QrRowUpdated;
-use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
-use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\QuotationRequest\Repository\QrCmdRepositoryInterface;
 use Procure\Domain\QuotationRequest\Validator\ValidatorFactory;
 use Procure\Domain\Service\QrPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Webmozart\Assert\Assert;
@@ -29,7 +25,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-abstract class GenericQR extends AbstractAP
+abstract class GenericQR extends AbstractQR
 {
 
     public function deactivateRow(QRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
@@ -39,17 +35,11 @@ abstract class GenericQR extends AbstractAP
      *
      * @param QRRowSnapshot $snapshot
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param QrPostingService $postingService
-     * @throws InvalidOperationException
-     * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
+     * @param SharedServiceInterface $sharedService
+     * @throws \RuntimeException
      * @return \Procure\Domain\QuotationRequest\QRRowSnapshot
      */
-    public function createRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    public function createRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService)
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("QR is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
@@ -106,12 +96,12 @@ abstract class GenericQR extends AbstractAP
      *
      * @param QRRowSnapshot $snapshot
      * @param CommandOptions $options
-     * @param arraay $params
-     * @param SharedService $sharedService
+     * @param array $params
+     * @param SharedServiceInterface $sharedService
      * @throws \RuntimeException
      * @return \Procure\Domain\QuotationRequest\QRRowSnapshot
      */
-    public function updateRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
+    public function updateRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, $params, SharedServiceInterface $sharedService)
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("QR is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
@@ -198,19 +188,12 @@ abstract class GenericQR extends AbstractAP
     /**
      *
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param QrPostingService $postingService
-     * @throws InvalidOperationException
-     * @throws ValidationFailedException
+     * @param SharedServiceInterface $sharedService
+     * @throws \RuntimeException
      * @return \Procure\Domain\QuotationRequest\GenericQR
      */
-    public function reverse(CommandOptions $options, SharedService $sharedService)
+    public function reverse(CommandOptions $options, SharedServiceInterface $sharedService)
     {
-        if ($this->getDocStatus() !== ProcureDocStatus::POSTED) {
-            throw new InvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
-        }
         Assert::eq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("QR is not posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
 
@@ -273,32 +256,5 @@ abstract class GenericQR extends AbstractAP
 
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
-    }
-
-    /**
-     *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param QrPostingService $postingService
-     * @throws InvalidArgumentException
-     */
-    private function _checkParams(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
-    {
-        if ($headerValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($rowValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("postingService service not found");
-        }
     }
 }

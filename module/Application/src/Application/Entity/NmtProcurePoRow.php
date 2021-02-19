@@ -269,42 +269,42 @@ class NmtProcurePoRow
     /**
      * @var string
      *
-     * @ORM\Column(name="converted_purchase_quantity", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_purchase_quantity", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $convertedPurchaseQuantity;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="converted_standard_quantity", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_standard_quantity", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $convertedStandardQuantity;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $convertedStockQuantity;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="converted_standard_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_standard_unit_price", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $convertedStandardUnitPrice;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="converted_stock_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_stock_unit_price", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $convertedStockUnitPrice;
 
     /**
-     * @var float
+     * @var string
      *
-     * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
+     * @ORM\Column(name="doc_quantity", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $docQuantity;
 
@@ -318,14 +318,14 @@ class NmtProcurePoRow
     /**
      * @var string
      *
-     * @ORM\Column(name="doc_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="doc_unit_price", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $docUnitPrice;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="converted_purchase_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_purchase_unit_price", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $convertedPurchaseUnitPrice;
 
@@ -1503,7 +1503,7 @@ class NmtProcurePoRow
     /**
      * Set docQuantity
      *
-     * @param float $docQuantity
+     * @param string $docQuantity
      *
      * @return NmtProcurePoRow
      */
@@ -1517,7 +1517,7 @@ class NmtProcurePoRow
     /**
      * Get docQuantity
      *
-     * @return float
+     * @return string
      */
     public function getDocQuantity()
     {

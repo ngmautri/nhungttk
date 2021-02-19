@@ -167,8 +167,7 @@ echo $error_msg;
                   <div class="form-group margin-bottom">
                      <label class="control-label col-sm-2">PR Item: </label>
                      <div class="col-sm-3">
-                        <input tabindex="1" class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR item" name="pr_item_name"
-                           value="<?php
+                        <input tabindex="1" class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR item" name="pr_item_name" value="<?php
                         echo $pr_item_name;
                         ?>
                         ">
@@ -271,9 +270,7 @@ echo $error_msg;
                         <div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_factor"></div>
                      </div>
                   </div>
-
-
-                   <hr style="margin: 5pt 1pt 5pt 1pt;">
+                  <hr style="margin: 5pt 1pt 5pt 1pt;">
                   <div class="form-group margin-bottom required">
                      <label class="control-label col-sm-2"><?php
 
@@ -281,7 +278,7 @@ echo $error_msg;
                     ?></label>
                      <div class="col-sm-3">
                         <select tabindex="5" name="docUnit" id="docUnit" class="form-control input-sm">
-                           <option     value=""><?php
+                           <option value=""><?php
 
                         echo $this->translate("Select doc unit");
                         ?></option>
@@ -302,9 +299,6 @@ echo $error_msg;
                      </div>
                   </div>
                   <hr style="margin: 5pt 1pt 5pt 1pt;">
-
-
-
                   <hr style="margin: 5pt 1pt 5pt 1pt;">
                   <div class="form-group margin-bottom required">
                      <label class="control-label col-sm-2" for="inputTag">Unit Price:</label>
@@ -530,8 +524,7 @@ echo $cost_center_option;
 	$( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 </script>
-
- <?php
+<?php
 include (ROOT . '/module/Procure/view/procure/pr_auto_complete.php');
 include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');
 ?>

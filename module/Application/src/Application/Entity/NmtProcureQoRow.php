@@ -45,14 +45,14 @@ class NmtProcureQoRow
     /**
      * @var string
      *
-     * @ORM\Column(name="unit_price", type="decimal", precision=15, scale=4, nullable=false)
+     * @ORM\Column(name="unit_price", type="decimal", precision=18, scale=4, nullable=false)
      */
     private $unitPrice;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="net_amount", type="decimal", precision=15, scale=4, nullable=true)
+     * @ORM\Column(name="net_amount", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $netAmount;
 
@@ -143,14 +143,14 @@ class NmtProcureQoRow
     /**
      * @var string
      *
-     * @ORM\Column(name="gross_amount", type="decimal", precision=15, scale=4, nullable=true)
+     * @ORM\Column(name="gross_amount", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $grossAmount;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tax_amount", type="decimal", precision=15, scale=4, nullable=true)
+     * @ORM\Column(name="tax_amount", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $taxAmount;
 
@@ -232,16 +232,16 @@ class NmtProcureQoRow
     private $transactionStatus;
 
     /**
-     * @var float
+     * @var string
      *
-     * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
+     * @ORM\Column(name="doc_quantity", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $docQuantity;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="doc_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="doc_unit_price", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $docUnitPrice;
 
@@ -321,6 +321,41 @@ class NmtProcureQoRow
      * @ORM\Column(name="clearing_doc_id", type="integer", nullable=true)
      */
     private $clearingDocId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="standard_convert_factor", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $standardConvertFactor;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_standard_quantity", type="decimal", precision=18, scale=4, nullable=true)
+     */
+    private $convertedStandardQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_standard_unit_price", type="decimal", precision=18, scale=4, nullable=true)
+     */
+    private $convertedStandardUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_stock_unit_price", type="decimal", precision=18, scale=4, nullable=true)
+     */
+    private $convertedStockUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=18, scale=4, nullable=true)
+     */
+    private $convertedStockQuantity;
 
     /**
      * @var \Application\Entity\FinVendorInvoice
@@ -1127,7 +1162,7 @@ class NmtProcureQoRow
     /**
      * Set docQuantity
      *
-     * @param float $docQuantity
+     * @param string $docQuantity
      *
      * @return NmtProcureQoRow
      */
@@ -1141,7 +1176,7 @@ class NmtProcureQoRow
     /**
      * Get docQuantity
      *
-     * @return float
+     * @return string
      */
     public function getDocQuantity()
     {
@@ -1434,6 +1469,126 @@ class NmtProcureQoRow
     public function getClearingDocId()
     {
         return $this->clearingDocId;
+    }
+
+    /**
+     * Set standardConvertFactor
+     *
+     * @param string $standardConvertFactor
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setStandardConvertFactor($standardConvertFactor)
+    {
+        $this->standardConvertFactor = $standardConvertFactor;
+
+        return $this;
+    }
+
+    /**
+     * Get standardConvertFactor
+     *
+     * @return string
+     */
+    public function getStandardConvertFactor()
+    {
+        return $this->standardConvertFactor;
+    }
+
+    /**
+     * Set convertedStandardQuantity
+     *
+     * @param string $convertedStandardQuantity
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setConvertedStandardQuantity($convertedStandardQuantity)
+    {
+        $this->convertedStandardQuantity = $convertedStandardQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStandardQuantity
+     *
+     * @return string
+     */
+    public function getConvertedStandardQuantity()
+    {
+        return $this->convertedStandardQuantity;
+    }
+
+    /**
+     * Set convertedStandardUnitPrice
+     *
+     * @param string $convertedStandardUnitPrice
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setConvertedStandardUnitPrice($convertedStandardUnitPrice)
+    {
+        $this->convertedStandardUnitPrice = $convertedStandardUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStandardUnitPrice
+     *
+     * @return string
+     */
+    public function getConvertedStandardUnitPrice()
+    {
+        return $this->convertedStandardUnitPrice;
+    }
+
+    /**
+     * Set convertedStockUnitPrice
+     *
+     * @param string $convertedStockUnitPrice
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setConvertedStockUnitPrice($convertedStockUnitPrice)
+    {
+        $this->convertedStockUnitPrice = $convertedStockUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStockUnitPrice
+     *
+     * @return string
+     */
+    public function getConvertedStockUnitPrice()
+    {
+        return $this->convertedStockUnitPrice;
+    }
+
+    /**
+     * Set convertedStockQuantity
+     *
+     * @param string $convertedStockQuantity
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setConvertedStockQuantity($convertedStockQuantity)
+    {
+        $this->convertedStockQuantity = $convertedStockQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStockQuantity
+     *
+     * @return string
+     */
+    public function getConvertedStockQuantity()
+    {
+        return $this->convertedStockQuantity;
     }
 
     /**

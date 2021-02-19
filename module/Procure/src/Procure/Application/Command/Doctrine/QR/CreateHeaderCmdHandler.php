@@ -51,7 +51,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             QRSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
             $this->setOutput($snapshot); // important;
 
-            $sharedService = SharedServiceFactory::createForGR($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForQR($cmd->getDoctrineEM());
             $rootEntity = QRFactory::createFrom($snapshot, $options, $sharedService);
 
             // event dispatch

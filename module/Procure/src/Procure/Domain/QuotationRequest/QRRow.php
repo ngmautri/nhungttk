@@ -54,6 +54,8 @@ class QRRow extends GenericRow
     {
         $this->createUomVO();
         $this->createQuantityVO();
+        $this->createDocPriceVO($rootDoc);
+        $this->createLocalPriceVO($rootDoc);
     }
 
     public static function createFromSnapshot(QRDoc $rootDoc, QRRowSnapshot $snapshot)

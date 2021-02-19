@@ -106,7 +106,8 @@ class PoController extends ProcureCRUDController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
+                'action' => $action,
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -166,7 +167,8 @@ class PoController extends ProcureCRUDController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
+                'action' => $action,
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -301,7 +303,8 @@ class PoController extends ProcureCRUDController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -347,7 +350,8 @@ class PoController extends ProcureCRUDController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);

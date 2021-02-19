@@ -34,7 +34,7 @@ class PoReportController extends AbstractGenericController
         $balance = $this->params()->fromQuery('balance');
 
         if ($docYear == null) {
-            $docYear = date("Y");
+            // $docYear = date("Y");
         }
 
         if ($docStatus == null) {

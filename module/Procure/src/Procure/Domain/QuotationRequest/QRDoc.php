@@ -176,7 +176,7 @@ final class QRDoc extends GenericQR
             throw new ValidationFailedException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
         }
 
-        $rep = $sharedService->getPostingService();
+        $rep = $sharedService->getPostingService()->getCmdRepository();
         $rep->post($this, true);
     }
 

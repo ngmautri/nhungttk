@@ -13,6 +13,10 @@ interface SharedServiceInterface
 
     public function getDomainSpecificationFactory();
 
+    /**
+     *
+     * @return PostingServiceInterface
+     */
     public function getPostingService();
 
     public function getFxService();

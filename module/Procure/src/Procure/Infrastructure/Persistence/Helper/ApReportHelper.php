@@ -11,7 +11,7 @@ use Procure\Infrastructure\Persistence\SQL\ApSQL;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApReportHelper
 {
@@ -62,6 +62,10 @@ class ApReportHelper
 
         if ($filter->getDocYear() != null) {
             $sql = $sql . \sprintf(' AND year(fin_vendor_invoice.doc_date) = %s', $filter->getDocYear());
+        }
+
+        if ($filter->getVendorId() > 0) {
+            $sql = $sql . \sprintf(' AND fin_vendor_invoice.vendor_id = %s', $filter->getVendorId());
         }
 
         $sql = $sql . " GROUP BY fin_vendor_invoice.id";
@@ -158,6 +162,10 @@ class ApReportHelper
 
         if ($filter->getDocYear() != null) {
             $sql = $sql . \sprintf(' AND year(fin_vendor_invoice.doc_date) = %s', $filter->getDocYear());
+        }
+
+        if ($filter->getVendorId() > 0) {
+            $sql = $sql . \sprintf(' AND fin_vendor_invoice.vendor_id = %s', $filter->getVendorId());
         }
 
         $sql = $sql . " GROUP BY fin_vendor_invoice.id";

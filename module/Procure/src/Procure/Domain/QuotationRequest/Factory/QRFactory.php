@@ -13,7 +13,6 @@ use Procure\Domain\QuotationRequest\Repository\QrCmdRepositoryInterface;
 use Procure\Domain\QuotationRequest\Validator\ValidatorFactory;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\ProcureDocStatus;
-use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
 /**
@@ -48,7 +47,7 @@ class QRFactory
      * @param CommandOptions $options
      * @param SharedService $sharedService
      * @throws \RuntimeException
-     * @return \Procure\Domain\GoodsReceipt\GRDoc
+     * @return \Procure\Domain\QuotationRequest\QRDoc
      */
     public static function createFrom(QRSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {

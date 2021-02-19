@@ -45,7 +45,7 @@ class CreateRowCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
         $rootEntity = $options->getRootEntity();
 
-        Assert::isInstanceOf($rootEntity, PRDoc::class);
+        Assert::isInstanceOf($rootEntity, QRDoc::class);
 
         try {
             $snapshot = new QRRowSnapshot();

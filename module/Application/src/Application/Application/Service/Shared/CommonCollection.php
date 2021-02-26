@@ -4,6 +4,7 @@ namespace Application\Application\Service\Shared;
 use Application\Application\Service\Contracts\CommonCollectionInterface;
 use Application\Application\Service\Uom\UomService;
 use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
+use Application\Application\Service\Uom\UomGroupService;
 
 /**
  * default collection
@@ -26,7 +27,7 @@ class CommonCollection implements CommonCollectionInterface
      * {@inheritdoc}
      * @see \Application\Application\Service\Contracts\CommonCollectionInterface::getUomCollection()
      */
-    public function getUomCollection()
+    public function getUomCollection($companyId = null)
     {
         $container = $this->getContainer();
 
@@ -35,8 +36,32 @@ class CommonCollection implements CommonCollectionInterface
          * @var UomService $service ;
          */
         $service = $container->get(UomService::class);
-        return $service->getValueCollecion(new DefaultListSqlFilter());
+        $filter = new DefaultListSqlFilter();
+        $filter->setCompanyId($companyId);
+
+        return $service->getValueCollecion($filter);
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Application\Service\Contracts\CommonCollectionInterface::getUomGroupCollection()
+     */
+    public function getUomGroupCollection($companyId = null)
+    {
+        $container = $this->getContainer();
+
+        /**
+         *
+         * @var UomGroupService $service ;
+         */
+        $service = $container->get(UomGroupService::class);
+        $filter = new DefaultListSqlFilter();
+        $filter->setCompanyId($companyId);
+        return $service->getValueCollecion($filter);
+    }
+
+    // =======================================
 
     /**
      *

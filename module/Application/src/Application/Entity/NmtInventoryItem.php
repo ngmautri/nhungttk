@@ -20,8 +20,6 @@ class NmtInventoryItem extends BaseNmtInventoryItem
         parent::__construct();
     }
 
-    // ================================
-
     /**
      *
      * @var integer
@@ -607,6 +605,14 @@ class NmtInventoryItem extends BaseNmtInventoryItem
      * @ORM\Column(name="standard_width", type="decimal", precision=10, scale=5, nullable=true)
      */
     private $standardWidth;
+
+    /**
+     *
+     * @var string
+     *
+     * @ORM\Column(name="uom_group", type="string", length=45, nullable=true)
+     */
+    private $uomGroup;
 
     /**
      *
@@ -2542,6 +2548,30 @@ class NmtInventoryItem extends BaseNmtInventoryItem
     public function getStandardWidth()
     {
         return $this->standardWidth;
+    }
+
+    /**
+     * Set uomGroup
+     *
+     * @param string $uomGroup
+     *
+     * @return NmtInventoryItem
+     */
+    public function setUomGroup($uomGroup)
+    {
+        $this->uomGroup = $uomGroup;
+
+        return $this;
+    }
+
+    /**
+     * Get uomGroup
+     *
+     * @return string
+     */
+    public function getUomGroup()
+    {
+        return $this->uomGroup;
     }
 
     /**

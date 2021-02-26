@@ -7,17 +7,20 @@
 use Application\Application\Helper\ErrorMessage;
 use Application\Application\Helper\OptionList;
 use Application\Domain\Shared\Constants;
+use Application\Controller\Plugin\SharedCollectionPlugin;
 
 /**
  *
  * @var \Inventory\Application\DTO\Item\ItemDTO $dto ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ * @var SharedCollectionPlugin $sharedCollection ;
  */
 $tab_active = 0;
 if (isset($tab_idx)) {
     $tab_active = $tab_idx;
 }
 
+$groupUOM = null;
 $standardUOM = null;
 $stockUOM = null;
 $purchaseUOM = null;
@@ -110,6 +113,7 @@ if (! $dto == null) {
         $isPurchased = sprintf($isPurchaseFormat, 'checked');
     }
 
+    $groupUOM = $dto->getUomGroup();
     $standardUOM = $dto->getStandardUom();
     $stockUOM = $dto->getStockUom();
     $purchaseUOM = $dto->getPurchaseUom();
@@ -220,6 +224,9 @@ if (! $dto == null) {
 
 $uomList = $nmtPlugin->uomList();
 $item_group_list = $nmtPlugin->itemGroupList();
+$uomGroupList = $sharedCollection->getUomGroupCollection();
+
+$uom_group_option = OptionList::createUoMGroupOption($uomGroupList, $groupUOM);
 
 $uom_option = OptionList::createUoMOption($uomList, $standardUOM);
 $stock_uom_option = OptionList::createUoMOption($uomList, $stockUOM);
@@ -284,10 +291,10 @@ echo (! $dto == null) ? $dto->getAssetLabel() : "";
             echo $dropDown;
             ?>
             </td>
-      
-      
+
+
       <tr>
-   
+
    </table>
 </div>
 <div style="font-size: 9pt" id="<?php
@@ -306,19 +313,19 @@ echo $tab_id;
             &nbsp;Logistic
          </a>
       </li>
-      
+
       <?php
     echo $tabs;
     ?>
-      
+
    </ul>
    <div id="logistic">
    <?php
 echo $error_msg;
 ?>
-   
+
       <form id="logistic_data_frm" class="form-horizontal" action="/inventory/item/update-logistic" method="post">
-      
+
         <?php
         echo $entityFormInput;
         ?>
@@ -368,7 +375,7 @@ echo $error_msg;
       </form>
    </div>
    <div id="general">
-	
+
 <?php
 echo $error_msg;
 ?>
@@ -381,7 +388,7 @@ echo $form_action;
   <?php
 echo $entityFormInput;
 ?>
-        
+
 
 			<div class="form-group margin-bottom required">
             <label class="control-label col-sm-2">Item Type</label>
@@ -405,7 +412,7 @@ echo $entityFormInput;
 
             echo (! $dto == null) ? $dto->itemSku1 : "xx";
             ?>">
-              <input class="form-control input-sm" type="text" placeholder="optional sku" name="itemSku2" value="<?php
+               <input class="form-control input-sm" type="text" placeholder="optional sku" name="itemSku2" value="<?php
 
             echo (! $dto == null) ? $dto->itemSku2 : "xx";
             ?>">
@@ -414,7 +421,7 @@ echo $entityFormInput;
                <?php
             echo $isActive . '&nbsp;&nbsp;' . $isModel . '&nbsp;&nbsp;' . $isPurchased;
             ?>
-               
+
             </div>
             <div class="col-sm-3">
                <img alt="" height="" src="/inventory/item/barcode?barcode=<?php
@@ -484,6 +491,7 @@ echo $entityFormInput;
             </div>
          </div>
          <hr style="margin: 5pt 1pt 5pt 1pt">
+
          <div class="form-group margin-bottom required">
             <label class="control-label col-sm-2"><?php
 
@@ -541,7 +549,7 @@ echo $entityFormInput;
                   <option value=""><?php
 
                 echo $this->translate("Select purchase unit");
-                ?></option>   	    						   
+                ?></option>
                 <?php
                 echo $purchase_uom_option;
                 ?>
@@ -573,7 +581,9 @@ echo $entityFormInput;
                    <?php
                 echo $sales_uom_option;
                 ?>
-                    </select>
+
+
+               </select>
             </div>
             <label class="control-label col-sm-2"><?php
 
@@ -590,9 +600,32 @@ echo $entityFormInput;
             </div>
          </div>
          <hr style="margin: 5pt 1pt 5pt 1pt;">
+
+
+          <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2">
+
+            <?php
+
+            echo $this->translate("Uom Group");
+            ?>:</label>
+            <div class="col-sm-3">
+               <select name="uomGroup" class="form-control input-sm">
+                  <option value=""><?php
+
+                echo $this->translate("Select Uom Group");
+                ?></option>
+                              <?php
+                            echo $uom_group_option?>
+
+                  </select>
+            </div>
+         </div>
+
+
          <div class="form-group margin-bottom required">
             <label class="control-label col-sm-2">
-            
+
             <?php
 
             echo $this->translate("Item Group");
@@ -605,7 +638,7 @@ echo $entityFormInput;
                 ?></option>
    	    							<?php
             echo $item_group_option?>
-            
+
    					</select>
             </div>
          </div>
@@ -688,7 +721,7 @@ echo $entityFormInput;
             </div>
          </div>
          <hr style="margin: 5pt 1pt 5pt 1pt">
-         
+
          <?php
         echo $submitItemFormInput;
 
@@ -706,7 +739,7 @@ echo $tab_id;
 echo $tab_active;
 ?>},
    { beforeLoad:function(e,ui){
-      $( ui.panel ).html('<p>Loading...</p>');       
+      $( ui.panel ).html('<p>Loading...</p>');
    },
 });
 
@@ -719,11 +752,11 @@ $("#logistic_data_frm :input").attr("disabled", "disabled");
 <?php endif;
 
 ?>
-    
+
 	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
 	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
    	$('#stock_uom_convert_text').text($( "#stockUuom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
-    
+
 
 	$('#standardUom_id').change(function() {
 	   	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
@@ -732,7 +765,7 @@ $("#logistic_data_frm :input").attr("disabled", "disabled");
 
     $('#purchase_uom_convert_factor_id').bind('change', function() {
     	$('#purchase_uom_convert_text').text($( "#purchaseUom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
-    
+
     });
 
     $('#purchaseUom_id').change(function() {
@@ -745,7 +778,7 @@ $("#logistic_data_frm :input").attr("disabled", "disabled");
 
     $('#sales_uom_convert_factor_id').bind('change', function() {
     	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
-    
+
     });
 
     $('#stockUom_id').change(function() {
@@ -754,7 +787,7 @@ $("#logistic_data_frm :input").attr("disabled", "disabled");
 
     $('#stock_uom_convert_factor_id').bind('change', function() {
     	$('#stock_uom_convert_text').text($( "#stockUom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
-    
+
     });
 
 </script>

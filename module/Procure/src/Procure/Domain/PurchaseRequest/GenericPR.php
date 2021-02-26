@@ -4,6 +4,7 @@ namespace Procure\Domain\PurchaseRequest;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
+use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Pr\PrPosted;
@@ -25,6 +26,30 @@ use Webmozart\Assert\Assert;
  */
 abstract class GenericPR extends BaseDoc
 {
+
+    public function store(SharedService $sharedService)
+    {
+        Assert::notNull($sharedService, Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+
+        if (! $rep instanceof PrCmdRepositoryInterface) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("PrCmdRepositoryInterface not set! %s", __FUNCTION__)));
+        }
+
+        $this->setLogger($sharedService->getLogger());
+        $validationService = ValidatorFactory::create($sharedService, true);
+
+        $this->validate($validationService);
+        if ($this->hasErrors()) {
+            throw new \RuntimeException($this->getErrorMessage());
+        }
+
+        $rep->store($this);
+
+        $this->logInfo(\sprintf("PR saved %s", __METHOD__));
+        return $this;
+    }
 
     public function deactivateRow(PRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {}

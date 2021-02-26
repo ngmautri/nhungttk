@@ -3,7 +3,6 @@ namespace Application\Application\Service\Shared;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Application\Application\Service\Shared\CommonCollection;
 
 /**
  *

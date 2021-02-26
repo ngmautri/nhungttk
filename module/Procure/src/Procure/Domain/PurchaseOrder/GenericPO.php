@@ -81,6 +81,13 @@ abstract class GenericPO extends BaseDoc
         return $this;
     }
 
+    /**
+     *
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @throws \RuntimeException
+     * @return \Procure\Domain\PurchaseOrder\GenericPO
+     */
     public function acceptAmendment(CommandOptions $options, SharedService $sharedService)
     {
         Assert::eq($this->getDocStatus(), ProcureDocStatus::AMENDING, sprintf("Document is not on amendment! %s", $this->getId()));
@@ -94,7 +101,7 @@ abstract class GenericPO extends BaseDoc
         $this->setLastchangeBy($options->getUserId());
         $this->setDocStatus(ProcureDocStatus::POSTED);
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
+        $this->validate($validationService);
 
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getErrorMessage());

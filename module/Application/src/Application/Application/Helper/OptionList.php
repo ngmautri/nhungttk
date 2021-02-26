@@ -14,6 +14,7 @@ use Inventory\Domain\Item\Contracts\ItemType;
 use Inventory\Domain\Item\Contracts\MonitorMethod;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use Zend\View\Model\ViewModel;
+use Application\Application\DTO\Uom\UomGroupDTO;
 
 /**
  *
@@ -279,6 +280,34 @@ class OptionList
                     $option = $option . sprintf('<option selected value="%s">%s (%s)</option>', $l->getId(), \ucwords($l->getUomName()), $l->getUomCode());
                 } else {
                     $option = $option . sprintf('<option value="%s">%s (%s)</option>', $l->getId(), \ucwords($l->getUomName()), $l->getUomCode());
+                }
+            }
+        }
+        return $option;
+    }
+
+    public static function createUoMGroupOption($list, $id)
+    {
+        if ($list == null) {
+            return null;
+        }
+
+        $option = "";
+
+        foreach ($list as $l) {
+
+            /**
+             *
+             * @var UomGroupDTO $l ;
+             */
+
+            if ($id == null) {
+                $option = $option . sprintf('<option value="%s">%s %s</option>', $l->getGroupName(), \ucwords($l->getGroupName()), "");
+            } else {
+                if ($id == $l->getGroupName()) {
+                    $option = $option . sprintf('<option selected value="%s">%s %s</option>', $l->getGroupName(), \ucwords($l->getGroupName()), "");
+                } else {
+                    $option = $option . sprintf('<option value="%s">%s %s</option>', $l->getGroupName(), \ucwords($l->getGroupName()), "");
                 }
             }
         }

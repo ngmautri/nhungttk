@@ -2,12 +2,10 @@
 namespace ApplicationTest\UomTest;
 
 use ApplicationTest\Bootstrap;
-use Application\Domain\Shared\Uom\UomGroup;
-use Application\Domain\Shared\Uom\UomGroupSnapshot;
 use Application\Domain\Shared\Uom\UomPairSnapshot;
-use Application\Infrastructure\Persistence\Doctrine\UomCrudRepositoryImpl;
-use PHPUnit_Framework_TestCase;
 use Application\Infrastructure\Persistence\Doctrine\UomGroupCrudRepositoryImpl;
+use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
+use PHPUnit_Framework_TestCase;
 
 class UomGroupTest extends PHPUnit_Framework_TestCase
 {
@@ -15,7 +13,15 @@ class UomGroupTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {}
 
-    public function testOther()
+    public function testGetMember()
+    {
+        $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $rep = new UomGroupCrudRepositoryImpl($doctrineEM);
+        $g = $rep->getByKey('QUANTITY UOM');
+        $this->assertNotNull($g);
+    }
+
+    public function testCreateFailed()
     {
         /*
          * $snapshot = new UomGroupSnapshot();
@@ -30,19 +36,30 @@ class UomGroupTest extends PHPUnit_Framework_TestCase
         // \var_dump($g);
 
         $pairSnapshot = new UomPairSnapshot();
-        $pairSnapshot->counterUom = 'box';
-        \var_dump(\strlen($pairSnapshot->counterUom));
-        $pairSnapshot->convertFactor = "25";
+        $pairSnapshot->counterUom = 'pack';
+        // \var_dump(\strlen($pairSnapshot->counterUom));
+        $pairSnapshot->convertFactor = "200";
 
+        $this->expectException("InvalidArgumentException");
         $g->createPairFrom($pairSnapshot, $rep);
+    }
+
+    public function testGetList()
+    {
         /*
-         * $baseUom = new Uom('each', 'm');
-         * $counterUom = new Uom('meter1', 'm');
-         * $convertFactor = 12;
-         *
-         * $pair = new UomPair($baseUom, $counterUom, $convertFactor);
-         * $g->addUomPair($pair);
+         * $snapshot = new UomGroupSnapshot();
+         * $snapshot->setGroupName("Volumn Group");
+         * $snapshot->setBaseUom("each");
+         * $snapshot->setCompany(1);
+         * $g = UomGroup::createFrom($snapshot);
          */
-        // \var_dump($g);
+        $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+
+        $rep = new UomGroupCrudRepositoryImpl($doctrineEM);
+
+        $filter = new DefaultListSqlFilter();
+        $filter->setCompanyId(2);
+        $g = $rep->getList($filter);
+        echo $g->count();
     }
 }

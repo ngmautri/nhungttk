@@ -2,7 +2,6 @@
 namespace Application\Controller;
 
 use Application\Controller\Contracts\CRUDController;
-use Zend\View\Model\ViewModel;
 
 /**
  *

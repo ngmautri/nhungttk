@@ -1,20 +1,20 @@
 <?php
-namespace Inventory\Application\Service\Upload\Item;
+namespace Procure\Application\Service\Upload\PR;
 
 use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
 use Inventory\Application\Command\Item\CreateCmdHandler;
 use Inventory\Application\Command\Item\Options\CreateItemOptions;
-use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Application\Service\Upload\Item\Contracts\AbstractItemUpload;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Procure\Application\DTO\Pr\PrRowDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UploadItem extends AbstractItemUpload
+class UploadPR extends AbstractItemUpload
 {
 
     /**
@@ -45,7 +45,7 @@ class UploadItem extends AbstractItemUpload
                 $n = 1;
                 for ($row = 2; $row <= $highestRow; ++ $row) {
 
-                    $snapshot = new ItemDTO();
+                    $snapshot = new PrRowDTO();
                     $n ++;
                     // new A=1
                     for ($col = 1; $col < $highestColumnIndex + 1; ++ $col) {
@@ -54,53 +54,41 @@ class UploadItem extends AbstractItemUpload
                         $val = $cell->getValue();
 
                         switch ($col) {
-                            case 1:
-                                // item sku
-                                $snapshot->itemSku = $val;
+
+                            case 1: // row number
+
+                                $snapshot->rowNumber = $val;
                                 break;
+
                             case 2:
-                                // item sku
-                                $snapshot->itemSku1 = $val;
+                                // item id
+                                $snapshot->item = $val;
                                 break;
-                            case 3:
-                                $snapshot->itemName = $val;
+
+                            case 3: // vendor item name
+
+                                $snapshot->vendorItemName = $val;
                                 break;
-                            case 4:
-                                $snapshot->itemNameForeign = $val;
+
+                            case 4: // doc qty
+
+                                $snapshot->docQuantity = $val;
                                 break;
-                            case 5:
-                                $snapshot->manufacturerCode = $val;
+
+                            case 5: // convert factor
+                                $snapshot->standardConvertFactor = $val;
                                 break;
-                            case 6:
+
+                            case 6: // unit
+                                $snapshot->docUnit = $val;
+                                break;
+
+                            case 7: // Edt
+                                $snapshot->edt = $val;
+                                break;
+
+                            case 8: // remarks
                                 $snapshot->manufacturerModel = $val;
-                                break;
-                            case 7:
-                                $snapshot->manufacturerSerial = $val;
-                                break;
-                            case 8:
-                                $snapshot->itemTypeId = $val;
-                                break;
-                            case 9:
-                                $snapshot->itemGroup = $val;
-                                break;
-                            case 10:
-                                $snapshot->hsCode = $val;
-                                break;
-                            case 11:
-                                $snapshot->standardUom = $val;
-                                $snapshot->uom = $val;
-                                break;
-                            case 12:
-                                $snapshot->stockUom = $val;
-                                break;
-                            case 13:
-                                $snapshot->stockUomConvertFactor = $val;
-                                break;
-                            case 14:
-                                $snapshot->purchaseUom = $val;
-                                break;
-                            case 15:
-                                $snapshot->purchaseUomConvertFactor = $val;
                                 break;
                         }
                     }

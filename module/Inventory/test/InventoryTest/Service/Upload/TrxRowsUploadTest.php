@@ -7,6 +7,7 @@ use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
+use Procure\Application\Service\Upload\UploadPrRows;
 
 class TrxRowsUploadTest extends PHPUnit_Framework_TestCase
 {
@@ -36,7 +37,7 @@ class TrxRowsUploadTest extends PHPUnit_Framework_TestCase
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
         var_dump(count($rootEntity->getDocRows()));
 
-        $uploader = Bootstrap::getServiceManager()->get(TrxRowsUpload::class);
+        $uploader = new UploadPrRows();
 
         $file = $root . "/InventoryTest/Data/ob.xlsx";
 

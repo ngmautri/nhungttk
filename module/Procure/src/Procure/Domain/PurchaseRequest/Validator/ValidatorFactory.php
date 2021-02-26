@@ -8,7 +8,6 @@ use Procure\Domain\Service\ValidationServiceImpl;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Webmozart\Assert\Assert;
-use InvalidArgumentException;
 
 /**
  *

@@ -5,7 +5,6 @@ use Application\Domain\Shared\AbstractEntity;
 use Application\Domain\Shared\AggregateRootInterface;
 use Application\Domain\Shared\SnapshotAssembler;
 use Inventory\Application\DTO\Item\ItemAssembler;
-use Inventory\Domain\Item\Contracts\ItemType;
 
 /**
  *
@@ -191,6 +190,14 @@ abstract class AbstractItem extends AbstractEntity implements AggregateRootInter
     protected $itemName1;
 
     protected $itemName2;
+
+    protected $standardLength;
+
+    protected $standardHeight;
+
+    protected $standardWidth;
+
+    protected $uomGroup;
 
     /**
      *
@@ -1551,5 +1558,50 @@ abstract class AbstractItem extends AbstractEntity implements AggregateRootInter
     protected function setLastPurchasing($lastPurchasing)
     {
         $this->lastPurchasing = $lastPurchasing;
+    }
+
+    /**
+     *
+     * @return Ambigous <unknown, mixed>
+     */
+    public function getItemType()
+    {
+        return $this->itemType;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardLength()
+    {
+        return $this->standardLength;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardHeight()
+    {
+        return $this->standardHeight;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardWidth()
+    {
+        return $this->standardWidth;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUomGroup()
+    {
+        return $this->uomGroup;
     }
 }

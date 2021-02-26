@@ -2,10 +2,9 @@
 namespace ApplicationTest\UomTest;
 
 use Application\Application\Contracts\GenericDTOAssembler;
-use Application\Entity\AppUomGroup;
+use Application\Entity\AppUomGroupMember;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
-use Application\Entity\AppUomGroupMember;
 
 class DTOCodeGenerateTest extends PHPUnit_Framework_TestCase
 {

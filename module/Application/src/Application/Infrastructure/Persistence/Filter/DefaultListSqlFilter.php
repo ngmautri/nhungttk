@@ -19,14 +19,16 @@ class DefaultListSqlFilter implements SqlFilterInterface
 
     protected $offset;
 
+    protected $companyId;
+
     /**
      *
      * @return string
      */
     public function __toString()
     {
-        $format = '_%s_%s_%s_%s';
-        return \sprintf($format, $this->getSort(), $this->getSortBy(), $this->getLimit(), $this->getOffset());
+        $format = '_%s_%s_%s_%s_%s';
+        return \sprintf($format, $this->getSort(), $this->getSortBy(), $this->getLimit(), $this->getOffset(), $this->getCompanyId());
     }
 
     /**
@@ -99,5 +101,23 @@ class DefaultListSqlFilter implements SqlFilterInterface
     public function setOffset($offset)
     {
         $this->offset = $offset;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    /**
+     *
+     * @param mixed $companyId
+     */
+    public function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
     }
 }

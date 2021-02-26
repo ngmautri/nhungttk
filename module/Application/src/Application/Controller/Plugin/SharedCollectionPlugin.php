@@ -26,6 +26,11 @@ class SharedCollectionPlugin extends AbstractPlugin
         return $this->getCollection()->getUomCollection();
     }
 
+    public function getUomGroupCollection()
+    {
+        return $this->getCollection()->getUomGroupCollection();
+    }
+
     /**
      *
      * @return \Application\Application\Service\Contracts\CommonCollectionInterface

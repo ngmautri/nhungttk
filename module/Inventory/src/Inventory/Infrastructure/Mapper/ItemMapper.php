@@ -88,6 +88,10 @@ class ItemMapper
         $entity->setStandardVolumnInM3($snapshot->standardVolumnInM3);
         $entity->setItemName1($snapshot->itemName1);
         $entity->setItemName2($snapshot->itemName2);
+        $entity->setStandardLength($snapshot->standardLength);
+        $entity->setStandardHeight($snapshot->standardHeight);
+        $entity->setStandardWidth($snapshot->standardWidth);
+        $entity->setUomGroup($snapshot->uomGroup);
 
         // ============================
         // DATE MAPPING
@@ -409,6 +413,10 @@ class ItemMapper
         $snapshot->standardVolumnInM3 = $entity->getStandardVolumnInM3();
         $snapshot->itemName1 = $entity->getItemName1();
         $snapshot->itemName2 = $entity->getItemName2();
+        $snapshot->standardLength = $entity->getStandardLength();
+        $snapshot->standardHeight = $entity->getStandardHeight();
+        $snapshot->standardWidth = $entity->getStandardWidth();
+        $snapshot->uomGroup = $entity->getUomGroup();
 
         // modification
         $snapshot->assetLabel1 = preg_replace('/[0-]/', '', \substr($snapshot->assetLabel, - 5));

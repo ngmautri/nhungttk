@@ -13,7 +13,7 @@ class UomEqualsTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         $oum1 = new Uom('meter', 'm');
-        $other = new Uom('meter1', 'm');
+        $other = new Uom('meter', 'm');
 
         \var_dump($oum1->equals($other));
     }

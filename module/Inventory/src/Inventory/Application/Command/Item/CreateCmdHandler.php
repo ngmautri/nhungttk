@@ -26,7 +26,7 @@ class CreateCmdHandler extends AbstractCommandHandler
     /**
      *
      * {@inheritdoc}
-     * @see \Application\Application\Command\AbstractDoctrineCmdHandler::run()
+     * @see \Application\Domain\Shared\Command\AbstractCommandHandler::run()
      */
     public function run(CommandInterface $cmd)
     {

@@ -9,5 +9,7 @@ namespace Application\Application\Service\Contracts;
 Interface CommonCollectionInterface
 {
 
-    public function getUomCollection();
+    public function getUomCollection($companyId = null);
+
+    public function getUomGroupCollection($companyId = null);
 }

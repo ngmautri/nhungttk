@@ -31,7 +31,7 @@ use Exception;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemController extends AbstractGenericController
 {
@@ -87,11 +87,12 @@ class ItemController extends AbstractGenericController
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
             'tab_id' => __FUNCTION__,
-            'tab_idx' => $tab_idx
+            'tab_idx' => $tab_idx,
+            'sharedCollection' => $this->getSharedCollection()
         ));
         $viewModel->setTemplate($viewTemplete);
 
-        $this->getLogger()->info(\sprintf("AP #%s viewed by #%s", $id, $u->getId()));
+        $this->getLogger()->info(\sprintf("Item #%s viewed by #%s", $id, $u->getId()));
         return $viewModel;
     }
 
@@ -132,7 +133,8 @@ class ItemController extends AbstractGenericController
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
-            'tab_id' => __FUNCTION__
+            'tab_id' => __FUNCTION__,
+            'sharedCollection' => $this->getSharedCollection()
         ));
         $viewModel->setTemplate($viewTemplete);
 
@@ -181,7 +183,8 @@ class ItemController extends AbstractGenericController
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
-            'tab_id' => __FUNCTION__
+            'tab_id' => __FUNCTION__,
+            'sharedCollection' => $this->getSharedCollection()
         ));
         $viewModel->setTemplate($viewTemplete);
 
@@ -221,7 +224,8 @@ class ItemController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'tab_id' => __FUNCTION__
+                'tab_id' => __FUNCTION__,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -317,7 +321,8 @@ class ItemController extends AbstractGenericController
                 'form_title' => $form_title,
                 'action' => Constants::FORM_ACTION_EDIT,
                 'version' => $rootEntity->getRevisionNo(),
-                'tab_id' => __FUNCTION__
+                'tab_id' => __FUNCTION__,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate("inventory/item/crud-v1");
@@ -368,7 +373,8 @@ class ItemController extends AbstractGenericController
                 'form_title' => $form_title,
                 'action' => Constants::FORM_ACTION_EDIT,
                 'version' => $rootEntity->getRevisionNo(),
-                'tab_id' => __FUNCTION__
+                'tab_id' => __FUNCTION__,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate("inventory/item/crud-v1");
@@ -424,7 +430,8 @@ class ItemController extends AbstractGenericController
                 'action' => Constants::FORM_ACTION_EDIT,
                 'version' => $rootEntity->getRevisionNo(),
                 'tab_id' => __FUNCTION__,
-                'tab_idx' => 1
+                'tab_idx' => 1,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $this->getLogger()->info(\sprintf("Item Logistic Data will be updated %s", $entity_id));
@@ -1838,7 +1845,7 @@ class ItemController extends AbstractGenericController
         }
 
         if ($sort_by == null) :
-            $sort_by = "createdOn";		
+            $sort_by = "createdOn";
 		endif;
 
         if ($sort == null) :

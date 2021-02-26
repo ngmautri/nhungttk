@@ -47,7 +47,8 @@ class PRRowSnapshotAssembler
         "standardConvertFactor",
         "descriptionText",
         "taxRate",
-        "remarks"
+        "remarks",
+        "edt"
     );
 
     public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)

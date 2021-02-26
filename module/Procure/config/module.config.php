@@ -38,6 +38,8 @@ use Procure\Application\Service\Shared\SharedCmdServiceImpl;
 use Procure\Application\Service\Shared\SharedCmdServiceImplFactory;
 use Procure\Application\Service\Shared\SharedQueryServiceImpl;
 use Procure\Application\Service\Shared\SharedQueryServiceImplFactory;
+use Procure\Application\Service\Upload\PR\UploadPR;
+use Procure\Application\Service\Upload\PR\UploadPRFactory;
 use Procure\Infrastructure\Cache\CacheFactory;
 use Procure\Infrastructure\Cache\RedisCacheFactory;
 use Procure\Infrastructure\Logging\LoggerFactory;
@@ -320,6 +322,7 @@ return array(
             'Procure\Application\Service\GR\GRService' => 'Procure\Application\Service\GR\GRServiceFactory',
             'Procure\Application\Service\AP\APService' => 'Procure\Application\Service\AP\APServiceFactory',
             QRService::class => QRServiceFactory::class,
+            UploadPR::class => UploadPRFactory::class,
 
             // Search Service
             'Procure\Application\Service\Search\ApSearchService' => 'Procure\Application\Service\Search\ApSearchServiceFactory',

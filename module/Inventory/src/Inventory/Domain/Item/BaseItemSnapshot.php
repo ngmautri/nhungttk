@@ -6,12 +6,11 @@ use Application\Domain\Shared\AbstractDTO;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class BaseItemSnapshot extends AbstractDTO
 {
 
-    // orignal attributes;
     public $id;
 
     public $warehouseId;
@@ -188,6 +187,23 @@ class BaseItemSnapshot extends AbstractDTO
 
     public $itemName2;
 
+    public $standardLength;
+
+    public $standardHeight;
+
+    public $standardWidth;
+
+    public $uomGroup;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      *
      * @param mixed $id
@@ -195,6 +211,15 @@ class BaseItemSnapshot extends AbstractDTO
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getWarehouseId()
+    {
+        return $this->warehouseId;
     }
 
     /**
@@ -208,11 +233,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getItemSku()
+    {
+        return $this->itemSku;
+    }
+
+    /**
+     *
      * @param mixed $itemSku
      */
     public function setItemSku($itemSku)
     {
         $this->itemSku = $itemSku;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemName()
+    {
+        return $this->itemName;
     }
 
     /**
@@ -226,11 +269,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getItemNameForeign()
+    {
+        return $this->itemNameForeign;
+    }
+
+    /**
+     *
      * @param mixed $itemNameForeign
      */
     public function setItemNameForeign($itemNameForeign)
     {
         $this->itemNameForeign = $itemNameForeign;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemDescription()
+    {
+        return $this->itemDescription;
     }
 
     /**
@@ -244,11 +305,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getItemType()
+    {
+        return $this->itemType;
+    }
+
+    /**
+     *
      * @param mixed $itemType
      */
     public function setItemType($itemType)
     {
         $this->itemType = $itemType;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemCategory()
+    {
+        return $this->itemCategory;
     }
 
     /**
@@ -262,11 +341,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getKeywords()
+    {
+        return $this->keywords;
+    }
+
+    /**
+     *
      * @param mixed $keywords
      */
     public function setKeywords($keywords)
     {
         $this->keywords = $keywords;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 
     /**
@@ -280,11 +377,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getIsStocked()
+    {
+        return $this->isStocked;
+    }
+
+    /**
+     *
      * @param mixed $isStocked
      */
     public function setIsStocked($isStocked)
     {
         $this->isStocked = $isStocked;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsSaleItem()
+    {
+        return $this->isSaleItem;
     }
 
     /**
@@ -298,11 +413,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getIsPurchased()
+    {
+        return $this->isPurchased;
+    }
+
+    /**
+     *
      * @param mixed $isPurchased
      */
     public function setIsPurchased($isPurchased)
     {
         $this->isPurchased = $isPurchased;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsFixedAsset()
+    {
+        return $this->isFixedAsset;
     }
 
     /**
@@ -316,11 +449,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getIsSparepart()
+    {
+        return $this->isSparepart;
+    }
+
+    /**
+     *
      * @param mixed $isSparepart
      */
     public function setIsSparepart($isSparepart)
     {
         $this->isSparepart = $isSparepart;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUom()
+    {
+        return $this->uom;
     }
 
     /**
@@ -334,11 +485,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getBarcode()
+    {
+        return $this->barcode;
+    }
+
+    /**
+     *
      * @param mixed $barcode
      */
     public function setBarcode($barcode)
     {
         $this->barcode = $barcode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBarcode39()
+    {
+        return $this->barcode39;
     }
 
     /**
@@ -352,11 +521,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getBarcode128()
+    {
+        return $this->barcode128;
+    }
+
+    /**
+     *
      * @param mixed $barcode128
      */
     public function setBarcode128($barcode128)
     {
         $this->barcode128 = $barcode128;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
@@ -370,11 +557,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     *
      * @param mixed $createdOn
      */
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getManufacturer()
+    {
+        return $this->manufacturer;
     }
 
     /**
@@ -388,11 +593,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getManufacturerCode()
+    {
+        return $this->manufacturerCode;
+    }
+
+    /**
+     *
      * @param mixed $manufacturerCode
      */
     public function setManufacturerCode($manufacturerCode)
     {
         $this->manufacturerCode = $manufacturerCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getManufacturerCatalog()
+    {
+        return $this->manufacturerCatalog;
     }
 
     /**
@@ -406,11 +629,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getManufacturerModel()
+    {
+        return $this->manufacturerModel;
+    }
+
+    /**
+     *
      * @param mixed $manufacturerModel
      */
     public function setManufacturerModel($manufacturerModel)
     {
         $this->manufacturerModel = $manufacturerModel;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getManufacturerSerial()
+    {
+        return $this->manufacturerSerial;
     }
 
     /**
@@ -424,11 +665,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getOrigin()
+    {
+        return $this->origin;
+    }
+
+    /**
+     *
      * @param mixed $origin
      */
     public function setOrigin($origin)
     {
         $this->origin = $origin;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialNumber()
+    {
+        return $this->serialNumber;
     }
 
     /**
@@ -442,11 +701,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getLastPurchasePrice()
+    {
+        return $this->lastPurchasePrice;
+    }
+
+    /**
+     *
      * @param mixed $lastPurchasePrice
      */
     public function setLastPurchasePrice($lastPurchasePrice)
     {
         $this->lastPurchasePrice = $lastPurchasePrice;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastPurchaseCurrency()
+    {
+        return $this->lastPurchaseCurrency;
     }
 
     /**
@@ -460,11 +737,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getLastPurchaseDate()
+    {
+        return $this->lastPurchaseDate;
+    }
+
+    /**
+     *
      * @param mixed $lastPurchaseDate
      */
     public function setLastPurchaseDate($lastPurchaseDate)
     {
         $this->lastPurchaseDate = $lastPurchaseDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLeadTime()
+    {
+        return $this->leadTime;
     }
 
     /**
@@ -478,11 +773,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getValidFromDate()
+    {
+        return $this->validFromDate;
+    }
+
+    /**
+     *
      * @param mixed $validFromDate
      */
     public function setValidFromDate($validFromDate)
     {
         $this->validFromDate = $validFromDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getValidToDate()
+    {
+        return $this->validToDate;
     }
 
     /**
@@ -496,11 +809,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     *
      * @param mixed $location
      */
     public function setLocation($location)
     {
         $this->location = $location;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemInternalLabel()
+    {
+        return $this->itemInternalLabel;
     }
 
     /**
@@ -514,11 +845,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getAssetLabel()
+    {
+        return $this->assetLabel;
+    }
+
+    /**
+     *
      * @param mixed $assetLabel
      */
     public function setAssetLabel($assetLabel)
     {
         $this->assetLabel = $assetLabel;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSparepartLabel()
+    {
+        return $this->sparepartLabel;
     }
 
     /**
@@ -532,11 +881,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     *
      * @param mixed $remarks
      */
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalAvailabiliy()
+    {
+        return $this->localAvailabiliy;
     }
 
     /**
@@ -550,11 +917,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
+     *
      * @param mixed $lastChangeOn
      */
     public function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 
     /**
@@ -568,11 +953,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
+
+    /**
+     *
      * @param mixed $checksum
      */
     public function setChecksum($checksum)
     {
         $this->checksum = $checksum;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCurrentState()
+    {
+        return $this->currentState;
     }
 
     /**
@@ -586,11 +989,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
+    }
+
+    /**
+     *
      * @param mixed $docNumber
      */
     public function setDocNumber($docNumber)
     {
         $this->docNumber = $docNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getMonitoredBy()
+    {
+        return $this->monitoredBy;
     }
 
     /**
@@ -604,11 +1025,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getSysNumber()
+    {
+        return $this->sysNumber;
+    }
+
+    /**
+     *
      * @param mixed $sysNumber
      */
     public function setSysNumber($sysNumber)
     {
         $this->sysNumber = $sysNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRemarksText()
+    {
+        return $this->remarksText;
     }
 
     /**
@@ -622,11 +1061,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     *
      * @param mixed $revisionNo
      */
     public function setRevisionNo($revisionNo)
     {
         $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSku1()
+    {
+        return $this->itemSku1;
     }
 
     /**
@@ -640,11 +1097,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getItemSku2()
+    {
+        return $this->itemSku2;
+    }
+
+    /**
+     *
      * @param mixed $itemSku2
      */
     public function setItemSku2($itemSku2)
     {
         $this->itemSku2 = $itemSku2;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAssetGroup()
+    {
+        return $this->assetGroup;
     }
 
     /**
@@ -658,11 +1133,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getAssetClass()
+    {
+        return $this->assetClass;
+    }
+
+    /**
+     *
      * @param mixed $assetClass
      */
     public function setAssetClass($assetClass)
     {
         $this->assetClass = $assetClass;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStockUomConvertFactor()
+    {
+        return $this->stockUomConvertFactor;
     }
 
     /**
@@ -676,11 +1169,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getPurchaseUomConvertFactor()
+    {
+        return $this->purchaseUomConvertFactor;
+    }
+
+    /**
+     *
      * @param mixed $purchaseUomConvertFactor
      */
     public function setPurchaseUomConvertFactor($purchaseUomConvertFactor)
     {
         $this->purchaseUomConvertFactor = $purchaseUomConvertFactor;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSalesUomConvertFactor()
+    {
+        return $this->salesUomConvertFactor;
     }
 
     /**
@@ -694,11 +1205,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getCapacity()
+    {
+        return $this->capacity;
+    }
+
+    /**
+     *
      * @param mixed $capacity
      */
     public function setCapacity($capacity)
     {
         $this->capacity = $capacity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAvgUnitPrice()
+    {
+        return $this->avgUnitPrice;
     }
 
     /**
@@ -712,11 +1241,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getStandardPrice()
+    {
+        return $this->standardPrice;
+    }
+
+    /**
+     *
      * @param mixed $standardPrice
      */
     public function setStandardPrice($standardPrice)
     {
         $this->standardPrice = $standardPrice;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     /**
@@ -730,11 +1277,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getItemTypeId()
+    {
+        return $this->itemTypeId;
+    }
+
+    /**
+     *
      * @param mixed $itemTypeId
      */
     public function setItemTypeId($itemTypeId)
     {
         $this->itemTypeId = $itemTypeId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 
     /**
@@ -748,11 +1313,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getItemGroup()
+    {
+        return $this->itemGroup;
+    }
+
+    /**
+     *
      * @param mixed $itemGroup
      */
     public function setItemGroup($itemGroup)
     {
         $this->itemGroup = $itemGroup;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStockUom()
+    {
+        return $this->stockUom;
     }
 
     /**
@@ -766,11 +1349,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getCogsAccount()
+    {
+        return $this->cogsAccount;
+    }
+
+    /**
+     *
      * @param mixed $cogsAccount
      */
     public function setCogsAccount($cogsAccount)
     {
         $this->cogsAccount = $cogsAccount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPurchaseUom()
+    {
+        return $this->purchaseUom;
     }
 
     /**
@@ -784,11 +1385,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getSalesUom()
+    {
+        return $this->salesUom;
+    }
+
+    /**
+     *
      * @param mixed $salesUom
      */
     public function setSalesUom($salesUom)
     {
         $this->salesUom = $salesUom;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getInventoryAccount()
+    {
+        return $this->inventoryAccount;
     }
 
     /**
@@ -802,11 +1421,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getExpenseAccount()
+    {
+        return $this->expenseAccount;
+    }
+
+    /**
+     *
      * @param mixed $expenseAccount
      */
     public function setExpenseAccount($expenseAccount)
     {
         $this->expenseAccount = $expenseAccount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRevenueAccount()
+    {
+        return $this->revenueAccount;
     }
 
     /**
@@ -820,11 +1457,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getDefaultWarehouse()
+    {
+        return $this->defaultWarehouse;
+    }
+
+    /**
+     *
      * @param mixed $defaultWarehouse
      */
     public function setDefaultWarehouse($defaultWarehouse)
     {
         $this->defaultWarehouse = $defaultWarehouse;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 
     /**
@@ -838,11 +1493,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getStandardUom()
+    {
+        return $this->standardUom;
+    }
+
+    /**
+     *
      * @param mixed $standardUom
      */
     public function setStandardUom($standardUom)
     {
         $this->standardUom = $standardUom;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 
     /**
@@ -856,11 +1529,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getLastPrRow()
+    {
+        return $this->lastPrRow;
+    }
+
+    /**
+     *
      * @param mixed $lastPrRow
      */
     public function setLastPrRow($lastPrRow)
     {
         $this->lastPrRow = $lastPrRow;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastPoRow()
+    {
+        return $this->lastPoRow;
     }
 
     /**
@@ -874,11 +1565,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getLastApInvoiceRow()
+    {
+        return $this->lastApInvoiceRow;
+    }
+
+    /**
+     *
      * @param mixed $lastApInvoiceRow
      */
     public function setLastApInvoiceRow($lastApInvoiceRow)
     {
         $this->lastApInvoiceRow = $lastApInvoiceRow;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastTrxRow()
+    {
+        return $this->lastTrxRow;
     }
 
     /**
@@ -892,11 +1601,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getLastPurchasing()
+    {
+        return $this->lastPurchasing;
+    }
+
+    /**
+     *
      * @param mixed $lastPurchasing
      */
     public function setLastPurchasing($lastPurchasing)
     {
         $this->lastPurchasing = $lastPurchasing;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsModel()
+    {
+        return $this->isModel;
     }
 
     /**
@@ -910,11 +1637,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getCanOrder()
+    {
+        return $this->canOrder;
+    }
+
+    /**
+     *
      * @param mixed $canOrder
      */
     public function setCanOrder($canOrder)
     {
         $this->canOrder = $canOrder;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getModelDetail()
+    {
+        return $this->modelDetail;
     }
 
     /**
@@ -928,11 +1673,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getHsCode()
+    {
+        return $this->hsCode;
+    }
+
+    /**
+     *
      * @param mixed $hsCode
      */
     public function setHsCode($hsCode)
     {
         $this->hsCode = $hsCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getHsCodeDescription()
+    {
+        return $this->hsCodeDescription;
     }
 
     /**
@@ -946,11 +1709,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getStandardWeightInKg()
+    {
+        return $this->standardWeightInKg;
+    }
+
+    /**
+     *
      * @param mixed $standardWeightInKg
      */
     public function setStandardWeightInKg($standardWeightInKg)
     {
         $this->standardWeightInKg = $standardWeightInKg;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardVolumnInM3()
+    {
+        return $this->standardVolumnInM3;
     }
 
     /**
@@ -964,11 +1745,29 @@ class BaseItemSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getItemName1()
+    {
+        return $this->itemName1;
+    }
+
+    /**
+     *
      * @param mixed $itemName1
      */
     public function setItemName1($itemName1)
     {
         $this->itemName1 = $itemName1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemName2()
+    {
+        return $this->itemName2;
     }
 
     /**
@@ -984,791 +1783,71 @@ class BaseItemSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    public function getId()
+    public function getStandardLength()
     {
-        return $this->id;
+        return $this->standardLength;
     }
 
     /**
      *
-     * @return mixed
-     */
-    public function getWarehouseId()
-    {
-        return $this->warehouseId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemSku()
-    {
-        return $this->itemSku;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemName()
-    {
-        return $this->itemName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemNameForeign()
-    {
-        return $this->itemNameForeign;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemDescription()
-    {
-        return $this->itemDescription;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemType()
-    {
-        return $this->itemType;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemCategory()
-    {
-        return $this->itemCategory;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getKeywords()
-    {
-        return $this->keywords;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsStocked()
-    {
-        return $this->isStocked;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsSaleItem()
-    {
-        return $this->isSaleItem;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsPurchased()
-    {
-        return $this->isPurchased;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsFixedAsset()
-    {
-        return $this->isFixedAsset;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsSparepart()
-    {
-        return $this->isSparepart;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getUom()
-    {
-        return $this->uom;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getBarcode()
-    {
-        return $this->barcode;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getBarcode39()
-    {
-        return $this->barcode39;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getBarcode128()
-    {
-        return $this->barcode128;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCreatedOn()
-    {
-        return $this->createdOn;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getManufacturer()
-    {
-        return $this->manufacturer;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getManufacturerCode()
-    {
-        return $this->manufacturerCode;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getManufacturerCatalog()
-    {
-        return $this->manufacturerCatalog;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getManufacturerModel()
-    {
-        return $this->manufacturerModel;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getManufacturerSerial()
-    {
-        return $this->manufacturerSerial;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getOrigin()
-    {
-        return $this->origin;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getSerialNumber()
-    {
-        return $this->serialNumber;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLastPurchasePrice()
-    {
-        return $this->lastPurchasePrice;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLastPurchaseCurrency()
-    {
-        return $this->lastPurchaseCurrency;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLastPurchaseDate()
-    {
-        return $this->lastPurchaseDate;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLeadTime()
-    {
-        return $this->leadTime;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getValidFromDate()
-    {
-        return $this->validFromDate;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getValidToDate()
-    {
-        return $this->validToDate;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemInternalLabel()
-    {
-        return $this->itemInternalLabel;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getAssetLabel()
-    {
-        return $this->assetLabel;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getSparepartLabel()
-    {
-        return $this->sparepartLabel;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRemarks()
-    {
-        return $this->remarks;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLocalAvailabiliy()
-    {
-        return $this->localAvailabiliy;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLastChangeOn()
-    {
-        return $this->lastChangeOn;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getChecksum()
-    {
-        return $this->checksum;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCurrentState()
-    {
-        return $this->currentState;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDocNumber()
-    {
-        return $this->docNumber;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getMonitoredBy()
-    {
-        return $this->monitoredBy;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getSysNumber()
-    {
-        return $this->sysNumber;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRemarksText()
-    {
-        return $this->remarksText;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRevisionNo()
-    {
-        return $this->revisionNo;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemSku1()
-    {
-        return $this->itemSku1;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemSku2()
-    {
-        return $this->itemSku2;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getAssetGroup()
-    {
-        return $this->assetGroup;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getAssetClass()
-    {
-        return $this->assetClass;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStockUomConvertFactor()
-    {
-        return $this->stockUomConvertFactor;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPurchaseUomConvertFactor()
-    {
-        return $this->purchaseUomConvertFactor;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getSalesUomConvertFactor()
-    {
-        return $this->salesUomConvertFactor;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCapacity()
-    {
-        return $this->capacity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getAvgUnitPrice()
-    {
-        return $this->avgUnitPrice;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStandardPrice()
-    {
-        return $this->standardPrice;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getUuid()
-    {
-        return $this->uuid;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemTypeId()
-    {
-        return $this->itemTypeId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCreatedBy()
-    {
-        return $this->createdBy;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemGroup()
-    {
-        return $this->itemGroup;
-    }
-
-    /**
-     *
-     * @return mixed
+     * @param mixed $standardLength
      */
-    public function getStockUom()
+    public function setStandardLength($standardLength)
     {
-        return $this->stockUom;
+        $this->standardLength = $standardLength;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getCogsAccount()
+    public function getStandardHeight()
     {
-        return $this->cogsAccount;
+        return $this->standardHeight;
     }
 
     /**
      *
-     * @return mixed
-     */
-    public function getPurchaseUom()
-    {
-        return $this->purchaseUom;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getSalesUom()
-    {
-        return $this->salesUom;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getInventoryAccount()
-    {
-        return $this->inventoryAccount;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getExpenseAccount()
-    {
-        return $this->expenseAccount;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRevenueAccount()
-    {
-        return $this->revenueAccount;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDefaultWarehouse()
-    {
-        return $this->defaultWarehouse;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLastChangeBy()
-    {
-        return $this->lastChangeBy;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStandardUom()
-    {
-        return $this->standardUom;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
-
-    /**
-     *
-     * @return mixed
+     * @param mixed $standardHeight
      */
-    public function getLastPrRow()
+    public function setStandardHeight($standardHeight)
     {
-        return $this->lastPrRow;
+        $this->standardHeight = $standardHeight;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getLastPoRow()
+    public function getStandardWidth()
     {
-        return $this->lastPoRow;
+        return $this->standardWidth;
     }
 
     /**
      *
-     * @return mixed
-     */
-    public function getLastApInvoiceRow()
-    {
-        return $this->lastApInvoiceRow;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLastTrxRow()
-    {
-        return $this->lastTrxRow;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLastPurchasing()
-    {
-        return $this->lastPurchasing;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsModel()
-    {
-        return $this->isModel;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCanOrder()
-    {
-        return $this->canOrder;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getModelDetail()
-    {
-        return $this->modelDetail;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getHsCode()
-    {
-        return $this->hsCode;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getHsCodeDescription()
-    {
-        return $this->hsCodeDescription;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStandardWeightInKg()
-    {
-        return $this->standardWeightInKg;
-    }
-
-    /**
-     *
-     * @return mixed
+     * @param mixed $standardWidth
      */
-    public function getStandardVolumnInM3()
+    public function setStandardWidth($standardWidth)
     {
-        return $this->standardVolumnInM3;
+        $this->standardWidth = $standardWidth;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getItemName1()
+    public function getUomGroup()
     {
-        return $this->itemName1;
+        return $this->uomGroup;
     }
 
     /**
      *
-     * @return mixed
+     * @param mixed $uomGroup
      */
-    public function getItemName2()
+    public function setUomGroup($uomGroup)
     {
-        return $this->itemName2;
+        $this->uomGroup = $uomGroup;
     }
 }

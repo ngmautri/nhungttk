@@ -4,6 +4,7 @@ namespace Procure\Domain\PurchaseOrder;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
+use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Po\PoAmendmentAccepted;
@@ -17,6 +18,7 @@ use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
+use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
@@ -26,6 +28,30 @@ use Webmozart\Assert\Assert;
  */
 abstract class GenericPO extends BaseDoc
 {
+
+    public function store(SharedService $sharedService)
+    {
+        Assert::notNull($sharedService, Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+
+        if (! $rep instanceof POCmdRepositoryImpl) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("POCmdRepositoryImpl not set! %s", __FUNCTION__)));
+        }
+
+        $this->setLogger($sharedService->getLogger());
+        $validationService = ValidatorFactory::create($sharedService, true);
+
+        $this->validate($validationService);
+        if ($this->hasErrors()) {
+            throw new \RuntimeException($this->getErrorMessage());
+        }
+
+        $rep->store($this);
+
+        $this->logInfo(\sprintf("PO saved %s", __METHOD__));
+        return $this;
+    }
 
     public function deactivateRow(PORow $row, CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {}
@@ -140,7 +166,16 @@ abstract class GenericPO extends BaseDoc
         return $this;
     }
 
-    public function createRowFrom(PORowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    /**
+     *
+     * @param PORowSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @param boolean $storeNow
+     * @throws \RuntimeException
+     * @return \Procure\Domain\PurchaseOrder\GenericPO|\Procure\Domain\PurchaseOrder\PORowSnapshot
+     */
+    public function createRowFrom(PORowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("Po is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
@@ -160,6 +195,11 @@ abstract class GenericPO extends BaseDoc
         }
 
         $this->clearEvents();
+        $this->addRow($row);
+
+        if (! $storeNow) {
+            return $this;
+        }
 
         /**
          *

@@ -327,6 +327,7 @@ final class PODoc extends GenericPO
         Assert::notNull($validationService, "Validation can not created!");
 
         $snapshot->initDoc($options);
+        $snapshot->docType = ProcureDocType::PO;
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $snapshot->setExchangeRate($fxRate);
 
@@ -391,6 +392,7 @@ final class PODoc extends GenericPO
         $instance = new self();
         $createdDate = new \Datetime();
         $snapshot->markAsChange($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
+        $snapshot->docType = ProcureDocType::PO;
 
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 

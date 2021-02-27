@@ -46,7 +46,7 @@ class UploadPrRows extends AbstractProcureRowsUpload
 
         $objPHPExcel = IOFactory::load($file);
         // $options = new CreateRowCmdOptions($doc, $doc->getId(), $doc->getToken(), $doc->getRevisionNo(), $doc->getCreatedBy(), __METHOD__);
-        $options = new CreateRowCmdOptions($companyVO, $doc, $doc->getId(), $doc->getToken(), $doc->getToken(), $doc->getRevisionNo(), $doc->getCreatedBy(), __METHOD__);
+        $options = new CreateRowCmdOptions($companyVO, $doc, $doc->getId(), $doc->getToken(), $doc->getRevisionNo(), $doc->getCreatedBy(), __METHOD__);
 
         $m = \sprintf("Uploading for PR #%s starts! Source [%s]", $doc->getId(), $file);
         $this->logInfo($m);

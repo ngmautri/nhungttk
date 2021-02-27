@@ -20,7 +20,7 @@ class RowSnapshotModifier
      * @param string $locale
      * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
      */
-    public static function modify(PORowSnapshot $snapshot, EntityManager $doctrineEM, $locale = null)
+    public static function modify(PORowSnapshot $snapshot, EntityManager $doctrineEM, $locale = 'en_EN')
     {
         if (! $snapshot instanceof PORowSnapshot || ! $doctrineEM instanceof EntityManager) {
             return null;

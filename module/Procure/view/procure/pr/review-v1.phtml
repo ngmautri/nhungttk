@@ -6,6 +6,7 @@ use Procure\Application\Helper\Toolbar;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Shared\Constants;
+use Application\Domain\Contracts\FormActions;
 
 /**
  *
@@ -44,6 +45,9 @@ $pmtTermId = null;
 $currencyId = null;
 $incotermId = null;
 $progress_div = '';
+
+$upload_btn = "";
+$rows_upload_url = "/procure/pr/upload-rows";
 
 if (! $headerDTO == null) {
 
@@ -107,6 +111,11 @@ if (! $headerDTO == null) {
     ];
 
     $tabs = \Application\Application\Helper\FormHelper::createTabs($tabsList);
+
+    $upload_url = sprintf('/procure/pr/upload-rows?target_id=%s&target_token=%s', $headerDTO->getId(), $headerDTO->getToken());
+    $format = '<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="%s">
+  &nbsp;Upload <i class="fa fa-upload" aria-hidden="true"></i>&nbsp;</a>&nbsp;';
+    $upload_btn = sprintf($format, $upload_url);
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -196,6 +205,11 @@ include (ROOT . '/module/Procure/view/procure/pr_summary.php');
 // ================================
 echo $error_msg;
 // ===============================
+
+if ($action == FormActions::UPLOAD) :
+    include (ROOT . '/module/Procure/view/procure/pr_rows_upload.php');
+endif;
+
 ?>
 
 <?php
@@ -414,6 +428,12 @@ echo $department_option;
                                  &nbsp;&nbsp;
                                  <span class="caret"></span>
                               </button>
+                              <a>
+<?php
+
+echo $upload_btn;
+?>
+                              </a>
                               <a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="<?php
 
                             echo $this->translate("Refresh");

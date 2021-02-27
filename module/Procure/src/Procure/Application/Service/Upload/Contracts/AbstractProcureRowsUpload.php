@@ -37,7 +37,7 @@ abstract class AbstractProcureRowsUpload extends AbstractService implements Proc
             $this->run($companyVO, $doc, $file, $sharedService);
         } catch (\Exception $e) {
             $this->logException($e, false);
-            throw new \RuntimeException("Upload failed. The file might be not wrong.");
+            throw new \RuntimeException("Upload failed. The file might be not valid. Please see log for more details!");
         }
     }
 }

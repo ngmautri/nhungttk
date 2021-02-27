@@ -1,14 +1,12 @@
 <?php
 namespace ProcureTest\Service\Upload;
 
+use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
 use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
-use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
-use Inventory\Domain\Transaction\GenericTrx;
-use PHPUnit_Framework_TestCase;
-use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 use Procure\Application\Service\Upload\UploadPrRows;
-use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
+use PHPUnit_Framework_TestCase;
 
 class PrRowsUploadTest extends PHPUnit_Framework_TestCase
 {
@@ -33,8 +31,8 @@ class PrRowsUploadTest extends PHPUnit_Framework_TestCase
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             $rep = new PRQueryRepositoryImpl($doctrineEM);
 
-            $id = 1404;
-            $token = "445a04f4-9e2c-4318-ae0d-41a176ff38e4";
+            $id = 1409;
+            $token = "c18e2647-1311-4d9f-82cb-7aacbda0fb1e";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
@@ -42,13 +40,16 @@ class PrRowsUploadTest extends PHPUnit_Framework_TestCase
 
             $company = $rep1->getById($rootEntity->getCompany());
             $companyVO = $company->createValueObject();
-            \var_dump($companyVO);
+            // \var_dump($companyVO);
 
             $uploader = new UploadPrRows($doctrineEM);
-            $file = $root . "/ProdureTest/Data/PrInput.xlsx";
+
+            $logger = Bootstrap::getServiceManager()->get('Applogger');
+            $uploader->setLogger($logger);
+
+            $file = $root . "/ProcureTest/Data/PrInput.xlsx";
             $uploader->doUploading($companyVO, $rootEntity, $file);
         } catch (\Exception $e) {
-            var_dump($e->getTraceAsString());
             var_dump($e->getMessage());
         }
     }

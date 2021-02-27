@@ -54,7 +54,16 @@ abstract class GenericPR extends BaseDoc
     public function deactivateRow(PRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {}
 
-    public function createRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    /**
+     *
+     * @param PRRowSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @param boolean $storeNow
+     * @throws \RuntimeException
+     * @return \Procure\Domain\PurchaseRequest\GenericPR|\Procure\Domain\PurchaseRequest\PRRowSnapshot
+     */
+    public function createRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
@@ -73,10 +82,15 @@ abstract class GenericPR extends BaseDoc
         $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getNotification()->errorMessage());
+            throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
         $this->clearEvents();
+        $this->addRow($row);
+
+        if (! $storeNow) {
+            return $this;
+        }
 
         /**
          *

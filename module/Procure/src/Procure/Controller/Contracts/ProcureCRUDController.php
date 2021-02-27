@@ -5,6 +5,7 @@ use Application\Notification;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Contracts\FormActions;
+use Application\Domain\Util\FileExtension;
 use Procure\Application\Command\TransactionalCommandHandler;
 use Procure\Application\Command\Contracts\CmdHandlerAbstractFactory;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
@@ -13,7 +14,9 @@ use Procure\Application\Command\Options\PostCmdOptions;
 use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\Contracts\ProcureServiceInterface;
+use Procure\Application\Service\Upload\UploadFactory;
 use Procure\Domain\DocSnapshot;
+use Procure\Domain\GenericDoc;
 use Zend\Escaper\Escaper;
 use Zend\View\Model\ViewModel;
 
@@ -57,6 +60,171 @@ abstract class ProcureCRUDController extends AbstractGenericController
     abstract protected function setListTemplate();
 
     abstract protected function setViewTemplate();
+
+    public function uploadRowsAction()
+    {
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         */
+        $this->layout("Procure/layout-fullscreen");
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = $this->getBaseUrl() . "/upload-rows";
+
+        $form_title = "Upload";
+        $action = FormActions::UPLOAD;
+        $viewTemplete = $this->getBaseUrl() . "/review-v1";
+
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            $notify = new Notification();
+
+            try {
+
+                $entity_id = $request->getPost('entity_id');
+                $entity_token = $request->getPost('entity_token');
+
+                /**
+                 *
+                 * @var GenericDoc $rootEntity ;
+                 */
+                $rootEntity = $this->getProcureService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+                if ($rootEntity == null) {
+                    return $this->redirect()->toRoute('not_found');
+                }
+
+                $file_name = null;
+                $file_size = null;
+                $file_tmp = null;
+                $file_ext = null;
+                $file_type = null;
+
+                if (isset($_FILES['uploaded_file'])) {
+                    $file_name = $_FILES['uploaded_file']['name'];
+                    $file_size = $_FILES['uploaded_file']['size'];
+                    $file_tmp = $_FILES['uploaded_file']['tmp_name'];
+                    $file_type = $_FILES['uploaded_file']['type'];
+                    $file_ext1 = (explode('.', $file_name));
+                    $file_ext = end($file_ext1);
+                }
+
+                $ext = FileExtension::get($file_type);
+                if ($ext == null) {
+                    $ext = \strtolower($file_ext);
+                }
+                $expensions = array(
+                    "xlsx",
+                    "xls",
+                    "csv"
+                );
+
+                if (in_array($ext, $expensions) == false) {
+                    $notify->addError("File not supported or empty! " . $file_name);
+                }
+
+                $dto = $rootEntity->makeSnapshot();
+
+                if ($notify->hasErrors()) {
+                    $viewModel = new ViewModel(array(
+                        'errors' => $notify->getErrors(),
+                        'redirectUrl' => null,
+                        'entity_id' => $entity_id,
+                        'entity_token' => $entity_token,
+                        'rootEntity' => $rootEntity,
+                        'rowOutput' => $rootEntity->getRowsOutput(),
+                        'headerDTO' => $rootEntity->makeDTOForGrid(),
+                        'nmtPlugin' => $nmtPlugin,
+                        'form_action' => $form_action,
+                        'form_title' => $form_title,
+                        'version' => $rootEntity->getRevisionNo(),
+                        'action' => $action,
+                        'localCurrencyId' => $this->getLocalCurrencyId(),
+                        'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                        'companyVO' => $this->getCompanyVO()
+                    ));
+                    $viewModel->setTemplate($viewTemplete);
+                    return $viewModel;
+                }
+
+                $folder = ROOT . "/temp";
+
+                if (! is_dir($folder)) {
+                    mkdir($folder, 0777, true); // important
+                }
+
+                move_uploaded_file($file_tmp, "$folder/$file_name");
+
+                $uploader = UploadFactory::create($rootEntity->getDocType(), $this->getDoctrineEM());
+                $uploader->setLogger($this->getLogger());
+                $uploader->doUploading($this->getCompanyVO(), $rootEntity, "$folder/$file_name");
+            } catch (\Exception $e) {
+                $this->logException($e, false);
+                $notify->addError($e->getMessage());
+
+                $viewModel = new ViewModel(array(
+                    'errors' => $notify->getErrors(),
+                    'redirectUrl' => null,
+                    'entity_id' => $entity_id,
+                    'entity_token' => $entity_token,
+                    'rootEntity' => $rootEntity,
+                    'rowOutput' => $rootEntity->getRowsOutput(),
+                    'headerDTO' => $rootEntity->makeDTOForGrid(),
+                    'nmtPlugin' => $nmtPlugin,
+                    'form_action' => $form_action,
+                    'form_title' => $form_title,
+                    'version' => $rootEntity->getRevisionNo(),
+                    'action' => $action,
+                    'localCurrencyId' => $this->getLocalCurrencyId(),
+                    'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                    'companyVO' => $this->getCompanyVO()
+                ));
+                $viewModel->setTemplate($viewTemplete);
+                return $viewModel;
+            }
+
+            $this->logInfo(\sprintf('Rows for #%s uploaded!, (%s-%s)', $rootEntity->getId(), $file_name, $file_size));
+            $this->flashMessenger()->addMessage($notify->successMessage(false));
+            $redirectUrl = sprintf($this->getBaseUrl() . '/review?entity_id=%s&entity_token=%s', $entity_id, $entity_token);
+            \unlink("$folder/$file_name");
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        // NO Posting
+        // =========================
+
+        $entity_id = (int) $this->params()->fromQuery('target_id');
+        $entity_token = $this->params()->fromQuery('target_token');
+        $rootEntity = $this->getProcureService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $dto = $rootEntity->makeSnapshot();
+
+        $viewModel = new ViewModel(array(
+            'errors' => null,
+            'redirectUrl' => null,
+            'entity_id' => $entity_id,
+            'entity_token' => $entity_token,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'version' => $rootEntity->getRevisionNo(),
+            'action' => $action,
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId(),
+            'companyVO' => $this->getCompanyVO()
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
 
     /**
      *

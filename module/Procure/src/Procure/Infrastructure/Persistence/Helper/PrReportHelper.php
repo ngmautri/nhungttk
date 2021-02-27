@@ -11,7 +11,7 @@ use Procure\Infrastructure\Persistence\SQL\PrSQL;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PrReportHelper
 {
@@ -313,14 +313,19 @@ WHERE 1
         $sql = PrSQL::PR_ROW_SQL;
 
         $sql_tmp1 = '';
+
         if ($filter->getIsActive() == 1) {
             $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
         } elseif ($filter->getIsActive() == - 1) {
             $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
         }
 
+        if ($filter->getDocStatus() != null) {
+            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND nmt_procure_pr.doc_status ='%s'", $filter->getDocStatus());
+        }
+
         if ($filter->getDocYear() > 0) {
-            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
+            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND year(nmt_procure_pr.submitted_on) =%s", $filter->getDocYear());
         }
 
         if ($filter->getBalance() == 0) {

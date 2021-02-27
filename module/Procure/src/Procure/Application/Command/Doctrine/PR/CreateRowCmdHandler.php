@@ -8,7 +8,6 @@ use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\CreateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Application\Service\PR\PRRowSnapshotModifier;
-use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 use Procure\Domain\PurchaseRequest\PRRowSnapshotAssembler;

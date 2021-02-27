@@ -18,7 +18,7 @@ use Procure\Domain\Service\SharedService;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UploadPrRows extends AbstractProcureRowsUpload
+class UploadApRows extends AbstractProcureRowsUpload
 {
 
     protected $doctrineEM;
@@ -132,6 +132,8 @@ class UploadPrRows extends AbstractProcureRowsUpload
                 return $doc;
             }
         } catch (\Exception $e) {
+            \var_dump($rowSnapshot);
+            var_dump($e->getMessage());
             $this->logException($e, false);
             throw new \RuntimeException($e->getMessage());
         }

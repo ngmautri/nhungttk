@@ -14,7 +14,7 @@ use Procure\Infrastructure\Mapper\QrMapper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QRCmdRepositoryImpl extends AbstractDoctrineRepository implements QrCmdRepositoryInterface
 {
@@ -131,7 +131,7 @@ class QRCmdRepositoryImpl extends AbstractDoctrineRepository implements QrCmdRep
         $this->getDoctrineEM()->flush();
 
         $rootSnapshot->id = $rootEntityDoctrine->getId();
-        $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
+        $rootSnapshot->docVersion = $rootEntityDoctrine->getRevisionNo();
         $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
         $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
         return $rootSnapshot;
@@ -206,7 +206,7 @@ class QRCmdRepositoryImpl extends AbstractDoctrineRepository implements QrCmdRep
         /**
          *
          * @var \Application\Entity\NmtProcureQo $entity ;
-         *     
+         *
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());

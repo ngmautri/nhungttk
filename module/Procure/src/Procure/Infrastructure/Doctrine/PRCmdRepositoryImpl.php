@@ -14,7 +14,7 @@ use Procure\Infrastructure\Mapper\PrMapper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRepositoryInterface
 {
@@ -120,8 +120,16 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
 
         $increaseVersion = false;
         $isFlush = false;
-
+        $n = 0;
         foreach ($rows as $localEntity) {
+
+            $n ++;
+
+            // flush every 500 line, if big doc.
+            if ($n % 500 == 0) {
+                $this->doctrineEM->flush();
+            }
+
             $localSnapshot = $this->_getLocalSnapshot($localEntity);
             $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
         }
@@ -130,8 +138,8 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
         $this->getDoctrineEM()->flush();
 
         $rootSnapshot->id = $rootEntityDoctrine->getId();
-        $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
-        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        $rootSnapshot->docVersion = $rootEntityDoctrine->getRevisionNo();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getPrAutoNumber();
         $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
         return $rootSnapshot;
     }
@@ -205,7 +213,7 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
         /**
          *
          * @var \Application\Entity\NmtProcurePr $entity ;
-         *     
+         *
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());

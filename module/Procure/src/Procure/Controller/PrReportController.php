@@ -28,7 +28,6 @@ class PrReportController extends AbstractGenericController
         $isActive = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
-        $currentState = $this->params()->fromQuery('currentState');
         $docStatus = $this->params()->fromQuery('docStatus');
         $file_type = $this->params()->fromQuery('file_type');
         $prYear = $this->params()->fromQuery('yy');
@@ -78,22 +77,7 @@ class PrReportController extends AbstractGenericController
         $filter->setBalance($balance);
         $filter->setDocStatus($docStatus);
 
-        $total_records = null;
-
-        $key = \sprintf("total_%s", $filter->__toString());
-        $total = $this->getCache()->getItem($key);
-        if (! $total->isHit()) {
-
-            $total_records = $this->getPrReporter()->getAllRowTotal($filter);
-            $total->set($total_records);
-            $this->getCache()->save($total);
-        }
-
-        if ($this->getCache()->hasItem($key)) {
-            $total_records = $this->getCache()
-                ->getItem($key)
-                ->get();
-        }
+        $total_records = $this->getPrReporter()->getAllRowTotal($filter);
 
         $limit = null;
         $offset = null;

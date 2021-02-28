@@ -131,7 +131,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
    <div id="sidebar-wrapper" style="font-size: 9.5pt;">
 
 <?php
-if ($action == Constants::FORM_ACTION_REVIEW) :
+if ($action == FormActions::REVIEW) :
     $current_step = "STEP3";
     include (ROOT . '/module/Procure/view/procure/pr-create-wizard.php');
 endif;

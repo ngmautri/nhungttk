@@ -19,6 +19,7 @@ use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
+use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
@@ -30,6 +31,30 @@ abstract class GenericAP extends BaseDoc
 {
 
     abstract public function specify();
+
+    public function store(SharedService $sharedService)
+    {
+        Assert::notNull($sharedService, Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+
+        if (! $rep instanceof APCmdRepositoryImpl) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("APCmdRepositoryImpl not set! %s", __FUNCTION__)));
+        }
+
+        $this->setLogger($sharedService->getLogger());
+        $validationService = ValidatorFactory::create($sharedService, true);
+
+        $this->validate($validationService);
+        if ($this->hasErrors()) {
+            throw new \RuntimeException($this->getErrorMessage());
+        }
+
+        $rep->store($this);
+
+        $this->logInfo(\sprintf("A/P invoice saved %s", __METHOD__));
+        return $this;
+    }
 
     /**
      *
@@ -134,9 +159,9 @@ abstract class GenericAP extends BaseDoc
      * @throws \InvalidArgumentException
      * @return \Procure\Domain\AccountPayable\APRowSnapshot
      */
-    public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
-        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("AP is posted %s", $this->getId()));
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("AP Invoice is posted %s", $this->getId()));
         Assert::notNull($snapshot, "Row Snapshot not founds");
         Assert::notNull($options, "Options not founds");
 
@@ -153,6 +178,11 @@ abstract class GenericAP extends BaseDoc
         }
 
         $this->clearEvents();
+        $this->addRow($row);
+
+        if (! $storeNow) {
+            return $this;
+        }
 
         /**
          *
@@ -160,10 +190,6 @@ abstract class GenericAP extends BaseDoc
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $localSnapshot = $rep->storeRow($this, $row);
-
-        if ($localSnapshot == null) {
-            throw new \RuntimeException(sprintf("Error occured when creating row #%s", $this->getId()));
-        }
 
         $params = [
             "rowId" => $localSnapshot->getId(),

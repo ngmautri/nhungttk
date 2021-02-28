@@ -110,4 +110,7 @@ class ApReverseOptions implements CommandOptions
     {
         return $this->triggeredOn;
     }
+
+    public function getCompanyVO()
+    {}
 }

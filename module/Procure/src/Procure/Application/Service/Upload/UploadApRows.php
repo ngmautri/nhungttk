@@ -6,11 +6,11 @@ use Doctrine\ORM\EntityManager;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Procure\Application\Command\Options\CreateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Application\Service\PR\PRRowSnapshotModifier;
+use Procure\Application\Service\AP\APRowSnapshotModifier;
 use Procure\Application\Service\Upload\Contracts\AbstractProcureRowsUpload;
 use Procure\Domain\GenericDoc;
-use Procure\Domain\PurchaseRequest\GenericPR;
-use Procure\Domain\PurchaseRequest\PRRowSnapshot;
+use Procure\Domain\AccountPayable\APRowSnapshot;
+use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\Service\SharedService;
 
 /**
@@ -30,7 +30,7 @@ class UploadApRows extends AbstractProcureRowsUpload
 
     protected function setUpSharedService()
     {
-        return SharedServiceFactory::createForPR($this->doctrineEM);
+        return SharedServiceFactory::createForAP($this->doctrineEM);
     }
 
     /**
@@ -40,15 +40,15 @@ class UploadApRows extends AbstractProcureRowsUpload
      */
     protected function run(CompanyVO $companyVO, GenericDoc $doc, $file, SharedService $sharedService)
     {
-        if (! $doc instanceof GenericPR) {
-            throw new \InvalidArgumentException("Generic PR expected!");
+        if (! $doc instanceof GenericAP) {
+            throw new \InvalidArgumentException("Generic AP expected!");
         }
 
         $objPHPExcel = IOFactory::load($file);
         // $options = new CreateRowCmdOptions($doc, $doc->getId(), $doc->getToken(), $doc->getRevisionNo(), $doc->getCreatedBy(), __METHOD__);
-        $options = new CreateRowCmdOptions($companyVO, $doc, $doc->getId(), $doc->getToken(), $doc->getToken(), $doc->getRevisionNo(), $doc->getCreatedBy(), __METHOD__);
+        $options = new CreateRowCmdOptions($companyVO, $doc, $doc->getId(), $doc->getToken(), $doc->getRevisionNo(), $doc->getCreatedBy(), __METHOD__);
 
-        $m = \sprintf("Uploading for PR #%s starts! Source [%s]", $doc->getId(), $file);
+        $m = \sprintf("Uploading for A/P Invoice #%s starts! Source [%s] by [%s]", $doc->getId(), $file, $doc->getCreatedBy());
         $this->logInfo($m);
 
         try {
@@ -71,7 +71,7 @@ class UploadApRows extends AbstractProcureRowsUpload
                 $header = 2;
                 for ($row = $header + 1; $row <= $highestRow; ++ $row) {
 
-                    $rowSnapshot = new PRRowSnapshot();
+                    $rowSnapshot = new APRowSnapshot();
                     $n ++;
                     // new A=1
                     for ($col = 1; $col < $highestColumnIndex + 1; ++ $col) {
@@ -96,37 +96,62 @@ class UploadApRows extends AbstractProcureRowsUpload
                                 $rowSnapshot->vendorItemName = $val;
                                 break;
 
-                            case 4: // doc qty
+                            case 4: // vendorItem Code
 
+                                $rowSnapshot->vendorItemCode = $val;
+                                break;
+
+                            case 5: // Doc Qty
                                 $rowSnapshot->docQuantity = $val;
                                 break;
 
-                            case 5: // convert factor
+                            case 6: // standardConvertFactor
                                 $rowSnapshot->standardConvertFactor = $val;
                                 break;
 
-                            case 6: // unit
+                            case 7: // unit
                                 $rowSnapshot->docUnit = $val;
                                 break;
 
-                            case 7: // Edt
-                                $rowSnapshot->edt = $val;
+                            case 8: // doc unit price
+                                $rowSnapshot->docUnitPrice = $val;
+                                $rowSnapshot->exwUnitPrice = $val;
                                 break;
 
-                            case 8: // remarks
+                            case 9: // total
+                                     // left blank
+                                break;
+
+                            case 10: // Tax Rate
+                                $rowSnapshot->taxRate = $val;
+                                break;
+
+                            case 11: // GL
+                                $rowSnapshot->warehouse = $val;
+                                break;
+
+                            case 12: // GL
+                                $rowSnapshot->glAccount = $val;
+                                break;
+
+                            case 13: // CC
+                                $rowSnapshot->costCenter = $val;
+                                break;
+
+                            case 14: // CC
                                 $rowSnapshot->remarks = $val;
                                 break;
                         }
                     }
 
-                    $rowSnapshot = PRRowSnapshotModifier::modify($rowSnapshot, $this->getDoctrineEM(), $options->getLocale());
+                    $rowSnapshot = APRowSnapshotModifier::modify($rowSnapshot, $this->getDoctrineEM(), $options->getLocale());
                     $doc->createRowFrom($rowSnapshot, $options, $sharedService, false);
                 }
 
                 $doc->store($sharedService);
 
                 $totalDoc = count($doc->getDocRows());
-                $m = \sprintf("%s Rows of PR #%s uploaded and stored sucessfully! End.", $totalDoc, $doc->getId());
+                $m = \sprintf("%s Rows of A/P Invoice #%s uploaded and stored sucessfully! End.", $totalDoc, $doc->getId());
                 $this->logInfo($m);
 
                 return $doc;

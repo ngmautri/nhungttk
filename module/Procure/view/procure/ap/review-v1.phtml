@@ -10,6 +10,7 @@ use Procure\Application\Helper\Toolbar;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
+use Application\Domain\Contracts\FormActions;
 
 /**@var \Procure\Application\DTO\Ap\ApDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Ap\ApRowDTO $rowDTO ;*/
@@ -29,7 +30,7 @@ $hoverMode = "row";
 
 $isViewing = false;
 
-if ($action == Constants::FORM_ACTION_SHOW) {
+if ($action == FormActions::SHOW) {
     $isViewing = true;
 }
 
@@ -42,6 +43,10 @@ $wh_id = $defaultWarehouseId;
 $pmtTermId = null;
 $currencyId = null;
 $incotermId = null;
+
+$upload_btn = "";
+$rows_upload_url = "/procure/ap/upload-rows";
+$update_header_url = null;
 
 if (! $headerDTO == null) {
 
@@ -87,6 +92,11 @@ if (! $headerDTO == null) {
     $pmtTermId = $headerDTO->getPmtTerm();
     $currencyId = $headerDTO->getDocCurrency();
     $incotermId = $headerDTO->getIncoterm();
+
+    $upload_url = sprintf('/procure/ap/upload-rows?target_id=%s&target_token=%s', $headerDTO->getId(), $headerDTO->getToken());
+    $format = '<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="%s">
+  &nbsp;Upload <i class="fa fa-upload" aria-hidden="true"></i>&nbsp;</a>&nbsp;';
+    $upload_btn = sprintf($format, $upload_url);
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -221,6 +231,11 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
 // ================================
 echo $error_msg;
 // ===============================
+
+if ($action == FormActions::UPLOAD) :
+    include (ROOT . '/module/Procure/view/procure/procure_rows_upload.php');
+endif;
+
 ?>
 
 <?php
@@ -547,6 +562,27 @@ echo $paymentTerm_option;
                             ?>">
                            </div>
                         </div>
+
+                         <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2"></label>
+                           <div class="col-sm-8">
+                              <a title="<?php
+
+                            echo $this->translate('Update document hearder');
+                            ?>" class="btn btn-default btn-sm" style="color: navy; font-weight: bold;"
+                                 href="<?php
+
+                                echo $update_header_url;
+                                ?>">
+                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php
+
+                                echo $this->translate('Edit');
+                                ?></a>
+                              <hr>
+                           </div>
+                        </div>
+
+
                      </div>
                   </fieldset>
                </form>
@@ -569,6 +605,12 @@ echo $paymentTerm_option;
                                  &nbsp;&nbsp;
                                  <span class="caret"></span>
                               </button>
+                              <a>
+<?php
+
+echo $upload_btn;
+?>
+                              </a>
                               <a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="<?php
 
                             echo $this->translate("Refresh");

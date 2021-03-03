@@ -10,7 +10,6 @@ use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Pr\PrPosted;
 use Procure\Domain\Event\Pr\PrRowAdded;
 use Procure\Domain\Event\Pr\PrRowUpdated;
-use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
 use Procure\Domain\PurchaseRequest\Validator\ValidatorFactory;
 use Procure\Domain\Service\PRPostingService;

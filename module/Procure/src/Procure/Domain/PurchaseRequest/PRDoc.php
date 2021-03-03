@@ -2,6 +2,7 @@
 namespace Procure\Domain\PurchaseRequest;
 
 use Application\Application\Event\DefaultParameter;
+use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
@@ -30,6 +31,102 @@ final class PRDoc extends GenericPR
 
     private function __construct()
     {}
+
+    protected function cloneDoc(CommandOptions $options)
+    {
+        $createdDate = new \DateTime();
+        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setSubmittedOn(date_format($createdDate, 'Y-m-d'));
+
+        $this->setCreatedBy($options->getUserId());
+        $this->setDocStatus(ProcureDocStatus::DRAFT);
+
+        $this->setIsActive(1);
+        $this->setIsDraft(1);
+        $this->setIsPosted(0);
+
+        $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
+        $this->setRevisionNo(0);
+        $this->setDocVersion(0);
+        $this->setUuid(Uuid::uuid4()->toString());
+        $this->setToken($this->getUuid());
+
+        $c = $options->getCompanyVO();
+        $this->company = $c->getId();
+        $this->setCurrency($this->getDocCurrency());
+        $this->setLocalCurrency($c->getDefaultCurrency());
+        $this->prName = \sprintf("%s (copied)", $this->prName);
+        $this->prNumber = \sprintf("%s (copied)", $this->prNumber);
+    }
+
+    public function cloneAndSave(CommandOptions $options, SharedService $sharedService)
+    {
+        $rows = $this->getDocRows();
+        Assert::notNull($rows, "PR Entity is empty!");
+        $validationService = ValidatorFactory::create($sharedService);
+        Assert::notNull($validationService, "Validation can not created!");
+
+        /**
+         *
+         * @var \Procure\Domain\PurchaseRequest\PRDoc $instance
+         */
+        $instance = new self();
+
+        $exculdedProps = [
+            "id",
+            "uuid",
+            "token",
+            "docRows",
+            "rowIdArray",
+            "instance",
+            "prAutoNumber"
+        ];
+        $instance->prAutoNumber;
+        $instance = $this->convertExcludeFieldsTo($instance, $exculdedProps);
+
+        // overwrite.
+        $instance->cloneDoc($options);
+        $instance->setDocType(ProcureDocType::PR);
+        $instance->setBaseDocId($this->getId());
+        $instance->setBaseDocType($this->getDocType());
+
+        $instance->validateHeader($validationService->getHeaderValidators());
+
+        foreach ($rows as $r) {
+
+            $localEntity = PRRow::cloneFrom($instance, $r, $options);
+            $instance->addRow($localEntity);
+            $instance->validateRow($localEntity, $validationService->getRowValidators());
+        }
+
+        if ($instance->hasErrors()) {
+            throw new \RuntimeException($instance->getErrorMessage());
+        }
+
+        $this->clearEvents();
+        /**
+         *
+         * @var PRRowSnapshot $localSnapshot
+         * @var PRCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->store($instance);
+
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new PrHeaderCreated($target, $defaultParams, $params);
+        $this->addEvent($event);
+        return $instance;
+    }
 
     /**
      *
@@ -149,6 +246,8 @@ final class PRDoc extends GenericPR
         Assert::notNull($options, "Command options not found");
         $validationService = ValidatorFactory::create($sharedService);
 
+        $snapshot->prName = $snapshot->prNumber;
+
         PRSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);
 
         $rootEntity->validateHeader($validationService->getHeaderValidators());
@@ -170,6 +269,7 @@ final class PRDoc extends GenericPR
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
+
         $rootSnapshot = $rep->storeHeader($rootEntity, false);
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();

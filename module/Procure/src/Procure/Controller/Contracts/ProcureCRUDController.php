@@ -953,10 +953,10 @@ abstract class ProcureCRUDController extends AbstractGenericController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
-        $form_action = "/procure/po/clone";
-        $form_title = "Clone PO";
+        $form_action = $this->getBaseUrl() . "/clone";
+        $form_title = "Clone Document";
+        $viewTemplete = $this->getBaseUrl() . "/crudHeader";
         $action = FormActions::EDIT;
-        $viewTemplete = "procure/po/crudHeader";
 
         $prg = $this->prg($form_action, true);
 
@@ -969,7 +969,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $token = $this->params()->fromQuery('entity_token');
-            $dto = $this->procureService->getDocDetailsByTokenId($entity_id, $token);
+            $dto = $this->getProcureService()->getDocDetailsByTokenId($entity_id, $token);
 
             if ($dto == null) {
                 return $this->redirect()->toRoute('not_found');

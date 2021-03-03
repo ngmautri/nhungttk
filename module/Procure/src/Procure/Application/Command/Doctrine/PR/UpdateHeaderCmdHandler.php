@@ -8,9 +8,8 @@ use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\Contracts\ProcureDocStatus;
-use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Domain\PurchaseRequest\PRSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
@@ -33,8 +32,8 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
         /**
          *
          * @var AbstractCommand $cmd ;
-         * @var PODoc $rootEntity ;
-         * @var POSnapshot $snapshot ;
+         * @var PRDoc $rootEntity ;
+         * @var PRSnapshot $snapshot ;
          * @var UpdateHeaderCmdOptions $options ;
          *
          */
@@ -60,7 +59,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             $changeLog = $snapshot->compare($newSnapshot);
 
             if ($changeLog == null) {
-                $cmd->addError("Nothing change on PO#" . $rootEntity->getId());
+                $cmd->addError("Nothing change on PR#" . $rootEntity->getId());
                 return;
             }
 

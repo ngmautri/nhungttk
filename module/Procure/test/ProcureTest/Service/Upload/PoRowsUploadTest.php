@@ -31,8 +31,8 @@ class PoRowsUploadTest extends PHPUnit_Framework_TestCase
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             $rep = new POQueryRepositoryImpl($doctrineEM);
 
-            $id = 537;
-            $token = "5e6e851d-f6eb-4b9b-b4fe-11043a304931";
+            $id = 540;
+            $token = "c80c3c88-7f19-45e2-b0ba-6a8ac7c3eef7";
 
             $rootEntity = $rep->getPODetailsById($id, $token);
 

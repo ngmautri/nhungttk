@@ -62,7 +62,7 @@ else :
       </tr>
    </thead>
    <tbody>
- 
+
 	 <?php
 
     $count = 0;
@@ -77,7 +77,7 @@ else :
         $total_ordered = $total_ordered + $a->getQuantity();
         $total_received = $total_received + $r['total_received'];
         $total_balance = $total_balance + $r['confirmed_balance'];
-        $format = '/procure/pr/show?entity_id=%s&entity_token=%s';
+        $format = '/procure/pr/view?entity_id=%s&entity_token=%s';
         $pr_view = sprintf($format, $a->getPr()->getId(), $a->getPr()->getToken());
         ?>
 	 <tr>
@@ -88,7 +88,7 @@ else :
          <td>
             <a href="<?php
 
-echo $pr_view;
+        echo $pr_view;
         ?>" target="_blank"><?php
         echo $this->escapeHtml($a->getPr()
             ->getPrAutoNumber());
@@ -97,12 +97,12 @@ echo $pr_view;
          <td>
                 <a href="<?php
 
-echo $pr_view;
+        echo $pr_view;
         ?>" target="_blank"><?php
         echo $this->escapeHtml($a->getPr()
             ->getPrNumber());
         ?></a>
- 
+
          </td>
          <td><?php
 
@@ -179,4 +179,4 @@ $('#total_balance').html("<?php
 
 endif;
 ?>
-	
+

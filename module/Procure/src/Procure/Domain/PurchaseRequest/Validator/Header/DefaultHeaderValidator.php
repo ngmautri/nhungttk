@@ -12,7 +12,7 @@ use Procure\Domain\Validator\HeaderValidatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class DefaultHeaderValidator extends AbstractValidator implements HeaderValidatorInterface
 {
@@ -49,7 +49,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
 
             $spec = $this->sharedSpecificationFactory->getDateSpecification();
             if (! $spec->isSatisfiedBy($rootEntity->getSubmittedOn())) {
-                $rootEntity->addError("PR Date is not correct or empty");
+                $rootEntity->addError(\sprintf("PR Date is not correct or empty. %s", $rootEntity->getSubmittedOn()));
             }
 
             // ===== Department ID =======

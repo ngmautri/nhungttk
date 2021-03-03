@@ -14,20 +14,12 @@ class PRSnapshotAssembler
 
     private static $defaultIncludedFields = array(
         "isActive",
-        "vendor",
-        "contractNo",
-        "contractDate",
-        "docDate",
-        "docNumber",
-        "docCurrency",
-        "exchangeRate",
-        "incoterm",
-        "incotermPlace",
-        "paymentTerm",
-        "warehouse",
+        "prNumber",
+        "keywords",
+        "submittedOn",
         "department",
-        "remarks",
-        "pmtTerm"
+        "warehouse",
+        "remarks"
     );
 
     private static $defaultExcludedFields = array(

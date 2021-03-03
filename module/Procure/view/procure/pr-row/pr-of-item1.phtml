@@ -153,11 +153,7 @@ else :
         echo $this->escapeHtml($a->getPr()
             ->getPrAutoNumber());
         ?>" href="<?php
-
-        echo $a->getPr()->getId();
-        ?>&token=<?php
-
-        echo $a->getPr()->getToken();
+        echo $pr_view;
         ?>" target="_blank"><?php
 
         echo $this->escapeHtml($a->getPr()

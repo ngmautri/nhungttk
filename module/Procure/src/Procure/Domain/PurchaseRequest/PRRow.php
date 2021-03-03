@@ -5,9 +5,10 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use PHPUnit\Framework\Assert;
 use Procure\Application\DTO\Pr\PrRowDTO;
 use Procure\Domain\GenericDoc;
+use Webmozart\Assert\Assert;
+use DateTime;
 
 /**
  * PR Row
@@ -69,6 +70,13 @@ class PRRow extends BaseRow
         return $instance;
     }
 
+    /**
+     *
+     * @param PRDoc $rootDoc
+     * @param PrRow $sourceObj
+     * @param CommandOptions $options
+     * @return \Procure\Domain\PurchaseRequest\PrRow
+     */
     public static function cloneFrom(PRDoc $rootDoc, PrRow $sourceObj, CommandOptions $options)
     {
         Assert::isInstanceOf($rootDoc, PRDoc::class, "PR is required!");
@@ -82,13 +90,19 @@ class PRRow extends BaseRow
         $instance = new self();
 
         $exculdedProps = [
-            'invoice',
-            'po',
-            'rowIdentifer'
+            'rowIdentifer',
+            'prId',
+            'pr',
+            'prQuantity',
+            'edt'
         ];
 
         $instance = $sourceObj->convertExcludeFieldsTo($instance, $exculdedProps);
+
         $instance->initRow($options);
+        $today = new DateTime();
+        $instance->edt = $today->modify("10 days")->format("Y-m-d");
+
         return $instance;
     }
 

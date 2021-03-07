@@ -24,7 +24,7 @@ class HrEmployee
     /**
      * @var string
      *
-     * @ORM\Column(name="employee_code", type="string", length=45, nullable=false)
+     * @ORM\Column(name="employee_code", type="string", length=45, nullable=true)
      */
     private $employeeCode;
 
@@ -38,7 +38,7 @@ class HrEmployee
     /**
      * @var string
      *
-     * @ORM\Column(name="employee_name_local", type="string", length=45, nullable=false)
+     * @ORM\Column(name="employee_name_local", type="string", length=100, nullable=false)
      */
     private $employeeNameLocal;
 
@@ -76,6 +76,20 @@ class HrEmployee
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
      */
     private $remarks;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="employee_status", type="integer", nullable=true)
+     */
+    private $employeeStatus;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="individual_type", type="integer", nullable=true)
+     */
+    private $individualType;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -289,6 +303,54 @@ class HrEmployee
     public function getRemarks()
     {
         return $this->remarks;
+    }
+
+    /**
+     * Set employeeStatus
+     *
+     * @param integer $employeeStatus
+     *
+     * @return HrEmployee
+     */
+    public function setEmployeeStatus($employeeStatus)
+    {
+        $this->employeeStatus = $employeeStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get employeeStatus
+     *
+     * @return integer
+     */
+    public function getEmployeeStatus()
+    {
+        return $this->employeeStatus;
+    }
+
+    /**
+     * Set individualType
+     *
+     * @param integer $individualType
+     *
+     * @return HrEmployee
+     */
+    public function setIndividualType($individualType)
+    {
+        $this->individualType = $individualType;
+
+        return $this;
+    }
+
+    /**
+     * Get individualType
+     *
+     * @return integer
+     */
+    public function getIndividualType()
+    {
+        return $this->individualType;
     }
 
     /**

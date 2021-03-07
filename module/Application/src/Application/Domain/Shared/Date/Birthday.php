@@ -2,13 +2,14 @@
 namespace Application\Domain\Shared\Date;
 
 use DateTime;
+use Application\Domain\Shared\ValueObject;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class Birthday
+class Birthday extends ValueObject
 {
 
     /**
@@ -24,6 +25,8 @@ class Birthday
      * @var string Date in format of Y-m-d or empty string for non defined birthday
      */
     private $birthday;
+
+    private $birthdayDateTime;
 
     /**
      *
@@ -44,6 +47,17 @@ class Birthday
         $this->assertBirthdayIsNotAFutureDate($birthday);
 
         $this->birthday = $birthday;
+        $this->birthdayDateTime = new DateTime($birthday);
+    }
+
+    public function makeSnapshot()
+    {}
+
+    public function getAttributesToCompare()
+    {
+        return [
+            $this->getBirthday()
+        ];
     }
 
     /**
@@ -79,7 +93,7 @@ class Birthday
         $now = new DateTime();
 
         if ($birthdayDateTime > $now) {
-            throw new \RuntimeException(sprintf('Invalid birthday "%s" provided. Birthday must be a past date.'));
+            throw new \InvalidArgumentException(sprintf('Invalid birthday "%s" provided. Birthday must be in the past.', $birthday));
         }
     }
 
@@ -95,7 +109,51 @@ class Birthday
         }
 
         if (! is_string($birthday) || false === strtotime($birthday)) {
-            throw new \RuntimeException(sprintf('Invalid birthday %s value provided.', var_export($birthday, true)));
+            throw new \InvalidArgumentException(sprintf('Invalid birthday %s value provided.', var_export($birthday, true)));
         }
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getBirthday()
+    {
+        return $this->birthday;
+    }
+
+    /**
+     *
+     * @return \DateTime
+     */
+    public function getBirthdayDateTime()
+    {
+        return $this->birthdayDateTime;
+    }
+
+    /**
+     *
+     * @return number
+     */
+    public function getAgeMonth()
+    {
+        $now = new DateTime();
+        $interval = $now->diff($this->getBirthdayDateTime());
+        return $interval->m;
+    }
+
+    public function getAgeYear()
+    {
+        $now = new DateTime();
+        $interval = $now->diff($this->getBirthdayDateTime());
+        return $interval->y;
+    }
+
+    public function getAgeString()
+    {
+        $now = new DateTime();
+        $interval = $now->diff($this->getBirthdayDateTime());
+
+        return $interval->y . " years, " . $interval->m . " months, " . $interval->d . " days ";
     }
 }

@@ -19,7 +19,7 @@ final class DateRange extends ValueObject
     public function __construct(\DateTime $start, \DateTime $end)
     {
         if ($start > $end) {
-            throw new \RuntimeException(\sprintf("%s-%s", $start, $start));
+            throw new \InvalidArgumentException(\sprintf("%s-%s", $start, $start));
         }
         $this->start = $start;
         $this->end = $end;

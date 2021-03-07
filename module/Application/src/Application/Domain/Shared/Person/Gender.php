@@ -11,11 +11,11 @@ use Application\Domain\Shared\ValueObject;
 final class Gender extends ValueObject
 {
 
-    const MALE = 'male';
+    const MALE = 'M';
 
-    const FEMALE = 'female';
+    const FEMALE = 'F';
 
-    const OTHER = 'other';
+    const OTHER = 'O';
 
     public function makeSnapshot()
     {}

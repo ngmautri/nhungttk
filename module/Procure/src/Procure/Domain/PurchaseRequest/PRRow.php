@@ -103,6 +103,11 @@ class PRRow extends BaseRow
         $today = new DateTime();
         $instance->edt = $today->modify("10 days")->format("Y-m-d");
 
+        $instance->standardConvertFactor = $instance->conversionFactor;
+
+        if ($instance->standardConvertFactor == null) {
+            $instance->standardConvertFactor = 1;
+        }
         return $instance;
     }
 

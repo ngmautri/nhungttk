@@ -29,7 +29,13 @@ abstract class GenericItem extends BaseItem
 
     public function makeSnapshot()
     {
-        return GenericObjectAssembler::updateAllFieldsFrom(new ItemSnapshot(), $this);
+        $rootSnapshot = GenericObjectAssembler::updateAllFieldsFrom(new ItemSnapshot(), $this);
+
+        if (! $rootSnapshot instanceof ItemSnapshot) {
+            throw new \InvalidArgumentException("Root snapshot not created!");
+        }
+
+        return $rootSnapshot;
     }
 
     public function makeDTO()

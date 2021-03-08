@@ -38,6 +38,7 @@ class ItemFactory
         $itemTypeId = $snapshot->getItemTypeId();
         $instance = self::_createItem($itemTypeId);
         GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        $instance->specifyItem(); // important
         $instance->createUom();
 
         return $instance;

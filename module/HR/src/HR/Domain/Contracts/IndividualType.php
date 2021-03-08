@@ -14,4 +14,12 @@ class IndividualType
     const APPLICANT = 0;
 
     const EMPLOYEE = 1;
+
+    public static function getSupportedType()
+    {
+        $r = [];
+        $r[] = self::APPLICANT;
+        $r[] = self::EMPLOYEE;
+        return $r;
+    }
 }

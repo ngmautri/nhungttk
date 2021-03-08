@@ -1,13 +1,16 @@
 <?php
 namespace HR\Domain\Employee;
 
+use Application\Domain\Shared\AbstractEntity;
+use Application\Domain\Shared\AggregateRootInterface;
+
 /**
  * Mapping with hr_indvidual
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-abstract class AbstractIndividual
+abstract class AbstractIndividual extends AbstractEntity implements AggregateRootInterface
 {
 
     protected $id;
@@ -53,6 +56,42 @@ abstract class AbstractIndividual
     protected $createdBy;
 
     protected $lastChangeBy;
+
+    protected $company;
+
+    protected $revisionNo;
+
+    protected $version;
+
+    protected $sysNumber;
+
+    protected $token;
+
+    protected $uuid;
+
+    protected $passportNo;
+
+    protected $passportIssuePlace;
+
+    protected $passportIssueDate;
+
+    protected $passportExpiredDate;
+
+    protected $workPermitNo;
+
+    protected $workPermitDate;
+
+    protected $workPermitExpiredDate;
+
+    protected $familyBookNo;
+
+    protected $ssoNumber;
+
+    protected $personalIdNumberDate;
+
+    protected $personalIdNumberExpiredDate;
+
+    protected $nationality;
 
     /**
      *
@@ -448,5 +487,329 @@ abstract class AbstractIndividual
     protected function setLastChangeBy($lastChangeBy)
     {
         $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     *
+     * @param mixed $company
+     */
+    protected function setCompany($company)
+    {
+        $this->company = $company;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSysNumber()
+    {
+        return $this->sysNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     *
+     * @param mixed $revisionNo
+     */
+    protected function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $version
+     */
+    protected function setVersion($version)
+    {
+        $this->version = $version;
+    }
+
+    /**
+     *
+     * @param mixed $sysNumber
+     */
+    protected function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    protected function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     *
+     * @param mixed $uuid
+     */
+    protected function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     *
+     * @param mixed $passportNo
+     */
+    public function setPassportNo($passportNo)
+    {
+        $this->passportNo = $passportNo;
+    }
+
+    /**
+     *
+     * @param mixed $passportIssuePlace
+     */
+    public function setPassportIssuePlace($passportIssuePlace)
+    {
+        $this->passportIssuePlace = $passportIssuePlace;
+    }
+
+    /**
+     *
+     * @param mixed $passportIssueDate
+     */
+    public function setPassportIssueDate($passportIssueDate)
+    {
+        $this->passportIssueDate = $passportIssueDate;
+    }
+
+    /**
+     *
+     * @param mixed $passportExpiredDate
+     */
+    public function setPassportExpiredDate($passportExpiredDate)
+    {
+        $this->passportExpiredDate = $passportExpiredDate;
+    }
+
+    /**
+     *
+     * @param mixed $workPermitNo
+     */
+    public function setWorkPermitNo($workPermitNo)
+    {
+        $this->workPermitNo = $workPermitNo;
+    }
+
+    /**
+     *
+     * @param mixed $workPermitDate
+     */
+    public function setWorkPermitDate($workPermitDate)
+    {
+        $this->workPermitDate = $workPermitDate;
+    }
+
+    /**
+     *
+     * @param mixed $workPermitExpiredDate
+     */
+    public function setWorkPermitExpiredDate($workPermitExpiredDate)
+    {
+        $this->workPermitExpiredDate = $workPermitExpiredDate;
+    }
+
+    /**
+     *
+     * @param mixed $familyBookNo
+     */
+    public function setFamilyBookNo($familyBookNo)
+    {
+        $this->familyBookNo = $familyBookNo;
+    }
+
+    /**
+     *
+     * @param mixed $ssoNumber
+     */
+    public function setSsoNumber($ssoNumber)
+    {
+        $this->ssoNumber = $ssoNumber;
+    }
+
+    /**
+     *
+     * @param mixed $personalIdNumberDate
+     */
+    public function setPersonalIdNumberDate($personalIdNumberDate)
+    {
+        $this->personalIdNumberDate = $personalIdNumberDate;
+    }
+
+    /**
+     *
+     * @param mixed $personalIdNumberExpiredDate
+     */
+    public function setPersonalIdNumberExpiredDate($personalIdNumberExpiredDate)
+    {
+        $this->personalIdNumberExpiredDate = $personalIdNumberExpiredDate;
+    }
+
+    /**
+     *
+     * @param mixed $nationality
+     */
+    public function setNationality($nationality)
+    {
+        $this->nationality = $nationality;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getPassportNo()
+    {
+        return $this->passportNo;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getPassportIssuePlace()
+    {
+        return $this->passportIssuePlace;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getPassportIssueDate()
+    {
+        return $this->passportIssueDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getPassportExpiredDate()
+    {
+        return $this->passportExpiredDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getWorkPermitNo()
+    {
+        return $this->workPermitNo;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getWorkPermitDate()
+    {
+        return $this->workPermitDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getWorkPermitExpiredDate()
+    {
+        return $this->workPermitExpiredDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getFamilyBookNo()
+    {
+        return $this->familyBookNo;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getSsoNumber()
+    {
+        return $this->ssoNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getPersonalIdNumberDate()
+    {
+        return $this->personalIdNumberDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getPersonalIdNumberExpiredDate()
+    {
+        return $this->personalIdNumberExpiredDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getNationality()
+    {
+        return $this->nationality;
     }
 }

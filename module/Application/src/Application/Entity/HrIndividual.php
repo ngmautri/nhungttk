@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * HrIndividual
  *
- * @ORM\Table(name="hr_individual", indexes={@ORM\Index(name="hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="hr_individual_FK2_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="hr_individual", indexes={@ORM\Index(name="hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="hr_individual_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="hr_individual_FK3_idx", columns={"company_id"}), @ORM\Index(name="hr_individual_FK4_idx", columns={"nationality"})})
  * @ORM\Entity
  */
 class HrIndividual
@@ -94,13 +94,6 @@ class HrIndividual
     /**
      * @var string
      *
-     * @ORM\Column(name="personal_id_number", type="string", length=45, nullable=true)
-     */
-    private $personalIdNumber;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="gender", type="string", length=10, nullable=false)
      */
     private $gender;
@@ -155,6 +148,125 @@ class HrIndividual
     private $employeeCode;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="version", type="integer", nullable=true)
+     */
+    private $version;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
+     */
+    private $sysNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=38, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=38, nullable=true)
+     */
+    private $uuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="passport_no", type="string", length=45, nullable=true)
+     */
+    private $passportNo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="passport_issue_place", type="string", length=45, nullable=true)
+     */
+    private $passportIssuePlace;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="passport_issue_date", type="datetime", nullable=true)
+     */
+    private $passportIssueDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="passport_expired_date", type="datetime", nullable=true)
+     */
+    private $passportExpiredDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="work_permit_no", type="string", length=45, nullable=true)
+     */
+    private $workPermitNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="work_permit_date", type="datetime", nullable=true)
+     */
+    private $workPermitDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="work_permit_expired_date", type="datetime", nullable=true)
+     */
+    private $workPermitExpiredDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="family_book_no", type="string", length=45, nullable=true)
+     */
+    private $familyBookNo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sso_number", type="string", length=45, nullable=true)
+     */
+    private $ssoNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="personal_id_number", type="string", length=45, nullable=true)
+     */
+    private $personalIdNumber;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="personal_id_number_date", type="datetime", nullable=true)
+     */
+    private $personalIdNumberDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="personal_id_number_expired_date", type="datetime", nullable=true)
+     */
+    private $personalIdNumberExpiredDate;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -173,6 +285,26 @@ class HrIndividual
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCountry
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="nationality", referencedColumnName="id")
+     * })
+     */
+    private $nationality;
 
 
 
@@ -427,30 +559,6 @@ class HrIndividual
     }
 
     /**
-     * Set personalIdNumber
-     *
-     * @param string $personalIdNumber
-     *
-     * @return HrIndividual
-     */
-    public function setPersonalIdNumber($personalIdNumber)
-    {
-        $this->personalIdNumber = $personalIdNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get personalIdNumber
-     *
-     * @return string
-     */
-    public function getPersonalIdNumber()
-    {
-        return $this->personalIdNumber;
-    }
-
-    /**
      * Set gender
      *
      * @param string $gender
@@ -643,6 +751,414 @@ class HrIndividual
     }
 
     /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return HrIndividual
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * Set version
+     *
+     * @param integer $version
+     *
+     * @return HrIndividual
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return integer
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * Set sysNumber
+     *
+     * @param string $sysNumber
+     *
+     * @return HrIndividual
+     */
+    public function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get sysNumber
+     *
+     * @return string
+     */
+    public function getSysNumber()
+    {
+        return $this->sysNumber;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return HrIndividual
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return HrIndividual
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Set passportNo
+     *
+     * @param string $passportNo
+     *
+     * @return HrIndividual
+     */
+    public function setPassportNo($passportNo)
+    {
+        $this->passportNo = $passportNo;
+
+        return $this;
+    }
+
+    /**
+     * Get passportNo
+     *
+     * @return string
+     */
+    public function getPassportNo()
+    {
+        return $this->passportNo;
+    }
+
+    /**
+     * Set passportIssuePlace
+     *
+     * @param string $passportIssuePlace
+     *
+     * @return HrIndividual
+     */
+    public function setPassportIssuePlace($passportIssuePlace)
+    {
+        $this->passportIssuePlace = $passportIssuePlace;
+
+        return $this;
+    }
+
+    /**
+     * Get passportIssuePlace
+     *
+     * @return string
+     */
+    public function getPassportIssuePlace()
+    {
+        return $this->passportIssuePlace;
+    }
+
+    /**
+     * Set passportIssueDate
+     *
+     * @param \DateTime $passportIssueDate
+     *
+     * @return HrIndividual
+     */
+    public function setPassportIssueDate($passportIssueDate)
+    {
+        $this->passportIssueDate = $passportIssueDate;
+
+        return $this;
+    }
+
+    /**
+     * Get passportIssueDate
+     *
+     * @return \DateTime
+     */
+    public function getPassportIssueDate()
+    {
+        return $this->passportIssueDate;
+    }
+
+    /**
+     * Set passportExpiredDate
+     *
+     * @param \DateTime $passportExpiredDate
+     *
+     * @return HrIndividual
+     */
+    public function setPassportExpiredDate($passportExpiredDate)
+    {
+        $this->passportExpiredDate = $passportExpiredDate;
+
+        return $this;
+    }
+
+    /**
+     * Get passportExpiredDate
+     *
+     * @return \DateTime
+     */
+    public function getPassportExpiredDate()
+    {
+        return $this->passportExpiredDate;
+    }
+
+    /**
+     * Set workPermitNo
+     *
+     * @param string $workPermitNo
+     *
+     * @return HrIndividual
+     */
+    public function setWorkPermitNo($workPermitNo)
+    {
+        $this->workPermitNo = $workPermitNo;
+
+        return $this;
+    }
+
+    /**
+     * Get workPermitNo
+     *
+     * @return string
+     */
+    public function getWorkPermitNo()
+    {
+        return $this->workPermitNo;
+    }
+
+    /**
+     * Set workPermitDate
+     *
+     * @param \DateTime $workPermitDate
+     *
+     * @return HrIndividual
+     */
+    public function setWorkPermitDate($workPermitDate)
+    {
+        $this->workPermitDate = $workPermitDate;
+
+        return $this;
+    }
+
+    /**
+     * Get workPermitDate
+     *
+     * @return \DateTime
+     */
+    public function getWorkPermitDate()
+    {
+        return $this->workPermitDate;
+    }
+
+    /**
+     * Set workPermitExpiredDate
+     *
+     * @param \DateTime $workPermitExpiredDate
+     *
+     * @return HrIndividual
+     */
+    public function setWorkPermitExpiredDate($workPermitExpiredDate)
+    {
+        $this->workPermitExpiredDate = $workPermitExpiredDate;
+
+        return $this;
+    }
+
+    /**
+     * Get workPermitExpiredDate
+     *
+     * @return \DateTime
+     */
+    public function getWorkPermitExpiredDate()
+    {
+        return $this->workPermitExpiredDate;
+    }
+
+    /**
+     * Set familyBookNo
+     *
+     * @param string $familyBookNo
+     *
+     * @return HrIndividual
+     */
+    public function setFamilyBookNo($familyBookNo)
+    {
+        $this->familyBookNo = $familyBookNo;
+
+        return $this;
+    }
+
+    /**
+     * Get familyBookNo
+     *
+     * @return string
+     */
+    public function getFamilyBookNo()
+    {
+        return $this->familyBookNo;
+    }
+
+    /**
+     * Set ssoNumber
+     *
+     * @param string $ssoNumber
+     *
+     * @return HrIndividual
+     */
+    public function setSsoNumber($ssoNumber)
+    {
+        $this->ssoNumber = $ssoNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get ssoNumber
+     *
+     * @return string
+     */
+    public function getSsoNumber()
+    {
+        return $this->ssoNumber;
+    }
+
+    /**
+     * Set personalIdNumber
+     *
+     * @param string $personalIdNumber
+     *
+     * @return HrIndividual
+     */
+    public function setPersonalIdNumber($personalIdNumber)
+    {
+        $this->personalIdNumber = $personalIdNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get personalIdNumber
+     *
+     * @return string
+     */
+    public function getPersonalIdNumber()
+    {
+        return $this->personalIdNumber;
+    }
+
+    /**
+     * Set personalIdNumberDate
+     *
+     * @param \DateTime $personalIdNumberDate
+     *
+     * @return HrIndividual
+     */
+    public function setPersonalIdNumberDate($personalIdNumberDate)
+    {
+        $this->personalIdNumberDate = $personalIdNumberDate;
+
+        return $this;
+    }
+
+    /**
+     * Get personalIdNumberDate
+     *
+     * @return \DateTime
+     */
+    public function getPersonalIdNumberDate()
+    {
+        return $this->personalIdNumberDate;
+    }
+
+    /**
+     * Set personalIdNumberExpiredDate
+     *
+     * @param \DateTime $personalIdNumberExpiredDate
+     *
+     * @return HrIndividual
+     */
+    public function setPersonalIdNumberExpiredDate($personalIdNumberExpiredDate)
+    {
+        $this->personalIdNumberExpiredDate = $personalIdNumberExpiredDate;
+
+        return $this;
+    }
+
+    /**
+     * Get personalIdNumberExpiredDate
+     *
+     * @return \DateTime
+     */
+    public function getPersonalIdNumberExpiredDate()
+    {
+        return $this->personalIdNumberExpiredDate;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -688,5 +1204,53 @@ class HrIndividual
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCompany $company
+     *
+     * @return HrIndividual
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * Set nationality
+     *
+     * @param \Application\Entity\NmtApplicationCountry $nationality
+     *
+     * @return HrIndividual
+     */
+    public function setNationality(\Application\Entity\NmtApplicationCountry $nationality = null)
+    {
+        $this->nationality = $nationality;
+
+        return $this;
+    }
+
+    /**
+     * Get nationality
+     *
+     * @return \Application\Entity\NmtApplicationCountry
+     */
+    public function getNationality()
+    {
+        return $this->nationality;
     }
 }

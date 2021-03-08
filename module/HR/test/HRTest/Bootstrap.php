@@ -43,7 +43,9 @@ class Bootstrap
             'modules' => array(
                 'DoctrineModule',
                 'DoctrineORMModule',
+                'Inventory',
                 'Application',
+                'Procure',
                 'HR'
             ),
 

@@ -25,11 +25,8 @@ class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
         try {
 
             // $result = GenericSnapshotAssembler::findMissingProps(HrIndividual::class, AbstractIndividual::class);
-            // $result = GenericSnapshotAssembler::findMissingProps(GenericItem::class, GenericItemSnapshot::class);
+            // $result = GenericSnapshotAssembler::createAllSnapshotProps(AbstractIndividual::class);
 
-            // $result = GenericSnapshotAssembler::createSnapshotProps(BaseEmployee::class, );
-
-            // $result = GenericSnapshotAssembler::createAllSnapshotProps(UomPair::class);
             $result = GenericSnapshotAssembler::createSnapshotProps(BaseIndividual::class, AbstractIndividual::class);
 
             // \var_dump(($result));

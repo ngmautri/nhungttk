@@ -197,7 +197,6 @@ class IndividualMapper
         $snapshot->nickName = $entity->getNickName();
         $snapshot->personalIdNumber = $entity->getPersonalIdNumber();
         $snapshot->gender = $entity->getGender();
-        $snapshot->birthday = $entity->getBirthday();
         $snapshot->lastStatusId = $entity->getLastStatusId();
         $snapshot->remarks = $entity->getRemarks();
         $snapshot->employeeStatus = $entity->getEmployeeStatus();

@@ -20,4 +20,6 @@ Interface IndividualQueryRepositoryInterface extends QueryRepositoryInterface
     public function getRootEntityById($id);
 
     public function getIndividualTypeById($id);
+
+    public function getByEmployeeCode($code);
 }

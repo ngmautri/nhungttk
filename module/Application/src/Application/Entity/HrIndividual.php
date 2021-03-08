@@ -103,7 +103,7 @@ class HrIndividual
      *
      * @ORM\Column(name="birthday", type="datetime", nullable=false)
      */
-    private $birthday = 'CURRENT_TIMESTAMP';
+    private $birthday;
 
     /**
      * @var integer

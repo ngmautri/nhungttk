@@ -19,7 +19,7 @@ final class WorkingAge extends ValueObject
 
     private $maxAge;
 
-    public function __construct(Birthday $birthday, $minAge = 18, $maxAge = 65)
+    public function __construct(Birthday $birthday, $minAge = 18, $maxAge = 75)
     {
         Assert::integer($minAge);
         Assert::integer($maxAge);

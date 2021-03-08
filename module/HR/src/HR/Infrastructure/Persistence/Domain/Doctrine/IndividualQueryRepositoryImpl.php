@@ -158,4 +158,36 @@ class IndividualQueryRepositoryImpl extends AbstractDoctrineRepository implement
 
         return $doctrineEntity->getIndividualType();
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \HR\Domain\Employee\Repository\IndividualQueryRepositoryInterface::getByEmployeeCode()
+     */
+    public function getByEmployeeCode($code)
+    {
+        if ($code == null) {
+            return null;
+        }
+
+        $criteria = array(
+            'employeeCode' => $code
+        );
+
+        $rootEntityDoctrine = $this->getDoctrineEM()
+            ->getRepository('\Application\Entity\HrIndividual')
+            ->findOneBy($criteria);
+
+        if ($rootEntityDoctrine == null) {
+            return null;
+        }
+
+        $rootSnapshot = IndividualMapper::createSnapshot($rootEntityDoctrine, null, true);
+        if ($rootSnapshot == null) {
+            return null;
+        }
+
+        $rootEntity = IndividualFactory::contructFromDB($rootSnapshot);
+        return $rootEntity;
+    }
 }

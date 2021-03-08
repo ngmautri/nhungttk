@@ -4,6 +4,7 @@ namespace Application\Domain\Shared\Person;
 use Application\Domain\Shared\ValueObject;
 use Webmozart\Assert\Assert;
 use Application\Domain\Util\Translator;
+use Application\Domain\Util\OutputMessage;
 
 /**
  *
@@ -21,8 +22,8 @@ final class PersonName extends ValueObject
 
     public function __construct($first_name, $middle_name, $last_name)
     {
-        Assert::stringNotEmpty($first_name, \sprintf('%s! [%s]', Translator::translate("First name empty"), $first_name));
-        Assert::stringNotEmpty($last_name, \sprintf('%s! [%s]', Translator::translate("First name empty"), $last_name));
+        Assert::stringNotEmpty($first_name, OutputMessage::error(Translator::translate("First name empty"), $first_name));
+        // Assert::stringNotEmpty($last_name, OutputMessage::error(Translator::translate("Last name empty"), $last_name));
 
         // $pattern = '/^[$%=-@&]*$/';
         $pattern = '/[a-zA-Z]$/'; // Contain only charater.
@@ -33,7 +34,10 @@ final class PersonName extends ValueObject
             Assert::regex($middle_name, $pattern, \sprintf('%s! [%s]', Translator::translate("Middle name has invalid character"), $middle_name));
         }
 
-        Assert::regex($last_name, $pattern, \sprintf('%s! [%s]', Translator::translate("Last name has invalid character"), $last_name));
+        if ($last_name != null or $last_name != '') {
+
+            Assert::regex($last_name, $pattern, OutputMessage::error(Translator::translate("Last name has invalid character"), $last_name));
+        }
 
         Assert::maxLength($first_name, 30, \sprintf('%s! [%s]', Translator::translate("First name too long (max.30 character)"), $first_name));
         Assert::maxLength($middle_name, 30, \sprintf('%s! [%s]', Translator::translate("Middle name too long (max.30 character)"), $middle_name));

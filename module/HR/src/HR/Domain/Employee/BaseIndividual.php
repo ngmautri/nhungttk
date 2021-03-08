@@ -85,7 +85,9 @@ abstract class BaseIndividual extends AbstractIndividual
     protected function createWorkingAgeVO()
     {
         try {
-            $this->createWorkingAgeVO = new WorkingAge(new Birthday($this->getBirthday()));
+            $birthday = new Birthday($this->getBirthday());
+            $this->birthdayVO = $birthday;
+            $this->workingAgeVO = new WorkingAge($birthday);
         } catch (\InvalidArgumentException $e) {
             $this->addError($e->getMessage());
         }

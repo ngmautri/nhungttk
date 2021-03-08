@@ -1,8 +1,7 @@
 <?php
+use HR\Application\Service\Upload\Employee\UploadEmployee;
+use HR\Application\Service\Upload\Employee\UploadEmployeeFactory;
 
-/**
- * 
- */
 return array(
     'navigation' => array(
         'hr_navi' => array(
@@ -106,8 +105,11 @@ return array(
 
     'service_manager' => array(
         'factories' => array(
+
             'HR\Service\EmployeeSearchService' => 'HR\Service\EmployeeSearchServiceFactory',
-            'hr_navi' => 'HR\Service\HrNavigationFactory' // <-- add this
+            'hr_navi' => 'HR\Service\HrNavigationFactory', // <-- add this,
+
+            UploadEmployee::class => UploadEmployeeFactory::class
         )
     ),
 

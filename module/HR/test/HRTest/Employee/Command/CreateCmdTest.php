@@ -41,7 +41,7 @@ class CreateCmdTest extends PHPUnit_Framework_TestCase
                 "employeeCode" => '0654',
                 "firstName" => 'Nguyen',
                 "lastName" => 'Tri',
-                "birthday" => "1979-01-22",
+                "birthday" => "1955-06-01",
                 "remarks" => "Special Item itemDescription",
                 "createdBy" => $userId,
                 "individualType" => IndividualType::EMPLOYEE,

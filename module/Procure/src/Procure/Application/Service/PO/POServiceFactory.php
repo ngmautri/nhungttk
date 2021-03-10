@@ -3,11 +3,13 @@ namespace Procure\Application\Service\PO;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class POServiceFactory implements FactoryInterface
 {
@@ -29,12 +31,12 @@ class POServiceFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
 
-        $queryRepository = $container->get('Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository');
+        $queryRepository = $container->get(POQueryRepositoryImpl::class);
         $service->setQueryRepository($queryRepository);
 
-        $cmdRepository = $container->get('Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository');
+        $cmdRepository = $container->get(POCmdRepositoryImpl::class);
         $service->setCmdRepository($cmdRepository);
-        
+
         return $service;
     }
 }

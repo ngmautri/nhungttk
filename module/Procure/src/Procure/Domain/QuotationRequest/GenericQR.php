@@ -4,13 +4,12 @@ namespace Procure\Domain\QuotationRequest;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
-use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Qr\QrPosted;
 use Procure\Domain\Event\Qr\QrRowAdded;
+use Procure\Domain\Event\Qr\QrRowRemoved;
 use Procure\Domain\Event\Qr\QrRowUpdated;
-use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\QuotationRequest\Repository\QrCmdRepositoryInterface;
 use Procure\Domain\QuotationRequest\Validator\ValidatorFactory;
 use Procure\Domain\Service\QrPostingService;
@@ -30,6 +29,47 @@ abstract class GenericQR extends AbstractQR
 
     public function deactivateRow(QRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {}
+
+    /**
+     *
+     * @param QrRow $row
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @return \Procure\Domain\QuotationRequest\QrRowSnapshot
+     */
+    public function removeRow(QrRow $row, CommandOptions $options, SharedService $sharedService)
+    {
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("GR is posted already! %s", $this->getId()));
+        Assert::notNull($options, "command options not found");
+
+        /**
+         *
+         * @var QrRowSnapshot $localSnapshot
+         * @var QRCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->removeRow($this, $row);
+
+        $params = [
+            "rowId" => $localSnapshot->getId(),
+            "rowToken" => $localSnapshot->getToken()
+        ];
+
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new QrRowRemoved($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $localSnapshot;
+    }
 
     /**
      *

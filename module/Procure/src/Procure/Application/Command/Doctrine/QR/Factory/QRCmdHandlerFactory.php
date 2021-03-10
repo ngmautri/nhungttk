@@ -6,6 +6,7 @@ use Procure\Application\Command\Doctrine\QR\CloneAndSaveCmdHandler;
 use Procure\Application\Command\Doctrine\QR\CreateHeaderCmdHandler;
 use Procure\Application\Command\Doctrine\QR\CreateRowCmdHandler;
 use Procure\Application\Command\Doctrine\QR\PostCmdHandler;
+use Procure\Application\Command\Doctrine\QR\RemoveRowCmdHandler;
 use Procure\Application\Command\Doctrine\QR\UpdateHeaderCmdHandler;
 use Procure\Application\Command\Doctrine\QR\UpdateRowCmdHandler;
 use Procure\Application\Command\Doctrine\QR\UpdateRowInlineCmdHandler;
@@ -61,5 +62,10 @@ class QRCmdHandlerFactory extends CmdHandlerAbstractFactory
     public function getCloneCmdHandler()
     {
         return new CloneAndSaveCmdHandler();
+    }
+
+    public function getRemoveRowCmdHandler()
+    {
+        return new RemoveRowCmdHandler();
     }
 }

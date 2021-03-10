@@ -10,6 +10,7 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
 use Procure\Infrastructure\Mapper\PrMapper;
+use Application\Entity\NmtProcurePrRow;
 
 /**
  *
@@ -22,6 +23,61 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
     const ROOT_ENTITY_NAME = "\Application\Entity\NmtProcurePr";
 
     const LOCAL_ENTITY_NAME = "\Application\Entity\NmtProcurePrRow";
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface::deleteRow()
+     */
+    public function removeRow(GenericPR $rootEntity, PRRow $localEntity)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("Root entity not given.");
+        }
+
+        /**
+         *
+         * @var NmtProcurePr $rowEntityDoctrine ;
+         */
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Doctrine root entity not found.");
+        }
+
+        /**
+         *
+         * @var NmtProcurePrRow $rowEntityDoctrine ;
+         */
+        $rowEntityDoctrine = $this->doctrineEM->find(self::LOCAL_ENTITY_NAME, $localEntity->getId());
+
+        if ($rowEntityDoctrine == null) {
+            throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localEntity->getId()));
+        }
+
+        if ($rowEntityDoctrine->getPr() == null) {
+            throw new InvalidArgumentException("Doctrine row entity is not valid");
+        }
+
+        if ($rowEntityDoctrine->getPr()->getId() != $rootEntity->getId()) {
+            throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getPr()->getId(), $rootEntity->getId()));
+        }
+
+        $isFlush = true;
+        $increaseVersion = true;
+
+        // remove row.
+        $this->getDoctrineEM()->remove($rowEntityDoctrine);
+
+        if ($increaseVersion) {
+            $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo() + 1);
+            $this->doctrineEM->persist($rootEntityDoctrine);
+        }
+
+        if ($isFlush) {
+            $this->doctrineEM->flush();
+        }
+    }
 
     /**
      *

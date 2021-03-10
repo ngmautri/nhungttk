@@ -15,6 +15,7 @@ use Procure\Domain\Contracts\ReversalDocInterface;
 use Procure\Domain\Event\Ap\ApPosted;
 use Procure\Domain\Event\Ap\ApReversed;
 use Procure\Domain\Event\Ap\ApRowAdded;
+use Procure\Domain\Event\Ap\ApRowRemoved;
 use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\SharedServiceInterface;
@@ -31,6 +32,41 @@ abstract class GenericAP extends BaseDoc
 {
 
     abstract public function specify();
+
+    // ============================
+    public function removeRow(APRow $row, CommandOptions $options, SharedService $sharedService)
+    {
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted already! %s", $this->getId()));
+        Assert::notNull($options, "command options not found");
+
+        /**
+         *
+         * @var APRowSnapshot $localSnapshot
+         * @var ApCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->removeRow($this, $row);
+
+        $params = [
+            "rowId" => $localSnapshot->getId(),
+            "rowToken" => $localSnapshot->getToken()
+        ];
+
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new ApRowRemoved($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $localSnapshot;
+    }
 
     public function store(SharedService $sharedService)
     {

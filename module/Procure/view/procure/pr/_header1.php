@@ -1,7 +1,7 @@
 <?php
 use Application\Domain\Contracts\FormActions;
 ?>
-<FORM id="Creating_Form" class="form-horizontal" action="<?php
+<FORM id="HEADER_FORM" class="form-horizontal" action="<?php
 echo $form_action;
 ?>" method="post" enctype="multipart/form-data">
    <input type="hidden" name="redirectUrl" value="<?php

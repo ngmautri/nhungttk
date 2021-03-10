@@ -2,6 +2,7 @@
 namespace Procure\Infrastructure\Doctrine;
 
 use Application\Entity\NmtProcureGr;
+use Application\Entity\NmtProcureGrRow;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\GoodsReceipt\GRRow;
@@ -14,7 +15,7 @@ use Procure\Infrastructure\Mapper\GrMapper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRepositoryInterface
 {
@@ -22,6 +23,61 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
     const ROOT_ENTITY_NAME = "\Application\Entity\NmtProcureGr";
 
     const LOCAL_ENTITY_NAME = "\Application\Entity\NmtProcureGrRow";
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GoodsReceipt\Repository\GrCmdRepositoryInterface::removeRow()
+     */
+    public function removeRow(GenericGR $rootEntity, GRRow $localEntity)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("Root entity not given.");
+        }
+
+        /**
+         *
+         * @var NmtProcureGr $rowEntityDoctrine ;
+         */
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Doctrine root entity not found.");
+        }
+
+        /**
+         *
+         * @var NmtProcureGrRow $rowEntityDoctrine ;
+         */
+        $rowEntityDoctrine = $this->doctrineEM->find(self::LOCAL_ENTITY_NAME, $localEntity->getId());
+
+        if ($rowEntityDoctrine == null) {
+            throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localEntity->getId()));
+        }
+
+        if ($rowEntityDoctrine->getPr() == null) {
+            throw new InvalidArgumentException("Doctrine row entity is not valid");
+        }
+
+        if ($rowEntityDoctrine->getGr()->getId() != $rootEntity->getId()) {
+            throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getGr()->getId(), $rootEntity->getId()));
+        }
+
+        $isFlush = true;
+        $increaseVersion = true;
+
+        // remove row.
+        $this->getDoctrineEM()->remove($rowEntityDoctrine);
+
+        if ($increaseVersion) {
+            $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo() + 1);
+            $this->doctrineEM->persist($rootEntityDoctrine);
+        }
+
+        if ($isFlush) {
+            $this->doctrineEM->flush();
+        }
+    }
 
     /**
      *
@@ -201,7 +257,7 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
         /**
          *
          * @var \Application\Entity\NmtProcureGr $entity ;
-         *     
+         *
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());

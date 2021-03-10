@@ -42,6 +42,8 @@ use Procure\Application\Service\Upload\PR\UploadPR;
 use Procure\Application\Service\Upload\PR\UploadPRFactory;
 use Procure\Infrastructure\Cache\CacheFactory;
 use Procure\Infrastructure\Cache\RedisCacheFactory;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\Factory\POQueryRepositoryFactory;
 use Procure\Infrastructure\Logging\LoggerFactory;
 use Procure\Infrastructure\Persistence\Doctrine\GrReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl;
@@ -53,6 +55,8 @@ use Procure\Infrastructure\Persistence\Doctrine\Factory\PoReporterRepositoryImpl
 use Procure\Infrastructure\Persistence\Doctrine\Factory\PrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
+use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\Factory\POCmdRepositoryFactory;
 
 return array(
     'navigation' => array(
@@ -296,8 +300,9 @@ return array(
             'Procure\Infrastructure\Persistence\Doctrine\POListRepository' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\POListRepositoryFactory',
             'Procure\Infrastructure\Persistence\Doctrine\APRepoterRepositoryImpl' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\APReporterRepositoryImplFactory',
 
-            'Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository' => 'Procure\Infrastructure\Doctrine\Factory\POCmdRepositoryFactory',
-            'Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository' => 'Procure\Infrastructure\Doctrine\Factory\POQueryRepositoryFactory',
+            POCmdRepositoryImpl::class => POCmdRepositoryFactory::class,
+            POQueryRepositoryImpl::class => POQueryRepositoryFactory::class,
+
             QrReportRepositoryImpl::class => QrReporterRepositoryImplFactory::class,
             GrReportRepositoryImpl::class => GrReporterRepositoryImplFactory::class,
             PrReportRepositoryImpl::class => PrReporterRepositoryImplFactory::class,

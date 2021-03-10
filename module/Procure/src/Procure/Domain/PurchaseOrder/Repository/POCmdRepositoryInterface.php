@@ -7,7 +7,7 @@ use Procure\Domain\PurchaseOrder\PORow;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 Interface POCmdRepositoryInterface
 {
@@ -20,4 +20,5 @@ Interface POCmdRepositoryInterface
 
     public function storeRow(GenericPO $rootEntity, PORow $localEntity, $isPosting = false);
 
+    public function removeRow(GenericPO $rootEntity, PORow $localEntity);
 }

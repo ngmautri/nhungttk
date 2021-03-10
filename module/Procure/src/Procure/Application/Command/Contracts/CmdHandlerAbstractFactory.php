@@ -24,4 +24,6 @@ abstract class CmdHandlerAbstractFactory
     abstract function getReverseCmdHandler();
 
     abstract function getCloneCmdHandler();
+
+    abstract function getRemoveRowCmdHandler();
 }

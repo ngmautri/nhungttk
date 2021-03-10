@@ -17,8 +17,8 @@ use Procure\Application\Service\PO\Output\Pdf\PoPdfBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoExcelBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoOpenOfficeBuilder;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
+use Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface;
 use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
 
 /**
@@ -264,7 +264,7 @@ class POService extends AbstractService implements PoServiceInterface
 
     /**
      *
-     * @return \Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository
+     * @return \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface
      */
     public function getCmdRepository()
     {
@@ -273,16 +273,16 @@ class POService extends AbstractService implements PoServiceInterface
 
     /**
      *
-     * @param DoctrinePOCmdRepository $cmdRepository
+     * @param POCmdRepositoryInterface $cmdRepository
      */
-    public function setCmdRepository(DoctrinePOCmdRepository $cmdRepository)
+    public function setCmdRepository(POCmdRepositoryInterface $cmdRepository)
     {
         $this->cmdRepository = $cmdRepository;
     }
 
     /**
      *
-     * @return \Procure\Infrastructure\Doctrine\POQueryRepositoryImpl
+     * @return \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface
      */
     public function getQueryRepository()
     {
@@ -291,9 +291,9 @@ class POService extends AbstractService implements PoServiceInterface
 
     /**
      *
-     * @param POQueryRepositoryImpl $queryRepository
+     * @param POQueryRepositoryInterface $queryRepository
      */
-    public function setQueryRepository(POQueryRepositoryImpl $queryRepository)
+    public function setQueryRepository(POQueryRepositoryInterface $queryRepository)
     {
         $this->queryRepository = $queryRepository;
     }

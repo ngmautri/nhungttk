@@ -8,7 +8,7 @@ use Procure\Domain\QuotationRequest\QRRow;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 Interface QrCmdRepositoryInterface extends CmdRepositoryInterface
 {
@@ -43,4 +43,11 @@ Interface QrCmdRepositoryInterface extends CmdRepositoryInterface
      * @param boolean $isPosting
      */
     public function storeRow(GenericQR $rootEntity, QRRow $localEntity, $isPosting = false);
+
+    /**
+     *
+     * @param GenericQR $rootEntity
+     * @param QRRow $localEntity
+     */
+    public function removeRow(GenericQR $rootEntity, QRRow $localEntity);
 }

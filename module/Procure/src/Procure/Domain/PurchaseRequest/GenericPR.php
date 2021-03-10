@@ -9,6 +9,7 @@ use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Pr\PrPosted;
 use Procure\Domain\Event\Pr\PrRowAdded;
+use Procure\Domain\Event\Pr\PrRowRemoved;
 use Procure\Domain\Event\Pr\PrRowUpdated;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
 use Procure\Domain\PurchaseRequest\Validator\ValidatorFactory;
@@ -25,6 +26,40 @@ use Webmozart\Assert\Assert;
  */
 abstract class GenericPR extends BaseDoc
 {
+
+    public function removeRow(PRRow $row, CommandOptions $options, SharedService $sharedService)
+    {
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted already! %s", $this->getId()));
+        Assert::notNull($options, "command options not found");
+
+        /**
+         *
+         * @var PRRowSnapshot $localSnapshot
+         * @var PrCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->removeRow($this, $row);
+
+        $params = [
+            "rowId" => $localSnapshot->getId(),
+            "rowToken" => $localSnapshot->getToken()
+        ];
+
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new PrRowRemoved($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $localSnapshot;
+    }
 
     public function store(SharedService $sharedService)
     {

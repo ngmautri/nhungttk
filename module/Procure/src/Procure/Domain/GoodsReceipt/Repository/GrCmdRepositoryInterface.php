@@ -7,7 +7,7 @@ use Procure\Domain\GoodsReceipt\GenericGR;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 Interface GrCmdRepositoryInterface
 {
@@ -43,4 +43,6 @@ Interface GrCmdRepositoryInterface
      * @param boolean $isPosting
      */
     public function storeRow(GenericGR $rootEntity, GRRow $localEntity, $isPosting = false);
+
+    public function removeRow(GenericGR $rootEntity, GRRow $localEntity);
 }

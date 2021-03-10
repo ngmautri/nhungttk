@@ -9,6 +9,7 @@ use Procure\Application\Command\Doctrine\PO\UpdateHeaderCmdHandler;
 use Procure\Application\Command\Doctrine\PO\UpdateRowCmdHandler;
 use Procure\Application\Command\Doctrine\PO\UpdateRowInlineCmdHandler;
 use Procure\Application\Command\Doctrine\PO\CloneAndSavePOCmdHandler;
+use Procure\Application\Command\Doctrine\PO\RemoveRowCmdHandler;
 
 /**
  *
@@ -61,5 +62,10 @@ class POCmdHandlerFactory extends CmdHandlerAbstractFactory
     public function getCloneCmdHandler()
     {
         return new CloneAndSavePOCmdHandler();
+    }
+
+    public function getRemoveRowCmdHandler()
+    {
+        return new RemoveRowCmdHandler();
     }
 }

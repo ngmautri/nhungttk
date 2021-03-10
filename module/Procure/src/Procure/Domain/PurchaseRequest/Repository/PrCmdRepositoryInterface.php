@@ -7,7 +7,7 @@ use Procure\Domain\PurchaseRequest\PRRow;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 Interface PrCmdRepositoryInterface
 {
@@ -42,4 +42,11 @@ Interface PrCmdRepositoryInterface
      * @param boolean $isPosting
      */
     public function storeRow(GenericPR $rootEntity, PRRow $localEntity, $isPosting = false);
+
+    /**
+     *
+     * @param GenericPR $rootEntity
+     * @param PRRow $localEntity
+     */
+    public function removeRow(GenericPR $rootEntity, PRRow $localEntity);
 }

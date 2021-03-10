@@ -1,14 +1,13 @@
 <?php
 namespace Procure\Application\Helper;
 
+use Application\Domain\Contracts\FormActions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\DTO\Pr\PrDTO;
-use Procure\Application\DTO\Qr\QrDTO;
+use Procure\Domain\QuotationRequest\QRSnapshot;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
-use Procure\Domain\QuotationRequest\QRSnapshot;
-use Application\Domain\Contracts\FormActions;
 
 /**
  *
@@ -97,7 +96,7 @@ class Toolbar
 
             case ProcureDocStatus::DRAFT:
 
-                if ($action == FormActions::Show) {
+                if ($action == FormActions::SHOW) {
                     $toolbar = $reviewBtn;
                 }
 

@@ -11,6 +11,7 @@ use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\Event\Po\PoPosted;
 use Procure\Domain\Event\Po\PoRowAdded;
+use Procure\Domain\Event\Po\PoRowRemoved;
 use Procure\Domain\Event\Po\PoRowUpdated;
 use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
 use Procure\Domain\PurchaseOrder\Validator\ValidatorFactory;
@@ -28,6 +29,40 @@ use Webmozart\Assert\Assert;
  */
 abstract class GenericPO extends BaseDoc
 {
+
+    public function removeRow(PoRow $row, CommandOptions $options, SharedService $sharedService)
+    {
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PO is posted already! %s", $this->getId()));
+        Assert::notNull($options, "command options not found");
+
+        /**
+         *
+         * @var PoRowSnapshot $localSnapshot
+         * @var PoCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->removeRow($this, $row);
+
+        $params = [
+            "rowId" => $localSnapshot->getId(),
+            "rowToken" => $localSnapshot->getToken()
+        ];
+
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new PoRowRemoved($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $localSnapshot;
+    }
 
     public function store(SharedService $sharedService)
     {

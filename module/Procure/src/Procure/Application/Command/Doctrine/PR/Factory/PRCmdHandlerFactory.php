@@ -6,6 +6,7 @@ use Procure\Application\Command\Doctrine\PR\CloneAndSaveCmdHandler;
 use Procure\Application\Command\Doctrine\PR\CreateHeaderCmdHandler;
 use Procure\Application\Command\Doctrine\PR\CreateRowCmdHandler;
 use Procure\Application\Command\Doctrine\PR\PostCmdHandler;
+use Procure\Application\Command\Doctrine\PR\RemoveRowCmdHandler;
 use Procure\Application\Command\Doctrine\PR\UpdateHeaderCmdHandler;
 use Procure\Application\Command\Doctrine\PR\UpdateRowCmdHandler;
 use Procure\Application\Command\Doctrine\PR\UpdateRowInlineCmdHandler;
@@ -61,5 +62,15 @@ class PRCmdHandlerFactory extends CmdHandlerAbstractFactory
     public function getCloneCmdHandler()
     {
         return new CloneAndSaveCmdHandler();
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Command\Contracts\CmdHandlerAbstractFactory::getRemoveRowCmdHandler()
+     */
+    public function getRemoveRowCmdHandler()
+    {
+        return new RemoveRowCmdHandler();
     }
 }

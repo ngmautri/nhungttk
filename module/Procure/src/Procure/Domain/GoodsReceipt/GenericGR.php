@@ -15,6 +15,7 @@ use Procure\Domain\Contracts\ReversalDocInterface;
 use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\Event\Gr\GrReversed;
 use Procure\Domain\Event\Gr\GrRowAdded;
+use Procure\Domain\Event\Gr\GrRowRemoved;
 use Procure\Domain\Event\Gr\GrRowUpdated;
 use Procure\Domain\Exception\Gr\GrInvalidOperationException;
 use Procure\Domain\GoodsReceipt\Factory\GRFactory;
@@ -36,6 +37,49 @@ abstract class GenericGR extends BaseDoc
 {
 
     abstract public function specify();
+
+    // ===========
+
+    /**
+     *
+     * @param GRRow $row
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @return \Procure\Domain\GoodsReceipt\GrRowSnapshot
+     */
+    public function removeRow(GRRow $row, CommandOptions $options, SharedService $sharedService)
+    {
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PO is posted already! %s", $this->getId()));
+        Assert::notNull($options, "command options not found");
+
+        /**
+         *
+         * @var GrRowSnapshot $localSnapshot
+         * @var GrCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->removeRow($this, $row);
+
+        $params = [
+            "rowId" => $localSnapshot->getId(),
+            "rowToken" => $localSnapshot->getToken()
+        ];
+
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new GrRowRemoved($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $localSnapshot;
+    }
 
     protected $rowSnapshotCollection;
 

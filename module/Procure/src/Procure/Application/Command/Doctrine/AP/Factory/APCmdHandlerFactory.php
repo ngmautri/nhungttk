@@ -8,6 +8,7 @@ use Procure\Application\Command\Doctrine\AP\PostCmdHandler;
 use Procure\Application\Command\Doctrine\AP\UpdateHeaderCmdHandler;
 use Procure\Application\Command\Doctrine\AP\UpdateRowCmdHandler;
 use Procure\Application\Command\Doctrine\AP\UpdateRowInlineCmdHandler;
+use Procure\Application\Command\Doctrine\AP\RemoveRowCmdHandler;
 
 /**
  *
@@ -60,5 +61,10 @@ class APCmdHandlerFactory extends CmdHandlerAbstractFactory
     public function getCloneCmdHandler()
     {
         return null;
+    }
+
+    public function getRemoveRowCmdHandler()
+    {
+        return new RemoveRowCmdHandler();
     }
 }

@@ -5,6 +5,7 @@ use Procure\Application\Command\Contracts\CmdHandlerAbstractFactory;
 use Procure\Application\Command\Doctrine\GR\CreateHeaderCmdHandler;
 use Procure\Application\Command\Doctrine\GR\CreateRowCmdHandler;
 use Procure\Application\Command\Doctrine\GR\PostCmdHandler;
+use Procure\Application\Command\Doctrine\GR\RemoveRowCmdHandler;
 use Procure\Application\Command\Doctrine\GR\UpdateHeaderCmdHandler;
 use Procure\Application\Command\Doctrine\GR\UpdateRowCmdHandler;
 use Procure\Application\Command\Doctrine\GR\UpdateRowInlineCmdHandler;
@@ -61,5 +62,10 @@ class GRCmdHandlerFactory extends CmdHandlerAbstractFactory
     public function getCloneCmdHandler()
     {
         return new CloneAndSaveCmdHandler();
+    }
+
+    public function getRemoveRowCmdHandler()
+    {
+        return new RemoveRowCmdHandler();
     }
 }

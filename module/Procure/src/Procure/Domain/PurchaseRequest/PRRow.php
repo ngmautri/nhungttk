@@ -94,7 +94,10 @@ class PRRow extends BaseRow
             'prId',
             'pr',
             'prQuantity',
-            'edt'
+            'edt',
+            'id',
+            'token',
+            'uuid'
         ];
 
         $instance = $sourceObj->convertExcludeFieldsTo($instance, $exculdedProps);

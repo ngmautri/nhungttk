@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
+use Application\Application\Contracts\GenericSnapshotAssembler;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
@@ -10,9 +11,6 @@ use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\InvalidOperationException;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Exception\PoUpdateException;
@@ -22,14 +20,12 @@ use Procure\Domain\PurchaseOrder\Validator\ValidatorFactory;
 use Procure\Domain\QuotationRequest\QRDoc;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Webmozart\Assert\Assert;
 use Ramsey;
-use Application\Application\Contracts\GenericSnapshotAssembler;
-use Procure\Domain\Service\Contracts\SharedServiceInterface;
 
 /**
  *
@@ -89,6 +85,9 @@ final class PODoc extends GenericPO
         $instance->setDocType(ProcureDocType::PO);
         $instance->setBaseDocId($this->getId());
         $instance->setBaseDocType($this->getDocType());
+
+        $instance->setDocNumber($instance->getDocNumber() . "(copied)");
+        $instance->setRemarks(\sprintf("Copied from %s", $instance->getId()));
 
         $instance->validateHeader($validationService->getHeaderValidators());
 

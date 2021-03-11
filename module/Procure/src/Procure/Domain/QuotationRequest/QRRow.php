@@ -5,10 +5,10 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use PHPUnit\Framework\Assert;
 use Procure\Application\DTO\Qr\QrRowDTO;
 use Procure\Domain\GenericDoc;
 use Procure\Domain\GenericRow;
+use Webmozart\Assert\Assert;
 
 /**
  * Quotation Row
@@ -29,6 +29,13 @@ class QRRow extends GenericRow
     private function __construct()
     {}
 
+    /**
+     *
+     * @param QRDoc $rootDoc
+     * @param QRRow $sourceObj
+     * @param CommandOptions $options
+     * @return \Procure\Domain\QuotationRequest\QRRow
+     */
     public static function cloneFrom(QRDoc $rootDoc, QRRow $sourceObj, CommandOptions $options)
     {
         Assert::isInstanceOf($rootDoc, QRDoc::class, "QR is required!");
@@ -42,6 +49,13 @@ class QRRow extends GenericRow
         $instance = new self();
 
         $exculdedProps = [
+            'id',
+            'token',
+            'uuid',
+            "docId",
+            "docToken",
+            'qoId',
+            'qo',
             'rowIdentifer'
         ];
 

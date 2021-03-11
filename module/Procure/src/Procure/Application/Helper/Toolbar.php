@@ -127,6 +127,9 @@ class Toolbar
 
     public static function showToolbarQR(QRSnapshot $headerDTO, $action, $view)
     {
+        $clone_url = sprintf("/procure/qr/clone?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+        $cloneBtn = \sprintf('<a class="btn btn-default btn-sm" href="%s"><i class="fa fa-files-o" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $clone_url, $view->translate("Clone"));
+
         $po_url = sprintf("/procure/po/create-from-qr?source_id=%s&source_token=%s", $headerDTO->getId(), $headerDTO->getToken());
         $poBtn = sprintf('<a title="PO from Quotation" class="btn btn-default btn-sm" href="%s"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $po_url, $view->translate("Create PO"));
         $review_url = sprintf("/procure/qr/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
@@ -137,18 +140,18 @@ class Toolbar
         switch ($headerDTO->getDocStatus()) {
 
             case ProcureDocStatus::DRAFT:
-                if ($action == Constants::FORM_ACTION_SHOW) {
+                if ($action == FormActions::SHOW) {
                     $toolbar = $reviewBtn;
                 }
 
-                if ($action == Constants::FORM_ACTION_REVIEW) {
+                if ($action == FormActions::REVIEW) {
                     $toolbar = $postBtn;
                 }
                 break;
 
             case ProcureDocStatus::POSTED:
-                $toolbar = \sprintf("%s", $poBtn);
-                if ($action == Constants::FORM_ACTION_REVERSE) {
+                $toolbar = \sprintf("%s %s", $cloneBtn, $poBtn);
+                if ($action == FormActions::REVERSE) {
                     $toolbar = "";
                 }
                 break;

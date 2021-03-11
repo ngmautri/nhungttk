@@ -50,6 +50,10 @@ final class QRDoc extends GenericQR
             "instance"
         ];
 
+        /**
+         *
+         * @var QRDoc $instance ;
+         */
         $instance = $this->convertExcludeFieldsTo($instance, $exculdedProps);
 
         // overwrite.
@@ -57,8 +61,10 @@ final class QRDoc extends GenericQR
         $instance->setDocType(ProcureDocType::QUOTE);
         $instance->setBaseDocId($this->getId());
         $instance->setBaseDocType($this->getDocType());
-
         $instance->validateHeader($validationService->getHeaderValidators());
+
+        $instance->setDocNumber($this->getDocNumber() . "(copied)");
+        $instance->setRemarks(\sprintf("Copied from %s", $this->getSysNumber()));
 
         foreach ($rows as $r) {
 
@@ -80,7 +86,6 @@ final class QRDoc extends GenericQR
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $rootSnapshot = $rep->store($instance);
-        Assert::notNull($rootSnapshot, sprintf("Error occured when cloning QR #%s", $instance->getId()));
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();

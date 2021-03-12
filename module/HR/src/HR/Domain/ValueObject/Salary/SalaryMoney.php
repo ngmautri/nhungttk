@@ -46,6 +46,31 @@ final class SalaryMoney extends ValueObject implements \JsonSerializable
         return new self($amount);
     }
 
+    public function subtract(SalaryMoney ...$addends)
+    {
+        $amount = $this->getSalaryMoney();
+
+        foreach ($addends as $addend) {
+            $amount = $amount->subtract($addend->getSalaryMoney());
+        }
+        return new self($amount);
+    }
+
+    public function multiply($multiplier)
+    {
+        $amount = $this->getSalaryMoney();
+
+        $amount = $amount->multiply($multiplier);
+        return new self($amount);
+    }
+
+    public function divide($divisor)
+    {
+        $amount = $this->getSalaryMoney();
+        $amount = $amount->divide($divisor);
+        return new self($amount);
+    }
+
     public function makeSnapshot()
     {}
 

@@ -9,11 +9,12 @@ use HR\Payroll\Exception\LogicException;
 use HR\Payroll\Input\ConsolidatedPayrollInput;
 use HR\Payroll\Income\AbstractIncomeComponent;
 use HR\Payroll\Exception\InvalidArgumentException;
+use HR\Payroll\Income\Decorator\Factory\PITIncomeDecoratorFactory;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class Payroll extends AbstractVisitorElement
 {
@@ -112,7 +113,7 @@ class Payroll extends AbstractVisitorElement
         $pitBase = $pitIncomeAmount - 1000000 - $ssoAmount;
         $pit = new GenericIncomeComponent("PIT Payable", $pitBase, 0, "usd", FALSE, FALSE, FALSE, FALSE);
 
-        $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory("HR\Payroll\Income\Decorator\Factory\PITIncomeDecoratorFactory");
+        $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory(PITIncomeDecoratorFactory::class);
 
         /** @var \HR\Payroll\Income\Decorator\AbstractIncomeDecorator  $decoratedIncome ; */
         $decoratedIncome = $n->createIncomeDecorator($pit, $this->payrollInput, 2018);
@@ -178,4 +179,3 @@ class Payroll extends AbstractVisitorElement
         return $this->calculatedIncomeList;
     }
 }
- 

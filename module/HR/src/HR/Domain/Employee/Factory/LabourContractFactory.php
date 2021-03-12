@@ -26,7 +26,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class IndividualFactory
+class LabourContractFactory
 {
 
     /**
@@ -42,7 +42,7 @@ class IndividualFactory
         }
 
         $itemTypeId = $snapshot->getIndividualType();
-        $instance = self::_createIndvidual($itemTypeId);
+        $instance = LabourContractFactory::_createIndvidual($itemTypeId);
 
         GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
         $instance->specify();
@@ -65,7 +65,7 @@ class IndividualFactory
         Assert::notNull($sharedService, "SharedService service not found");
 
         $individualTypeId = $snapshot->getIndividualType();
-        $individual = self::_createIndvidual($individualTypeId);
+        $individual = LabourContractFactory::_createIndvidual($individualTypeId);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

@@ -4,19 +4,19 @@ namespace Application\Domain\Shared\Price;
 use Application\Domain\Shared\Calculator\DefaultCalculator;
 use Application\Domain\Shared\Calculator\Contracts\Calculator;
 use Application\Domain\Shared\Money\MoneyFormatter;
+use Application\Domain\Shared\Number\NumberParser;
 use Application\Domain\Shared\Quantity\Quantity;
 use Application\Domain\Shared\Uom\UomPair;
 use Money\CurrencyPair;
 use Money\Money;
 use Webmozart\Assert\Assert;
-use Application\Domain\Shared\Number\NumberParser;
 
 /**
  *
  * @author nguyen mau tri - ngmautri@gmail.com
  *
  */
-final class Price implements \jsonserializable
+final class Price implements \JsonSerializable
 {
 
     private $priceMoney;
@@ -29,19 +29,20 @@ final class Price implements \jsonserializable
         DefaultCalculator::class
     ];
 
-    public function getMoneyAmount(){
+    public function getMoneyAmount()
+    {
         return $this->getPriceMoney()->getAmount();
     }
 
-    public function getMoneyAmountInEn(){
+    public function getMoneyAmountInEn()
+    {
         return NumberParser::parseAndConvertToEN(MoneyFormatter::formatDecimal($this->getPriceMoney()));
     }
 
-    public function getQuantiyAmount(){
+    public function getQuantiyAmount()
+    {
         return $this->getQuantity()->getAmount();
     }
-
-
 
     /**
      *
@@ -80,7 +81,7 @@ final class Price implements \jsonserializable
 
         $cur = $this->getPriceMoney()->getCurrency();
         if ($currencyPair->getCounterCurrency()->equals($cur)) {
-            $m = $this->getPriceMoney()->multiply(1/$currencyPair->getConversionRatio());
+            $m = $this->getPriceMoney()->multiply(1 / $currencyPair->getConversionRatio());
             return new self(new Money($m->getAmount(), $currencyPair->getBaseCurrency()), $this->getQuantity());
         }
 

@@ -9,6 +9,6 @@ use Application\Domain\Shared\AggregateRootInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-abstract class AbstractLabourContract extends AbstractEntity implements AggregateRootInterface
+class AbstractRemunation extends AbstractEntity implements AggregateRootInterface
 {
 }

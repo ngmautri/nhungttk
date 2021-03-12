@@ -2,7 +2,6 @@
 namespace Application\Domain\Shared\Date;
 
 use Application\Domain\Shared\ValueObject;
-use Webmozart\Assert\Assert;
 
 /**
  *
@@ -12,17 +11,40 @@ use Webmozart\Assert\Assert;
 final class DateRange extends ValueObject
 {
 
-    private $start;
+    private $startDate;
 
-    private $end;
+    private $endDate;
 
-    public function __construct(\DateTime $start, \DateTime $end)
+    public function __construct($startDate, $endDate = "9999-12-31")
     {
-        if ($start > $end) {
-            throw new \InvalidArgumentException(\sprintf("%s-%s", $start, $start));
+        $this->assertDateRangeIsInValidFormat($startDate, $endDate);
+        $this->startDate = new \DateTime($startDate);
+        $this->endDate = new \DateTime($endDate);
+    }
+
+    /**
+     *
+     * @param string $startDate
+     * @param string $endDate
+     * @throws \InvalidArgumentException
+     */
+    private function assertDateRangeIsInValidFormat($startDate, $endDate)
+    {
+        try {
+            $d1 = new \DateTimeImmutable($startDate);
+        } catch (\Exception $e) {
+            throw \InvalidArgumentException(sprintf('Invalid start date! %s value provided.', var_export($startDate, true)));
         }
-        $this->start = $start;
-        $this->end = $end;
+
+        try {
+            $d2 = new \DateTimeImmutable($endDate);
+        } catch (\Exception $e) {
+            throw \InvalidArgumentException(sprintf('Invalid start date! %s value provided.', var_export($endDate, true)));
+        }
+
+        if ($d1 >= $d2) {
+            throw new \InvalidArgumentException(sprintf('Invalid range! %s-%s provided.', var_export($startDate, true), var_export($endDate, true)));
+        }
     }
 
     public function makeSnapshot()
@@ -36,26 +58,26 @@ final class DateRange extends ValueObject
     public function getAttributesToCompare()
     {
         return [
-            $this->getStart(),
-            $this->getEnd()
+            $this->getStartDate()->format('Y-m-d'),
+            $this->getEndDate()->format('Y-m-d')
         ];
     }
 
     /**
      *
-     * @return mixed
+     * @return \DateTime
      */
-    public function getStart()
+    public function getStartDate()
     {
-        return $this->start;
+        return $this->startDate;
     }
 
     /**
      *
-     * @return mixed
+     * @return \DateTime
      */
-    public function getEnd()
+    public function getEndDate()
     {
-        return $this->end;
+        return $this->endDate;
     }
 }

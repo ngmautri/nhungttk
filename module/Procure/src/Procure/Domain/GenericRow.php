@@ -105,6 +105,10 @@ abstract class GenericRow extends BaseRow
         $this->setConvertedStandardQuantity($this->itemStandardQuantityVO->getAmount());
     }
 
+    /**
+     *
+     * @param GenericDoc $rootDoc
+     */
     protected function createDocPriceVO(GenericDoc $rootDoc)
     {
         $unitPriceMoney = MoneyParser::parseFromLocalizedDecimal(NumberFormatter::formatToEN($this->docUnitPrice), new Currency($rootDoc->getDocCurrencyISO()));
@@ -134,6 +138,10 @@ abstract class GenericRow extends BaseRow
         $this->setGrossAmount($this->docGrossAmountVO->getMoneyAmountInEn());
     }
 
+    /**
+     *
+     * @param GenericDoc $rootDoc
+     */
     protected function createLocalPriceVO(GenericDoc $rootDoc)
     {
         // Currency VO

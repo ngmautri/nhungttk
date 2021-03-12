@@ -2,6 +2,8 @@
 namespace HR\Domain\ValueObject\Employee;
 
 use Application\Domain\Shared\ValueObject;
+use Application\Domain\Shared\Date\DateRange;
+use Webmozart\Assert\Assert;
 
 /**
  * Contract Duration Value Object
@@ -12,15 +14,19 @@ use Application\Domain\Shared\ValueObject;
 final class ContractDuration extends ValueObject
 {
 
+    private $dateRange;
+
     private $startDate;
 
     private $endDate;
 
-    public function __construct($startDate, $endDate = "9999-12-31")
+    public function __construct(DateRange $dateRange)
     {
-        $this->assertDateRangeIsInValidFormat($startDate, $endDate);
-        $this->startDate = new \DateTime($startDate);
-        $this->endDate = new \DateTime($endDate);
+        Assert::notNull($dateRange, 'Date range for contract should not be null');
+
+        $this->dateRange = $dateRange;
+        $this->startDate = $dateRange->getStartDate();
+        $this->endDate = $dateRange->getEndDate();
     }
 
     public function isRunning()
@@ -84,25 +90,6 @@ final class ContractDuration extends ValueObject
         return \sprintf("Remaining: %s years, %s months, %s days", $interval->y, $interval->m, $interval->d);
     }
 
-    private function assertDateRangeIsInValidFormat($startDate, $endDate)
-    {
-        try {
-            $d1 = new \DateTimeImmutable($startDate);
-        } catch (\Exception $e) {
-            throw \InvalidArgumentException(sprintf('Invalid start date! %s value provided.', var_export($startDate, true)));
-        }
-
-        try {
-            $d2 = new \DateTimeImmutable($endDate);
-        } catch (\Exception $e) {
-            throw \InvalidArgumentException(sprintf('Invalid start date! %s value provided.', var_export($endDate, true)));
-        }
-
-        if ($d1 >= $d2) {
-            throw new \InvalidArgumentException(sprintf('Invalid range! %s-%s provided.', var_export($startDate, true), var_export($endDate, true)));
-        }
-    }
-
     public function makeSnapshot()
     {}
 
@@ -135,5 +122,14 @@ final class ContractDuration extends ValueObject
     public function getEndDate()
     {
         return $this->endDate;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Shared\Date\DateRange
+     */
+    public function getDateRange()
+    {
+        return $this->dateRange;
     }
 }

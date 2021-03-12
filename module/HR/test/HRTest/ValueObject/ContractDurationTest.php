@@ -3,6 +3,7 @@ namespace HRTest\ValueObject;
 
 use HR\Domain\ValueObject\Employee\ContractDuration;
 use PHPUnit_Framework_TestCase;
+use Application\Domain\Shared\Date\DateRange;
 
 /**
  * Value HR
@@ -17,7 +18,8 @@ class ContractDurationTest extends PHPUnit_Framework_TestCase
 
     public function testOK()
     {
-        $code = new ContractDuration('2020-11-01', '2021-11-01');
+        $dateRange = new DateRange('2020-11-01', '2021-11-01');
+        $code = new ContractDuration($dateRange);
         $this->assertInstanceOf(ContractDuration::class, $code);
         \var_dump($code->getElapsedText());
         \var_dump($code->getElapsedDays());
@@ -30,32 +32,38 @@ class ContractDurationTest extends PHPUnit_Framework_TestCase
 
     public function testIsRunning()
     {
-        $code = new ContractDuration('2020-11-01');
+        $dateRange = new DateRange('2020-11-01');
+        $code = new ContractDuration($dateRange);
         $this->assertTrue($code->isRunning());
     }
 
     public function testIsExpired()
     {
-        $code = new ContractDuration('2020-11-01', '2021-03-10');
+        $dateRange = new DateRange('2020-11-01', '2021-03-10');
+        $code = new ContractDuration($dateRange);
         $this->assertTrue($code->isExpired());
     }
 
     public function testNotStarted()
     {
-        $code = new ContractDuration('2021-11-01', '2022-11-01');
+        $dateRange = new DateRange('2021-11-01', '2022-11-01');
+        $code = new ContractDuration($dateRange);
         $this->assertTrue($code->notStarted());
     }
 
     public function testFailed()
     {
         $this->expectException(\InvalidArgumentException::class);
-        new ContractDuration('2020-12-02', '2020-11-02');
+
+        $dateRange = new DateRange('2020-12-02', '2020-11-02');
+        new ContractDuration($dateRange);
     }
 
     public function testEqualDate()
     {
-        $code1 = new ContractDuration('2020-12-02', '2020-12-14');
-        $code2 = new ContractDuration('2020-12-02', '2020-12-14');
+        $code1 = new ContractDuration(new DateRange('2020-12-02', '2020-12-14'));
+        $code2 = new ContractDuration(new DateRange('2020-12-02', '2020-12-14'));
+
         $this->assertTrue($code1->equals($code2));
     }
 }

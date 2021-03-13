@@ -1,5 +1,5 @@
 <?php
-namespace HR\Domain\Payroll\Payslip;
+namespace HR\Domain\Payroll;
 
 /**
  *

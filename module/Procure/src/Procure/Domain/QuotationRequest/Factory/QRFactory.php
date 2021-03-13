@@ -110,7 +110,7 @@ class QRFactory
         // SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         QRSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);
 
-        $validationService = ValidatorFactory::createForHeader($sharedService);
+        $validationService = ValidatorFactory::create($sharedService);
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $rootEntity->markDocAsChanged($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));

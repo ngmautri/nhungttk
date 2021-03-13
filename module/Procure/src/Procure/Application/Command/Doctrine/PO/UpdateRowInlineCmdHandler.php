@@ -48,8 +48,6 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
             $rootEntity = $options->getRootEntity();
             $localEntity = $options->getLocalEntity();
 
-            $version = $options->getVersion();
-
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);

@@ -1,13 +1,11 @@
 <?php
-namespace HR\Domain\Payroll\Payslip;
-
-use HR\Payroll\Calculator\Visitor\AbstractVisitorElement;
+namespace HR\Domain\Payroll;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class Payslip
+class Payroll
 {
 }

@@ -55,7 +55,7 @@ class QRCmdRepositoryImpl extends AbstractDoctrineRepository implements QrCmdRep
             throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localEntity->getId()));
         }
 
-        if ($rowEntityDoctrine->getPr() == null) {
+        if ($rowEntityDoctrine->getQo() == null) {
             throw new InvalidArgumentException("Doctrine row entity is not valid");
         }
 

@@ -52,8 +52,8 @@ abstract class GenericQR extends AbstractQR
         $localSnapshot = $rep->removeRow($this, $row);
 
         $params = [
-            "rowId" => $localSnapshot->getId(),
-            "rowToken" => $localSnapshot->getToken()
+            "rowId" => $row->getId(),
+            "rowToken" => $row->getToken()
         ];
 
         $target = $this->makeSnapshot();

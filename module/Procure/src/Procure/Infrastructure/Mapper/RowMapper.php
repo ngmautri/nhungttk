@@ -18,7 +18,7 @@ use Procure\Domain\RowSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowMapper
 {
@@ -402,6 +402,7 @@ class RowMapper
         $snapshot->docToken = $entity->getToken();
         $snapshot->exchangeRate = $entity->getExchangeRate();
         $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->docRevisionNo = $entity->getRevisionNo();
 
         if ($entity->getDocCurrency() !== null) {
             $snapshot->docCurrencyId = $entity->getDocCurrency()->getId();
@@ -452,6 +453,7 @@ class RowMapper
 
         $snapshot->exchangeRate = $entity->getExchangeRate();
         $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->docRevisionNo = $entity->getRevisionNo();
 
         if ($entity->getDocCurrency() !== null) {
             $snapshot->docCurrencyId = $entity->getDocCurrency()->getId();

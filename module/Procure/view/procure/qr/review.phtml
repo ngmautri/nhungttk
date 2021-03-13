@@ -719,8 +719,7 @@ echo $paymentTerm_option;
                            </div>
                         </div>
                         <div id="pr_row_gird" style="font-size: 8pt;"></div>
-
-                         <div id="test_div" style="font-size: 8pt;"></div>
+                        <div id="test_div" style="font-size: 8pt;"></div>
 
                   </fieldset>
                </form>
@@ -857,6 +856,18 @@ function doPosting() {
    $('#confirm_modal_sm').modal('hide');
    $('#b_modal_no_header').modal();
    submitForm('HEADER_FORM');
+
+
+}
+
+function confirmRemoveRow() {
+   $('#confirm_remove_row_modal_sm').modal();
+}
+
+function doRemovingRow() {
+$('#confirm_modal_sm').modal('hide');
+$('#b_modal_no_header').modal();
+submitForm('HEADER_FORM');
 
 
 }
@@ -1179,69 +1190,42 @@ echo $hoverMode;
               }
 
               if (addList.length || updateList.length || deleteList.length) {
-				var sent_list = JSON.stringify({
-                    updateList: updateList,
-                    addList: addList,
-                    deleteList: deleteList
-                });
-                //alert(sent_list);
+        			var sent_list = JSON.stringify({
+                  updateList: updateList,
+                  addList: addList,
+                  deleteList: deleteList
+              });
 
-                  $.ajax({
-                      url: '/procure/qr/update-row-ajax',
-                      data: {
-                          sent_list: sent_list
-                      },
-                      dataType: "json",
-                      type: "POST",
-                      async: true,
-                      beforeSend: function (jqXHR, settings) {
-                          //$(".saving", $grid).show();
+                           //alert(sent_list);
 
+                $.ajax({
+                    url: '/procure/qr/inline-update-row',
+                    data: {
+                        sent_list: sent_list
+                    },
+                    dataType: "json",
+                    type: "POST",
+                    async: true,
+                    beforeSend: function (jqXHR, settings) {
+                     },
+                    success: function (data, textStatus, jqXHR ) {
+                        //commit the changes.
+                  	  //$("#global-notice").text(data + ' ' + textStatus).show();
+                	  $("#global-notice").text(data + ' ' + textStatus).show();
+                    },
+                    error: function (request, textStatus, jqXHR) {
+                   	  $("#global-notice").text(request.responseText + '!' + textStatus).show();
+                    },
+                    complete: function (changes) {
+                        //$(".saving", $grid).hide();
 
-                          //$("#global-notice").text("Updating...").show();
-                          alert(sent_list);
-                      },
-                      success: function (changes) {
-                          //commit the changes.
-
-                              var out = '';
-                              for (var i in changes) {
-                                  out += i + ": " + changes[i] + "\n";
-                              }
-                              alert(out);
-
-                              var out = '';
-                              for (var i in changes.addList[0]) {
-                                  out += i + ": " + changes.addList[0][i] + "\n<br>";
-                              }
-                         	$('#test_div').html(out);
-
-
-                      	  if(changes.status == <?php
-
-                        echo Constants::AJAX_FAILED;
-                        ?>){
-                      		$("#global-notice").text(changes.message).show();
-                      	  }else{
-                      		$("#global-notice").text("[OK] Updated...").show();
-                      	  }
-            		      //alert('it is ok');
-                          /* grid.commit({ type: 'add', rows: changes.addList });
-                          grid.commit({ type: 'update', rows: changes.updateList });
-                          grid.commit({ type: 'delete', rows: changes.deleteList }); */
-                      },
-
-                      always  : function( jqXHR, textStatus ) {
-                	    alert( "Request failed: " + textStatus );
-                      },
-                      complete: function () {
-                          //$(".saving", $grid).hide();
-                          $("#global-notice").delay(2200).fadeOut(500);
-                     	  refreshGird();
-                      }
-                  });
-              }
-            //alert(updateList.length);
+                   	  refreshGird();
+                   	 location.reload();
+                   	 $("#global-notice").delay(3000).fadeOut(500);
+                    }
+            });
+    }
+  //alert(updateList.length);
 
         },
 

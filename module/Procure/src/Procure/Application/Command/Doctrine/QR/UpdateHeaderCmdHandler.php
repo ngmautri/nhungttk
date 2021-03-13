@@ -68,7 +68,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
                 "changeLog" => $changeLog
             ];
 
-            $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForQR($cmd->getDoctrineEM());
             $newRootEntity = QRFactory::updateFrom($rootEntity, $newSnapshot, $options, $params, $sharedService);
 
             // event dispatch

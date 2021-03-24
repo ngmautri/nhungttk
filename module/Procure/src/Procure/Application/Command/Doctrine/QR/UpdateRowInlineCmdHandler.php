@@ -12,6 +12,7 @@ use Procure\Domain\QuotationRequest\QRRow;
 use Procure\Domain\QuotationRequest\QRRowSnapshot;
 use Procure\Domain\QuotationRequest\QRRowSnapshotAssembler;
 use Webmozart\Assert\Assert;
+use Procure\Application\Service\QR\QRRowSnapshotModifier;
 
 /**
  *
@@ -59,11 +60,13 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
                 "docQuantity",
                 "docUnit",
                 "docUnitPrice",
-                "conversionFactor"
+                "standardConvertFactor"
             ];
 
             $newSnapshot = QRRowSnapshotAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $incluedFields);
             $this->setOutput($newSnapshot);
+
+            $newSnapshot = QRRowSnapshotModifier::modify($newSnapshot, $cmd->getDoctrineEM(), $options->getLocale());
 
             $changeLog = $snapshot->compare($newSnapshot);
 

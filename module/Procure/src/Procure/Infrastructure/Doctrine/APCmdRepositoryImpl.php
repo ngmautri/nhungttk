@@ -9,8 +9,8 @@ use Procure\Domain\AccountPayable\APRowSnapshot;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\AccountPayable\Repository\APCmdRepositoryInterface;
-use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Infrastructure\Mapper\ApMapper;
+use InvalidArgumentException;
 
 /**
  *
@@ -24,6 +24,11 @@ class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRep
 
     const LOCAL_ENTITY_NAME = "\Application\Entity\FinVendorInvoiceRow";
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\AccountPayable\Repository\APCmdRepositoryInterface::removeRow()
+     */
     public function removeRow(GenericAP $rootEntity, APRow $localEntity)
     {
         if ($rootEntity == null) {
@@ -44,13 +49,14 @@ class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRep
          *
          * @var FinVendorInvoiceRow $rowEntityDoctrine ;
          */
-        $rowEntityDoctrine = $this->doctrineEM->find(self::LOCAL_ENTITY_NAME, $localEntity->getId());
+        $rowEntityDoctrine = $this->getDoctrineEM()->find(self::LOCAL_ENTITY_NAME, $localEntity->getId());
 
         if ($rowEntityDoctrine == null) {
             throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localEntity->getId()));
         }
 
-        if ($rowEntityDoctrine->getPr() == null) {
+        //
+        if ($rowEntityDoctrine->getInvoice() == null) {
             throw new InvalidArgumentException("Doctrine row entity is not valid");
         }
 
@@ -72,6 +78,8 @@ class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRep
         if ($isFlush) {
             $this->doctrineEM->flush();
         }
+
+        return true;
     }
 
     /**

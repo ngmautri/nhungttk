@@ -62,6 +62,10 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
     abstract protected function setViewTemplate();
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function uploadRowsAction()
     {
         /**
@@ -925,6 +929,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
             }
 
             if ($rootDTO == null || $localDTO == null) {
+                $this->logInfo(\sprintf("AP Entity not found! %s", $entity_id));
                 return $this->redirect()->toRoute('not_found');
             }
 
@@ -998,7 +1003,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $m = \sprintf("Row of %s is removed by #%s", $target_id, $this->getUserId());
             $this->flashMessenger()->addMessage($m);
             $redirectUrl = sprintf($this->getBaseUrl() . "/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
-            $this->getLogger()->info();
+            $this->logInfo($m);
             return $this->redirect()->toUrl($redirectUrl);
         }
     }
@@ -1034,7 +1039,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 $localEntity = null;
                 $rootDTO = null;
                 $localDTO = null;
-                $this->getLogger()->info(\serialize($a));
+                // $this->getLogger()->info(\serialize($a));
 
                 if (isset($result["rootEntity"])) {
                     $rootEntity = $result["rootEntity"];
@@ -1052,6 +1057,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 }
 
                 $options = new UpdateRowCmdOptions($this->getCompanyVO(), $rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+                $options->setLocale($this->getLocale());
 
                 $cmdHandler = $this->getCmdHandlerFactory()->getInlineUpdateRowCmdHandler();
                 $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
@@ -1067,7 +1073,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
             $response->setStatusCode(Response::STATUS_CODE_400);
             $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-            $response->setContent(\json_encode("[Failed] Doc not updated.Please see log!...."));
+            $response->setContent(\json_encode("[Failed] Doc not updated.Please see log!"));
             return $response;
         }
 

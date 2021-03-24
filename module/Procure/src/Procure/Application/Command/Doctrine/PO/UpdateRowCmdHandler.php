@@ -7,8 +7,7 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Application\Service\PO\RowSnapshotModifier;
-use function Procure\Domain\AbstractDoc\getId as sprintf;
+use Procure\Application\Service\PO\PORowSnapshotModifier;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
@@ -61,7 +60,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $newSnapshot = PORowSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
 
-            $newSnapshot = RowSnapshotModifier::modify($newSnapshot, $cmd->getDoctrineEM(), $options->getLocale());
+            $newSnapshot = PORowSnapshotModifier::modify($newSnapshot, $cmd->getDoctrineEM(), $options->getLocale());
 
             $changeLog = $snapshot->compare($newSnapshot);
 

@@ -143,7 +143,7 @@ class GenericRowSnapshotModifier
 
         $parsedStandardConvertFactor = NumberParser::parseAndConvertToEN($snapshot->getStandardConvertFactor(), $locale);
         if ($parsedStandardConvertFactor == false) {
-            $snapshot->addError(\sprintf('Can not parse conversion factor [%s] Locale: %s', $snapshot->getStandardConvertFactor(), $locale));
+            $snapshot->addError(\sprintf('Can not parse standard conversion factor [%s] Locale: %s', $snapshot->getStandardConvertFactor(), $locale));
         }
 
         if ($snapshot->hasErrors()) {
@@ -178,17 +178,20 @@ class GenericRowSnapshotModifier
             $snapshot->addError(\sprintf('Can not parse unit price [%s].  Locale: %s', $snapshot->getDocUnitPrice(), $locale));
         }
 
-        $parsedExwUnitPrice = NumberParser::parseAndConvertToEN($snapshot->getExwUnitPrice(), $locale);
-        if ($parsedExwUnitPrice == false) {
-            $snapshot->addError(\sprintf('Can not parse Exw unit price [%s].  Locale: %s', $snapshot->getExwUnitPrice(), $locale));
-        }
+        /*
+         * $parsedExwUnitPrice = NumberParser::parseAndConvertToEN($snapshot->getExwUnitPrice(), $locale);
+         * if ($parsedExwUnitPrice == false) {
+         * $snapshot->addError(\sprintf('Can not parse Exw unit price [%s]. Locale: %s', $snapshot->getExwUnitPrice(), $locale));
+         * }
+         */
 
         if ($snapshot->hasErrors()) {
             throw new \InvalidArgumentException($snapshot->getErrorMessage(false));
         }
 
         $snapshot->docUnitPrice = $parsedDocUnitPrice;
-        $snapshot->exwUnitPrice = $parsedExwUnitPrice;
+        $snapshot->unitPrice = $parsedDocUnitPrice;
+        $snapshot->exwUnitPrice = $parsedDocUnitPrice;
 
         return $snapshot;
     }

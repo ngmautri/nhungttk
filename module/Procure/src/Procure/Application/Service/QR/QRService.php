@@ -7,7 +7,7 @@ use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
 use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
-use Procure\Application\Service\PR\Output\RowFormatter;
+use Procure\Application\Service\QR\Output\QrRowFormatter;
 use Procure\Application\Service\QR\Output\SaveAsExcel;
 use Procure\Application\Service\QR\Output\SaveAsOpenOffice;
 use Procure\Application\Service\QR\Output\SaveAsPdf;
@@ -57,28 +57,32 @@ class QRService extends AbstractService implements ProcureServiceInterface
 
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new RowFormatter(new RowTextAndNumberFormatter());
+                $f = new RowTextAndNumberFormatter();
+                $f->setLocale($locale);
+                $formatter = new QrRowFormatter($f);
                 $factory = new DocSaveAsArray();
-                break;
+
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
-                $formatter = new RowFormatter(new RowNumberFormatter());
+                $formatter = new QrRowFormatter(new RowTextAndNumberFormatter());
                 $factory = new SaveAsExcel($builder);
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new OpenOfficeBuilder();
-                $formatter = new RowFormatter(new RowNumberFormatter());
+                $formatter = new QrRowFormatter(new RowTextAndNumberFormatter());
                 $factory = new SaveAsOpenOffice($builder);
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_PDF:
                 $builder = new PdfBuilder();
-                $formatter = new RowFormatter(new RowNumberFormatter());
+                $formatter = new QrRowFormatter(new RowTextAndNumberFormatter());
                 $factory = new SaveAsPdf($builder);
                 break;
 
             default:
-                $formatter = new RowFormatter(new RowTextAndNumberFormatter());
+                $f = new RowTextAndNumberFormatter();
+                $f->setLocale($locale);
+                $formatter = new QrRowFormatter($f);
                 $factory = new DocSaveAsArray();
                 break;
         }
@@ -113,8 +117,12 @@ class QRService extends AbstractService implements ProcureServiceInterface
 
             $localEntity = $rootEntity->getRowbyTokenId($entity_id, $entity_token);
 
-            if ($localEntity instanceof QRRow) {
+            if ($localEntity !== null) {
                 $localDTO = $localEntity->makeDetailsDTO();
+                $f = new RowNumberFormatter();
+                $f->setLocale($locale);
+                $formatter = new QrRowFormatter($f);
+                $localDTO = $formatter->format($localDTO);
             }
         }
 

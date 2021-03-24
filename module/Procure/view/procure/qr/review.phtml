@@ -1219,9 +1219,9 @@ echo $hoverMode;
                     complete: function (changes) {
                         //$(".saving", $grid).hide();
 
-                   	  refreshGird();
+                   	 refreshGird();
                    	 location.reload();
-                   	 $("#global-notice").delay(3000).fadeOut(500);
+                   	 $("#global-notice").delay(5000).fadeOut(500);
                     }
             });
     }
@@ -1263,6 +1263,8 @@ echo $hoverMode;
 
        <?php
     // $rowDTO->convertedStandardQuantity; ?>
+     { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", width:100,editable: true},
+
        { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
        { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
        { title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
@@ -1289,6 +1291,8 @@ echo $hoverMode;
 
 
        { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
+       { title: "CF", dataType: "string", dataIndx: "standardConvertFactor", width: 50,align: 'right',editable: false},
+
        { title: "Disc.", dataType: "decimal", dataIndx: "discountAmount", width:90, align: 'right',editable: false},
 
        { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},

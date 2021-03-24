@@ -61,7 +61,7 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
                 "docUnit",
                 "docUnitPrice",
                 "conversionFactor",
-                "standardConversionFactor"
+                "standardConvertFactor"
             ];
 
             APRowSnapshotAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $includedFields);

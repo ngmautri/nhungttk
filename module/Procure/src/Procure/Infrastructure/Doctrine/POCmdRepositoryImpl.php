@@ -56,7 +56,7 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
             throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localEntity->getId()));
         }
 
-        if ($rowEntityDoctrine->getPr() == null) {
+        if ($rowEntityDoctrine->getPo() == null) {
             throw new InvalidArgumentException("Doctrine row entity is not valid");
         }
 

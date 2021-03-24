@@ -36,22 +36,25 @@ abstract class GenericAP extends BaseDoc
     // ============================
     public function removeRow(APRow $row, CommandOptions $options, SharedService $sharedService)
     {
-        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted already! %s", $this->getId()));
-        Assert::notNull($options, "command options not found");
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("AP is posted already! %s", $this->getId()));
+        Assert::notNull($options, "Command options not found");
 
         /**
          *
-         * @var APRowSnapshot $localSnapshot
          * @var ApCmdRepositoryInterface $rep ;
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $localSnapshot = $rep->removeRow($this, $row);
+        Assert::isInstanceOf($rep, ApCmdRepositoryInterface::class);
+
+        $rep->removeRow($this, $row);
 
         $params = [
-            "rowId" => $localSnapshot->getId(),
-            "rowToken" => $localSnapshot->getToken()
+            "rowId" => $row->getId(),
+            "rowToken" => $row->getToken()
         ];
+
+        // remove row from collection
 
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();
@@ -65,7 +68,7 @@ abstract class GenericAP extends BaseDoc
         $event = new ApRowRemoved($target, $defaultParams, $params);
         $this->addEvent($event);
 
-        return $localSnapshot;
+        return $this;
     }
 
     public function store(SharedService $sharedService)

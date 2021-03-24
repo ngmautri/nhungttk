@@ -37,31 +37,42 @@ class RowNumberFormatter extends AbstractRowFormatter
             $decimalNo = 2;
         }
 
-        if ($row->docUnitPrice !== null) {
-            // $row->docUnitPrice = number_format($row->docUnitPrice, $decimalNo);
-            $row->docUnitPrice = NumberFormatter::format($row->docUnitPrice, $this->getLocale());
-        }
-
-        if ($row->netAmount !== null) {
-            // / $row->netAmount = number_format($row->netAmount, $decimalNo);
-            $row->netAmount = NumberFormatter::format($row->netAmount, $this->getLocale());
-        }
-
-        if ($row->taxAmount !== null) {
-            $row->taxAmount = number_format($row->taxAmount, $decimalNo);
-        }
-        if ($row->grossAmount !== null) {
-            // $row->grossAmount = number_format($row->grossAmount, $decimalNo);
-            $row->grossAmount = 1;
-        }
-
-        if ($row->convertedStandardQuantity !== null) {
-            $row->convertedStandardQuantity = number_format($row->convertedStandardQuantity, $decimalNo);
-        }
-
         if ($row->convertedStandardUnitPrice !== null) {
             $row->convertedStandardUnitPrice = number_format($row->convertedStandardUnitPrice, $decimalNo);
         }
+
+        if ($row->docQuantity != null) {
+            $row->docQuantity = NumberFormatter::format($row->docQuantity, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
+        if ($row->standardConvertFactor != null) {
+            $row->standardConvertFactor = NumberFormatter::format($row->standardConvertFactor, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
+        if ($row->exwUnitPrice != null) {
+            $row->exwUnitPrice = NumberFormatter::format($row->exwUnitPrice, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
+        if ($row->docUnitPrice != null) {
+            $row->docUnitPrice = NumberFormatter::format($row->docUnitPrice, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
+        if ($row->unitPrice != null) {
+            $row->unitPrice = NumberFormatter::format($row->unitPrice, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
+        if ($row->netAmount != null) {
+            $row->netAmount = NumberFormatter::format($row->netAmount, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
+        if ($row->taxAmount != null) {
+            $row->taxAmount = NumberFormatter::format($row->taxAmount, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
+        if ($row->grossAmount != null) {
+            $row->grossAmount = NumberFormatter::format($row->grossAmount, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
         return $row;
     }
 }

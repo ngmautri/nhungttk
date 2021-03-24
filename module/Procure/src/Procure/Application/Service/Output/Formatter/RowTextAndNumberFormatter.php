@@ -52,6 +52,10 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
             $row->docUnitPrice = NumberFormatter::format($row->docUnitPrice, $this->getLocale(), $decimalNo, $decimalNo);
         }
 
+        if ($row->unitPrice != null) {
+            $row->unitPrice = NumberFormatter::format($row->unitPrice, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
         if ($row->netAmount !== null) {
             $row->netAmount = NumberFormatter::format($row->netAmount, $this->getLocale(), $decimalNo, $decimalNo);
         }
@@ -69,6 +73,14 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
 
         if ($row->convertedStandardUnitPrice !== null) {
             $row->convertedStandardUnitPrice = NumberFormatter::format($row->convertedStandardUnitPrice, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
+        if ($row->docQuantity != null) {
+            $row->docQuantity = NumberFormatter::format($row->docQuantity, $this->getLocale(), $decimalNo, $decimalNo);
+        }
+
+        if ($row->standardConvertFactor != null) {
+            $row->standardConvertFactor = NumberFormatter::format($row->standardConvertFactor, $this->getLocale(), $decimalNo, $decimalNo);
         }
 
         $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $row->prRowIndentifer, $row->prToken, $row->pr);

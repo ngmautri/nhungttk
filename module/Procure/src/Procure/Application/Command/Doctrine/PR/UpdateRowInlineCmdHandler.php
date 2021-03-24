@@ -7,6 +7,7 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
+use Procure\Application\Service\PR\PRRowSnapshotModifier;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
@@ -66,6 +67,7 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
 
             $newSnapshot = PRRowSnapshotAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $incluedFields);
             $this->setOutput($newSnapshot);
+            $newSnapshot = PRRowSnapshotModifier::modify($newSnapshot, $cmd->getDoctrineEM(), $options->getLocale());
 
             $changeLog = $snapshot->compare($newSnapshot);
 

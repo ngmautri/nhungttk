@@ -9,7 +9,6 @@ use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
-use Procure\Domain\AccountPayable\APRowSnapshot;
 use Webmozart\Assert\Assert;
 
 /**
@@ -27,21 +26,22 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
      */
     public function run(CommandInterface $cmd)
     {
+
         /**
          *
          * @var APDoc $rootEntity ;
          * @var UpdateRowCmdOptions $options ;
          * @var AbstractCommand $cmd ;
-         * @var APRowSnapshot $snapshot ;
-         * @var APRowSnapshot $newSnapshot ;
          * @var APRow $row ;
          *
          *
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
-        Assert::notNull($cmd->getData(), 'Input data emty!');
-        Assert::isInstanceOf($cmd->getOptions(), UpdateRowCmdOptions::class);
+
         $options = $cmd->getOptions();
+        Assert::isInstanceOf($cmd->getOptions(), UpdateRowCmdOptions::class);
+        Assert::isInstanceOf($options->getRootEntity(), APDoc::class);
+        Assert::isInstanceOf($options->getLocalEntity(), APRow::class);
 
         try {
             $rootEntity = $options->getRootEntity();
@@ -53,22 +53,25 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
             $rootEntity->setLogger($cmd->getLogger());
             $rootEntity->removeRow($row, $options, $sharedService);
 
-            // event dispatch
+            // Event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
-            // ================
 
             // Check Version
             // ==============
             VersionChecker::checkAPVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
 
-            $m = sprintf("AP row #%s removed. Memory used #%s", $rootEntity->getId(), memory_get_usage());
+            // ================
+            $m = sprintf("AP row #%s removed. Memory used #%s", $row->getId(), memory_get_usage());
             $cmd->addSuccess($m);
+            $cmd->logInfo($m);
         } catch (\Exception $e) {
 
+            $cmd->logAlert($e->getMessage());
+            $cmd->logException($e);
             $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }

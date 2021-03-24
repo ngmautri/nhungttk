@@ -1,5 +1,5 @@
 <?php
-namespace HR\Payroll;
+namespace HR\Payroll\Contract;
 
 /**
  * Payment Frequency
@@ -7,7 +7,7 @@ namespace HR\Payroll;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PaymentFrequency
+class PayFrequency
 {
 
     const ONE_TIME = "one_time";
@@ -17,6 +17,10 @@ class PaymentFrequency
     const MONTHLY = "monthly";
 
     const YEARLY = "yearly";
+
+    const OHTER = "other";
+
+    const IRREGULAR = "irregular";
 }
 
 

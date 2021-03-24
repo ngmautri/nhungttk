@@ -42,7 +42,6 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
          *
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
-        Assert::notNull($cmd->getData(), 'Input data emty!');
         Assert::isInstanceOf($cmd->getOptions(), UpdateRowCmdOptions::class);
         $options = $cmd->getOptions();
 

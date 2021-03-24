@@ -4,7 +4,6 @@ namespace Procure\Application\Service\PO\Output;
 use Procure\Application\Service\Output\Formatter\RowFormatterDecorator;
 use Procure\Domain\RowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
-use Application\Domain\Shared\Number\NumberFormatter;
 
 /**
  * PO Row Output.

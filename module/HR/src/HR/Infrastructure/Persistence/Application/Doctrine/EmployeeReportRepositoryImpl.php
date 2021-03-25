@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Infrastructure\Persistence\Doctrine;
+namespace HR\Infrastructure\Persistence\Application\Doctrine;
 
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Inventory\Infrastructure\Mapper\TrxMapper;
@@ -10,9 +10,9 @@ use Inventory\Infrastructure\Persistence\Helper\TrxReportHelper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxReportRepositoryInterface
+class EmployeeReportRepositoryImpl extends AbstractDoctrineRepository implements TrxReportRepositoryInterface
 {
 
     /**

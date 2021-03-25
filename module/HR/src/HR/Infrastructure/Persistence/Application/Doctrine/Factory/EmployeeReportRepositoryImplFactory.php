@@ -1,16 +1,16 @@
 <?php
-namespace Inventory\Infrastructure\Persistence\Doctrine\Factory;
+namespace HR\Infrastructure\Persistence\Application\Doctrine\Factory;
 
-use Inventory\Infrastructure\Persistence\Doctrine\ItemReportRepositoryImpl;
+use HR\Infrastructure\Persistence\Application\Doctrine\EmployeeReportRepositoryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri
- *        
+ *
  */
-class ItemReportRepositoryImplFactory implements FactoryInterface
+class EmployeeReportRepositoryImplFactory implements FactoryInterface
 {
 
     /**
@@ -24,7 +24,7 @@ class ItemReportRepositoryImplFactory implements FactoryInterface
         $container = $serviceLocator;
         $sv = $container->get('doctrine.entitymanager.orm_default');
 
-        $service = new ItemReportRepositoryImpl($sv);
+        $service = new EmployeeReportRepositoryImpl($sv);
         return $service;
     }
 }

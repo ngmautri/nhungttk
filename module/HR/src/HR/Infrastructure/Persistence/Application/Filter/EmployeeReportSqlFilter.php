@@ -1,17 +1,19 @@
 <?php
-namespace Inventory\Infrastructure\Persistence\Filter;
+namespace HR\Infrastructure\Persistence\Application\Filter;
 
 use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class CostIssueForSqlFilter implements SqlFilterInterface
+class EmployeeReportSqlFilter implements SqlFilterInterface
 {
 
     public $isActive;
+
+    public $movementType;
 
     public $docStatus;
 
@@ -19,14 +21,18 @@ class CostIssueForSqlFilter implements SqlFilterInterface
 
     public $toDate;
 
-    public $issueFor;
+    public $flow;
+
+    public $item;
+
+    public $itemId;
 
     public $warehouseId;
 
     public function __toString()
     {
-        $f = "CostIssueForSqlFilter%s_%s_%s_%s_%s_%s";
-        return \sprintf($f, $this->getIssueFor(), $this->getWarehouseId(), $this->getIsActive(), $this->getDocStatus(), $this->getFromDate(), $this->getToDate());
+        $f = "TrxRowReportSqlFilter_I%s_WH%s_FD%s_TD%s_A%s_S%s_F%s";
+        return \sprintf($f, $this->getItemId(), $this->getWarehouseId(), $this->getFromDate(), $this->getToDate(), $this->getIsActive(), $this->getDocStatus(), $this->getFlow());
     }
 
     /**
@@ -36,6 +42,15 @@ class CostIssueForSqlFilter implements SqlFilterInterface
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getMovementType()
+    {
+        return $this->movementType;
     }
 
     /**
@@ -69,9 +84,27 @@ class CostIssueForSqlFilter implements SqlFilterInterface
      *
      * @return mixed
      */
-    public function getIssueFor()
+    public function getFlow()
     {
-        return $this->issueFor;
+        return $this->flow;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
     }
 
     /**
@@ -90,6 +123,15 @@ class CostIssueForSqlFilter implements SqlFilterInterface
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
+    }
+
+    /**
+     *
+     * @param mixed $movementType
+     */
+    public function setMovementType($movementType)
+    {
+        $this->movementType = $movementType;
     }
 
     /**
@@ -121,11 +163,29 @@ class CostIssueForSqlFilter implements SqlFilterInterface
 
     /**
      *
-     * @param mixed $issueFor
+     * @param mixed $flow
      */
-    public function setIssueFor($issueFor)
+    public function setFlow($flow)
     {
-        $this->issueFor = $issueFor;
+        $this->flow = $flow;
+    }
+
+    /**
+     *
+     * @param mixed $item
+     */
+    public function setItem($item)
+    {
+        $this->item = $item;
+    }
+
+    /**
+     *
+     * @param mixed $itemId
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
     }
 
     /**

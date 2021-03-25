@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Infrastructure\Persistence\Helper;
+namespace HR\Infrastructure\Persistence\Application\Helper;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
@@ -9,9 +9,9 @@ use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class HSCodeReportHelper
+class EmployeeReportHelper
 {
 
     static public function getList(EntityManager $doctrineEM, SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)

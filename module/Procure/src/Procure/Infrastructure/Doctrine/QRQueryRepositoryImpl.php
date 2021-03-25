@@ -201,7 +201,7 @@ WHERE id = %s";
 from nmt_procure_qo_row
 where 1%s";
 
-        $tmp1 = sprintf(" AND nmt_procure_qo_row.qo_id=%s AND nmt_procure_qo_row.is_active=1", $id);
+        $tmp1 = sprintf(" AND nmt_procure_qo_row.qo_id=%s AND nmt_procure_qo_row.is_active=1 ORDER BY row_number", $id);
 
         $sql = sprintf($sql, $tmp1);
 

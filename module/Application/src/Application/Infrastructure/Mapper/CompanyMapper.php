@@ -5,6 +5,12 @@ use Application\Domain\Company\CompanySnapshot;
 use Application\Entity\NmtApplicationCompany;
 use Doctrine\ORM\EntityManager;
 
+/**
+ *
+ * @deprecated
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
 class CompanyMapper
 {
 

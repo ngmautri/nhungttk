@@ -77,7 +77,7 @@ class CompanyFactory
          * @var CompanyCmdRepositoryInterface $rep ;
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->store($company, true);
+        $rootSnapshot = $rep->storeDeparment($company, true);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();

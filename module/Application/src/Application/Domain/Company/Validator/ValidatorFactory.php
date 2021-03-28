@@ -1,9 +1,9 @@
 <?php
 namespace Application\Domain\Company\Validator;
 
+use Application\Domain\Company\Validator\Contracts\CompanyValidatorCollection;
+use Application\Domain\Company\Validator\Contracts\DepartmentValidatorCollection;
 use Application\Domain\Service\SharedService;
-use Application\Domain\Warehouse\Validator\CompanyDefaultValidator;
-use Application\Domain\Warehouse\Validator\Contracts\CompanyValidatorCollection;
 use InvalidArgumentException;
 
 /**
@@ -30,6 +30,27 @@ class ValidatorFactory
         $defaultValidators = new CompanyValidatorCollection();
 
         $validator = new CompanyDefaultValidator($sharedSpecsFactory);
+        $defaultValidators->add($validator);
+
+        return $defaultValidators;
+    }
+
+    public static function createForDepartment(SharedService $sharedService, $context)
+    {
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
+        }
+
+        if ($sharedService->getSharedSpecificationFactory() == null) {
+            throw new InvalidArgumentException("Shared spec service not found");
+        }
+
+        $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();
+
+        // Default Company Validator:
+        $defaultValidators = new DepartmentValidatorCollection();
+
+        $validator = new DepartmentDefaultValidator($sharedSpecsFactory);
         $defaultValidators->add($validator);
 
         return $defaultValidators;

@@ -1,13 +1,13 @@
 <?php
 namespace Application\Domain\Company\Department;
 
-use Application\Domain\Shared\AbstractEntity;
+use Application\Domain\Shared\AbstractDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class AbstractDepartment extends AbstractEntity
+class DepartmentSnapshot extends AbstractDTO
 {
 }

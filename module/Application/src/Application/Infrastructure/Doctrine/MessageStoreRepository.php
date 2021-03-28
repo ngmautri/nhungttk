@@ -9,8 +9,9 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class MessageStoreRepository extends AbstractDoctrineRepository implements MessageStoreRepositoryInterface
 {

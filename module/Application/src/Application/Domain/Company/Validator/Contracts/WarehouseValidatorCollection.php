@@ -2,6 +2,7 @@
 namespace Application\Domain\Warehouse\Validator\Contracts;
 
 use Application\Domain\Company\BaseCompany;
+use Inventory\Domain\Warehouse\Validator\Contracts\WarehouseValidatorInterface;
 use InvalidArgumentException;
 
 /**
@@ -31,7 +32,7 @@ class CompanyValidatorCollection implements CompanyValidatorInterface
     public function validate(BaseCompany $rootEntity)
     {
         if (count($this->validators) == 0) {
-            throw new InvalidArgumentException("Company Validator is required! but none is given.");
+            throw new InvalidArgumentException("WH Validator is required! but none is given.");
         }
 
         foreach ($this->validators as $validator) {
@@ -39,7 +40,7 @@ class CompanyValidatorCollection implements CompanyValidatorInterface
             // var_dump(\get_class($validator));
             /**
              *
-             * @var CompanyValidatorInterface $validator ;
+             * @var WarehouseValidatorInterface $validator ;
              */
             $validator->validate($rootEntity);
         }

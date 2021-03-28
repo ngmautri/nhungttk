@@ -1,10 +1,10 @@
 <?php
 namespace ApplicationTest\Company\Rep;
 
-use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
+use ApplicationTest\Bootstrap;
+use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Doctrine\ORM\EntityManager;
-use ProcureTest\Bootstrap;
-use Procure\Domain\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
 class ReportRepTest extends PHPUnit_Framework_TestCase

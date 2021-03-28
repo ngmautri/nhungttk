@@ -9,6 +9,7 @@ use Webmozart\Assert\Assert;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */

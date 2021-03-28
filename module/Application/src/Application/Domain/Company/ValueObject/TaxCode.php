@@ -1,10 +1,10 @@
 <?php
-namespace Application\Domain\Company;
+namespace Application\Domain\Company\ValueObject;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TaxCode
 {

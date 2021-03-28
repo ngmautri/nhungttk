@@ -1,83 +1,84 @@
 <?php
 namespace Application\Domain\Company;
 
-use Application\Application\DTO\Company\CompanyDTO;
+use Application\Domain\Shared\AbstractDTO;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CompanySnapshotAssembler
 {
 
-    /**
-     * generete fields.
-     */
-    public static function createProperities()
+    private static $defaultExcludedFields = array(
+        "id",
+        "uuid",
+        "token",
+        "checksum",
+        "createdBy",
+        "createdOn",
+        "lastChangeOn",
+        "lastChangeBy",
+        "sysNumber",
+        "company"
+    );
+
+    private static $defaultIncludedFields = array(
+        "isActive",
+        "remarks"
+    );
+
+    public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        $entity = new CompanyDetailsSnapshot();
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "protected $" . $propertyName . ";";
-        }
+        return GenericObjectAssembler::updateAllFieldsFromArray($snapShot, $data);
     }
 
-    /**
-     *
-     * @param CompanySnapshot $snapShot
-     * @param CompanyDTO $dto
-     * @return NULL|\Application\Domain\Company\CompanySnapshot
-     */
-    public static function updateSnapshotFromDTO(CompanySnapshot $snapShot, CompanyDTO $dto)
+    public static function updateIncludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
     {
-        if (! $dto instanceof CompanyDTO || ! $snapShot instanceof CompanySnapshot)
-            return null;
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
+    }
 
-        $reflectionClass = new \ReflectionClass($dto);
-        $itemProperites = $reflectionClass->getProperties();
+    public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultIncludedFields);
+    }
 
-        /**
-         * Fields, that are update automatically
-         *
-         * @var array $excludedProperties
-         */
-        $excludedProperties = array(
-            "id",
-            "uuid",
-            "token",
-            "checksum",
-            "createdBy",
-            "createdOn",
-            "lastChangeOn",
-            "lastChangeBy",
-            "sysNumber",
-            "company",
-            "itemType",
-            "revisionNo",
-            "isStocked",
-            "isFixedAsset",
-            "isSparepart",
-            "itemTypeId"
-        );
+    public static function updateExcludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
+    }
 
-        // $dto->isSparepart;
+    public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultExcludedFields);
+    }
 
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+    // from Object
+    // =============================
+    public static function updateAllFieldsFrom(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateAllFieldsFrom($snapShot, $data);
+    }
 
-                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($dto);
-                }
-            }
-        }
-        return $snapShot;
+    public static function updateIncludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
+    {
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
+    }
+
+    public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
+    }
+
+    public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
+    }
+
+    public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
     }
 }

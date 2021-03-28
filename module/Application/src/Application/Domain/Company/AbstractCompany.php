@@ -1,14 +1,15 @@
 <?php
 namespace Application\Domain\Company;
 
-use Application\Domain\Shared\AggregateRoot;
+use Application\Domain\Shared\AbstractEntity;
+use Application\Domain\Shared\AggregateRootInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class AbstractCompany extends AggregateRoot
+class AbstractCompany extends AbstractEntity implements AggregateRootInterface
 {
 
     protected $id;

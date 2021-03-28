@@ -13,6 +13,7 @@ use Procure\Domain\QuotationRequest\QRRow;
 use Procure\Domain\QuotationRequest\QRRowSnapshot;
 use Procure\Domain\QuotationRequest\QRRowSnapshotAssembler;
 use Webmozart\Assert\Assert;
+use Procure\Domain\QuotationRequest\GenericQR;
 
 /**
  *
@@ -31,7 +32,7 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
     {
         /**
          *
-         * @var QRDoc $rootEntity ;
+         * @var GenericQR $rootEntity ;
          * @var UpdateRowCmdOptions $options ;
          * @var AbstractCommand $cmd ;
          * @var QRRowSnapshot $snapshot ;
@@ -46,7 +47,7 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
 
         $rootEntity = $options->getRootEntity();
-        Assert::isInstanceOf($rootEntity, QRDoc::class);
+        Assert::isInstanceOf($rootEntity, GenericQR::class);
 
         $localEntity = $options->getLocalEntity();
         Assert::isInstanceOf($localEntity, QRRow::class);

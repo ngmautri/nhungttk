@@ -14,6 +14,7 @@ use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 use Webmozart\Assert\Assert;
+use Procure\Domain\PurchaseOrder\GenericPO;
 
 /**
  *
@@ -32,7 +33,7 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
     {
         /**
          *
-         * @var PODoc $rootEntity ;
+         * @var GenericPO $rootEntity ;
          * @var UpdateRowCmdOptions $options ;
          * @var AbstractCommand $cmd ;
          * @var PORowSnapshot $snapshot ;
@@ -46,7 +47,7 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
 
         $rootEntity = $options->getRootEntity();
-        Assert::isInstanceOf($rootEntity, PODoc::class);
+        Assert::isInstanceOf($rootEntity, GenericPO::class);
 
         $localEntity = $options->getLocalEntity();
         Assert::isInstanceOf($localEntity, PORow::class);

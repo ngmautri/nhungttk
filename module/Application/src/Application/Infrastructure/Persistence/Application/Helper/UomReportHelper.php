@@ -1,14 +1,11 @@
 <?php
-namespace Application\Infrastructure\Persistence\Helper;
+namespace Application\Infrastructure\Persistence\Application\Helper;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
-use Inventory\Infrastructure\Persistence\Filter\BeginGrGiEndSqlFilter;
-use Inventory\Infrastructure\Persistence\Filter\CostIssueForSqlFilter;
 use Inventory\Infrastructure\Persistence\Filter\TrxReportSqlFilter;
-use Inventory\Infrastructure\Persistence\Filter\TrxRowReportSqlFilter;
 use Inventory\Infrastructure\Persistence\SQL\TrxReportSQL;
 
 /**

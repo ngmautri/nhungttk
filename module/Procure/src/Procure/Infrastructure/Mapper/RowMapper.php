@@ -210,6 +210,7 @@ class RowMapper
         $snapshot->prRowName = $entity->getRowName();
         $snapshot->prRowConvertFactor = $entity->getConversionFactor();
         $snapshot->prRowUnit = $entity->getRowUnit();
+        $snapshot->docRevisionNo = $entity->getRevisionNo();
 
         if ($entity->getPr() !== null) {
             $snapshot->pr = $entity->getPr()->getId();
@@ -256,6 +257,8 @@ class RowMapper
             $snapshot->docYear = $entity->getSubmittedOn()->format("Y");
             $snapshot->docMonth = $entity->getSubmittedOn()->format("m");
         }
+
+        $snapshot->docRevisionNo = $entity->getRevisionNo();
 
         return $snapshot;
     }
@@ -322,6 +325,12 @@ class RowMapper
         return $snapshot;
     }
 
+    /**
+     *
+     * @param RowSnapshot $snapshot
+     * @param FinVendorInvoice $entity
+     * @return NULL|\Procure\Domain\RowSnapshot
+     */
     public static function updateInvoiceDetails(RowSnapshot $snapshot, FinVendorInvoice $entity)
     {
         if ($snapshot == null) {
@@ -344,6 +353,7 @@ class RowMapper
 
         $snapshot->docId = $snapshot->invoice;
         $snapshot->docToken = $entity->getToken();
+        $snapshot->docRevisionNo = $entity->getRevisionNo();
 
         $snapshot->exchangeRate = $entity->getExchangeRate();
         $snapshot->docNumber = $entity->getDocNumber();
@@ -379,6 +389,12 @@ class RowMapper
         return $snapshot;
     }
 
+    /**
+     *
+     * @param RowSnapshot $snapshot
+     * @param NmtProcureGr $entity
+     * @return NULL|\Procure\Domain\RowSnapshot
+     */
     public static function updateGRDetails(RowSnapshot $snapshot, NmtProcureGr $entity)
     {
         if ($snapshot == null) {
@@ -434,6 +450,12 @@ class RowMapper
         return $snapshot;
     }
 
+    /**
+     *
+     * @param RowSnapshot $snapshot
+     * @param NmtProcureQo $entity
+     * @return NULL|\Procure\Domain\RowSnapshot
+     */
     public static function updateQuoteDetails(RowSnapshot $snapshot, NmtProcureQo $entity)
     {
         if ($snapshot == null) {

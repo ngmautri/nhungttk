@@ -10,6 +10,7 @@ use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
 use Webmozart\Assert\Assert;
+use Procure\Domain\AccountPayable\GenericAP;
 
 /**
  *
@@ -29,7 +30,7 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
 
         /**
          *
-         * @var APDoc $rootEntity ;
+         * @var GenericAP $rootEntity ;
          * @var UpdateRowCmdOptions $options ;
          * @var AbstractCommand $cmd ;
          * @var APRow $row ;
@@ -40,7 +41,7 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
 
         $options = $cmd->getOptions();
         Assert::isInstanceOf($cmd->getOptions(), UpdateRowCmdOptions::class);
-        Assert::isInstanceOf($options->getRootEntity(), APDoc::class);
+        Assert::isInstanceOf($options->getRootEntity(), GenericAP::class);
         Assert::isInstanceOf($options->getLocalEntity(), APRow::class);
 
         try {

@@ -7,10 +7,8 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Application\Service\GR\GRRowSnapshotModifier;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
-use Procure\Domain\GoodsReceipt\GRRowSnapshotAssembler;
 use Procure\Domain\GoodsReceipt\GenericGR;
 use Webmozart\Assert\Assert;
 

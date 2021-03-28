@@ -1188,9 +1188,10 @@ echo $hoverMode;
                       },
                       complete: function () {
                           //$(".saving", $grid).hide();
-                          $("#global-notice").delay(2200).fadeOut(500);
-                     	  refreshGird();
-                      }
+
+                		 refreshGird();
+                           	 location.reload();
+                           	 $("#global-notice").delay(5000).fadeOut(500);                      }
                   });
               }
             //alert(updateList.length);
@@ -1231,6 +1232,8 @@ echo $hoverMode;
 
        <?php
     // $rowDTO->convertedStandardQuantity; ?>
+
+        { title: "V", dataType: "string", dataIndx: "docRevisionNo", align: 'left',minWidth: 30,editable: false},
 
        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
    	   { title: "GL", dataType: "string", dataIndx: "glAccountNumber", width:50,editable: false },

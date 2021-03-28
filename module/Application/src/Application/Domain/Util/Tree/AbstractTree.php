@@ -10,7 +10,7 @@ use Application\Domain\Util\Tree\Repository\TreeCmdRepositoryInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractTree implements TreeInterface
 {
@@ -28,6 +28,8 @@ abstract class AbstractTree implements TreeInterface
     protected $index = array();
 
     protected $nextNode;
+
+    abstract public function initTree();
 
     /**
      *
@@ -49,8 +51,6 @@ abstract class AbstractTree implements TreeInterface
     {
         $this->childrenStack = $childrenStack;
     }
-
-    abstract public function initTree();
 
     /**
      *

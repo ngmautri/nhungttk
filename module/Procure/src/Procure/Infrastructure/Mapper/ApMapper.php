@@ -836,7 +836,7 @@ class ApMapper
          * $snapshot->poRow = $entity->getPoRow();
          */
 
-        if ($entity->getInvoice() !== null) {
+        if ($entity->getInvoice() != null) {
             RowMapper::updateInvoiceDetails($snapshot, $entity->getInvoice()); // Parent Detail.
         }
 

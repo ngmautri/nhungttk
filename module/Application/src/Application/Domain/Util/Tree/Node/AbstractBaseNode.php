@@ -7,7 +7,7 @@ use Application\Domain\Util\Tree\Output\JsTreeFormatter;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractBaseNode extends AbstractNode
 {
@@ -233,6 +233,11 @@ abstract class AbstractBaseNode extends AbstractNode
         return false;
     }
 
+    /**
+     *
+     * @param AbstractNode $node
+     * @return boolean
+     */
     public function dfs(AbstractNode $node)
     {
         if ($node == null) {
@@ -278,6 +283,10 @@ abstract class AbstractBaseNode extends AbstractNode
         return $pathArray;
     }
 
+    /**
+     *
+     * @return void|NULL[]
+     */
     public function getPathId()
     {
         $pathArray = [];

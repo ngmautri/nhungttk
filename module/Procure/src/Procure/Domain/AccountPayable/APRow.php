@@ -45,6 +45,34 @@ class APRow extends GenericRow
 
     protected $grToken;
 
+    public static function cloneFrom(APDoc $rootDoc, APRow $sourceObj, CommandOptions $options)
+    {
+        Assert::isInstanceOf($rootDoc, APDoc::class, "AP is required!");
+        Assert::isInstanceOf($sourceObj, APRow::class, "AP row is required!");
+        Assert::notNull($options, "No Options is found");
+
+        /**
+         *
+         * @var APRow $instance
+         */
+        $instance = new self();
+
+        $exculdedProps = [
+            'id',
+            'token',
+            'uuid',
+            "docId",
+            "docToken",
+            'qoId',
+            'qo',
+            'rowIdentifer'
+        ];
+
+        $instance = $sourceObj->convertExcludeFieldsTo($instance, $exculdedProps);
+        $instance->initRow($options);
+        return $instance;
+    }
+
     public function markRowAsChanged(GenericAP $rootDoc, $postedBy, $postedDate)
     {
         $this->createVO($rootDoc); // createVO

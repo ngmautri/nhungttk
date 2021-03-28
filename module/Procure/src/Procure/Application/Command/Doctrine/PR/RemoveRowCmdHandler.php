@@ -11,6 +11,7 @@ use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 use Webmozart\Assert\Assert;
+use Procure\Domain\PurchaseRequest\GenericPR;
 
 /**
  *
@@ -29,7 +30,7 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
     {
         /**
          *
-         * @var PRDoc $rootEntity ;
+         * @var GenericPR $rootEntity ;
          * @var UpdateRowCmdOptions $options ;
          * @var AbstractCommand $cmd ;
          * @var PRRowSnapshot $snapshot ;
@@ -43,7 +44,7 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
 
         $rootEntity = $options->getRootEntity();
-        Assert::isInstanceOf($rootEntity, PRDoc::class);
+        Assert::isInstanceOf($rootEntity, GenericPR::class);
 
         $localEntity = $options->getLocalEntity();
         Assert::isInstanceOf($localEntity, PRRow::class);

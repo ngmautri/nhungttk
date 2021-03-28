@@ -6,7 +6,7 @@ use Application\Domain\Shared\Department;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 Interface CompanyRepositoryInterface
 {
@@ -19,7 +19,7 @@ Interface CompanyRepositoryInterface
 
     public function store(Company $company);
 
-    public function addDeparment(Company $company, Department $department);
+    public function addDeparment(Company $company, $department);
 
     public function addWarehouse(Company $company, $warehouse);
 

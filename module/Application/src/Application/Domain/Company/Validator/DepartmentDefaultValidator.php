@@ -35,21 +35,21 @@ class DepartmentDefaultValidator extends AbstractValidator implements Department
 
             $spec = $this->getSharedSpecificationFactory()->getNullorBlankSpecification();
 
-            if ($spec->isSatisfiedBy($rootEntity->getCompanyName())) {
-                $rootEntity->addError("WH name is null or empty.");
+            if ($spec->isSatisfiedBy($rootEntity->getDepartmentName())) {
+                $rootEntity->addError("Department name is null or empty.");
             } else {
 
-                if (preg_match('/[#$%@=+^]/', $rootEntity->getCompanyName()) == 1) {
-                    $err = "Company Name contains invalid character (e.g. #,%,&,*)";
+                if (preg_match('/[#$%@=+^]/', $rootEntity->getDepartmentName()) == 1) {
+                    $err = "Department Name contains invalid character (e.g. #,%,&,*)";
                     $rootEntity->addError($err);
                 }
             }
 
-            if ($spec->isSatisfiedBy($rootEntity->getCompanyCode())) {
-                $rootEntity->addError("WH code is null or empty.");
+            if ($spec->isSatisfiedBy($rootEntity->getDepartmentCode())) {
+                $rootEntity->addError("Department code is null or empty.");
             } else {
 
-                if (preg_match('/[#$%@=+^]/', $rootEntity->getCompanyCode()) == 1) {
+                if (preg_match('/[#$%@=+^]/', $rootEntity->getDepartmentCode()) == 1) {
                     $err = "Company Code contains invalid character (e.g. #,%,&,*)";
                     $rootEntity->addError($err);
                 }

@@ -22,7 +22,7 @@ class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
 
             $result = GenericSnapshotAssembler::findMissingProps(NmtApplicationDepartment::class, AbstractDepartment::class);
 
-            // $result = GenericSnapshotAssembler::createAllSnapshotProps(UomPair::class);
+            $result = GenericSnapshotAssembler::createAllSnapshotProps(NmtApplicationDepartment::class);
             // $result = GenericSnapshotAssembler::createSnapshotProps(UomGroup::class, BaseUomGroup::class);
 
             // \var_dump(($result));

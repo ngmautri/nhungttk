@@ -78,6 +78,48 @@ class NmtApplicationDepartment
     private $uuid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="department_name", type="string", length=100, nullable=true)
+     */
+    private $departmentName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="department_code", type="string", length=45, nullable=true)
+     */
+    private $departmentCode;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_change_by", type="integer", nullable=true)
+     */
+    private $lastChangeBy;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="department_name_local", type="string", length=100, nullable=true)
+     */
+    private $departmentNameLocal;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -299,6 +341,150 @@ class NmtApplicationDepartment
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * Set departmentName
+     *
+     * @param string $departmentName
+     *
+     * @return NmtApplicationDepartment
+     */
+    public function setDepartmentName($departmentName)
+    {
+        $this->departmentName = $departmentName;
+
+        return $this;
+    }
+
+    /**
+     * Get departmentName
+     *
+     * @return string
+     */
+    public function getDepartmentName()
+    {
+        return $this->departmentName;
+    }
+
+    /**
+     * Set departmentCode
+     *
+     * @param string $departmentCode
+     *
+     * @return NmtApplicationDepartment
+     */
+    public function setDepartmentCode($departmentCode)
+    {
+        $this->departmentCode = $departmentCode;
+
+        return $this;
+    }
+
+    /**
+     * Get departmentCode
+     *
+     * @return string
+     */
+    public function getDepartmentCode()
+    {
+        return $this->departmentCode;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtApplicationDepartment
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return NmtApplicationDepartment
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param integer $lastChangeBy
+     *
+     * @return NmtApplicationDepartment
+     */
+    public function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return integer
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
+    }
+
+    /**
+     * Set departmentNameLocal
+     *
+     * @param string $departmentNameLocal
+     *
+     * @return NmtApplicationDepartment
+     */
+    public function setDepartmentNameLocal($departmentNameLocal)
+    {
+        $this->departmentNameLocal = $departmentNameLocal;
+
+        return $this;
+    }
+
+    /**
+     * Get departmentNameLocal
+     *
+     * @return string
+     */
+    public function getDepartmentNameLocal()
+    {
+        return $this->departmentNameLocal;
     }
 
     /**

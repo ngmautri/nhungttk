@@ -1,16 +1,15 @@
 <?php
 namespace Application\Controller\Contracts;
 
+use Application\Domain\Company\Factory\CompanyFactory;
 use Application\Domain\EventBus\EventBusServiceInterface;
-use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
+use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\CompanyMapper;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Exception;
-use Application\Infrastructure\Mapper\CompanyMapper;
-use Application\Domain\Company\GenericCompany;
 
 /**
  *
@@ -83,8 +82,7 @@ class AbstractGenericController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
 
-        $c = new GenericCompany();
-        $c->constructFromDB($snapshot);
+        $c = CompanyFactory::contructFromDB($snapshot);
 
         if ($c == null) {
             return $this->redirect()->toRoute('access_denied');

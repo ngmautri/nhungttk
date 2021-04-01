@@ -78,6 +78,48 @@ class NmtApplicationDepartment
     private $uuid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="department_name", type="string", length=100, nullable=true)
+     */
+    private $departmentName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="department_code", type="string", length=45, nullable=true)
+     */
+    private $departmentCode;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_change_by", type="integer", nullable=true)
+     */
+    private $lastChangeBy;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="department_name_local", type="string", length=100, nullable=true)
+     */
+    private $departmentNameLocal;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

@@ -35,6 +35,13 @@ class ValidatorFactory
         return $defaultValidators;
     }
 
+    /**
+     *
+     * @param SharedService $sharedService
+     * @param string $context
+     * @throws InvalidArgumentException
+     * @return \Application\Domain\Company\Validator\Contracts\DepartmentValidatorCollection
+     */
     public static function createForDepartment(SharedService $sharedService, $context)
     {
         if ($sharedService == null) {

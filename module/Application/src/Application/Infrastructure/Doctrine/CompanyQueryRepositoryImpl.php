@@ -6,6 +6,7 @@ use Application\Domain\Company\Repository\CompanyQueryRepositoryInterface;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Application\Infrastructure\Mapper\CompanyMapper;
 use Webmozart\Assert\Assert;
+use Application\Domain\Company\Factory\CompanyFactory;
 
 /**
  *
@@ -38,9 +39,7 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
 
         Assert::notNull($entity);
         $snapshot = CompanyMapper::createSnapshot($entity, $this->getDoctrineEM());
-
-        $entityRoot = new GenericCompany();
-        $entityRoot->constructFromDB($snapshot);
+        $entityRoot = CompanyFactory::contructFromDB($snapshot);
 
         Assert::notNull($entityRoot);
         return $entityRoot;

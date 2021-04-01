@@ -5,6 +5,7 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Company\Contracts\CompanyStatus;
 use Application\Domain\Company\Department\BaseDepartment;
 use Application\Domain\Company\Department\BaseDepartmentSnapshot;
+use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Company\Department\GenericDepartment;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Domain\Company\Validator\ValidatorFactory;
@@ -14,6 +15,7 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\AccountPayable\APRowSnapshot;
 use Webmozart\Assert\Assert;
+use Application\Domain\Company\Validator\Contracts\DepartmentValidatorCollection;
 
 /**
  *
@@ -60,7 +62,7 @@ class BaseCompany extends AbstractCompany
 
         /**
          *
-         * @var APRowSnapshot $localSnapshot ;
+         * @var DepartmentSnapshot $localSnapshot ;
          * @var CompanyCmdRepositoryInterface $rep ;
          *
          */
@@ -87,7 +89,7 @@ class BaseCompany extends AbstractCompany
         return $localSnapshot;
     }
 
-    protected function validateDepartment(BaseDepartment $department, DepartmentV $validators, $isPosting = false)
+    protected function validateDepartment(BaseDepartment $department, DepartmentValidatorCollection $validators, $isPosting = false)
     {
         Assert::isInstanceOf($department, BaseDepartment::class, "BaseDepartment not given!");
 

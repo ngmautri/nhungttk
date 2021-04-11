@@ -41,7 +41,9 @@ class RepTest extends PHPUnit_Framework_TestCase
             $searcher = new PoSearchQueryImpl();
             $queryFilter = new PoQueryFilter();
             $queryFilter->setDocStatus("posted");
-            $hits = $searcher->search("025", $queryFilter);
+            $hits = $searcher->search("air", $queryFilter);
+
+            var_dump($hits);
 
             $results = [];
             foreach ($hits as $hit) {

@@ -217,6 +217,10 @@ class ApReportHelper
             $sql = $sql . " AND MONTH(fin_vendor_invoice.posting_date)=" . $filter->getDocMonth();
         }
 
+        if ($filter->getVendorId() != null) {
+            $sql_tmp = $sql_tmp . \sprintf(' AND fin_vendor_invoice.vendor_id = %s', $filter->getVendorId());
+        }
+
         switch ($sort_by) {
             case "vendorName":
                 $sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $sort;

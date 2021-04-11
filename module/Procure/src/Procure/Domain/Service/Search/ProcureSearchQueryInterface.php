@@ -9,6 +9,8 @@ use Application\Application\Service\Search\Contracts\QueryFilterInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-Interface GrSearchQueryInterface extends ProcureSearchQueryInterface
+Interface ProcureSearchQueryInterface
 {
+
+    public function search($q, QueryFilterInterface $filter = null);
 }

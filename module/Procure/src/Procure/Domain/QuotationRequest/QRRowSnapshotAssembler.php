@@ -102,4 +102,30 @@ class QRRowSnapshotAssembler
     {
         return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
     }
+
+    public static function createFromQueryHit($hit)
+    {
+        if ($hit == null) {
+            return;
+        }
+
+        $snapshort = new QrRowSnapshot();
+        $reflectionClass = new \ReflectionClass($snapshort);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if ($hit->__isset($propertyName)) {
+                $snapshort->$propertyName = $hit->$propertyName;
+            }
+        }
+
+        $snapshort->id = $hit->rowId; // important
+        if ($hit->__isset("itemId")) {
+            $snapshort->item = $hit->itemId; // important
+        }
+
+        return $snapshort;
+    }
 }

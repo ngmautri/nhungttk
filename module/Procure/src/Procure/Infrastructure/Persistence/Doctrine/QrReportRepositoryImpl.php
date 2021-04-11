@@ -7,12 +7,13 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Mapper\QrMapper;
 use Procure\Infrastructure\Persistence\QrReportRepositoryInterface;
+use Procure\Infrastructure\Persistence\Helper\PoReportHelper;
 use Procure\Infrastructure\Persistence\Helper\QrReportHelper;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QrReportRepositoryImpl extends AbstractDoctrineRepository implements QrReportRepositoryInterface
 {
@@ -29,13 +30,13 @@ SELECT
     nmt_inventory_item.item_name as item_name,
 	nmt_procure_qo_row.*
 FROM nmt_procure_qo_row
-            
+
 LEFT JOIN nmt_procure_qo
 ON nmt_procure_qo.id = nmt_procure_qo_row.qo_id
-            
+
 LEFT JOIN nmt_inventory_item
 ON nmt_inventory_item.id = nmt_procure_qo_row.item_id
-WHERE 1            
+WHERE 1
 ";
 
         // $sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
@@ -105,6 +106,32 @@ WHERE 1
     public function getAllRowTotal(SqlFilterInterface $filter)
     {}
 
-    public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
-    {}
+    public function getAllRow(SqlFilterInterface $filter, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
+        $results = QrReportHelper::getAllRow($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
+        if (count($results) == null) {
+            return null;
+        }
+
+        $resultList = [];
+        foreach ($results as $r) {
+
+            /**@var \Application\Entity\NmtProcureQoRow $doctrineRootEntity ;*/
+            $doctrineRootEntity = $r;
+
+            $localSnapshot = QrMapper::createRowSnapshot($this->doctrineEM, $doctrineRootEntity);
+
+            if ($localSnapshot == null) {
+                continue;
+            }
+
+            $resultList[] = $localSnapshot;
+        }
+
+        return $resultList;
+    }
 }

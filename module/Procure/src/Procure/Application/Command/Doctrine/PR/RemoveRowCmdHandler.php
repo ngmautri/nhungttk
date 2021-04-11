@@ -7,11 +7,10 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\GenericPR;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 use Webmozart\Assert\Assert;
-use Procure\Domain\PurchaseRequest\GenericPR;
 
 /**
  *
@@ -54,6 +53,7 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
             $row = $localEntity;
 
             $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
+            $rootEntity->setLogger($cmd->getLogger());
             $rootEntity->removeRow($row, $options, $sharedService);
 
             // event dispatch
@@ -69,8 +69,9 @@ class RemoveRowCmdHandler extends AbstractCommandHandler
 
             $cmd->addSuccess(\sprintf("Row #%s removed from PR #%s", $localEntity->getId(), $rootEntity->getId()));
         } catch (\Exception $e) {
+            $cmd->logAlert($e->getMessage());
+            $cmd->logException($e);
             $cmd->addError($e->getMessage());
-
             throw new \RuntimeException($e->getMessage());
         }
     }

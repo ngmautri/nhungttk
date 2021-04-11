@@ -18,6 +18,8 @@ use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPostedFactory;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmittedFactory;
+use Procure\Application\EventBus\Handler\QR\UpdateIndexOnQrPosted;
+use Procure\Application\EventBus\Handler\QR\UpdateIndexOnQrPostedFactory;
 use Procure\Application\Eventbus\EventBusService;
 use Procure\Application\Eventbus\EventBusServiceFactory;
 use Procure\Application\Eventbus\HandlerMapper;
@@ -34,6 +36,9 @@ use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImpl;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImplFactory;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImpl;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImplFactory;
+use Procure\Application\Service\Search\ZendSearch\QR\QrSearchIndexImpl;
+use Procure\Application\Service\Search\ZendSearch\QR\QrSearchQueryImpl;
+use Procure\Application\Service\Search\ZendSearch\QR\QrSearchQueryImplFactory;
 use Procure\Application\Service\Shared\SharedCmdServiceImpl;
 use Procure\Application\Service\Shared\SharedCmdServiceImplFactory;
 use Procure\Application\Service\Shared\SharedQueryServiceImpl;
@@ -42,7 +47,9 @@ use Procure\Application\Service\Upload\PR\UploadPR;
 use Procure\Application\Service\Upload\PR\UploadPRFactory;
 use Procure\Infrastructure\Cache\CacheFactory;
 use Procure\Infrastructure\Cache\RedisCacheFactory;
+use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\Factory\POCmdRepositoryFactory;
 use Procure\Infrastructure\Doctrine\Factory\POQueryRepositoryFactory;
 use Procure\Infrastructure\Logging\LoggerFactory;
 use Procure\Infrastructure\Persistence\Doctrine\GrReportRepositoryImpl;
@@ -55,8 +62,7 @@ use Procure\Infrastructure\Persistence\Doctrine\Factory\PoReporterRepositoryImpl
 use Procure\Infrastructure\Persistence\Doctrine\Factory\PrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
-use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
-use Procure\Infrastructure\Doctrine\Factory\POCmdRepositoryFactory;
+use Procure\Application\Service\Search\ZendSearch\QR\QrSearchIndexImplFactory;
 
 return array(
     'navigation' => array(
@@ -339,6 +345,9 @@ return array(
             PrSearchIndexImpl::class => PrSearchIndexImplFactory::class,
             PrSearchQueryImpl::class => PrSearchQueryImplFactory::class,
 
+            QrSearchIndexImpl::class => QrSearchIndexImplFactory::class,
+            QrSearchQueryImpl::class => QrSearchQueryImplFactory::class,
+
             // Event Handler
             'Procure\Application\Event\Handler\PoHeaderCreatedEventHandler' => 'Procure\Application\Event\Handler\PoHeaderCreatedEventHandlerFactory',
 
@@ -349,7 +358,10 @@ return array(
             // Event Handler
             UpdateIndexOnApPosted::class => UpdateIndexOnApPostedFactory::class,
             UpdateIndexOnPoPosted::class => UpdateIndexOnPoPostedFactory::class,
+            UpdateIndexOnQrPosted::class => UpdateIndexOnQrPostedFactory::class,
+
             UpdateIndexOnPrSubmitted::class => UpdateIndexOnPrSubmittedFactory::class,
+
             CreateGrOnApPosted::class => CreateGrOnApPostedFactory::class,
             CreateGrReversalOnApReversed::class => CreateGrReversalOnApReversedFactory::class,
             OnApPostedCreateGrByWarehouse::class => OnApPostedCreateGrByWarehouseFactory::class,
@@ -402,6 +414,8 @@ return array(
             'Procure\Controller\ApReport' => 'Procure\Controller\ApReportControllerFactory',
             'Procure\Controller\Ap' => 'Procure\Controller\ApControllerFactory',
             'Procure\Controller\Qr' => 'Procure\Controller\QrControllerFactory',
+            'Procure\Controller\QrSearch' => 'Procure\Controller\QrSearchControllerFactory',
+
             'Procure\Controller\Report' => 'Procure\Controller\ReportControllerFactory',
             'Procure\Controller\PrReport' => 'Procure\Controller\PrReportControllerFactory',
             'Procure\Controller\PoReport' => 'Procure\Controller\PoReportControllerFactory',

@@ -5,15 +5,13 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
-use Procure\Infrastructure\Persistence\Filter\ApReportSqlFilter;
 use Procure\Infrastructure\Persistence\Filter\QrReportSqlFilter;
-use Procure\Infrastructure\Persistence\SQL\ApSQL;
-use Procure\Infrastructure\Persistence\SQL\QrReportSQL;
+use Procure\Infrastructure\Persistence\Reporting\SQL\QrReportSQL;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QrReportHelper
 {
@@ -183,21 +181,24 @@ class QrReportHelper
             return null;
         }
 
-        $sql = ApSQL::ALL_AP_ROW;
+        $sql = QrReportSQL::ALL_QR_ROW;
 
         $sql_tmp = '';
 
         if ($filter->getDocYear() > 0) {
-            $sql = $sql . " AND YEAR(fin_vendor_invoice.posting_date)=" . $filter->getDocYear();
+            $sql = $sql . " AND YEAR(nmt_procure_qo.doc_date)=" . $filter->getDocYear();
         }
 
         if ($filter->getDocMonth() > 0) {
-            $sql = $sql . " AND MONTH(fin_vendor_invoice.posting_date)=" . $filter->getDocMonth();
+            $sql = $sql . " AND MONTH(nmt_procure_qo.doc_date)=" . $filter->getDocMonth();
+        }
+        if ($filter->getVendorId() != null) {
+            $sql_tmp = $sql_tmp . \sprintf(' AND nmt_procure_qo.vendor_id = %s', $filter->getVendorId());
         }
 
         switch ($sort_by) {
             case "vendorName":
-                $sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $sort;
+                $sql = $sql . " ORDER BY nmt_procure_qo.vendor_name " . $sort;
                 break;
         }
 
@@ -213,7 +214,7 @@ class QrReportHelper
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureQoRow', 'nmt_procure_qo_row');
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
             $resulst = $query->getResult();
             return $resulst;
@@ -234,27 +235,31 @@ class QrReportHelper
             return null;
         }
 
-        if (! $filter instanceof ApReportSqlFilter) {
+        if (! $filter instanceof QrReportSqlFilter) {
             return null;
         }
 
-        $sql = ApSQL::ALL_AP_ROW;
+        $sql = QrReportSQL::ALL_QR_ROW;
 
         $sql_tmp = '';
 
         if ($filter->getDocYear() > 0) {
-            $sql = $sql . " AND YEAR(fin_vendor_invoice.posting_date)=" . $filter->getDocYear();
+            $sql = $sql . " AND YEAR(nmt_procure_qo.doc_date)=" . $filter->getDocYear();
         }
 
         if ($filter->getDocMonth() > 0) {
-            $sql = $sql . " AND MONTH(fin_vendor_invoice.posting_date)=" . $filter->getDocMonth();
+            $sql = $sql . " AND MONTH(nmt_procure_qo.doc_date)=" . $filter->getDocMonth();
+        }
+
+        if ($filter->getVendorId() != null) {
+            $sql_tmp = $sql_tmp . \sprintf(' AND nmt_procure_qo.vendor_id = %s', $filter->getVendorId());
         }
 
         // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureQoRow', 'nmt_procure_qo_row');
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
             $resulst = $query->getResult();
             return count($resulst);

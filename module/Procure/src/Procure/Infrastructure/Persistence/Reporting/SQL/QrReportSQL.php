@@ -1,10 +1,10 @@
 <?php
-namespace Procure\Infrastructure\Persistence\SQL;
+namespace Procure\Infrastructure\Persistence\Reporting\SQL;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QrReportSQL
 {
@@ -20,6 +20,19 @@ SELECT
 FROM nmt_procure_qo
 LEFT JOIN nmt_procure_qo_row
 ON nmt_procure_qo_row.qo_id = nmt_procure_qo.id
+WHERE 1
+";
+
+    const ALL_QR_ROW = "
+SELECT
+
+nmt_procure_qo_row.*
+
+FROM nmt_procure_qo_row
+
+LEFT JOIN nmt_procure_qo
+ON nmt_procure_qo.id = nmt_procure_qo_row.qo_id
+
 WHERE 1
 ";
 }

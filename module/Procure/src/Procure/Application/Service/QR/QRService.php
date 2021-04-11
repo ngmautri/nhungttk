@@ -64,18 +64,18 @@ class QRService extends AbstractService implements ProcureServiceInterface
 
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
-                $formatter = new QrRowFormatter(new RowTextAndNumberFormatter());
+                $formatter = new QrRowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsExcel($builder);
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new OpenOfficeBuilder();
-                $formatter = new QrRowFormatter(new RowTextAndNumberFormatter());
+                $formatter = new QrRowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsOpenOffice($builder);
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_PDF:
                 $builder = new PdfBuilder();
-                $formatter = new QrRowFormatter(new RowTextAndNumberFormatter());
+                $formatter = new QrRowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsPdf($builder);
                 break;
 

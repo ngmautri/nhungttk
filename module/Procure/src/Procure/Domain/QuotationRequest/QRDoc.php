@@ -3,6 +3,7 @@ namespace Procure\Domain\QuotationRequest;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Qr\QrHeaderCreated;
@@ -109,7 +110,7 @@ final class QRDoc extends GenericQR
      */
     public function makeSnapshot()
     {
-        return SnapshotAssembler::createSnapshotFrom($this, new QRSnapshot());
+        return GenericObjectAssembler::updateAllFieldsFrom(new QRSnapshot(), $this);
     }
 
     public function makeDetailsSnapshot()

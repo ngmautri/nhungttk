@@ -11,6 +11,7 @@ use Procure\Application\EventBus\Handler\GR\OnApPostedCreateGrByWarehouse;
 use Procure\Application\EventBus\Handler\GR\OnApReversedCreateGrReversalByWarehouse;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
+use Procure\Application\EventBus\Handler\QR\UpdateIndexOnQrPosted;
 
 /**
  *
@@ -30,6 +31,7 @@ class HandlerMapper extends AbstractService
             UpdateIndexOnPrSubmitted::class,
             UpdateIndexOnPoPosted::class,
             UpdateIndexOnApPosted::class,
+            UpdateIndexOnQrPosted::class,
 
             OnApPostedCreateGrByWarehouse::class,
             OnApReversedCreateGrReversalByWarehouse::class,

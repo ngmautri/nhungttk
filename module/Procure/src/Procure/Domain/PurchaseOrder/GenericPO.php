@@ -42,11 +42,11 @@ abstract class GenericPO extends BaseDoc
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $localSnapshot = $rep->removeRow($this, $row);
+        $rep->removeRow($this, $row);
 
         $params = [
-            "rowId" => $localSnapshot->getId(),
-            "rowToken" => $localSnapshot->getToken()
+            "rowId" => $row->getId(),
+            "rowToken" => $row->getToken()
         ];
 
         $target = $this->makeSnapshot();

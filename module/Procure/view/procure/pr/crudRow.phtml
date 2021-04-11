@@ -1,127 +1,134 @@
-    <?php
-    use Application\Application\Helper\OptionHelper;
-    use Procure\Application\Helper\ErrorMessage;
-    use Procure\Application\Helper\FormHelper;
-    use Procure\Application\Helper\OptionList;
+<?php
+use Application\Application\Helper\OptionHelper;
+use Procure\Application\Helper\ErrorMessage;
+use Procure\Application\Helper\FormHelper;
+use Procure\Application\Helper\OptionList;
 
-    /**
-     *
-     * @author Nguyen Mau Tri - ngmautri@gmail.com
-     *         ===========================================
-     */
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===========================================
+ */
 
-    /**@var \Procure\Application\DTO\Pr\PrDTO $headerDTO ;*/
-    /**@var \Procure\Application\DTO\Pr\PrRowDTO $dto ;*/
-    /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+/**@var \Procure\Application\DTO\Pr\PrDTO $headerDTO ;*/
+/**@var \Procure\Application\DTO\Pr\PrRowDTO $dto ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
-    // var_dump($headerDTO);
+// var_dump($headerDTO);
 
-    // echo memory_get_usage();
-    $message_url = null;
-    $review_url = null;
-    $rowNumber = null;
-    $doc_wh_id = null;
-    $today = new DateTime();
-    $default_edt = $today->modify("10 days")->format("Y-m-d");
-    $transactionStatus = "";
-    $progress_div = '';
-    $alert = "info";
-    $tabsList = null;
-    $docUomName = 'each';
+// echo memory_get_usage();
+$message_url = null;
+$review_url = null;
+$rowNumber = null;
+$doc_wh_id = null;
+$today = new DateTime();
+$default_edt = $today->modify("10 days")->format("Y-m-d");
+$transactionStatus = "";
+$progress_div = '';
+$alert = "info";
+$tabsList = null;
+$docUomName = 'each';
 
-    // var_dump($headerDTO);
-    if ($headerDTO != null) {
+$remove_url = null;
+$removeBtn = null;
 
-        if ($headerDTO->getTotalRows() > 0) {
-            $completion = $headerDTO->getCompletedRows() / $headerDTO->getTotalRows();
-        } else {
-            $completion = 0;
-        }
+// var_dump($headerDTO);
+if ($headerDTO != null) {
 
-        $progress_div = FormHelper::createProgressDiv($completion, 'completed.');
-
-        $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
-
-        if ($headerDTO->getTransactionStatus() == "completed") {
-            $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
-            $alert = "success";
-        }
-
-        if ($headerDTO->getTransactionStatus() == "completed") {
-            $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
-            $alert = "success";
-        }
-
-        $target_id = $headerDTO->getId();
-        $target_token = $headerDTO->getToken();
-
-        $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
-        $review_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $target_id, $target_token);
-        // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
-        $rowNumber = $headerDTO->getTotalRows() + 1;
-        $doc_wh_id = $headerDTO->getWarehouse();
-
-        $picture_url = sprintf($this->baseUrl . "/procure/pr-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-        $format = '/inventory/item-picture/list1?token=%s&target_id=%s';
-        $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
-        $picturesTab = sprintf('<a title="Picture" href="%s"><span class="glyphicon glyphicon-picture"></span>&nbsp;(%s)</a></li></a>', $picture_url, '');
-
-        $format = '/inventory/item-attachment/list1?token=%s&target_id=%s';
-        $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
-        $attachment_url = sprintf($this->baseUrl . "/procure/pr-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-        $attachTab = sprintf('<a title="Serial" href="%s"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;(%s)</a></li></a>', $attachment_url, '');
-
-        $format = '/inventory/change-log/list1?object_token=%s&object_id=%s';
-        $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
-        $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
-        $logTab = sprintf('<a title="Change Log" href="%s"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li></a>', $log_url);
-
-        $tabsList = [
-            // $logisticTab,
-            $picturesTab,
-            $attachTab,
-            $logTab
-        ];
+    if ($headerDTO->getTotalRows() > 0) {
+        $completion = $headerDTO->getCompletedRows() / $headerDTO->getTotalRows();
+    } else {
+        $completion = 0;
     }
 
-    $tabs = \Application\Application\Helper\FormHelper::createTabs($tabsList);
+    $progress_div = FormHelper::createProgressDiv($completion, 'completed.');
 
-    $wh_id = null;
-    $gl_account = null;
-    $cost_center = null;
-    if ($dto !== null) {
-        $rowNumber = $dto->getRowNumber();
-        $wh_id = $dto->getWarehouse();
-        $gl_account = $dto->getGlAccount();
-        $cost_center = $dto->getCostCenter();
+    $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
 
-        if ($dto->getEdt() !== null) {
-            $default_edt = $dto->getEdt();
-        }
-
-        $docUomName = $dto->getDocUnit();
+    if ($headerDTO->getTransactionStatus() == "completed") {
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
+        $alert = "success";
     }
 
-    if ($wh_id == null) {
-        $wh_id = $doc_wh_id;
+    if ($headerDTO->getTransactionStatus() == "completed") {
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
+        $alert = "success";
     }
 
-    $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
-    $gl_option = OptionList::createGLAccountOption($nmtPlugin->glAccountList(), $gl_account);
-    $cost_center_option = OptionList::createCostCenterOption($nmtPlugin->costCenterList(), $cost_center);
-    $uomList = $sharedCollection->getUomCollection();
-    $uom_option = OptionHelper::createUomNameOption($uomList, $docUomName);
+    $target_id = $headerDTO->getId();
+    $target_token = $headerDTO->getToken();
 
-    $error_msg = ErrorMessage::showErrorMessage($errors);
+    $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
+    $review_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $target_id, $target_token);
+    // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
+    $rowNumber = $headerDTO->getTotalRows() + 1;
+    $doc_wh_id = $headerDTO->getWarehouse();
 
-    // echo memory_get_usage();
-    // =====================================================
-    ?>
+    $picture_url = sprintf($this->baseUrl . "/procure/pr-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $format = '/inventory/item-picture/list1?token=%s&target_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $picturesTab = sprintf('<a title="Picture" href="%s"><span class="glyphicon glyphicon-picture"></span>&nbsp;(%s)</a></li></a>', $picture_url, '');
+
+    $format = '/inventory/item-attachment/list1?token=%s&target_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $attachment_url = sprintf($this->baseUrl . "/procure/pr-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $attachTab = sprintf('<a title="Serial" href="%s"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;(%s)</a></li></a>', $attachment_url, '');
+
+    $format = '/inventory/change-log/list1?object_token=%s&object_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $logTab = sprintf('<a title="Change Log" href="%s"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li></a>', $log_url);
+
+    $tabsList = [
+        // $logisticTab,
+        $picturesTab,
+        $attachTab,
+        $logTab
+    ];
+}
+
+$tabs = \Application\Application\Helper\FormHelper::createTabs($tabsList);
+
+$wh_id = null;
+$gl_account = null;
+$cost_center = null;
+if ($dto !== null) {
+    $rowNumber = $dto->getRowNumber();
+    $wh_id = $dto->getWarehouse();
+    $gl_account = $dto->getGlAccount();
+    $cost_center = $dto->getCostCenter();
+
+    if ($dto->getEdt() !== null) {
+        $default_edt = $dto->getEdt();
+    }
+
+    $docUomName = $dto->getDocUnit();
+
+    $remove_url = sprintf($this->baseUrl . "/procure/pr/remove-row?ver=%s&entity_id=%s&entity_token=%s&target_id=%s&target_token=%s", $docRevisionNo, $dto->getId(), $dto->getToken(), $target_id, $target_token);
+    $removeBtn = sprintf(' <a class="btn btn-danger btn-sm" style="color: white" onclick="confirmRemoveRow();" href="javascript:;">
+     <i class="fa fa-remove" aria-hidden="true"></i> &nbsp;%s</a>', $this->translate("Remove"));
+}
+
+if ($wh_id == null) {
+    $wh_id = $doc_wh_id;
+}
+
+$wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+$gl_option = OptionList::createGLAccountOption($nmtPlugin->glAccountList(), $gl_account);
+$cost_center_option = OptionList::createCostCenterOption($nmtPlugin->costCenterList(), $cost_center);
+$uomList = $sharedCollection->getUomCollection();
+$uom_option = OptionHelper::createUomNameOption($uomList, $docUomName);
+
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
+// echo memory_get_usage();
+// =====================================================
+?>
 <div id="wrapper" class="toggled">
    <!-- Sidebar -->
    <div id="sidebar-wrapper" style="font-size: 9.5pt; padding-left: 20px;">
 
-   <?php
+<?php
 
 // include (ROOT . '/module/Procure/view/procure/pr_summary.php');
 ?>
@@ -296,21 +303,21 @@ echo $error_msg;
                            </div>
                         </div>
                         <div class="form-group margin-bottom required">
-                             <label class="control-label col-sm-2"><?php
+                           <label class="control-label col-sm-2"><?php
 
-                            echo $this->translate("Document Unit");
-                            ?></label>
-                     <div class="col-sm-3">
-                        <select tabindex="5" name="docUnit" id="docUnit" class="form-control input-sm">
-                           <option     value=""><?php
+                        echo $this->translate("Document Unit");
+                        ?></label>
+                           <div class="col-sm-3">
+                              <select tabindex="5" name="docUnit" id="docUnit" class="form-control input-sm">
+                                 <option value=""><?php
 
-                        echo $this->translate("Select doc unit");
-                        ?></option>
+                                echo $this->translate("Select doc unit");
+                                ?></option>
                     <?php
                     echo $uom_option;
                     ?>
                </select>
-                     </div>
+                           </div>
                            <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
                            <div class="col-sm-1">
                               <input tabindex="6" class="form-control input-sm" type="text" name="standardConvertFactor" value="<?php
@@ -383,31 +390,95 @@ echo $wh_option;
                             echo $review_url;
                             ?>">
                                  <small>
-                                    <i class="glyphicon glyphicon-remove"></i>
+                                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
                                  </small>&nbsp;<?php
 
                                 echo $this->translate("Cancel");
                                 ?></a>
+                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <?php
+
+                        echo $removeBtn;
+                        ?>
                            </div>
-                           <div class="col-sm-3"></div>
                         </div>
-                     </form>
-                     <!-- COL 1 -->
+                        <div class="col-sm-3"></div>
+
                   </div>
-                  <!-- COL 2 -->
-                  <div class="col-sm-2" style="background-color: white;">
-                     <div id="item_img"></div>
-                  </div>
-                  <!-- ROW -->
+                  </form>
+                  <!-- COL 1 -->
                </div>
-               <!-- end tab -->
+               <!-- COL 2 -->
+               <div class="col-sm-2" style="background-color: white;">
+                  <div id="item_img"></div>
+               </div>
+               <!-- ROW -->
             </div>
+            <!-- end tab -->
          </div>
       </div>
-      <!-- /#page-content-wrapper -->
    </div>
-   <!-- /#wrapper -->
-   <script type="text/javascript">
+   <!-- /#page-content-wrapper -->
+</div>
+<!-- /#wrapper -->
+<div class="modal" id="confirm_remove_row_modal_sm" role="dialog">
+   <div class="modal-dialog modal-md">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+         </div>
+         <div class="modal-body" id="b_modal_sm_body">
+            <h5>#<?php
+
+            echo $this->translate('Row will be removed!');
+            ?></h5>
+            <div class="alert alert-warning">
+               <strong>[Info]</strong> <?php
+
+            echo $this->translate('Remove can not be recalled!');
+            ?>
+               <!-- Journal Entry will be created. <br>- Warehouse Journal will be
+               created.
+                -->
+            </div>
+            <p><?php
+
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+         </div>
+         <div class="modal-footer">
+            <button onclick="doRemovingRow();" type="button" class="btn btn-primary btn-sm">YES</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script type="text/javascript">
+
+
+   function confirmRemoveRow() {
+       $('#confirm_remove_row_modal_sm').modal();
+    }
+
+   function doRemovingRow() {
+       $('#confirm_remove_row_modal_sm').modal('hide');
+       $('#b_modal_no_header').modal();
+       var url="<?php
+
+    echo $remove_url;
+    ?>";
+
+      var review_url="<?php
+
+    echo $review_url;
+    ?>";
+       $.get(url,function( data ) {
+           window.location.href= review_url;
+         });
+      }
+
+
 
 $( "input[id='edt']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "#item_name" ).focus();
@@ -431,7 +502,6 @@ $( "#item_name" ).focus();
 	   }
 
 </script>
-
-     <?php
-    include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');
-    ?>
+<?php
+include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');
+?>

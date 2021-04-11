@@ -31,6 +31,7 @@ abstract class GenericPR extends BaseDoc
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted already! %s", $this->getId()));
         Assert::notNull($options, "command options not found");
+        Assert::notNull($row, "PRRow not found");
 
         /**
          *
@@ -38,12 +39,15 @@ abstract class GenericPR extends BaseDoc
          * @var PrCmdRepositoryInterface $rep ;
          */
 
+        $this->logInfo("GenericPR will delete " . $row->getId());
+
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $localSnapshot = $rep->removeRow($this, $row);
+
+        $rep->removeRow($this, $row);
 
         $params = [
-            "rowId" => $localSnapshot->getId(),
-            "rowToken" => $localSnapshot->getToken()
+            "rowId" => $row->getId(),
+            "rowToken" => $row->getToken()
         ];
 
         $target = $this->makeSnapshot();

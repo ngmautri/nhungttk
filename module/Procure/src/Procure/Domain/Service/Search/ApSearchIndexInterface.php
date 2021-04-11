@@ -1,20 +1,12 @@
 <?php
 namespace Procure\Domain\Service\Search;
 
-use Procure\Domain\DocSnapshot;
-
 /**
- * Purchase Order Search
+ * AP Search indexer
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-Interface PoSearchIndexInterface
+Interface ApSearchIndexInterface extends ProcureSearchIndexInterface
 {
-
-    public function createDoc(DocSnapshot $doc);
-
-    public function optimizeIndex();
-
-    public function createIndex($rows);
 }

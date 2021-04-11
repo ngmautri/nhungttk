@@ -929,7 +929,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
             }
 
             if ($rootDTO == null || $localDTO == null) {
-                $this->logInfo(\sprintf("AP Entity not found! %s", $entity_id));
+                $this->logInfo(\sprintf("Entity not found! %s", $entity_id));
                 return $this->redirect()->toRoute('not_found');
             }
 
@@ -970,6 +970,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 $cmd->execute();
                 $notification = $cmd->getNotification();
             } catch (\Exception $e) {
+                $this->logException($e);
 
                 $notification = new Notification();
                 $notification->addError($e->getMessage());

@@ -1,0 +1,217 @@
+
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">Search Result</a>
+      </li>
+   </ul>
+   <div id="general">
+
+<?php
+echo '<span>';
+echo $message;
+echo '</span>';
+
+if (! $hits == null) :
+
+    ?>
+<table style="font-size: 9.5pt;" class="table table-hover table-bordered">
+         <thead>
+            <tr>
+               <td>
+                  <b>#</b>
+               </td>
+               <td>
+                  <b>PR</b>
+               </td>
+               <td>
+                  <b>Item ID</b>
+               </td>
+               <td>
+                  <b>Item SKU</b>
+               </td>
+               <td>
+                  <b>Item</b>
+               </td>
+               <td>
+                  <b>Row Name</b>
+               </td>
+               <td>
+                  <b>Code</b>
+               </td>
+               <td>
+                  <b>quantity</b>
+               </td>
+               <td>
+                  <b>
+                     PR
+                     <br>
+                     Unit
+                  </b>
+               </td>
+               <td>
+                  <b>
+                     Conversion
+                     <br>
+                     Factor
+                  </b>
+               </td>
+               <td>
+                  <b>Action</b>
+               </td>
+            </tr>
+         </thead>
+         <tbody>
+
+	 <?php
+
+    $count = 0;
+    foreach ($hits as $hit) :
+        $count ++;
+
+        $url = $nmtPlugin->getItemPic($hit->item_id);
+
+        ?>
+	 <tr>
+               <td> <?php
+
+        echo $count;
+        ?></td>
+               <td>
+                  <a style="color: navy;" href="<?php
+
+        echo $this->baseUrl?>/procure/pr/view?entity_token=<?php
+
+        echo $hit->pr_token;
+        ?>&entity_id=<?php
+
+        echo $hit->pr_id;
+        ?>&checksum=<?php
+
+        echo $hit->pr_checksum;
+        ?>">
+					<?php
+
+        echo $this->escapeHtml($hit->pr_number);
+        ?></a>
+               </td>
+               <td>
+                  <span id="">
+                     <a style="color: navy;" target="_blank" href="<?php
+
+        echo $this->baseUrl?>/inventory/item/show?token=<?php
+
+        echo $hit->item_token;
+        ?>&entity_id=<?php
+
+        echo $hit->item_id;
+        ?>&checksum=<?php
+
+        echo $hit->item_checksum;
+        ?>"><?php
+
+        echo $this->escapeHtml($hit->item_sys_number);
+        ?></a>
+                  </span>
+               </td>
+               <td>
+                  <img id="item_<?php
+
+        echo $this->escapeHtml($hit->item_id);
+        ?>" style="cursor: pointer;" title="click for more detail!" onclick="" class="img-rounded" width="80" height="80" src="<?php
+
+        echo $url;
+        ?>" />
+               </td>
+               <td>
+                  <span id=""><?php
+
+        echo $this->escapeHtml($hit->item_sku_key);
+        ?></span>
+               </td>
+               <td>
+                  <span id=""><?php
+
+        echo $this->escapeHtml($hit->item_name);
+        ?></span>
+               </td>
+               <td>
+                  <span id=""><?php
+
+        echo $this->escapeHtml($hit->row_name);
+        ?></span>
+               </td>
+               <td>
+                  <span id=""><?php
+
+        echo $this->escapeHtml($hit->manufacturer_code);
+        ?></span>
+               </td>
+               <td>
+                  <span id=""><?php
+
+        echo $this->escapeHtml($hit->row_quantity);
+        ?></span>
+               </td>
+               <td>
+                  <span id=""><?php
+
+        echo $this->escapeHtml($hit->row_unit);
+        ?></span>
+               </td>
+               <td>
+                  <span id=""><?php
+
+        echo $this->escapeHtml($hit->row_conversion_factor);
+        ?></span>
+               </td>
+               <td>
+                  <a href="<?php
+
+        echo $this->baseUrl?>/procure/pr-row/show?token=<?php
+
+        echo $hit->token;
+        ?>&entity_id=<?php
+
+        echo $hit->pr_row_id;
+        ?>&checksum=<?php
+
+        echo $hit->checksum;
+        ?>">Show</a>
+                  <a href="<?php
+
+        echo $this->baseUrl?>/procure/pr-row/edit?token=<?php
+
+        echo $hit->token;
+        ?>&entity_id=<?php
+
+        echo $hit->pr_row_id;
+        ?>&checksum=<?php
+
+        echo $hit->checksum;
+        ?>">Edit</a>
+                  <a href="<?php
+
+        echo $this->baseUrl?>/inventory/item-transaction/gr?token=<?php
+
+        echo $hit->token;
+        ?>&pr_row_id=<?php
+
+        echo $hit->pr_row_id;
+        ?>&checksum=<?php
+
+        echo $hit->checksum;
+        ?>">Receive</a>
+               </td>
+            </tr>
+<?php
+    endforeach
+    ;
+    ?>
+</tbody>
+      </table>
+<?php endif;
+
+?>
+</div>
+</div>

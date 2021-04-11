@@ -1,11 +1,11 @@
 <?php
-namespace Procure\Application\Service\Search\ZendSearch\PR;
+namespace Procure\Application\Service\Search\ZendSearch\QR;
 
 use Application\Application\Service\Search\Contracts\QueryFilterInterface;
 use Application\Application\Service\Search\Contracts\SearchResult;
 use Application\Service\AbstractService;
-use Procure\Application\Service\Search\ZendSearch\PR\Filter\PrQueryFilter;
-use Procure\Domain\Service\Search\PrSearchQueryInterface;
+use Procure\Application\Service\Search\ZendSearch\QR\Filter\QrQueryFilter;
+use Procure\Domain\Service\Search\QrSearchQueryInterface;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\Boolean;
@@ -17,13 +17,13 @@ use ZendSearch\Lucene\Search\Query\Wildcard;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PrSearchQueryImpl extends AbstractService implements PrSearchQueryInterface
+class QrSearchQueryImpl extends AbstractService implements QrSearchQueryInterface
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\Service\Search\PrSearchQueryInterface::search()
+     * @see \Procure\Domain\Service\Search\PoSearchQueryInterface::search()
      */
     public function search($q, QueryFilterInterface $filter = null)
     {
@@ -34,9 +34,7 @@ class PrSearchQueryImpl extends AbstractService implements PrSearchQueryInterfac
             $query = $q;
             $queryString = null;
 
-            // echo getcwd() . PrSearch::INDEX_PATH;
-
-            $index = Lucene::open(getcwd() . PrSearch::INDEX_PATH);
+            $index = Lucene::open(getcwd() . QrSearch::INDEX_PATH);
 
             $final_query = new Boolean();
 
@@ -78,7 +76,7 @@ class PrSearchQueryImpl extends AbstractService implements PrSearchQueryInterfac
                 }
             }
 
-            if ($filter instanceof PrQueryFilter) {
+            if ($filter instanceof QrQueryFilter) {
 
                 if ($filter->getVendorId() > 0) {
                     $v = \sprintf('vendor_id_key_%s', $filter->getVendorId());
@@ -86,7 +84,7 @@ class PrSearchQueryImpl extends AbstractService implements PrSearchQueryInterfac
                     $final_query->addSubquery($subquery, true);
                 }
                 if ($filter->getDocStatus() != null) {
-                    $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term($filter->getDocStatus(), 'pr_doc_status'));
+                    $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term($filter->getDocStatus(), 'docStatus'));
                     $final_query->addSubquery($subquery, true);
                 }
             }

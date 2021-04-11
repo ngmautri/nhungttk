@@ -77,6 +77,8 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
         if ($isFlush) {
             $this->doctrineEM->flush();
         }
+
+        return true;
     }
 
     /**

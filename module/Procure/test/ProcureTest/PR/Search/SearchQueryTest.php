@@ -1,5 +1,5 @@
 <?php
-namespace ProcureTest\PO\Search;
+namespace ProcureTest\PR\Search;
 
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
@@ -9,7 +9,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseRequest\PRRowSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
 
-class RepTest extends PHPUnit_Framework_TestCase
+class SearchQueryTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;

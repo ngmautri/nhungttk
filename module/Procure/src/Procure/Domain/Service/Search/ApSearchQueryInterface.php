@@ -1,16 +1,12 @@
 <?php
 namespace Procure\Domain\Service\Search;
 
-use Application\Application\Service\Search\Contracts\QueryFilterInterface;
-
 /**
- * Purchase Order Search
+ * AP Search
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-Interface PoSearchQueryInterface
+Interface ApSearchQueryInterface extends ProcureSearchQueryInterface
 {
-
-    public function search($q, QueryFilterInterface $filter = null);
 }

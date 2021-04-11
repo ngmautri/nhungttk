@@ -1,0 +1,109 @@
+<?php
+use Application\Application\Service\Search\Contracts\SearchResult;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===========================================
+ */
+
+/**@var SearchResult $results ;*/
+
+$table_body = '';
+$message = '';
+
+if ($results !== null) {
+    $message = $results->getMessage();
+    $hits = $results->getHits();
+
+    if (count($hits) > 0) {
+
+        $count = 0;
+        $n = 0;
+
+        foreach ($hits as $hit) {
+
+            $url = $nmtPlugin->getItemPic($hit->itemId);
+            $img = sprintf('<img id="%s" style="cursor: pointer;"
+title="click for more detail!" onclick="" class="img-rounded" width="80" height="80" src="%s" />', $hit->itemId, $url);
+
+            $format = '<a style ="color:navy;" href="/procure/pr/view?entity_id=%s&entity_token=%s">%s</a>';
+            $docUrl = sprintf($format, $hit->docId, $hit->docToken, $hit->docNumber);
+
+            $format = '<a style ="color:navy;" href="/inventory/item/view?entity_token=%s&entity_id=%s&">%s</a>';
+            $itemUrl = sprintf($format, $hit->itemToken, $hit->itemId, $hit->itemSysNumber);
+            $itemNameUrl = sprintf($format, $hit->itemToken, $hit->itemId, $hit->itemName);
+
+            $count ++;
+            $table_body = $table_body . "<tr>";
+            $table_body = $table_body . sprintf("<td>%s</td>", $count);
+            $table_body = $table_body . sprintf("<td>%s</td>", $docUrl);
+            $table_body = $table_body . sprintf("<td>%s</td>", $itemUrl);
+            $table_body = $table_body . sprintf("<td>%s</td>", $img);
+            $table_body = $table_body . sprintf("<td>%s</td>", $itemNameUrl);
+            $table_body = $table_body . sprintf("<td>%s</td>", $hit->itemSKU);
+            $table_body = $table_body . sprintf("<td>%s</td>", $hit->itemManufacturerCode);
+
+            $table_body = $table_body . sprintf("<td>%s</td>", $hit->itemKeywords);
+            $table_body = $table_body . sprintf("<td>%s</td>", $hit->vendorItemName);
+
+            $table_body = $table_body . "</tr>";
+        }
+    }
+}
+
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">Search Result</a>
+      </li>
+   </ul>
+   <div id="general">
+
+<?php
+echo $message;
+?>
+<table style="font-size: 9.5pt;" class="table table-hover table-bordered">
+         <thead>
+            <tr>
+               <td>
+                  <b>#</b>
+               </td>
+               <td>
+                  <b>PR</b>
+               </td>
+               <td>
+                  <b>Item ID</b>
+               </td>
+
+               <td>
+                  <b>Img.</b>
+               </td>
+
+                 <td>
+                  <b>Item Name.</b>
+               </td>
+
+               <td>
+                  <b>Item Name.</b>
+               </td>
+               <td>
+                  <b>SKU</b>
+               </td>
+               <td>
+                  <b>SN</b>
+               </td>
+                <td>
+                  <b>Item Tags.</b>
+               </td>
+            </tr>
+         </thead>
+         <tbody>
+         <?php
+        echo $table_body;
+        ?>
+         </tbody>
+      </table>
+   </div>
+</div>

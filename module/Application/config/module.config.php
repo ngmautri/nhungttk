@@ -1,8 +1,14 @@
 <?php
 use Application\Application\Cache\CacheFactory;
 use Application\Application\Cache\RedisCacheFactory;
+use Application\Application\EventBus\Handler\Department\OnDeparmentInsertedSaveToLog;
+use Application\Application\EventBus\Handler\Department\Factory\OnDeparmentInsertedSaveToLogFactory;
 use Application\Application\Event\Handler\DummyEventHandler;
 use Application\Application\Event\Handler\DummyEventHandlerFactory;
+use Application\Application\Eventbus\EventBusService;
+use Application\Application\Eventbus\EventBusServiceFactory;
+use Application\Application\Eventbus\HandlerMapper;
+use Application\Application\Eventbus\HandlerMapperFactory;
 use Application\Application\Eventbus\PsrHandlerResolver;
 use Application\Application\Eventbus\PsrHandlerResolverFactory;
 use Application\Application\Logger\LoggerFactory;
@@ -330,9 +336,21 @@ return array(
 
             CommonCollection::class => CommonCollectionFactory::class,
 
-            // Event Handler Register
+            // =============================================================
+            // Event Bus Service
+            // =============================================================
+            EventBusService::class => EventBusServiceFactory::class,
+            HandlerMapper::class => HandlerMapperFactory::class,
+
             DummyEventHandler::class => DummyEventHandlerFactory::class,
             PsrHandlerResolver::class => PsrHandlerResolverFactory::class,
+
+            // Handlers:
+            OnDeparmentInsertedSaveToLog::class => OnDeparmentInsertedSaveToLogFactory::class,
+
+            // =============================================================
+            // Event Bus Service End
+            // =============================================================
 
             // Report
             MessageStoreRepository::class => MessageStoreRepositoryFactory::class

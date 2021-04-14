@@ -8,6 +8,6 @@ use Application\Application\Event\AbstractEvent;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class DepartmentCreated extends AbstractEvent
+class DepartmentInserted extends AbstractEvent
 {
 }

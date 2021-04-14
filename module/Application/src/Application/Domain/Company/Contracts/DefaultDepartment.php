@@ -9,5 +9,5 @@ namespace Application\Domain\Company\Contracts;
 class DefaultDepartment
 {
 
-    const ROOT = '_COMPANY_';
+    const ROOT = '_DEPARTMENT_';
 }

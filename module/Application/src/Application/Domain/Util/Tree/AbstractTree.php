@@ -1,11 +1,13 @@
 <?php
 namespace Application\Domain\Util\Tree;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Util\Tree\Event\TreeNodeInserted;
 use Application\Domain\Util\Tree\Node\AbstractBaseNode;
 use Application\Domain\Util\Tree\Node\AbstractNode;
 use Application\Domain\Util\Tree\Node\GenericNode;
 use Application\Domain\Util\Tree\Repository\TreeCmdRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  *
@@ -29,7 +31,79 @@ abstract class AbstractTree implements TreeInterface
 
     protected $nextNode;
 
+    protected $root;
+
+    private $recordedEvents;
+
+    private $notification;
+
+    private $logger;
+
     abstract public function initTree();
+
+    public function addEvent($e)
+    {
+        if ($e == null) {
+            return;
+        }
+
+        $events = $this->getRecordedEvents();
+        $events[] = $e;
+        $this->recordedEvents = $events;
+    }
+
+    public function getRecordedEvents()
+    {
+        if ($this->recordedEvents == null) {
+            return array();
+        }
+
+        return $this->recordedEvents;
+    }
+
+    public function clearEvents()
+    {
+        $this->recordedEvents = null;
+    }
+
+    protected function logException(\Exception $e)
+    {
+        if ($this->logger != null) {
+            $this->logger->alert(sprintf('[%s:%s] %s', $e->getFile(), $e->getLine(), $e->getMessage()));
+        }
+    }
+
+    protected function logInfo($message)
+    {
+        if ($this->logger != null) {
+            $this->logger->info($message);
+        }
+    }
+
+    protected function logAlert($message)
+    {
+        if ($this->logger != null) {
+            $this->logger->alert($message);
+        }
+    }
+
+    /**
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      *
@@ -97,7 +171,9 @@ abstract class AbstractTree implements TreeInterface
             }
         }
 
-        return $node;
+        $this->root = $node;
+
+        return $this->root;
     }
 
     /**
@@ -123,24 +199,15 @@ abstract class AbstractTree implements TreeInterface
         return $currentNode;
     }
 
-    /**
-     *
-     * @param AbstractBaseNode $node
-     * @param AbstractBaseNode $parent
-     * @param TreeCmdRepositoryInterface $repository
-     * @throws \InvalidArgumentException
-     * @return \Application\Domain\Util\Tree\Event\TreeNodeInserted
-     */
-    public function insertNode(AbstractBaseNode $node, AbstractBaseNode $parent, TreeCmdRepositoryInterface $repository)
+    public function insertNode(AbstractBaseNode $node, AbstractBaseNode $parent)
     {
-        if ($repository == null) {
-            throw new \InvalidArgumentException("TreeCmdInterface not found");
-        }
         $parent->add($node);
         $target = $node;
-        $defaultParams = null;
+        $defaultParams = new DefaultParameter();
         $params = null;
-        return new TreeNodeInserted($target, $defaultParams, $params);
+        $event = new TreeNodeInserted($target, $defaultParams, $params);
+        $this->addEvent($event);
+        return $this;
     }
 
     /**
@@ -155,7 +222,9 @@ abstract class AbstractTree implements TreeInterface
         $target = $node;
         $defaultParams = null;
         $params = null;
-        return new TreeNodeInserted($target, $defaultParams, $params);
+        $event = new TreeNodeInserted($target, $defaultParams, $params);
+        $this->addEvent($event);
+        return $this;
     }
 
     public function depthFirstSearch(AbstractBaseNode $node)

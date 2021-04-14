@@ -16,6 +16,8 @@ abstract class AbstractBaseNode extends AbstractNode
 
     protected $chilrendId = [];
 
+    protected $found = false;
+
     public function getChildCount()
     {
         $total = 1;
@@ -67,8 +69,8 @@ abstract class AbstractBaseNode extends AbstractNode
         $node->setParent($this);
 
         if ($this->searchDescendant($node)) {
-            // $f = 'Node {%s-%s} is decendent {%s-%s}!.';
-            // throw new \InvalidArgumentException(\sprintf($f, $node->getId(), $node->getNodeName(), $this->getId(), $this->getNodeName()));
+            $f = 'Node {%s-%s} is decendent {%s-%s}!.';
+            throw new \InvalidArgumentException(\sprintf($f, $node->getId(), $node->getNodeName(), $this->getId(), $this->getNodeName()));
         } else {
             $this->getChildren()->attach($node);
         }
@@ -184,7 +186,7 @@ abstract class AbstractBaseNode extends AbstractNode
      * @param AbstractNode $node
      * @return boolean
      */
-    public function isNodeDescendant(AbstractNode $node)
+    public function isNodeDescendant(AbstractBaseNode $node)
     {
         if ($node == null) {
             return false;
@@ -192,11 +194,16 @@ abstract class AbstractBaseNode extends AbstractNode
 
         $current = $node;
 
-        while ($current != null && ! $current->equals($this)) {
+        while ($current != null) {
+
+            var_dump($current);
+            if ($current->equals($this)) {
+                return true;
+            }
             $current = $current->getParent();
         }
 
-        return $current->equals($this);
+        return false;
     }
 
     /**
@@ -210,6 +217,8 @@ abstract class AbstractBaseNode extends AbstractNode
             return false;
         }
 
+        $this->found = false;
+
         // echo $this->getId() . $this->getNodeName() . "==This==\n";
 
         if ($this->getChildCount() == 0) {
@@ -221,19 +230,25 @@ abstract class AbstractBaseNode extends AbstractNode
         if ($this->getChildCount() > 0) {
 
             foreach ($this->getChildren() as $child) {
-                // echo $child->getId() . $child->getNodeName() . "==Current==\n";
+                // echo $child->getNodeName() . "==Current==\n";
+
+                echo \sprintf("[%s equals %s ?] \n", $node->getNodeName(), $child->getNodeName());
 
                 if ($node->equals($child)) {
-                    return true;
+                    echo \sprintf("[%s equals %s TRUE] \n", $node->getNodeName(), $child->getNodeName());
+
+                    $this->found = true;
+                    break;
                 }
                 $child->searchDescendant($node);
             }
         }
 
-        return false;
+        return $this->found;
     }
 
     /**
+     * Depth-First Search
      *
      * @param AbstractNode $node
      * @return boolean
@@ -244,12 +259,12 @@ abstract class AbstractBaseNode extends AbstractNode
             return false;
         }
 
-        $this->visited[$node] = true;
+        $this->visited[$node->getNodeName()] = true;
 
         if ($this->getChildCount() > 0) {
 
             foreach ($this->getChildren() as $child) {
-                if (! $this->visited[$child]) {
+                if (! $this->visited[$child->getNodeName()]) {
                     $this->dfs($node);
                 }
             }
@@ -281,6 +296,20 @@ abstract class AbstractBaseNode extends AbstractNode
         }
 
         return $pathArray;
+    }
+
+    /**
+     *
+     * @param AbstractBaseNode $node
+     * @return boolean
+     */
+    public function isNodeRelated(AbstractBaseNode $node)
+    {
+        if ($node == null) {
+            return false;
+        }
+
+        return $node->getRoot() == $this->getRoot();
     }
 
     /**
@@ -369,5 +398,23 @@ abstract class AbstractBaseNode extends AbstractNode
             $format = "<br>" . '<i class="fa fa-caret-up" aria-hidden="true"></i> %s %s';
             return $this->_showPathTo($node->getParent()) . \sprintf($format, $node->getNodeCode(), $node->getNodeName());
         }
+    }
+
+    /**
+     *
+     * @return multitype:
+     */
+    public function getVisited()
+    {
+        return $this->visited;
+    }
+
+    /**
+     *
+     * @return multitype:
+     */
+    public function getChilrendId()
+    {
+        return $this->chilrendId;
     }
 }

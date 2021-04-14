@@ -1,20 +1,21 @@
 <?php
 namespace Application\Controller;
 
+use Application\Application\Service\Department\Tree\DepartmentTree;
+use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Util\Tree\Output\ForSelectListFormatter;
 use Application\Entity\NmtApplicationAclUserRole;
 use Application\Entity\NmtApplicationDepartment;
 use Application\Model\AclRoleTable;
 use Application\Service\DepartmentService;
-use Doctrine\ORM\EntityManager;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class DepartmentController extends AbstractActionController
+class DepartmentController extends AbstractGenericController
 {
 
     const ROOT_NODE = '_COMPANY_';
@@ -28,8 +29,6 @@ class DepartmentController extends AbstractActionController
     protected $tree;
 
     protected $departmentService;
-
-    protected $doctrineEM;
 
     /*
      * Defaul Action
@@ -81,7 +80,7 @@ class DepartmentController extends AbstractActionController
      *
      * @version 3.0
      * @author Ngmautri
-     *        
+     *
      *         Create new Department
      */
     public function addAction()
@@ -176,6 +175,20 @@ class DepartmentController extends AbstractActionController
         ));
     }
 
+    public function list2Action()
+    {
+        $builder = new DepartmentTree();
+        $builder->setDoctrineEM($this->getDoctrineEM());
+
+        $builder->initTree();
+        $root = $builder->createTree(1, 0);
+
+        return new ViewModel(array(
+            'jsTree' => $root->display(),
+            'simpleTree' => $root->display(new ForSelectListFormatter())
+        ));
+    }
+
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -215,6 +228,7 @@ class DepartmentController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function addMemberAction()
@@ -286,33 +300,44 @@ class DepartmentController extends AbstractActionController
         ));
     }
 
+    /**
+     * * @deprecated
+     *
+     * @return \Application\Model\AclRoleTable
+     */
     public function getAclRoleTable()
     {
         return $this->aclRoleTable;
     }
 
+    /**
+     *
+     * @deprecated
+     * @param AclRoleTable $aclRoleTable
+     * @return \Application\Controller\DepartmentController
+     */
     public function setAclRoleTable(AclRoleTable $aclRoleTable)
     {
         $this->aclRoleTable = $aclRoleTable;
         return $this;
     }
 
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
+    /**
+     *
+     * @deprecated
+     * @return \Application\Service\DepartmentService
+     */
     public function getDepartmentService()
     {
         return $this->departmentService;
     }
 
+    /**
+     *
+     * @deprecated
+     * @param DepartmentService $departmentService
+     * @return \Application\Controller\DepartmentController
+     */
     public function setDepartmentService(DepartmentService $departmentService)
     {
         $this->departmentService = $departmentService;

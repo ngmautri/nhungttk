@@ -8,7 +8,7 @@ use Application\Domain\Util\Tree\Node\AbstractBaseNode;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class SimpleFormatter extends AbstractFormatter
+class ForSelectListFormatter extends AbstractFormatter
 {
 
     /**
@@ -24,24 +24,19 @@ class SimpleFormatter extends AbstractFormatter
 
         $results = '';
 
-        $space = "";
-        for ($i = 0; $i <= $level; $i ++) {
-            $space = $space . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
-
         if (! $node->isLeaf()) {
 
-            $format = '<span style="color:black">[+%s] %s %s (%s)' . "\n </br></span>";
+            $format = '<span style="color:black">%s %s %s (%s)' . "\n </br></span>";
 
             if ($level == 1) {
-                $format = '<span style="color:navy; font-weight: bold;">[+%s] %s %s (%s)' . "\n </br></span>";
+                $format = '<span style="color:navy; font-weight: bold;">%s %s %s (%s)' . "\n </br></span>";
             }
 
             if ($level == 2) {
-                $format = '<span style="color:navy">[+%s] %s %s (%s)' . "\n </br></span>";
+                $format = '<span style="color:navy">%s %s %s (%s)' . "\n </br></span>";
             }
 
-            $results = $results . $space . sprintf($format, "", $node->getNodeCode(), $node->getNodeName(), $node->getChildCount() - 1);
+            $results = $results . $this->addLevel($level) . sprintf($format, "", "", $node->getNodeName(), $node->getChildCount() - 1);
 
             foreach ($node->getChildren() as $child) {
                 // recursive
@@ -49,9 +44,22 @@ class SimpleFormatter extends AbstractFormatter
             }
         } else {
             $format = '<span style="color:black">%s %s %s' . "\n </br></span>";
-            $results = $results . $space . sprintf($format, "", $node->getNodeCode(), $node->getNodeName());
+            if ($level == 1) {
+                $format = '<span style="color:navy; font-weight: bold;">%s %s %s' . "\n </br></span>";
+            }
+            $results = $results . $this->addLevel($level) . sprintf($format, "", "", $node->getNodeName());
         }
 
         return $results;
+    }
+
+    private function addLevel($level)
+    {
+        $space = "-";
+        for ($i = 0; $i <= $level; $i ++) {
+            $space = $space . $space;
+        }
+
+        return $space;
     }
 }

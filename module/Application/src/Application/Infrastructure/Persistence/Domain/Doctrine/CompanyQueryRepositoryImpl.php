@@ -3,8 +3,11 @@ namespace Application\Infrastructure\Persistence\Domain\Doctrine;
 
 use Application\Domain\Company\Factory\CompanyFactory;
 use Application\Domain\Company\Repository\CompanyQueryRepositoryInterface;
+use Application\Domain\Contracts\Repository\SqlFilterInterface;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Application\Infrastructure\Persistence\Domain\Doctrine\Helper\CompanyHelper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\CompanyMapper;
+use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\DepartmentMapper;
 use Webmozart\Assert\Assert;
 
 /**
@@ -50,4 +53,27 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
 
     public function findAll()
     {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\Repository\CompanyQueryRepositoryInterface::getDepartmentList()
+     */
+    public function getDepartmentList(SqlFilterInterface $filter)
+    {
+        $sort_by = null;
+        $sort = null;
+        $limit = null;
+        $offset = null;
+        $results = CompanyHelper::getDepartmentList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
+
+        if ($results == null) {
+            return null;
+        }
+        $tmp = [];
+        foreach ($results as $r) {
+            $tmp[] = DepartmentMapper::createSnapshot($r);
+        }
+        return $tmp;
+    }
 }

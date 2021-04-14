@@ -2,7 +2,9 @@
 namespace Application\Infrastructure\Persistence\Domain\Doctrine\Mapper;
 
 use Application\Domain\Company\CompanySnapshot;
+use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Entity\NmtApplicationCompany;
+use Application\Entity\NmtApplicationDepartment;
 use Doctrine\ORM\EntityManager;
 
 class DepartmentMapper
@@ -114,27 +116,29 @@ class DepartmentMapper
      * @param NmtApplicationCompany $entity
      * @return NULL|\Application\Domain\Company\CompanyDetailsSnapshot
      */
-    public static function createSnapshot(NmtApplicationCompany $entity)
+    public static function createSnapshot(NmtApplicationDepartment $entity)
     {
         if ($entity == null) {
             return null;
         }
 
-        $snapshot = new CompanySnapshot();
-
-        $snapshot->id = $entity->getId();
-        $snapshot->companyCode = $entity->getCompanyCode();
-        $snapshot->companyName = $entity->getCompanyName();
-        $snapshot->defaultLogoId = $entity->getDefaultLogoId();
+        $snapshot = new DepartmentSnapshot();
+        $snapshot->nodeId = $entity->getNodeId();
+        $snapshot->nodeName = $entity->getNodeName();
+        $snapshot->nodeParentId = $entity->getNodeParentId();
+        $snapshot->path = $entity->getPath();
+        $snapshot->pathDepth = $entity->getPathDepth();
         $snapshot->status = $entity->getStatus();
-        $snapshot->isDefault = $entity->getIsDefault();
-        $snapshot->token = $entity->getToken();
-        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->remarks = $entity->getRemarks();
         $snapshot->uuid = $entity->getUuid();
-        $snapshot->defaultLocale = $entity->getDefaultLocale();
-        $snapshot->defaultLanguage = $entity->getDefaultLanguage();
-        $snapshot->defaultFormat = $entity->getDefaultFormat();
-        $snapshot->defaultCurrency = $entity->getDefaultCurrency();
+        $snapshot->departmentName = $entity->getDepartmentName();
+        $snapshot->departmentCode = $entity->getDepartmentCode();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->departmentNameLocal = $entity->getDepartmentNameLocal();
+
+        // Override
+        $snapshot->departmentName = $entity->getNodeName();
+        $snapshot->departmentCode = $entity->getNodeId();
 
         // Mapping Date
         // =====================
@@ -156,32 +160,14 @@ class DepartmentMapper
         // =====================
 
         /*
-         * $snapshot->createdBy = $entity->getCreatedBy();
-         * $snapshot->country = $entity->getCountry();
-         * $snapshot->defaultAddress = $entity->getDefaultAddress();
          * $snapshot->lastChangeBy = $entity->getLastChangeBy();
-         * $snapshot->defaultWarehouse = $entity->getDefaultWarehouse();
+         * $snapshot->createdBy = $entity->getCreatedBy();
+         * $snapshot->company = $entity->getCompany();
          */
-
-        $snapshot->defaultCurrency = $entity->getDefaultCurrency();
-        if ($entity->getDefaultCurrency() !== null) {
-            $snapshot->defaultCurrency = $entity->getDefaultCurrency()->getId();
-            $snapshot->defaultCurrencyIso = $entity->getDefaultCurrency()->getCurrency();
-        }
 
         $snapshot->createdBy = $entity->getCreatedBy();
         if ($entity->getCreatedBy() !== null) {
             $snapshot->createdBy = $entity->getCreatedBy()->getId();
-        }
-
-        $snapshot->country = $entity->getCountry();
-        if ($entity->getCountry() !== null) {
-            $snapshot->country = $entity->getCountry()->getId();
-        }
-
-        $snapshot->defaultAddress = $entity->getDefaultAddress();
-        if ($entity->getDefaultAddress() !== null) {
-            $snapshot->defaultAddress = $entity->getDefaultAddress()->getId();
         }
 
         $snapshot->lastChangeBy = $entity->getLastChangeBy();
@@ -189,10 +175,8 @@ class DepartmentMapper
             $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
         }
 
-        $snapshot->defaultWarehouse = $entity->getDefaultWarehouse();
-        if ($entity->getDefaultWarehouse() !== null) {
-            $snapshot->defaultWarehouse = $entity->getDefaultWarehouse()->getId();
-            $snapshot->defaultWarehouseCode = $entity->getDefaultWarehouse()->getWhCode();
+        if ($entity->getCompany() !== null) {
+            $snapshot->company = $entity->getCompany()->getId();
         }
         return $snapshot;
     }

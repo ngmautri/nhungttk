@@ -1,13 +1,6 @@
 <?php
 namespace Application\Infrastructure\Doctrine;
 
-use Application\Domain\Company\GenericCompany;
-use Application\Domain\Company\Repository\CompanyQueryRepositoryInterface;
-use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Application\Infrastructure\Mapper\CompanyMapper;
-use Webmozart\Assert\Assert;
-use Application\Domain\Company\Factory\CompanyFactory;
-
 /**
  *
  * @deprecated

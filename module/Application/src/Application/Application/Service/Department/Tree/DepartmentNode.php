@@ -23,9 +23,6 @@ class DepartmentNode extends GenericNode
             return false;
         }
 
-        // $t = $this->getNodeName() == $other->getNodeName();
-        // echo \sprintf("[%s equals %s ? => %s] \n", $this->getNodeName(), $other->getNodeName(), $t);
-
         return $this->getNodeName() == $other->getNodeName();
     }
 }

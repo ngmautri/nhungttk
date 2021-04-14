@@ -293,6 +293,8 @@ abstract class GenericDoc extends BaseDoc
 
     public function sortRowsByWarehouse()
     {
+
+        // Callable
         $sort = function ($row1, $row2) {
 
             if (! $row1 instanceof GenericRow) {

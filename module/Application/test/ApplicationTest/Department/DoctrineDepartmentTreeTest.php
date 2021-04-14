@@ -4,11 +4,11 @@ namespace ApplicationTest\Department;
 use ApplicationTest\Bootstrap;
 use Application\Application\Eventbus\EventBusService;
 use Application\Application\Service\Department\Tree\DepartmentNode;
-use Application\Application\Service\Department\Tree\TestDepartmentTree;
+use Application\Application\Service\Department\Tree\DepartmentTree;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_TestCase;
 
-class DepartmentTreeTest extends PHPUnit_Framework_TestCase
+class DoctrineDepartmentTreeTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -24,9 +24,14 @@ class DepartmentTreeTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        $builder = new TestDepartmentTree();
+        $eventBus = Bootstrap::getServiceManager()->get(EventBusService::class);
+        $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+
+        $builder = new DepartmentTree();
+        $builder->setDoctrineEM($doctrineEM);
+
         $builder->initTree();
-        $root = $builder->createRoot();
+        $root = $builder->createTree(1, 0);
 
         $node = new DepartmentNode();
         $node->setId("Controlling1");
@@ -46,6 +51,6 @@ class DepartmentTreeTest extends PHPUnit_Framework_TestCase
         $eventBus = Bootstrap::getServiceManager()->get(EventBusService::class);
         $eventBus->dispatch($builder->getRecordedEvents());
 
-        var_dump($root->getAllNodesName());
+        echo $root->display();
     }
 }

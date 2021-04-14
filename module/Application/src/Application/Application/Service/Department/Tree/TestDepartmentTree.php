@@ -58,6 +58,11 @@ class TestDepartmentTree extends AbstractDepartmentTree
         $this->index['Finance'][] = "Controlling";
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Util\Tree\AbstractTree::insertNode()
+     */
     public function insertNode(AbstractBaseNode $node, AbstractBaseNode $parent)
     {
         $parent->add($node);

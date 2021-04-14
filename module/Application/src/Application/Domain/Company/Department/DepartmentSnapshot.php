@@ -49,7 +49,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getNodeId()
+    public function getNodeId()
     {
         return $this->nodeId;
     }
@@ -58,7 +58,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $nodeId
      */
-    protected function setNodeId($nodeId)
+    public function setNodeId($nodeId)
     {
         $this->nodeId = $nodeId;
     }
@@ -67,7 +67,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getNodeName()
+    public function getNodeName()
     {
         return $this->nodeName;
     }
@@ -76,7 +76,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $nodeName
      */
-    protected function setNodeName($nodeName)
+    public function setNodeName($nodeName)
     {
         $this->nodeName = $nodeName;
     }
@@ -85,7 +85,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getNodeParentId()
+    public function getNodeParentId()
     {
         return $this->nodeParentId;
     }
@@ -94,7 +94,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $nodeParentId
      */
-    protected function setNodeParentId($nodeParentId)
+    public function setNodeParentId($nodeParentId)
     {
         $this->nodeParentId = $nodeParentId;
     }
@@ -103,7 +103,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPath()
+    public function getPath()
     {
         return $this->path;
     }
@@ -112,7 +112,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $path
      */
-    protected function setPath($path)
+    public function setPath($path)
     {
         $this->path = $path;
     }
@@ -121,7 +121,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPathDepth()
+    public function getPathDepth()
     {
         return $this->pathDepth;
     }
@@ -130,7 +130,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $pathDepth
      */
-    protected function setPathDepth($pathDepth)
+    public function setPathDepth($pathDepth)
     {
         $this->pathDepth = $pathDepth;
     }
@@ -139,7 +139,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getStatus()
+    public function getStatus()
     {
         return $this->status;
     }
@@ -148,7 +148,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $status
      */
-    protected function setStatus($status)
+    public function setStatus($status)
     {
         $this->status = $status;
     }
@@ -157,7 +157,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getRemarks()
+    public function getRemarks()
     {
         return $this->remarks;
     }
@@ -166,7 +166,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $remarks
      */
-    protected function setRemarks($remarks)
+    public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
     }
@@ -175,7 +175,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCreatedOn()
+    public function getCreatedOn()
     {
         return $this->createdOn;
     }
@@ -184,7 +184,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $createdOn
      */
-    protected function setCreatedOn($createdOn)
+    public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
     }
@@ -193,7 +193,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getUuid()
+    public function getUuid()
     {
         return $this->uuid;
     }
@@ -202,7 +202,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $uuid
      */
-    protected function setUuid($uuid)
+    public function setUuid($uuid)
     {
         $this->uuid = $uuid;
     }
@@ -211,7 +211,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDepartmentName()
+    public function getDepartmentName()
     {
         return $this->departmentName;
     }
@@ -220,7 +220,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $departmentName
      */
-    protected function setDepartmentName($departmentName)
+    public function setDepartmentName($departmentName)
     {
         $this->departmentName = $departmentName;
     }
@@ -229,7 +229,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDepartmentCode()
+    public function getDepartmentCode()
     {
         return $this->departmentCode;
     }
@@ -238,7 +238,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $departmentCode
      */
-    protected function setDepartmentCode($departmentCode)
+    public function setDepartmentCode($departmentCode)
     {
         $this->departmentCode = $departmentCode;
     }
@@ -247,7 +247,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getIsActive()
+    public function getIsActive()
     {
         return $this->isActive;
     }
@@ -256,7 +256,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $isActive
      */
-    protected function setIsActive($isActive)
+    public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
     }
@@ -265,7 +265,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLastChangeOn()
+    public function getLastChangeOn()
     {
         return $this->lastChangeOn;
     }
@@ -274,7 +274,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $lastChangeOn
      */
-    protected function setLastChangeOn($lastChangeOn)
+    public function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
     }
@@ -283,7 +283,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLastChangeBy()
+    public function getLastChangeBy()
     {
         return $this->lastChangeBy;
     }
@@ -292,7 +292,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $lastChangeBy
      */
-    protected function setLastChangeBy($lastChangeBy)
+    public function setLastChangeBy($lastChangeBy)
     {
         $this->lastChangeBy = $lastChangeBy;
     }
@@ -301,7 +301,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDepartmentNameLocal()
+    public function getDepartmentNameLocal()
     {
         return $this->departmentNameLocal;
     }
@@ -310,7 +310,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $departmentNameLocal
      */
-    protected function setDepartmentNameLocal($departmentNameLocal)
+    public function setDepartmentNameLocal($departmentNameLocal)
     {
         $this->departmentNameLocal = $departmentNameLocal;
     }
@@ -319,7 +319,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCreatedBy()
+    public function getCreatedBy()
     {
         return $this->createdBy;
     }
@@ -328,7 +328,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $createdBy
      */
-    protected function setCreatedBy($createdBy)
+    public function setCreatedBy($createdBy)
     {
         $this->createdBy = $createdBy;
     }
@@ -337,7 +337,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCompany()
+    public function getCompany()
     {
         return $this->company;
     }
@@ -346,7 +346,7 @@ class DepartmentSnapshot extends AbstractDTO
      *
      * @param mixed $company
      */
-    protected function setCompany($company)
+    public function setCompany($company)
     {
         $this->company = $company;
     }

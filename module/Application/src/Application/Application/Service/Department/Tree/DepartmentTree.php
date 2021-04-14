@@ -1,10 +1,14 @@
 <?php
 namespace Application\Application\Service\Department\Tree;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Company\Department\AbstractDepartmentTree;
+use Application\Domain\Company\Department\DepartmentSnapshot;
+use Application\Domain\Event\Company\DepartmentInserted;
+use Application\Domain\Util\Tree\Node\AbstractBaseNode;
+use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
+use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
 use Doctrine\ORM\EntityManager;
-use Inventory\Application\Service\MfgCatalog\Tree\MfgCatalogNode;
-use Inventory\Infrastructure\Persistence\Doctrine\HSCodeReportRepositoryImpl;
 
 /**
  *
@@ -23,26 +27,39 @@ class DepartmentTree extends AbstractDepartmentTree
      */
     public function initTree()
     {
-        $rep = new HSCodeReportRepositoryImpl($this->getDoctrineEM());
-        $results = $rep->getList();
+        $rep = new CompanyQueryRepositoryImpl($this->getDoctrineEM());
+        $filter = new CompanyQuerySqlFilter();
+        $results = $rep->getDepartmentList($filter);
+
         foreach ($results as $row) {
 
-            /** @var \Application\Entity\InventoryHsCode $row ; */
+            /** @var DepartmentSnapshot $row ; */
 
-            $id = $row->getId();
-            $parent_id = $row->getParentId();
+            $id = $row->getNodeId();
+            $parent_id = $row->getNodeParentId();
 
             // convert to Generic Component
-            $genericComponent = new MfgCatalogNode();
-            $genericComponent->setId($row->getId());
-            $genericComponent->setParentId($row->getParentId());
-            $genericComponent->setNodeName($row->getCodeDescription());
-            $genericComponent->setNodeCode($row->getHsCode());
-            $genericComponent->setNodeDescription($row->getCodeDescription());
-            $genericComponent->setNodeDescription1($row->getCodeDescription1());
+            $genericComponent = new DepartmentNode();
+            $genericComponent->setId($row->getNodeId());
+            $genericComponent->setParentId($row->getNodeParentId());
+            $genericComponent->setNodeName($row->getDepartmentName());
+            $genericComponent->setNodeCode($row->getDepartmentCode());
+            $genericComponent->setNodeDescription($row->getRemarks());
+
             $this->data[$id] = $genericComponent;
             $this->index[$parent_id][] = $id;
         }
+        return $this;
+    }
+
+    public function insertNode(AbstractBaseNode $node, AbstractBaseNode $parent)
+    {
+        $parent->add($node);
+        $target = $node;
+        $defaultParams = new DefaultParameter();
+        $params = null;
+        $event = new DepartmentInserted($target, $defaultParams, $params);
+        $this->addEvent($event);
         return $this;
     }
 

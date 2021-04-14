@@ -3,6 +3,10 @@ namespace Application\Domain\Util\Tree\Node;
 
 use Application\Domain\Util\Tree\Output\AbstractFormatter;
 use Application\Domain\Util\Tree\Output\JsTreeFormatter;
+use Application\Domain\Util\Tree\Output\NodeArrayFormatter;
+use Application\Domain\Util\Tree\Output\NodeCodeFormatter;
+use Application\Domain\Util\Tree\Output\NodeNameFormatter;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -68,7 +72,7 @@ abstract class AbstractBaseNode extends AbstractNode
         }
         $node->setParent($this);
 
-        if ($this->searchDescendant($node)) {
+        if ($this->isNodeDescendant($node)) {
             $f = 'Node {%s-%s} is decendent {%s-%s}!.';
             throw new \InvalidArgumentException(\sprintf($f, $node->getId(), $node->getNodeName(), $this->getId(), $this->getNodeName()));
         } else {
@@ -98,6 +102,24 @@ abstract class AbstractBaseNode extends AbstractNode
             }
         }
         return false;
+    }
+
+    public function getNodeByName($name)
+    {
+        $result = new ArrayCollection($this->display(new NodeArrayFormatter()));
+
+        foreach ($result as $r) {
+
+            /**
+             *
+             * @var AbstractBaseNode $r ;
+             */
+            if (\strtolower($r->getNodeName()) == \strtolower($name)) {
+                return $r;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -188,26 +210,36 @@ abstract class AbstractBaseNode extends AbstractNode
      */
     public function isNodeDescendant(AbstractBaseNode $node)
     {
-        if ($node == null) {
-            return false;
-        }
+        $result = $this->getAllNodes();
 
-        $current = $node;
+        foreach ($result as $r) {
 
-        while ($current != null) {
-
-            var_dump($current);
-            if ($current->equals($this)) {
+            if ($node->equals($r)) {
                 return true;
             }
-            $current = $current->getParent();
         }
 
         return false;
     }
 
+    public function getAllNodes()
+    {
+        return new ArrayCollection($this->display(new NodeArrayFormatter()));
+    }
+
+    public function getAllNodesName()
+    {
+        return new ArrayCollection($this->display(new NodeNameFormatter()));
+    }
+
+    public function getAllNodesCode()
+    {
+        return new ArrayCollection($this->display(new NodeCodeFormatter()));
+    }
+
     /**
      *
+     * @deprecated
      * @param AbstractNode $node
      * @return boolean
      */
@@ -216,10 +248,6 @@ abstract class AbstractBaseNode extends AbstractNode
         if ($node == null) {
             return false;
         }
-
-        $this->found = false;
-
-        // echo $this->getId() . $this->getNodeName() . "==This==\n";
 
         if ($this->getChildCount() == 0) {
             if ($node->equals($this)) {
@@ -231,20 +259,14 @@ abstract class AbstractBaseNode extends AbstractNode
 
             foreach ($this->getChildren() as $child) {
                 // echo $child->getNodeName() . "==Current==\n";
-
-                echo \sprintf("[%s equals %s ?] \n", $node->getNodeName(), $child->getNodeName());
-
                 if ($node->equals($child)) {
-                    echo \sprintf("[%s equals %s TRUE] \n", $node->getNodeName(), $child->getNodeName());
-
-                    $this->found = true;
-                    break;
+                    return true;
                 }
                 $child->searchDescendant($node);
             }
         }
 
-        return $this->found;
+        // return false;
     }
 
     /**
@@ -259,7 +281,7 @@ abstract class AbstractBaseNode extends AbstractNode
             return false;
         }
 
-        $this->visited[$node->getNodeName()] = true;
+        $this->visited[] = $node->getNodeName();
 
         if ($this->getChildCount() > 0) {
 
@@ -269,6 +291,36 @@ abstract class AbstractBaseNode extends AbstractNode
                 }
             }
         }
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param number $level
+     * @return \Application\Domain\Util\Tree\Node\AbstractBaseNode[][]|NULL[][]
+     */
+    public function preorderTravel($level = 0)
+    {
+        $results = [];
+
+        if (! $this->isLeaf()) {
+
+            $results[] = [
+                $this
+            ];
+
+            foreach ($this->getChildren() as $child) {
+                // recursive
+                $results = \array_merge($results, $child->preorderTravel($level + 1));
+            }
+        } else {
+            $results[] = [
+                $node->getId(),
+                $node->getNodeCode()
+            ];
+        }
+
+        return $results;
     }
 
     /**

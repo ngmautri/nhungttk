@@ -7,6 +7,7 @@ use Application\Domain\Util\Tree\Output\NodeArrayFormatter;
 use Application\Domain\Util\Tree\Output\NodeCodeFormatter;
 use Application\Domain\Util\Tree\Output\NodeNameFormatter;
 use Doctrine\Common\Collections\ArrayCollection;
+use InvalidArgumentException;
 
 /**
  *
@@ -73,9 +74,9 @@ abstract class AbstractBaseNode extends AbstractNode
         $node->setParent($this);
         $node->setParentId($this->getId());
 
-        if ($this->isNodeDescendant($node)) {
-            $f = 'Node {%s-%s} is decendent {%s-%s}!.';
-            throw new \InvalidArgumentException(\sprintf($f, $node->getId(), $node->getNodeName(), $this->getId(), $this->getNodeName()));
+        if ($this->getRoot()->isNodeDescendant($node)) {
+            $f = 'Node {%s} exits already! ';
+            throw new \InvalidArgumentException(\sprintf($f, $node->getNodeName()));
         } else {
             $this->getChildren()->attach($node);
         }
@@ -116,6 +117,7 @@ abstract class AbstractBaseNode extends AbstractNode
              * @var AbstractBaseNode $r ;
              */
             if (\strtolower($r->getNodeName()) == \strtolower($name)) {
+
                 return $r;
             }
         }
@@ -129,8 +131,29 @@ abstract class AbstractBaseNode extends AbstractNode
      */
     public function remove(AbstractNode $node)
     {
+        if ($node == null) {
+            throw new \InvalidArgumentException("Null 'node' argument.");
+        }
+        if (! $node->getParent()->equals($this)) {
+            throw new InvalidArgumentException("The given 'node' is not a child of this node.");
+        }
+
         $this->children->detach($node);
         $node->setParent(null);
+    }
+
+    /**
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function removeFromParent()
+    {
+        if ($this->isRoot()) {
+            throw new \InvalidArgumentException("Root 'node' argument.");
+        }
+
+        $this->getParent()->remove($this);
+        $this->setParent(null);
     }
 
     /**

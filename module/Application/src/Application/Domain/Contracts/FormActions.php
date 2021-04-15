@@ -18,6 +18,8 @@ class FormActions
 
     const SHOW = 'SHOW';
 
+    const MOVE = 'MOVE';
+
     const DELETE = 'DELETE';
 
     const REVIEW = 'REVIEW';

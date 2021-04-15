@@ -3,10 +3,10 @@ namespace Application\Domain\Util\Tree;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Util\Tree\Event\TreeNodeInserted;
+use Application\Domain\Util\Tree\Event\TreeNodeRemoved;
 use Application\Domain\Util\Tree\Node\AbstractBaseNode;
 use Application\Domain\Util\Tree\Node\AbstractNode;
 use Application\Domain\Util\Tree\Node\GenericNode;
-use Application\Domain\Util\Tree\Repository\TreeCmdRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -216,13 +216,14 @@ abstract class AbstractTree implements TreeInterface
      * @param AbstractBaseNode $parent
      * @return \Application\Domain\Util\Tree\Event\TreeNodeInserted
      */
-    public function removeNode(AbstractBaseNode $node, AbstractBaseNode $parent, TreeCmdRepositoryInterface $repository)
+    public function removeNodeFromParent(AbstractBaseNode $node)
     {
-        $parent->remove($node);
+        $node->removeFromParent();
+
         $target = $node;
         $defaultParams = null;
         $params = null;
-        $event = new TreeNodeInserted($target, $defaultParams, $params);
+        $event = new TreeNodeRemoved($target, $defaultParams, $params);
         $this->addEvent($event);
         return $this;
     }

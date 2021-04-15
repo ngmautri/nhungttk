@@ -2,15 +2,13 @@
 namespace ApplicationTest\Department;
 
 use ApplicationTest\Bootstrap;
-use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Eventbus\EventBusService;
 use Application\Application\Service\Department\Tree\DepartmentNode;
 use Application\Application\Service\Department\Tree\DepartmentTree;
-use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_TestCase;
 
-class DoctrineDepartmentTreeTest extends PHPUnit_Framework_TestCase
+class DoctrineDepartmentTree1Test extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -42,19 +40,27 @@ class DoctrineDepartmentTreeTest extends PHPUnit_Framework_TestCase
 
         // var_dump($root->isNodeDescendant($node));
 
-        $n = $root->getNodeByName("rmqc");
+        $n = $root->getNodeByName("Line-204");
+        $p = $root->getNodeByName("production");
+        $builder->moveNodeTo($n, $p);
 
-        $rep = new CompanyQueryRepositoryImpl($doctrineEM);
-        $companyVO = $rep->getById(1)->createValueObject();
+        $n = $root->getNodeByName("Line-207");
+        $builder->moveNodeTo($n, $p);
 
-        $options = new CmdOptions($companyVO, 39, __METHOD__);
-        $builder->insertNode($node, $n, $options);
-        \var_dump($builder->getRecordedEvents());
+        $n = $root->getNodeByName("maintenance");
+        $builder->moveNodeTo($n, $p);
+
+        $n = $root->getNodeByName("Procurement");
+        $p = $root->getNodeByName("ADM");
+        $builder->moveNodeTo($n, $p);
         /**
          *
          * @var EventBusService $eventBus ;
          */
         $eventBus = Bootstrap::getServiceManager()->get(EventBusService::class);
-        // $eventBus->dispatch($builder->getRecordedEvents());
+        $eventBus->dispatch($builder->getRecordedEvents());
+
+        echo $root->display();
+        ($builder->getRecordedEvents());
     }
 }

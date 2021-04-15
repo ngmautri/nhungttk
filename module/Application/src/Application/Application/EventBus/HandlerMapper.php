@@ -3,6 +3,8 @@ namespace Application\Application\Eventbus;
 
 use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToDB;
 use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToLog;
+use Application\Application\EventBus\Handler\Department\OnDepartmentMovedSaveToDB;
+use Application\Application\EventBus\Handler\Department\OnDepartmentMovedSaveToLog;
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
 
@@ -22,7 +24,9 @@ class HandlerMapper extends AbstractService
     {
         $handlers = [
             OnDepartmentInsertedSaveToDB::class,
-            OnDepartmentInsertedSaveToLog::class
+            OnDepartmentInsertedSaveToLog::class,
+            OnDepartmentMovedSaveToLog::class,
+            OnDepartmentMovedSaveToDB::class
         ];
 
         $this->handlers = $handlers;

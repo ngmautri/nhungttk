@@ -4,9 +4,9 @@ namespace Application\Application\Command\Doctrine\Company;
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Application\Command\Options\CmdOptions;
-use Application\Application\Service\SharedServiceFactory;
+use Application\Application\Service\Department\Tree\DepartmentTree;
 use Application\Domain\Shared\Command\CommandInterface;
-use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
+use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Webmozart\Assert\Assert;
 
 /**
@@ -14,7 +14,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class SaveDepartmentCmdHandler extends AbstractCommandHandler
+class MoveDepartmentCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -26,28 +26,32 @@ class SaveDepartmentCmdHandler extends AbstractCommandHandler
     {
         /**
          *
-         * @var CmdOptions $options ;
+         * @var CreateHeaderCmdOptions $options ;
          * @var AbstractCommand $cmd ;
          */
-        Assert::isInstanceOf($cmd, AbstractCommand::class, 'Command is not given!');
-        Assert::isInstanceOf($cmd->getOptions(), CmdOptions::class, 'Cmd Option is not given!');
+        Assert::isInstanceOf($cmd, AbstractCommand::class);
+        Assert::isInstanceOf($cmd->getOptions(), CmdOptions::class);
         Assert::notNull($cmd->getData(), 'Input data in emty');
 
         $options = $cmd->getOptions();
+        $data = $cmd->getData();
+
         try {
 
-            $snapshot = $cmd->getData()->getContextObject();
+            $builder = new DepartmentTree();
+            $builder->setDoctrineEM($cmd->getDoctrineEM());
+            $builder->initTree();
+            $root = $builder->createTree(1, 0);
 
-            $rep = new CompanyQueryRepositoryImpl($cmd->getDoctrineEM());
-            $company = $rep->getById($options->getCompanyVO()
-                ->getId());
-            $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
-            $company->createDepartmentFrom($snapshot, $options, $sharedService);
+            $node = $root->getNodeByName($data['departmentName']);
+            $newParent = $root->getNodeByName($data['parentName']);
+
+            $builder->moveNodeTo($node, $newParent, $options);
 
             // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
-                $cmd->getEventBus()->dispatch($company->getRecordedEvents());
+                $cmd->getEventBus()->dispatch($builder->getRecordedEvents());
             }
             // ================
         } catch (\Exception $e) {

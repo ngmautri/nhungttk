@@ -24,7 +24,7 @@ class DepartmentNode extends GenericNode
             return false;
         }
 
-        return $this->getNodeName() == $other->getNodeName();
+        return \strtolower($this->getNodeName()) == \strtolower($other->getNodeName());
     }
 
     public function setNodeName($nodeName)

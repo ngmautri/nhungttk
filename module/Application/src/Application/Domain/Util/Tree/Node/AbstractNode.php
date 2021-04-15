@@ -6,7 +6,7 @@ use SplObjectStorage;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractNode implements NodeInterface
 {
@@ -47,7 +47,7 @@ abstract class AbstractNode implements NodeInterface
 
     /**
      *
-     * @var AbstractNode
+     * @var AbstractBaseNode
      */
     protected $parent;
 
@@ -71,12 +71,20 @@ abstract class AbstractNode implements NodeInterface
         $this->allowChildren = $allowChildren;
     }
 
+    /**
+     *
+     * @return \Application\Domain\Util\Tree\Node\AbstractBaseNode
+     */
     public function getParent()
     {
         return $this->parent;
     }
 
-    public function setParent($parent)
+    /**
+     *
+     * @param AbstractBaseNode $parent
+     */
+    public function setParent(AbstractBaseNode $parent = null)
     {
         $this->parent = $parent;
     }

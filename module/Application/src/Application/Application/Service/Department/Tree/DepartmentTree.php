@@ -6,7 +6,8 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Company\Department\AbstractDepartmentTree;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Event\Company\DepartmentInserted;
-use Application\Domain\Event\Company\DepartmentUpdated;
+use Application\Domain\Event\Company\DepartmentMoved;
+use Application\Domain\Event\Company\DepartmentRemoved;
 use Application\Domain\Util\Tree\Node\AbstractBaseNode;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
@@ -47,7 +48,7 @@ class DepartmentTree extends AbstractDepartmentTree
             $genericComponent->setParentId($row->getNodeParentId());
             $genericComponent->setNodeName($row->getDepartmentName());
             $genericComponent->setNodeCode($row->getDepartmentCode());
-
+            $genericComponent->setContextObject($row);
             $genericComponent->setNodeDescription($row->getRemarks());
 
             $this->data[$id] = $genericComponent;
@@ -62,23 +63,60 @@ class DepartmentTree extends AbstractDepartmentTree
         Assert::isInstanceOf($parent, AbstractBaseNode::class);
 
         $parent->add($node);
+
         $target = $node;
         $defaultParams = new DefaultParameter();
         $params = [
             'options' => $options
         ];
+
         $event = new DepartmentInserted($target, $defaultParams, $params);
         $this->addEvent($event);
         return $this;
     }
 
-    public function updateNode(AbstractBaseNode $node)
+    public function removeNodeFromParent(AbstractBaseNode $node, CmdOptions $options = null)
     {
+        Assert::isInstanceOf($node, AbstractBaseNode::class);
+        $node->removeFromParent();
+
         $target = $node;
         $defaultParams = new DefaultParameter();
-        $params = null;
-        $event = new DepartmentUpdated($target, $defaultParams, $params);
+        $params = [
+            'options' => $options
+        ];
+
+        $event = new DepartmentRemoved($target, $defaultParams, $params);
         $this->addEvent($event);
+        return $this;
+    }
+
+    public function moveNodeTo(AbstractBaseNode $node, AbstractBaseNode $newParent, CmdOptions $options = null)
+    {
+        Assert::isInstanceOf($node, AbstractBaseNode::class);
+        Assert::isInstanceOf($newParent, AbstractBaseNode::class);
+
+        $parent = $node->getParent();
+        if ($parent->equals($newParent)) {
+            throw new \InvalidArgumentException("New parent is the same!");
+        }
+
+        // $this->clearEvents(); // clear all event before doing.
+
+        $node->removeFromParent();
+        $newParent->add($node);
+
+        $target = $node;
+        $defaultParams = new DefaultParameter();
+        $params = [
+            'options' => $options,
+            'oldParent' => $parent,
+            'newParent' => $newParent
+        ];
+
+        $event = new DepartmentMoved($target, $defaultParams, $params);
+        $this->addEvent($event);
+
         return $this;
     }
 

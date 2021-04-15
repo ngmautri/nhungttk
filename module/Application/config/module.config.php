@@ -3,8 +3,12 @@ use Application\Application\Cache\CacheFactory;
 use Application\Application\Cache\RedisCacheFactory;
 use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToDB;
 use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToLog;
+use Application\Application\EventBus\Handler\Department\OnDepartmentMovedSaveToDB;
+use Application\Application\EventBus\Handler\Department\OnDepartmentMovedSaveToLog;
 use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentInsertedSaveToDBFactory;
 use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentInsertedSaveToLogFactory;
+use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentMovedSaveToDBFactory;
+use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentMovedSaveToLogFactory;
 use Application\Application\Event\Handler\DummyEventHandler;
 use Application\Application\Event\Handler\DummyEventHandlerFactory;
 use Application\Application\Eventbus\EventBusService;
@@ -350,6 +354,8 @@ return array(
             // Handlers:
             OnDepartmentInsertedSaveToLog::class => OnDepartmentInsertedSaveToLogFactory::class,
             OnDepartmentInsertedSaveToDB::class => OnDepartmentInsertedSaveToDBFactory::class,
+            OnDepartmentMovedSaveToLog::class => OnDepartmentMovedSaveToLogFactory::class,
+            OnDepartmentMovedSaveToDB::class => OnDepartmentMovedSaveToDBFactory::class,
 
             // =============================================================
             // Event Bus Service End

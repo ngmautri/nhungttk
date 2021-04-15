@@ -4,6 +4,7 @@ namespace Application\Controller;
 use Application\Application\Command\TransactionalCommandHandler;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Command\Doctrine\Company\InsertDepartmentCmdHandler;
+use Application\Application\Command\Doctrine\Company\MoveDepartmentCmdHandler;
 use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Service\Department\Tree\DepartmentTree;
 use Application\Application\Service\Department\Tree\Output\DepartmentJsTreeFormatter;
@@ -35,6 +36,110 @@ class DepartmentController extends AbstractGenericController
     public function indexAction()
     {}
 
+    public function moveAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/move";
+        $form_title = "Edit Form";
+        $action = FormActions::MOVE;
+        $viewTemplete = $this->getBaseUrl() . "/crud";
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $builder = new DepartmentTree();
+        $builder->setDoctrineEM($this->getDoctrineEM());
+
+        $builder->initTree();
+        $root = $builder->createTree(1, 0);
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $departmentName = $this->params()->fromQuery('n');
+            $departmentNode = $root->getNodeByName($departmentName);
+
+            if ($departmentNode == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'departmentName' => $departmentName,
+                'departmentNode' => $departmentNode,
+                'version' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO(),
+                'departmentForOption' => $root->display(new DepartmentWithRootForOptionFormatter())
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        try {
+
+            // POSTING
+            $data = $prg;
+
+            $departmentName = $data['departmentName'];
+
+            $departmentNode = $root->getNodeByName($departmentName);
+
+            if ($departmentNode == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new CmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
+
+            $cmdHandler = new MoveDepartmentCmdHandler();
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->execute();
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+            $this->logException($e);
+            // left blank
+        }
+
+        if ($cmd->getNotification()->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $cmd->getNotification()->getErrors(),
+                'departmentName' => $departmentName,
+                'departmentNode' => $departmentNode,
+                'version' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO(),
+                'departmentForOption' => $root->display(new DepartmentWithRootForOptionFormatter())
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $redirectUrl = $this->getBaseUrl() . "/list2";
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
     public function createAction()
     {
         $this->layout($this->getDefaultLayout());
@@ -64,6 +169,9 @@ class DepartmentController extends AbstractGenericController
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
+                'departmentName' => null,
+                'departmentNode' => null,
+
                 'redirectUrl' => null,
                 'version' => null,
                 'nmtPlugin' => $nmtPlugin,
@@ -102,6 +210,9 @@ class DepartmentController extends AbstractGenericController
 
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
+                'departmentName' => null,
+                'departmentNode' => null,
+
                 'redirectUrl' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,

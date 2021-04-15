@@ -1,9 +1,23 @@
 <?php
 use Application\Application\Helper\ErrorMessage;
 use Application\Application\Helper\OptionList;
+use Application\Application\Service\Department\Tree\DepartmentNode;
+
+/**
+ *
+ * @var DepartmentNode $departmentNode ;
+ */
 
 $error_msg = ErrorMessage::showErrorMessage($errors);
 $depmartment_option = OptionList::createDeptOption($departmentForOption, "");
+
+$parentName = null;
+
+if ($departmentNode !== null) {
+    $parentName = $departmentNode->getParent()->getNodeName();
+}
+
+$current_depmartment_option = OptionList::createDeptOption($departmentForOption, $parentName);
 
 ?>
 <div id="tabs" style="font-size: 9.5pt">
@@ -28,9 +42,25 @@ echo $form_action;
                   <div class="form-group margin-bottom">
             <label class="control-label col-sm-2" for="inputTag">Department Name</label>
             <div class="col-sm-3">
-               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="departmentName" value="">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="departmentName" value="<?php
+            echo (! $departmentNode == null) ? $departmentNode->getNodeName() : "";
+            ?>">
             </div>
          </div>
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2 input-sm" for="inputTag">Current Parent Deparment: </label>
+            <div class="col-sm-3">
+               <select name="parentName" id="parent_id" class="chosen-select">
+<?php
+// ================
+echo $current_depmartment_option;
+// ================
+?>
+       </select>
+            </div>
+         </div>
+
+
          <div class="form-group margin-bottom">
             <label class="control-label col-sm-2 input-sm" for="inputTag">Parent Deparment: </label>
             <div class="col-sm-3">
@@ -43,6 +73,9 @@ echo $depmartment_option;
        </select>
             </div>
          </div>
+
+
+
          <div class="form-group margin-bottom">
             <label class="control-label col-sm-2" for="inputDescription">remarks</label>
             <div class="col-sm-3">

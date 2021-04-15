@@ -90,7 +90,7 @@ class OptionList
         return $option;
     }
 
-    public static function createDeptOption($list, $id)
+    public static function createDeptOption($list, $id, $disable = false)
     {
         if ($list == null) {
             return null;
@@ -108,7 +108,7 @@ class OptionList
             if ($id == null) {
                 $option = $option . sprintf('<option value="%s">%s</option>', $l->getDepartmentName(), $l->getDepartmentShowName());
             } else {
-                if ($id == $l->getId()) {
+                if (\strtolower($id) == strtolower($l->getDepartmentName())) {
                     $option = $option . sprintf('<option selected value="%s">%s</option>', $l->getDepartmentName(), $l->getDepartmentShowName());
                 } else {
                     $option = $option . sprintf('<option value="%s">%s</option>', $l->getDepartmentName(), $l->getDepartmentShowName());

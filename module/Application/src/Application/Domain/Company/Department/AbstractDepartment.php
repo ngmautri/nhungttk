@@ -45,6 +45,12 @@ class AbstractDepartment extends AbstractEntity
 
     protected $company;
 
+    protected $parentName;
+
+    protected $parentCode;
+
+    protected $token;
+
     /**
      *
      * @return mixed
@@ -349,5 +355,59 @@ class AbstractDepartment extends AbstractEntity
     protected function setCompany($company)
     {
         $this->company = $company;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getParentName()
+    {
+        return $this->parentName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getParentCode()
+    {
+        return $this->parentCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     *
+     * @param mixed $parentName
+     */
+    protected function setParentName($parentName)
+    {
+        $this->parentName = $parentName;
+    }
+
+    /**
+     *
+     * @param mixed $parentCode
+     */
+    protected function setParentCode($parentCode)
+    {
+        $this->parentCode = $parentCode;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    protected function setToken($token)
+    {
+        $this->token = $token;
     }
 }

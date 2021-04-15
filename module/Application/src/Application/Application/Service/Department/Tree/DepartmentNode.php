@@ -3,6 +3,7 @@ namespace Application\Application\Service\Department\Tree;
 
 use Application\Domain\Util\Tree\Node\AbstractNode;
 use Application\Domain\Util\Tree\Node\GenericNode;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -24,5 +25,11 @@ class DepartmentNode extends GenericNode
         }
 
         return $this->getNodeName() == $other->getNodeName();
+    }
+
+    public function setNodeName($nodeName)
+    {
+        Assert::notNull($nodeName, 'Department empty!');
+        $this->nodeName = $nodeName;
     }
 }

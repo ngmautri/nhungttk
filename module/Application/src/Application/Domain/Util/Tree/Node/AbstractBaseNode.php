@@ -71,6 +71,7 @@ abstract class AbstractBaseNode extends AbstractNode
             throw new \InvalidArgumentException("Can not add ancestor node! " . $node->getNodeName());
         }
         $node->setParent($this);
+        $node->setParentId($this->getId());
 
         if ($this->isNodeDescendant($node)) {
             $f = 'Node {%s-%s} is decendent {%s-%s}!.';

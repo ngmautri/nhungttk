@@ -1,7 +1,8 @@
 <?php
 namespace Application\Application\Eventbus;
 
-use Application\Application\EventBus\Handler\Department\OnDeparmentInsertedSaveToLog;
+use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToDB;
+use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToLog;
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
 
@@ -20,7 +21,8 @@ class HandlerMapper extends AbstractService
     protected function setUpMapper()
     {
         $handlers = [
-            OnDeparmentInsertedSaveToLog::class
+            OnDepartmentInsertedSaveToDB::class,
+            OnDepartmentInsertedSaveToLog::class
         ];
 
         $this->handlers = $handlers;

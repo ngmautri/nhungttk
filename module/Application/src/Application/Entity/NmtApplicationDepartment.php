@@ -120,6 +120,27 @@ class NmtApplicationDepartment
     private $departmentNameLocal;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="parent_name", type="string", length=100, nullable=true)
+     */
+    private $parentName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="parent_code", type="string", length=45, nullable=true)
+     */
+    private $parentCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=38, nullable=true)
+     */
+    private $token;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -485,6 +506,78 @@ class NmtApplicationDepartment
     public function getDepartmentNameLocal()
     {
         return $this->departmentNameLocal;
+    }
+
+    /**
+     * Set parentName
+     *
+     * @param string $parentName
+     *
+     * @return NmtApplicationDepartment
+     */
+    public function setParentName($parentName)
+    {
+        $this->parentName = $parentName;
+
+        return $this;
+    }
+
+    /**
+     * Get parentName
+     *
+     * @return string
+     */
+    public function getParentName()
+    {
+        return $this->parentName;
+    }
+
+    /**
+     * Set parentCode
+     *
+     * @param string $parentCode
+     *
+     * @return NmtApplicationDepartment
+     */
+    public function setParentCode($parentCode)
+    {
+        $this->parentCode = $parentCode;
+
+        return $this;
+    }
+
+    /**
+     * Get parentCode
+     *
+     * @return string
+     */
+    public function getParentCode()
+    {
+        return $this->parentCode;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtApplicationDepartment
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 
     /**

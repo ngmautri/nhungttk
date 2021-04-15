@@ -1,13 +1,18 @@
 <?php
 namespace Application\Controller;
 
+use Application\Application\Command\TransactionalCommandHandler;
+use Application\Application\Command\Doctrine\GenericCommand;
+use Application\Application\Command\Doctrine\Company\InsertDepartmentCmdHandler;
+use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Service\Department\Tree\DepartmentTree;
+use Application\Application\Service\Department\Tree\Output\DepartmentJsTreeFormatter;
+use Application\Application\Service\Department\Tree\Output\DepartmentWithRootForOptionFormatter;
 use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Tree\Output\ForSelectListFormatter;
 use Application\Entity\NmtApplicationAclUserRole;
 use Application\Entity\NmtApplicationDepartment;
-use Application\Model\AclRoleTable;
-use Application\Service\DepartmentService;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -20,15 +25,9 @@ class DepartmentController extends AbstractGenericController
 
     const ROOT_NODE = '_COMPANY_';
 
-    protected $SmtpTransportService;
+    protected $baseUrl;
 
-    protected $authService;
-
-    protected $userTable;
-
-    protected $tree;
-
-    protected $departmentService;
+    protected $defaultLayout;
 
     /*
      * Defaul Action
@@ -36,8 +35,104 @@ class DepartmentController extends AbstractGenericController
     public function indexAction()
     {}
 
+    public function createAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/create";
+        $form_title = "Create Form";
+        $action = FormActions::ADD;
+        $viewTemplete = $this->getBaseUrl() . "/crud";
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $builder = new DepartmentTree();
+        $builder->setDoctrineEM($this->getDoctrineEM());
+
+        $builder->initTree();
+        $root = $builder->createTree(1, 0);
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'version' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO(),
+                'departmentForOption' => $root->display(new DepartmentWithRootForOptionFormatter())
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $notification = null;
+        try {
+
+            $data = $prg;
+
+            $options = new CmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
+            $cmdHandler = new InsertDepartmentCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
+            $cmd->execute();
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+        }
+
+        $notification = $cmd->getNotification();
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO(),
+                'departmentForOption' => $root->display(new DepartmentWithRootForOptionFormatter())
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+
+        $redirectUrl = $this->getBaseUrl() . "/list2";
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    public function updateAction()
+    {}
+
+    public function removeAction()
+    {}
+
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function initAction()
@@ -78,6 +173,7 @@ class DepartmentController extends AbstractGenericController
 
     /**
      *
+     * @deprecated
      * @version 3.0
      * @author Ngmautri
      *
@@ -154,14 +250,27 @@ class DepartmentController extends AbstractGenericController
          * $this->layout ( "layout/inventory/ajax" );
          * }
          */
+
+        $builder = new DepartmentTree();
+        $builder->setDoctrineEM($this->getDoctrineEM());
+
+        $builder->initTree();
+        $root = $builder->createTree(1, 0);
+
         return new ViewModel(array(
             'errors' => null,
             'nodes' => $node,
-            'parent_id' => $parent_id
+            'parent_id' => $parent_id,
+            'jsTree' => $root->display(new DepartmentJsTreeFormatter()),
+            'simpleTree' => $root->display(new ForSelectListFormatter()),
+            'departmentForOption' => $root->display(new DepartmentWithRootForOptionFormatter())
         ));
     }
 
     /**
+     *
+     * @deprecated
+     * @return \Zend\View\Model\ViewModel
      */
     public function listAction()
     {
@@ -184,13 +293,15 @@ class DepartmentController extends AbstractGenericController
         $root = $builder->createTree(1, 0);
 
         return new ViewModel(array(
-            'jsTree' => $root->display(),
-            'simpleTree' => $root->display(new ForSelectListFormatter())
+            'jsTree' => $root->display(new DepartmentJsTreeFormatter()),
+            'simpleTree' => $root->display(new ForSelectListFormatter()),
+            'departmentForOption' => $root->display(new DepartmentWithRootForOptionFormatter())
         ));
     }
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function list1Action()
@@ -301,46 +412,38 @@ class DepartmentController extends AbstractGenericController
     }
 
     /**
-     * * @deprecated
      *
-     * @return \Application\Model\AclRoleTable
+     * @return mixed
      */
-    public function getAclRoleTable()
+    public function getBaseUrl()
     {
-        return $this->aclRoleTable;
+        return "/application/department";
     }
 
     /**
      *
-     * @deprecated
-     * @param AclRoleTable $aclRoleTable
-     * @return \Application\Controller\DepartmentController
+     * @param mixed $baseUrl
      */
-    public function setAclRoleTable(AclRoleTable $aclRoleTable)
+    public function setBaseUrl($baseUrl)
     {
-        $this->aclRoleTable = $aclRoleTable;
-        return $this;
+        $this->baseUrl = $baseUrl;
     }
 
     /**
      *
-     * @deprecated
-     * @return \Application\Service\DepartmentService
+     * @return mixed
      */
-    public function getDepartmentService()
+    public function getDefaultLayout()
     {
-        return $this->departmentService;
+        return "Application/layout-fluid";
     }
 
     /**
      *
-     * @deprecated
-     * @param DepartmentService $departmentService
-     * @return \Application\Controller\DepartmentController
+     * @param mixed $defaultLayout
      */
-    public function setDepartmentService(DepartmentService $departmentService)
+    public function setDefaultLayout($defaultLayout)
     {
-        $this->departmentService = $departmentService;
-        return $this;
+        $this->defaultLayout = $defaultLayout;
     }
 }

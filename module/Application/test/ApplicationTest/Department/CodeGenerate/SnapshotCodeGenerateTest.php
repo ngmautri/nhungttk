@@ -2,10 +2,10 @@
 namespace ApplicationTest\Department\CodeGenerate;
 
 use Application\Application\Contracts\GenericSnapshotAssembler;
+use Application\Domain\Company\Department\AbstractDepartment;
 use Application\Entity\NmtApplicationDepartment;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
-use Application\Domain\Company\Department\AbstractDepartment;
 
 class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
 {

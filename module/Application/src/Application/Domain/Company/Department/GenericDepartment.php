@@ -13,14 +13,14 @@ use Webmozart\Assert\Assert;
 class GenericDepartment extends BaseDepartment
 {
 
-    public static function createFromSnapshot(GenericCompany $rootDoc, BaseDepartmentSnapshot $snapshot)
+    public static function createFromSnapshot(GenericCompany $rootDoc, DepartmentSnapshot $snapshot)
     {
         Assert::isInstanceOf($rootDoc, GenericCompany::class, "GenericCompanyis required!");
-        Assert::isInstanceOf($snapshot, BaseDepartmentSnapshot::class, "BaseDepartmentSnapshot is required!");
+        Assert::isInstanceOf($snapshot, DepartmentSnapshot::class, "BaseDepartmentSnapshot is required!");
 
         $instance = new self();
         GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
-
+        $snapshot->departmentCode = $snapshot->getDepartmentName();
         return $instance;
     }
 }

@@ -9,13 +9,12 @@ use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Company\Department\GenericDepartment;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Domain\Company\Validator\ValidatorFactory;
-use Application\Domain\Event\Company\DepartmentCreated;
+use Application\Domain\Company\Validator\Contracts\DepartmentValidatorCollection;
+use Application\Domain\Event\Company\DepartmentSaved;
 use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\AccountPayable\APRowSnapshot;
 use Webmozart\Assert\Assert;
-use Application\Domain\Company\Validator\Contracts\DepartmentValidatorCollection;
 
 /**
  *
@@ -38,14 +37,28 @@ class BaseCompany extends AbstractCompany
         return $vo;
     }
 
-    public function createDepartmentFrom(BaseDepartmentSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService, $storeNow = true)
+    /**
+     *
+     * @param BaseDepartmentSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedServiceInterface $sharedService
+     * @param boolean $storeNow
+     * @throws \RuntimeException
+     * @return \Application\Domain\Company\BaseCompany|\Application\Domain\Company\Department\DepartmentSnapshot
+     */
+    public function createDepartmentFrom(DepartmentSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService, $storeNow = true)
     {
         Assert::notEq($this->getStatus(), CompanyStatus::INACTIVE, sprintf("Company inactive! %s", $this->getId()));
         Assert::notNull($snapshot, "Row Snapshot not founds");
         Assert::notNull($options, "Options not founds");
 
         $validators = ValidatorFactory::createForDepartment($sharedService);
-        $snapshot->init($options);
+        $snapshot->setCompany($options->getCompanyVO()
+            ->getId());
+
+        $createdDate = new \Datetime();
+        $snapshot->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setCreatedBy($options->getUserId());
 
         $department = GenericDepartment::createFromSnapshot($this, $snapshot);
         $this->validateDepartment($department, $validators);
@@ -67,23 +80,23 @@ class BaseCompany extends AbstractCompany
          *
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $localSnapshot = $rep->storeDeparment($this, $department);
+        $localSnapshot = $rep->storeDeparment($this, $snapshot);
 
         $params = [
-            "rowId" => $localSnapshot->getId(),
+            "rowId" => $localSnapshot->getNodeId(),
             "rowToken" => $localSnapshot->getToken()
         ];
 
-        $target = $this->makeSnapshot();
+        $target = $this->createValueObject();
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($this->getId());
         $defaultParams->setTargetToken($this->getToken());
-        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        // $defaultParams->setTargetDocVersion($this->getDocVersion());
         $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
 
-        $event = new DepartmentCreated($target, $defaultParams, $params);
+        $event = new DepartmentSaved($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;
@@ -93,7 +106,7 @@ class BaseCompany extends AbstractCompany
     {
         Assert::isInstanceOf($department, BaseDepartment::class, "BaseDepartment not given!");
 
-        $validators->validate($this);
+        $validators->validate($department);
 
         if ($department->hasErrors()) {
             $this->addErrorArray($department->getErrors());

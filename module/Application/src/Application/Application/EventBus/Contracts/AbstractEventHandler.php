@@ -34,7 +34,7 @@ abstract class AbstractEventHandler implements EventHandlerInterface, EventHandl
      * @param EntityManager $doctrineEM
      * @param EventBusServiceInterface $eventBusService
      */
-    public function __construct(EntityManager $doctrineEM, EventBusServiceInterface $eventBusService)
+    public function __construct(EntityManager $doctrineEM, EventBusServiceInterface $eventBusService = null)
     {
         $this->doctrineEM = $doctrineEM;
         $this->eventBusService = $eventBusService;

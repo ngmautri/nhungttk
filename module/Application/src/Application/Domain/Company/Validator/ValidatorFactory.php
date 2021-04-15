@@ -42,7 +42,7 @@ class ValidatorFactory
      * @throws InvalidArgumentException
      * @return \Application\Domain\Company\Validator\Contracts\DepartmentValidatorCollection
      */
-    public static function createForDepartment(SharedService $sharedService, $context)
+    public static function createForDepartment(SharedService $sharedService, $context = null)
     {
         if ($sharedService == null) {
             throw new InvalidArgumentException("SharedService service not found");

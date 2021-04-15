@@ -41,6 +41,12 @@ class DepartmentSnapshot extends AbstractDTO
 
     public $departmentNameLocal;
 
+    public $parentName;
+
+    public $parentCode;
+
+    public $token;
+
     public $createdBy;
 
     public $company;
@@ -313,6 +319,60 @@ class DepartmentSnapshot extends AbstractDTO
     public function setDepartmentNameLocal($departmentNameLocal)
     {
         $this->departmentNameLocal = $departmentNameLocal;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getParentName()
+    {
+        return $this->parentName;
+    }
+
+    /**
+     *
+     * @param mixed $parentName
+     */
+    public function setParentName($parentName)
+    {
+        $this->parentName = $parentName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getParentCode()
+    {
+        return $this->parentCode;
+    }
+
+    /**
+     *
+     * @param mixed $parentCode
+     */
+    public function setParentCode($parentCode)
+    {
+        $this->parentCode = $parentCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
     }
 
     /**

@@ -23,20 +23,18 @@ echo $error_msg;
 
 		<form class="form-horizontal" action="<?php
 
-echo $this->baseUrl?>/application/department/add" method="post" enctype="multipart/form-data">
-         <input type="hidden" name="redirectUrl" value="<?php
-
-        echo $redirectUrl?>" />
-         <div class="form-group margin-bottom">
+echo $form_action;
+?>" method="post" enctype="multipart/form-data">
+                  <div class="form-group margin-bottom">
             <label class="control-label col-sm-2" for="inputTag">Department Name</label>
             <div class="col-sm-3">
-               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="node_name" value="">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="departmentName" value="">
             </div>
          </div>
          <div class="form-group margin-bottom">
-            <label class="control-label col-sm-2 input-sm" for="inputTag">Parent Role: </label>
+            <label class="control-label col-sm-2 input-sm" for="inputTag">Parent Deparment: </label>
             <div class="col-sm-3">
-               <select tabindex="9" name="department" id="deparment_id" class="chosen-select">
+               <select name="parentName" id="parent_id" class="chosen-select">
 <?php
 // ================
 echo $depmartment_option;
@@ -68,4 +66,3 @@ echo $depmartment_option;
       </form>
    </div>
 </div>
-<div id="dialog" style="display: none;">Check code...</div>

@@ -1,8 +1,10 @@
 <?php
 use Application\Application\Cache\CacheFactory;
 use Application\Application\Cache\RedisCacheFactory;
-use Application\Application\EventBus\Handler\Department\OnDeparmentInsertedSaveToLog;
-use Application\Application\EventBus\Handler\Department\Factory\OnDeparmentInsertedSaveToLogFactory;
+use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToDB;
+use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToLog;
+use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentInsertedSaveToDBFactory;
+use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentInsertedSaveToLogFactory;
 use Application\Application\Event\Handler\DummyEventHandler;
 use Application\Application\Event\Handler\DummyEventHandlerFactory;
 use Application\Application\Eventbus\EventBusService;
@@ -346,7 +348,8 @@ return array(
             PsrHandlerResolver::class => PsrHandlerResolverFactory::class,
 
             // Handlers:
-            OnDeparmentInsertedSaveToLog::class => OnDeparmentInsertedSaveToLogFactory::class,
+            OnDepartmentInsertedSaveToLog::class => OnDepartmentInsertedSaveToLogFactory::class,
+            OnDepartmentInsertedSaveToDB::class => OnDepartmentInsertedSaveToDBFactory::class,
 
             // =============================================================
             // Event Bus Service End

@@ -16,7 +16,7 @@ class DTOCodeGenerateTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = GenericDTOAssembler::createGetMapping(NmtApplicationDepartment::class);
+            $result = GenericDTOAssembler::createStoreMapping(NmtApplicationDepartment::class);
             // \var_dump(($result));
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

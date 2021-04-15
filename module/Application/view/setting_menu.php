@@ -7,7 +7,7 @@ echo $this->baseUrl?>/application/user/list"><i
 echo $this->translate("User Management")?></a></li>
 	<li><a href="<?php
 
-echo $this->baseUrl?>/application/department/list"><i
+echo $this->baseUrl?>/application/department/list2"><i
 			class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;<?php
 
 echo $this->translate("Department")?></a>

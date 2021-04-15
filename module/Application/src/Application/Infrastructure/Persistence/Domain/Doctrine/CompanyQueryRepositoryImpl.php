@@ -38,12 +38,11 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
          */
         $entity = $this->doctrineEM->getRepository("\Application\Entity\NmtApplicationCompany")->findOneBy($criteria);
 
-        Assert::notNull($entity);
+        Assert::notNull($entity, "NmtApplicationCompany not found!");
         $snapshot = CompanyMapper::createSnapshot($entity, $this->getDoctrineEM());
 
         $entityRoot = CompanyFactory::contructFromDB($snapshot);
         Assert::notNull($entityRoot);
-        \var_dump("ok");
 
         return $entityRoot;
     }

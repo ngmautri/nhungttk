@@ -61,6 +61,7 @@ abstract class AbstractCommand implements CommandInterface
     public function __construct(EntityManager $doctrineEM, $data, CommandOptions $options, CommandHandlerInterface $cmdHandler, EventBusServiceInterface $eventBus = null)
     {
         Assert::isInstanceOf($doctrineEM, EntityManager::class, 'Entity Manager not given!');
+        Assert::isInstanceOf($options, CommandOptions::class, 'Command option  not given!');
         Assert::isInstanceOf($cmdHandler, AbstractCommandHandler::class, 'Command handler not given!');
 
         $this->doctrineEM = $doctrineEM;

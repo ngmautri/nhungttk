@@ -2,12 +2,12 @@
 namespace Application\Domain\Service;
 
 use Application\Domain\Service\Contracts\PostingServiceInterface;
+use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Domain\Validator\AbstractInventorySpecificationFactory;
 use Procure\Domain\Service\Contracts\FXServiceInterface;
 use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
-use Application\Domain\Service\Contracts\SharedServiceInterface;
 
 /**
  * Application Domain Service
@@ -22,11 +22,7 @@ class SharedService implements SharedServiceInterface
 
     protected $domainSpecificationFactory;
 
-    protected $fxService;
-
     protected $postingService;
-
-    protected $whQueryRepository;
 
     protected $valuationService;
 
@@ -39,14 +35,10 @@ class SharedService implements SharedServiceInterface
      * @param PostingServiceInterface $postingService
      * @throws InvalidArgumentException
      */
-    public function __construct(AbstractSpecificationFactory $sharedSpecificationFactory, FXServiceInterface $fxService, PostingServiceInterface $postingService)
+    public function __construct(AbstractSpecificationFactory $sharedSpecificationFactory, PostingServiceInterface $postingService)
     {
         if ($sharedSpecificationFactory == null) {
             throw new InvalidArgumentException("Shared Specification not found");
-        }
-
-        if ($fxService == null) {
-            throw new InvalidArgumentException("FX service not found");
         }
 
         if ($postingService == null) {
@@ -54,7 +46,6 @@ class SharedService implements SharedServiceInterface
         }
 
         $this->sharedSpecificationFactory = $sharedSpecificationFactory;
-        $this->fxService = $fxService;
         $this->postingService = $postingService;
     }
 

@@ -193,7 +193,7 @@ echo $form_action;
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2">Currency:</label>
                            <div class="col-sm-3">
-                              <select name="docCurrency" class="form-control input-sm">
+                              <select name="docCurrency" class="form-control input-sm input-sm chosen-select">
                                  <option value="">Select Currency</option>
  <?php
 // ================
@@ -225,12 +225,12 @@ echo $currency_option;
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2 required">Invoice Date:</label>
                            <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" id="docDate" name="docDate"
-                                 value="<?php
-                                if (! $headerDTO == null) :
-                                    echo $headerDTO->getDocDate(); endif;
+                              <input class="form-control input-sm" type="text" id="docDate" name="docDate" value="<?php
+                            if (! $headerDTO == null) :
+                                echo $headerDTO->getDocDate(); endif;
 
-                                ?>" placeholder=" please select" />
+                            ?>"
+                                 placeholder=" please select" />
                            </div>
                            <label class="control-label col-sm-2">Posting Date:</label>
                            <div class="col-sm-3">
@@ -245,12 +245,12 @@ echo $currency_option;
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2">Goods Receipt Date:</label>
                            <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" id="grDate" name="grDate"
-                                 value="<?php
-                                if (! $headerDTO == null) :
-                                    echo $headerDTO->getGrDate(); endif;
+                              <input class="form-control input-sm" type="text" id="grDate" name="grDate" value="<?php
+                            if (! $headerDTO == null) :
+                                echo $headerDTO->getGrDate(); endif;
 
-                                ?>" placeholder=" please select" />
+                            ?>"
+                                 placeholder=" please select" />
                            </div>
                         </div>
                         <div class="form-group margin-bottom required">
@@ -258,7 +258,7 @@ echo $currency_option;
                         echo $this->translate("Target Warehouse");
                         ?>:</label>
                            <div class="col-sm-3">
-                              <select tabindex="9" name="warehouse" id="target_wh_id" class="form-control input-sm">
+                              <select tabindex="9" name="warehouse" id="target_wh_id" class="form-control input-sm" class="chosen-select">
                                  <option value=""><?php
                                 echo $this->translate("...");
                                 ?></option>
@@ -292,7 +292,7 @@ echo $wh_option;
                         echo $this->translate("Incoterm");
                         ?>:</label>
                            <div class="col-sm-3">
-                              <select name="incoterm" class="form-control input-sm">
+                              <select name="incoterm" class="form-control input-sm chosen-select">
                                  <option value="">---</option>
 <?php
 // ================
@@ -315,7 +315,7 @@ echo $incoterm_option;
                         echo $this->translate("Payment Term");
                         ?>:</label>
                            <div class="col-sm-3">
-                              <select name="pmtTerm" class="form-control input-sm">
+                              <select name="pmtTerm" class="form-control input-sm chosen-select">
                                  <option value=""><?php
                                 echo $this->translate("---");
                                 ?></option>

@@ -2,9 +2,11 @@
 namespace ApplicationTest\Department;
 
 use ApplicationTest\Bootstrap;
+use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Eventbus\EventBusService;
 use Application\Application\Service\Department\Tree\DepartmentNode;
 use Application\Application\Service\Department\Tree\DepartmentTree;
+use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_TestCase;
 
@@ -35,14 +37,18 @@ class DoctrineDepartmentTreeTest extends PHPUnit_Framework_TestCase
 
         $node = new DepartmentNode();
         $node->setId("Controlling1");
-        $node->setParentId("Finance");
         $node->setNodeName('Controlling1');
         $node->setNodeCode('Controlling1');
 
         // var_dump($root->isNodeDescendant($node));
 
-        $n = $root->getNodeByName("finance");
-        $builder->insertNode($node, $n);
+        $n = $root->getNodeByName("rmqc");
+
+        $rep = new CompanyQueryRepositoryImpl($doctrineEM);
+        $companyVO = $rep->getById(1)->createValueObject();
+
+        $options = new CmdOptions($companyVO, 39, __METHOD__);
+        $builder->insertNode($node, $n, $options);
 
         /**
          *
@@ -51,6 +57,6 @@ class DoctrineDepartmentTreeTest extends PHPUnit_Framework_TestCase
         $eventBus = Bootstrap::getServiceManager()->get(EventBusService::class);
         $eventBus->dispatch($builder->getRecordedEvents());
 
-        echo $root->display();
+        \var_dump($node);
     }
 }

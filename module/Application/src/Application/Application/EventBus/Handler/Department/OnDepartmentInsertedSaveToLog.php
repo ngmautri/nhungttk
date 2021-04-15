@@ -12,7 +12,7 @@ use Inventory\Domain\Event\Item\ItemCreated;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class OnDeparmentInsertedSaveToLog extends AbstractEventHandler
+class OnDepartmentInsertedSaveToLog extends AbstractEventHandler
 {
 
     /**
@@ -25,9 +25,9 @@ class OnDeparmentInsertedSaveToLog extends AbstractEventHandler
     {
         try {
             if (! $event->getTarget() instanceof GenericNode) {
-                Throw new \InvalidArgumentException("GenericNode not given for updating index.");
+                Throw new \InvalidArgumentException("GenericNode");
             }
-            $m = \sprintf("Department [%s] Insert. This event logged!", $event->getTarget()->getNodeName());
+            $m = \sprintf("Department [%s] insert into Tree", $event->getTarget()->getNodeName());
             $this->logInfo($m);
         } catch (\Exception $e) {
             $this->logException($e);

@@ -17,27 +17,27 @@ class DepartmentMapper
      * @param NmtApplicationCompany $entity
      * @return NULL|\Application\Entity\NmtApplicationCompany
      */
-    public static function mapSnapshotEntity(EntityManager $doctrineEM, CompanySnapshot $snapshot, NmtApplicationCompany $entity)
+    public static function mapSnapshotEntity(EntityManager $doctrineEM, DepartmentSnapshot $snapshot, NmtApplicationDepartment $entity)
     {
         if ($snapshot == null || $entity == null || $doctrineEM == null) {
             return null;
         }
 
-        $entity->setId($snapshot->id);
-        $entity->setCompanyCode($snapshot->companyCode);
-        $entity->setCompanyName($snapshot->companyName);
-        $entity->setDefaultLogoId($snapshot->defaultLogoId);
+        // $entity->setNodeId($snapshot->nodeId);
+        $entity->setNodeName($snapshot->nodeName);
+        $entity->setNodeParentId($snapshot->nodeParentId);
+        $entity->setPath($snapshot->path);
+        $entity->setPathDepth($snapshot->pathDepth);
         $entity->setStatus($snapshot->status);
-        $entity->setIsDefault($snapshot->isDefault);
-        $entity->setToken($snapshot->token);
-        $entity->setRevisionNo($snapshot->revisionNo);
+        $entity->setRemarks($snapshot->remarks);
         $entity->setUuid($snapshot->uuid);
-        $entity->setDefaultLocale($snapshot->defaultLocale);
-        $entity->setDefaultLanguage($snapshot->defaultLanguage);
-        $entity->setDefaultFormat($snapshot->defaultFormat);
-        $entity->setDefaultWarehouseCode($snapshot->defaultWarehouseCode);
-        $entity->setDefaultCurrencyIso($snapshot->defaultCurrencyIso);
-        $entity->setDefaultCurrency($snapshot->defaultCurrency);
+        $entity->setDepartmentName($snapshot->departmentName);
+        $entity->setDepartmentCode($snapshot->departmentCode);
+        $entity->setIsActive($snapshot->isActive);
+        $entity->setDepartmentNameLocal($snapshot->departmentNameLocal);
+        $entity->setParentName($snapshot->parentName);
+        $entity->setParentCode($snapshot->parentCode);
+        $entity->setToken($snapshot->token);
 
         // Mapping Date
         // =====================
@@ -56,11 +56,9 @@ class DepartmentMapper
         // Mapping Reference
         // =====================
         /*
-         * $entity->setCreatedBy($snapshot->createdBy);
          * $entity->setLastChangeBy($snapshot->lastChangeBy);
-         * $entity->setCountry($snapshot->country);
-         * $entity->setDefaultAddress($snapshot->defaultAddress);
-         * $entity->setDefaultWarehouse($snapshot->defaultWarehouse);
+         * $entity->setCreatedBy($snapshot->createdBy);
+         * $entity->setCompany($snapshot->company);
          */
 
         if ($snapshot->createdBy > 0) {
@@ -69,7 +67,7 @@ class DepartmentMapper
              * @var \Application\Entity\MlaUsers $obj ;
              */
             $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->createdBy);
-            $entity->setPmtTerm($obj);
+            $entity->setCreatedBy($obj);
         }
 
         if ($snapshot->lastChangeBy > 0) {
@@ -81,31 +79,13 @@ class DepartmentMapper
             $entity->setLastChangeBy($obj);
         }
 
-        if ($snapshot->country > 0) {
+        if ($snapshot->company > 0) {
             /**
              *
-             * @var \Application\Entity\NmtApplicationCountry $obj ;
+             * @var \Application\Entity\NmtApplicationCompany $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCountry')->find($snapshot->country);
-            $entity->setCountry($obj);
-        }
-
-        if ($snapshot->defaultAddress > 0) {
-            /**
-             *
-             * @var \Application\Entity\NmtApplicationCompanyAddress $obj ;
-             */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCompanyAddress')->find($snapshot->defaultAddress);
-            $entity->setDefaultAddress($obj);
-        }
-
-        if ($snapshot->defaultWarehouse > 0) {
-            /**
-             *
-             * @var \Application\Entity\NmtInventoryWarehouse $obj ;
-             */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($snapshot->defaultWarehouse);
-            $entity->setDefaultWarehouse($obj);
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCompany')->find($snapshot->company);
+            $entity->setCompany($obj);
         }
 
         return $entity;
@@ -135,6 +115,10 @@ class DepartmentMapper
         $snapshot->departmentCode = $entity->getDepartmentCode();
         $snapshot->isActive = $entity->getIsActive();
         $snapshot->departmentNameLocal = $entity->getDepartmentNameLocal();
+
+        $snapshot->parentName = $entity->getParentName();
+        $snapshot->parentCode = $entity->getParentCode();
+        $snapshot->token = $entity->getToken();
 
         // Override
         $snapshot->departmentName = $entity->getNodeName();

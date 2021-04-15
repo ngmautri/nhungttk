@@ -120,6 +120,27 @@ class NmtApplicationDepartment
     private $departmentNameLocal;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="parent_name", type="string", length=100, nullable=true)
+     */
+    private $parentName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="parent_code", type="string", length=45, nullable=true)
+     */
+    private $parentCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=38, nullable=true)
+     */
+    private $token;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

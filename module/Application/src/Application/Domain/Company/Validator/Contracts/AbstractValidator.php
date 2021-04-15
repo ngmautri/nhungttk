@@ -29,14 +29,10 @@ abstract class AbstractValidator
         return $this->sharedSpecificationFactory;
     }
 
-    public function __construct(SharedSpecsFactory $sharedSpecsFactory, FXServiceInterface $fxService)
+    public function __construct(SharedSpecsFactory $sharedSpecsFactory, FXServiceInterface $fxService = null)
     {
         if (! $sharedSpecsFactory instanceof SharedSpecsFactory) {
             throw new InvalidArgumentException("Shared Specification is required");
-        }
-
-        if (! $fxService instanceof FXServiceInterface) {
-            throw new InvalidArgumentException("FX service is required");
         }
 
         $this->sharedSpecificationFactory = $sharedSpecsFactory;

@@ -1,7 +1,7 @@
 <?php
-use Procure\Application\DTO\Po\PoDTO;
-use Procure\Application\DTO\Po\PORowDTO;
 use Application\Application\Helper\OptionHelper;
+use Procure\Application\DTO\Po\PORowDTO;
+use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Helper\ErrorMessage;
 
 /**
@@ -324,7 +324,7 @@ echo $error_msg;
                     echo $this->translate("Document Unit");
                     ?></label>
                      <div class="col-sm-3">
-                        <select tabindex="6" name="docUnit" id="docUnit" class="form-control input-sm">
+                        <select tabindex="6" name="docUnit" id="docUnit" class="form-control input-sm  chosen-select">
                            <option value=""><?php
 
                         echo $this->translate("Select doc unit");

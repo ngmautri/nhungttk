@@ -70,7 +70,7 @@ echo $version;
             echo $this->translate("Target Warehouse");
             ?>:</label>
             <div class="col-sm-3">
-               <select tabindex="9" name="warehouse" id="target_wh_id" class="form-control input-sm">
+               <select tabindex="9" name="warehouse" id="target_wh_id" class="form-control input-sm  chosen-select">
                   <option value=""><?php
                 echo $this->translate("...");
                 ?></option>
@@ -87,7 +87,7 @@ echo $wh_option;
             echo $this->translate("Department:");
             ?>:</label>
             <div class="col-sm-3">
-               <select name="department" class="form-control input-sm">
+               <select name="department" class="form-control input-sm chosen-select">
                   <option value=""><?php
                 echo $this->translate("---");
                 ?></option>

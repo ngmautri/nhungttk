@@ -45,15 +45,17 @@ class DepartmentDefaultValidator extends AbstractValidator implements Department
                 }
             }
 
-            if ($spec->isSatisfiedBy($rootEntity->getDepartmentCode())) {
-                $rootEntity->addError("Department code is null or empty.");
-            } else {
-
-                if (preg_match('/[#$%@=+^]/', $rootEntity->getDepartmentCode()) == 1) {
-                    $err = "Company Code contains invalid character (e.g. #,%,&,*)";
-                    $rootEntity->addError($err);
-                }
-            }
+            /*
+             * if ($spec->isSatisfiedBy($rootEntity->getDepartmentCode())) {
+             * $rootEntity->addError("Department code is null or empty.");
+             * } else {
+             *
+             * if (preg_match('/[#$%@=+^]/', $rootEntity->getDepartmentCode()) == 1) {
+             * $err = "Company Code contains invalid character (e.g. #,%,&,*)";
+             * $rootEntity->addError($err);
+             * }
+             * }
+             */
 
             // User
             $spec = $this->getSharedSpecificationFactory()->getUserExitsSpecification();

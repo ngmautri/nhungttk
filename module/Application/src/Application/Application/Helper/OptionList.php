@@ -1,6 +1,8 @@
 <?php
 namespace Application\Application\Helper;
 
+use Application\Application\DTO\Company\Department\DepartmentForOptionDTO;
+use Application\Application\DTO\Uom\UomGroupDTO;
 use Application\Entity\FinAccount;
 use Application\Entity\FinCostCenter;
 use Application\Entity\NmtApplicationCurrency;
@@ -13,8 +15,6 @@ use Application\Entity\NmtInventoryWarehouse;
 use Inventory\Domain\Item\Contracts\ItemType;
 use Inventory\Domain\Item\Contracts\MonitorMethod;
 use Inventory\Domain\Transaction\Contracts\TrxType;
-use Zend\View\Model\ViewModel;
-use Application\Application\DTO\Uom\UomGroupDTO;
 
 /**
  *
@@ -84,6 +84,34 @@ class OptionList
                     $option = $option . sprintf('<option selected value="%s">%s</option>', $l->getId(), $l->getWhName());
                 } else {
                     $option = $option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getWhName());
+                }
+            }
+        }
+        return $option;
+    }
+
+    public static function createDeptOption($list, $id)
+    {
+        if ($list == null) {
+            return null;
+        }
+
+        $option = "";
+
+        foreach ($list as $l) {
+
+            /**
+             *
+             * @var DepartmentForOptionDTO $l ;
+             */
+
+            if ($id == null) {
+                $option = $option . sprintf('<option value="%s">%s</option>', $l->getDepartmentName(), $l->getDepartmentShowName());
+            } else {
+                if ($id == $l->getId()) {
+                    $option = $option . sprintf('<option selected value="%s">%s</option>', $l->getDepartmentName(), $l->getDepartmentShowName());
+                } else {
+                    $option = $option . sprintf('<option value="%s">%s</option>', $l->getDepartmentName(), $l->getDepartmentShowName());
                 }
             }
         }

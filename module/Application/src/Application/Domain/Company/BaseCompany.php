@@ -11,6 +11,7 @@ use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Domain\Company\Validator\ValidatorFactory;
 use Application\Domain\Company\Validator\Contracts\DepartmentValidatorCollection;
 use Application\Domain\Event\Company\DepartmentSaved;
+use Application\Domain\Service\SharedService;
 use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
@@ -35,6 +36,31 @@ class BaseCompany extends AbstractCompany
         $vo = new CompanyVO();
         GenericObjectAssembler::updateAllFieldsFrom($vo, $this);
         return $vo;
+    }
+
+    /**
+     *
+     * @param DepartmentSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @return \Application\Domain\Company\BaseCompany
+     */
+    public function removeDepartment(DepartmentSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    {
+        Assert::notEq($this->getStatus(), CompanyStatus::INACTIVE, sprintf("Company inactive! %s", $this->getId()));
+        Assert::notNull($snapshot, "Row Snapshot not founds");
+        Assert::notNull($options, "Options not founds");
+
+        /**
+         *
+         * @var DepartmentSnapshot $localSnapshot ;
+         * @var CompanyCmdRepositoryInterface $rep ;
+         *
+         */
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rep->removeDepartment($this, $snapshot);
+
+        return $this;
     }
 
     /**

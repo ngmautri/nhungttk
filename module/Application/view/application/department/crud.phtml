@@ -2,6 +2,7 @@
 use Application\Application\Helper\ErrorMessage;
 use Application\Application\Helper\OptionList;
 use Application\Application\Service\Department\Tree\DepartmentNode;
+use Application\Domain\Contracts\FormActions;
 
 /**
  *
@@ -9,15 +10,14 @@ use Application\Application\Service\Department\Tree\DepartmentNode;
  */
 
 $error_msg = ErrorMessage::showErrorMessage($errors);
-$depmartment_option = OptionList::createDeptOption($departmentForOption, "");
 
-$parentName = null;
-
+$currentParentName = null;
 if ($departmentNode !== null) {
-    $parentName = $departmentNode->getParent()->getNodeName();
+    $currentParentName = $departmentNode->getParent()->getNodeName();
 }
 
-$current_depmartment_option = OptionList::createDeptOption($departmentForOption, $parentName);
+$current_depmartment_option = OptionList::createDeptOption($departmentForOption, $currentParentName);
+$depmartment_option = OptionList::createDeptOption($departmentForOption, $parentName);
 
 ?>
 <div id="tabs" style="font-size: 9.5pt">
@@ -39,7 +39,7 @@ echo $error_msg;
 
 echo $form_action;
 ?>" method="post" enctype="multipart/form-data">
-                  <div class="form-group margin-bottom">
+         <div class="form-group margin-bottom">
             <label class="control-label col-sm-2" for="inputTag">Department Name</label>
             <div class="col-sm-3">
                <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="departmentName" value="<?php
@@ -47,19 +47,25 @@ echo $form_action;
             ?>">
             </div>
          </div>
+    <?php
+
+    if ($action == FormActions::MOVE) :
+        ?>
          <div class="form-group margin-bottom">
             <label class="control-label col-sm-2 input-sm" for="inputTag">Current Parent Deparment: </label>
             <div class="col-sm-3">
-               <select name="parentName" id="parent_id" class="chosen-select">
+               <select disabled name="parentName" id="parent_id" class="chosen-select">
 <?php
-// ================
-echo $current_depmartment_option;
-// ================
-?>
+        // ================
+        echo $current_depmartment_option;
+        // ================
+        ?>
        </select>
             </div>
          </div>
+ <?php endif;
 
+    ?>
 
          <div class="form-group margin-bottom">
             <label class="control-label col-sm-2 input-sm" for="inputTag">Parent Deparment: </label>
@@ -73,9 +79,6 @@ echo $depmartment_option;
        </select>
             </div>
          </div>
-
-
-
          <div class="form-group margin-bottom">
             <label class="control-label col-sm-2" for="inputDescription">remarks</label>
             <div class="col-sm-3">

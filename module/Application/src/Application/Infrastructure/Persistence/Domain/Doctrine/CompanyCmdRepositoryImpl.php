@@ -5,6 +5,7 @@ use Application\Domain\Company\GenericCompany;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Entity\NmtApplicationCompany;
+use Application\Entity\NmtApplicationDepartment;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\DepartmentMapper;
 use InvalidArgumentException;
@@ -21,6 +22,75 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
 
     const DEPT_ENTITY_NAME = "\Application\Entity\NmtApplicationDepartment";
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::removeDepartment()
+     */
+    public function removeDepartment(GenericCompany $company, $department)
+    {
+        if ($company == null) {
+            throw new InvalidArgumentException("Root entity not given.");
+        }
+
+        /**
+         *
+         * @var DepartmentSnapshot $localSnapshot ;
+         */
+        $localSnapshot = $department;
+
+        /**
+         *
+         * @var NmtApplicationCompany $rootEntityDoctrine ;
+         */
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $company->getId());
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Doctrine root entity not found.");
+        }
+
+        /**
+         *
+         * @var NmtApplicationDepartment $rowEntityDoctrine ;
+         */
+        $rowEntityDoctrine = $this->getDoctrineEM()->find(self::DEPT_ENTITY_NAME, $localSnapshot->getNodeId());
+
+        if ($rowEntityDoctrine == null) {
+            throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localSnapshot->getNodeId()));
+        }
+
+        //
+        if ($rowEntityDoctrine->getCompany() == null) {
+            throw new InvalidArgumentException("Doctrine row entity is not valid");
+        }
+
+        if ($rowEntityDoctrine->getCompany()->getId() != $rootEntityDoctrine->getId()) {
+            throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getInvoice()->getId(), $localSnapshot->getNodeId()));
+        }
+
+        $isFlush = true;
+        $increaseVersion = false;
+
+        // remove now.
+        $this->getDoctrineEM()->remove($rowEntityDoctrine);
+
+        if ($increaseVersion) {
+            $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo() + 1);
+            $this->doctrineEM->persist($rootEntityDoctrine);
+        }
+
+        if ($isFlush) {
+            $this->doctrineEM->flush();
+        }
+
+        return true;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::storeDeparment()
+     */
     public function storeDeparment(GenericCompany $company, $department)
     {
         if ($company == null) {

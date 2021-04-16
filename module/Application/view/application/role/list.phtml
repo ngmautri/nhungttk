@@ -6,19 +6,23 @@
 	<div id="general">
 
 		<ul class="nav nav-pills">
-			<li><a href="<?php echo $this->baseUrl ?>/application/role/list1">List1</a></li>
+			<li><a href="<?php
+
+echo $this->baseUrl?>/application/role/list1">List1</a></li>
 		</ul>
 		<hr>
 
 		<div id="html" class="demo">
 			<ul>
-	<?php echo $jsTree ?>;
+	<?php
+
+echo $jsTree?>;
 </ul>
 		</div>
 	</div>
 </div>
 
-<script>	
+<script>
 // html demo
 	$('#html').jstree({
 		"core" : {
@@ -27,7 +31,7 @@
 		     },
 		    "plugins" : [ "contextmenu" ],
 
-		    "contextmenu":{         
+		    "contextmenu":{
 		        "items": function($node) {
 		            var tree = $("#html").jstree(true);
 		            return {
@@ -35,7 +39,7 @@
 		                    "separator_before": false,
 		                    "separator_after": false,
 		                    "label": "Create New Role",
-		                    "action": function (obj) { 
+		                    "action": function (obj) {
 		                    	var ref = $.jstree.reference(obj.reference);
                                 sel = ref.get_selected();
         	                    $node = tree.create_node($node);
@@ -46,15 +50,15 @@
 		                    "separator_before": false,
 		                    "separator_after": false,
 		                    "label": "Rename Role",
-		                    "action": function (obj) { 
+		                    "action": function (obj) {
 		                        tree.edit($node);
 		                    }
-		                },                         
+		                },
 		                "Remove": {
 		                    "separator_before": false,
 		                    "separator_after": false,
 		                    "label": "Remove Role",
-		                    "action": function (obj) { 
+		                    "action": function (obj) {
 		                        tree.delete_node($node);
 		                    }
 		                },
@@ -63,7 +67,7 @@
 		                    "separator_after": false,
 		                    "label": "Add Member",
 		                    "action": function (obj) {
-		                    	var redirectUrl = "/application/role/add-member?id="+$node.id; 
+		                    	var redirectUrl = "/application/role/add-member?id="+$node.id;
 		                    	window.location = redirectUrl;
 		                   }
 		                },
@@ -72,24 +76,24 @@
 		                    "separator_after": false,
 		                    "label": "Grand Access",
 		                    "action": function (obj) {
-		                    	var redirectUrl = "/application/role/grant-access1?role="+$node.id; 
+		                    	var redirectUrl = "/application/role/grant-access1?role="+$node.id;
 		                    	window.location = redirectUrl;
-	 
+
 		                   }
 		                }
 		            };
 		        }
 		    }
-		    
+
     });
 
 	// When the jsTree is ready, add two more records.
 	$('#html').on('create_node.jstree', function (e, data) {
 		//alert(data.node.parent +  data.node.id);
 	});
-	
+
 	$('#html').on('rename_node.jstree', function (e, data) {
-		//alert(data.node.parent +  data.node.id);
+		alert(data.node.parent +  data.node.id);
 		createRole(data.node.parent,data.node.id,data.node.text);
     });
 

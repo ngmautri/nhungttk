@@ -26,16 +26,14 @@ class DepartmentJsTreeFormatter extends AbstractFormatter
 
         if (! $node->isLeaf()) {
 
-            $format = '<li id="%s" data-jstree="{}">%s %s (%s)' . "\n";
+            $format = '<li id="%s" data-jstree="{}"><span style="color:blue;">%s</span> %s (<span style="color: blue; font-size: 11pt;">%s</span>)' . "\n";
 
             if ($node->getNodeName() == DefaultDepartment::ROOT) {
 
                 $data_jstree = 'data-jstree=\'{ "opened" : true, "disabled":true}\'';
-                $format = '<li %s  id="%s">%s %s (%s)' . "\n";
+                $format = '<li %s  id="%s"><span style="color:blue;">%s</span> %s (<span style="color: blue; font-size: 11pt;">%s</span>)' . "\n";
 
-                $d = '<span style="color:navy; font-weight: bold;">DEPARTMENT <i class="fa fa-sitemap" aria-hidden="true"></i></span>';
-
-                $results = $results . sprintf($format, $data_jstree, $node->getNodeName(), "", $d, $node->getChildCount() - 1);
+                $results = $results . sprintf($format, $data_jstree, $node->getNodeName(), "", "DEPARTMENT", $node->getChildCount() - 1);
             } else {
                 $results = $results . sprintf($format, $node->getNodeName(), "", $node->getNodeName(), $node->getChildCount() - 1);
             }
@@ -50,7 +48,7 @@ class DepartmentJsTreeFormatter extends AbstractFormatter
             $results = $results . sprintf("</ul>\n");
             $results = $results . sprintf("</li>\n");
         } else {
-            $format = '<li id="%s" data-jstree="{}">%s %s</li>' . "\n";
+            $format = '<li id="%s" data-jstree="{}"><span style="color:black;">%s </span> <span style="color:black;">%s</span></li>' . "\n";
             $results = $results . sprintf($format, $node->getNodeName(), "", $node->getNodeName());
         }
 

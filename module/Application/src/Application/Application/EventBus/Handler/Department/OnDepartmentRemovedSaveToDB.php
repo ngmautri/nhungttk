@@ -10,6 +10,7 @@ use Application\Application\Service\Department\Tree\DepartmentNode;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Application\Domain\Event\Company\DepartmentMoved;
+use Application\Domain\Event\Company\DepartmentRemoved;
 use Application\Domain\Util\Tree\Node\GenericNode;
 
 /**
@@ -17,7 +18,7 @@ use Application\Domain\Util\Tree\Node\GenericNode;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class OnDepartmentMovedSaveToDB extends AbstractEventHandler
+class OnDepartmentRemovedSaveToDB extends AbstractEventHandler
 {
 
     /**
@@ -26,7 +27,7 @@ class OnDepartmentMovedSaveToDB extends AbstractEventHandler
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function __invoke(DepartmentMoved $event)
+    public function __invoke(DepartmentRemoved $event)
     {
         try {
             if (! $event->getTarget() instanceof GenericNode) {
@@ -52,8 +53,12 @@ class OnDepartmentMovedSaveToDB extends AbstractEventHandler
              * @var DepartmentSnapshot $contextObj ;
              */
             $contextObj = $t->getContextObject();
-            $contextObj->setNodeParentId($t->getParent()
-                ->getId());
+            $contextObj->setNodeParentId(null);
+            $contextObj->setRemarks("Removed from parent");
+            $contextObj->setParentName(null);
+
+            $createdDate = new \Datetime();
+            $contextObj->setLastChangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
 
             $cmdHandler = new SaveDepartmentCmdHandler();
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
@@ -77,6 +82,6 @@ class OnDepartmentMovedSaveToDB extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return DepartmentMoved::class;
+        return DepartmentRemoved::class;
     }
 }

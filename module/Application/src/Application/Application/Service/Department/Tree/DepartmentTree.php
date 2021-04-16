@@ -8,6 +8,7 @@ use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Event\Company\DepartmentInserted;
 use Application\Domain\Event\Company\DepartmentMoved;
 use Application\Domain\Event\Company\DepartmentRemoved;
+use Application\Domain\Event\Company\DepartmentRenamed;
 use Application\Domain\Util\Tree\Node\AbstractBaseNode;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
@@ -115,6 +116,49 @@ class DepartmentTree extends AbstractDepartmentTree
         ];
 
         $event = new DepartmentMoved($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $this;
+    }
+
+    public function renameNode(AbstractBaseNode $node, $newName, CmdOptions $options = null)
+    {
+        Assert::isInstanceOf($node, AbstractBaseNode::class);
+
+        $this->clearEvents(); // clear all event before doing.
+
+        $oldName = $node->getNodeName();
+        $node->rename($newName);
+
+        $target = $node;
+        $defaultParams = new DefaultParameter();
+        $params = [
+            'options' => $options,
+            'oldName' => $oldName,
+            'newName' => $newName
+        ];
+
+        $event = new DepartmentRenamed($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $this;
+    }
+
+    public function removeNode(AbstractBaseNode $node, CmdOptions $options = null)
+    {
+        Assert::isInstanceOf($node, AbstractBaseNode::class);
+
+        $this->clearEvents(); // clear all event before doing.
+
+        $node->remove($node);
+
+        $target = $node;
+        $defaultParams = new DefaultParameter();
+        $params = [
+            'options' => $options
+        ];
+
+        $event = new DepartmentRemoved($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $this;

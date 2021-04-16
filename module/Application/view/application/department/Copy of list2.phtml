@@ -2,7 +2,6 @@
 use Application\Application\Helper\OptionList;
 
 $depmartment_option = OptionList::createDeptOption($departmentForOption, "");
-$depmartment_option1 = OptionList::createDeptOption($departmentWithOnelevelForOption, "");
 ?>
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
@@ -11,6 +10,17 @@ $depmartment_option1 = OptionList::createDeptOption($departmentWithOnelevelForOp
 
         echo $this->translate('Department');
         ?>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -43,7 +53,7 @@ echo $this->translate('Add Department');
  -->
       <hr>
       <div style="font-size: 10pt" id="html02" class="demo">
-         <h5>All department in dropdown view</h5>
+         <h5>Department in dropdown view</h5>
          <select tabindex="9" name="department" id="deparment_id" class="chosen-select">
 <?php
 // ================
@@ -53,22 +63,7 @@ echo $depmartment_option;
        </select>
       </div>
       <hr>
-      <div style="font-size: 10pt" id="html02" class="demo">
-         <h5>Department of 1st Level in dropdown view</h5>
-         <select tabindex="9" name="department1" id="deparment_id" class="chosen-select">
-<?php
-// ================
-echo $depmartment_option1;
-// ================
-?>
-       </select>
-      </div>
-      <hr>
-       <h5>Department in tree view</h5>
-      <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('open_all');">Expand all </a>
-      &nbsp;|&nbsp;
-      <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('close_all');">Collapse all </a>
-
+      <h5>Department in tree view</h5>
       <div style="font-size: 10pt" id="html1" class="demo">
          <ul>
 	<?php
@@ -77,18 +72,64 @@ echo $jsTree?>;
 </ul>
       </div>
       <hr>
+      <hr>
       <h5>Department in orgigramm</h5>
       <div style="font-size: 10pt" class="tree">
          <ul>
    <?php
 echo $departmentForOrnigramm;
-?> &nbsp;
+?>;
 
       </ul>
       </div>
+
+      <hr>
+      <!--  -->
+      <div>
+         <div class="tree">
+            <ul>
+               <li>
+                  <a href="#">
+                     Nguyen Mau Tri
+                     <br />
+                     Nico Simanjuntak
+                     <br />
+                     Technician
+                  </a>
+                  <ul>
+                     <li>
+                        <a href="#">
+                           IT Support
+                           <br />
+                           Nico Simanjuntak
+                           <br />
+                           Technician
+                        </a>
+                     </li>
+                     <li>
+                        <a href="#">
+                           IT Support
+                           <br />
+                           Nico Simanjuntak
+                           <br />
+                           Technician
+                        </a>
+                     </li>
+                     <li>
+                        <a href="#">
+                           IT Support
+                           <br />
+                           Nico Simanjuntak
+                           <br />
+                           Technician
+                        </a>
+                     </li>
+                  </ul>
+               </li>
+            </ul>
+         </div>
+      </div>
    </div>
-</div>
-</div>
 </div>
 <div class="modal" id="confirm_remove_node" role="dialog">
    <div class="modal-dialog modal-md">

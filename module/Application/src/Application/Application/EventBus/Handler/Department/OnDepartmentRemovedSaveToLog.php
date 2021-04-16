@@ -4,6 +4,7 @@ namespace Application\Application\EventBus\Handler\Department;
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Application\Domain\Event\Company\DepartmentMoved;
+use Application\Domain\Event\Company\DepartmentRemoved;
 use Application\Domain\Util\Tree\Node\GenericNode;
 
 /**
@@ -11,7 +12,7 @@ use Application\Domain\Util\Tree\Node\GenericNode;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class OnDepartmentMovedSaveToLog extends AbstractEventHandler
+class OnDepartmentRemovedSaveToLog extends AbstractEventHandler
 {
 
     /**
@@ -20,13 +21,13 @@ class OnDepartmentMovedSaveToLog extends AbstractEventHandler
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function __invoke(DepartmentMoved $event)
+    public function __invoke(DepartmentRemoved $event)
     {
         try {
             if (! $event->getTarget() instanceof GenericNode) {
                 Throw new \InvalidArgumentException("GenericNode");
             }
-            $m = \sprintf("Department [%s] moved and logged", $event->getTarget()->getNodeName());
+            $m = \sprintf("Department [%s] removed and logged", $event->getTarget()->getNodeName());
             $this->logInfo($m);
         } catch (\Exception $e) {
             $this->logException($e);
@@ -41,6 +42,6 @@ class OnDepartmentMovedSaveToLog extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return DepartmentMoved::class;
+        return DepartmentRemoved::class;
     }
 }

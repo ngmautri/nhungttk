@@ -5,10 +5,18 @@ use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSave
 use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToLog;
 use Application\Application\EventBus\Handler\Department\OnDepartmentMovedSaveToDB;
 use Application\Application\EventBus\Handler\Department\OnDepartmentMovedSaveToLog;
+use Application\Application\EventBus\Handler\Department\OnDepartmentRemovedSaveToDB;
+use Application\Application\EventBus\Handler\Department\OnDepartmentRemovedSaveToLog;
+use Application\Application\EventBus\Handler\Department\OnDepartmentRenamedSaveToDB;
+use Application\Application\EventBus\Handler\Department\OnDepartmentRenamedSaveToLog;
 use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentInsertedSaveToDBFactory;
 use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentInsertedSaveToLogFactory;
 use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentMovedSaveToDBFactory;
 use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentMovedSaveToLogFactory;
+use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentRemovedSaveToDBFactory;
+use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentRemovedSaveToLogFactory;
+use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentRenamedSaveToDBFactory;
+use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentRenamedSaveToLogFactory;
 use Application\Application\Event\Handler\DummyEventHandler;
 use Application\Application\Event\Handler\DummyEventHandlerFactory;
 use Application\Application\Eventbus\EventBusService;
@@ -354,8 +362,15 @@ return array(
             // Handlers:
             OnDepartmentInsertedSaveToLog::class => OnDepartmentInsertedSaveToLogFactory::class,
             OnDepartmentInsertedSaveToDB::class => OnDepartmentInsertedSaveToDBFactory::class,
+
             OnDepartmentMovedSaveToLog::class => OnDepartmentMovedSaveToLogFactory::class,
             OnDepartmentMovedSaveToDB::class => OnDepartmentMovedSaveToDBFactory::class,
+
+            OnDepartmentRenamedSaveToLog::class => OnDepartmentRenamedSaveToLogFactory::class,
+            OnDepartmentRenamedSaveToDB::class => OnDepartmentRenamedSaveToDBFactory::class,
+
+            OnDepartmentRemovedSaveToLog::class => OnDepartmentRemovedSaveToLogFactory::class,
+            OnDepartmentRemovedSaveToDB::class => OnDepartmentRemovedSaveToDBFactory::class,
 
             // =============================================================
             // Event Bus Service End

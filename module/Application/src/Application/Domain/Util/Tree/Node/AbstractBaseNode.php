@@ -116,7 +116,7 @@ abstract class AbstractBaseNode extends AbstractNode
              *
              * @var AbstractBaseNode $r ;
              */
-            if (\strtolower($r->getNodeName()) == \strtolower($name)) {
+            if (\strtolower(trim($r->getNodeName())) == \strtolower(trim($name))) {
 
                 return $r;
             }
@@ -158,6 +158,28 @@ abstract class AbstractBaseNode extends AbstractNode
 
     /**
      *
+     * @param string $newName
+     * @throws \InvalidArgumentException
+     */
+    public function rename($newName)
+    {
+        if ($newName == null) {
+            throw new \InvalidArgumentException("Null 'Node Name' argument.");
+        }
+
+        $node = new GenericNode();
+        $node->setNodeName($newName);
+
+        if ($this->getRoot()->isNodeDescendant($node)) {
+            $f = 'Node {%s} exits already! ';
+            throw new \InvalidArgumentException(\sprintf($f, $node->getNodeName()));
+        } else {
+            $this->setNodeName($newName);
+        }
+    }
+
+    /**
+     *
      * @param AbstractNode $input
      */
     public function updateFrom(AbstractNode $input)
@@ -181,12 +203,15 @@ abstract class AbstractBaseNode extends AbstractNode
     }
 
     /**
-     * Root node has no parent.
      *
-     * @return \Application\Domain\Util\Tree\AbstractNode;
+     * @return \Application\Domain\Util\Tree\Node\AbstractBaseNode
      */
     public function getRoot()
     {
+        /**
+         *
+         * @var \Application\Domain\Util\Tree\Node\AbstractBaseNode $current ;
+         */
         $current = $this;
         $check = $current->getParent();
 

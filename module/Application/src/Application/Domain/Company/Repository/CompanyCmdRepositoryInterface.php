@@ -15,6 +15,8 @@ Interface CompanyCmdRepositoryInterface
 
     public function storeDeparment(GenericCompany $company, $department);
 
+    public function removeDepartment(GenericCompany $company, $department);
+
     public function storeWarehouse(GenericCompany $company, $warehouse);
 
     public function storePostingPeriod(GenericCompany $company);

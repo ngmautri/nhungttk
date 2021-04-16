@@ -108,7 +108,7 @@ class OptionList
             if ($id == null) {
                 $option = $option . sprintf('<option value="%s">%s</option>', $l->getDepartmentName(), $l->getDepartmentShowName());
             } else {
-                if (\strtolower($id) == strtolower($l->getDepartmentName())) {
+                if (\strtolower(trim($id)) == strtolower(trim($l->getDepartmentName()))) {
                     $option = $option . sprintf('<option selected value="%s">%s</option>', $l->getDepartmentName(), $l->getDepartmentShowName());
                 } else {
                     $option = $option . sprintf('<option value="%s">%s</option>', $l->getDepartmentName(), $l->getDepartmentShowName());

@@ -24,12 +24,12 @@ class DepartmentNode extends GenericNode
             return false;
         }
 
-        return \strtolower($this->getNodeName()) == \strtolower($other->getNodeName());
+        return \strtolower(trim($this->getNodeName())) == \strtolower(trim($other->getNodeName()));
     }
 
     public function setNodeName($nodeName)
     {
         Assert::notNull($nodeName, 'Department empty!');
-        $this->nodeName = $nodeName;
+        $this->nodeName = trim($nodeName);
     }
 }

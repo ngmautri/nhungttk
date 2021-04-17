@@ -2,7 +2,7 @@
 namespace ApplicationTest\Department\CodeGenerate;
 
 use Application\Application\Contracts\GenericDTOAssembler;
-use Application\Entity\NmtApplicationDepartment;
+use Application\Entity\AppCoaAccount;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
@@ -16,7 +16,7 @@ class DTOCodeGenerateTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = GenericDTOAssembler::createStoreMapping(NmtApplicationDepartment::class);
+            $result = GenericDTOAssembler::createGetMapping(AppCoaAccount::class);
             // \var_dump(($result));
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

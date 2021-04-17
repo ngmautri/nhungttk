@@ -1,5 +1,5 @@
 <?php
-namespace Application\Domain\Company\Department;
+namespace Application\Domain\Company\AccountChart;
 
 use Application\Domain\Shared\AbstractEntity;
 
@@ -11,116 +11,59 @@ use Application\Domain\Shared\AbstractEntity;
 class AbstractAccount extends AbstractEntity
 {
 
-    protected $nodeId;
-
-    protected $nodeName;
-
-    protected $nodeParentId;
-
-    protected $path;
-
-    protected $pathDepth;
-
-    protected $status;
-
-    protected $remarks;
-
-    protected $createdOn;
+    protected $id;
 
     protected $uuid;
 
-    protected $departmentName;
+    protected $token;
 
-    protected $departmentCode;
+    protected $accountNumer;
+
+    protected $accountName;
+
+    protected $accountType;
+
+    protected $accountClass;
+
+    protected $accountGroup;
+
+    protected $parentAccountNumber;
 
     protected $isActive;
 
+    protected $description;
+
+    protected $createdOn;
+
     protected $lastChangeOn;
 
-    protected $lastChangeBy;
+    protected $remarks;
 
-    protected $departmentNameLocal;
+    protected $allowReconciliation;
+
+    protected $hasCostCenter;
+
+    protected $isClearingAccount;
+
+    protected $isControlAccount;
+
+    protected $manualPostingBlocked;
+
+    protected $allowPosting;
+
+    protected $coa;
 
     protected $createdBy;
 
-    protected $company;
-
-    protected $parentName;
-
-    protected $parentCode;
-
-    protected $token;
+    protected $lastChangeBy;
 
     /**
      *
      * @return mixed
      */
-    public function getNodeId()
+    public function getId()
     {
-        return $this->nodeId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getNodeName()
-    {
-        return $this->nodeName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getNodeParentId()
-    {
-        return $this->nodeParentId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPathDepth()
-    {
-        return $this->pathDepth;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRemarks()
-    {
-        return $this->remarks;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCreatedOn()
-    {
-        return $this->createdOn;
+        return $this->id;
     }
 
     /**
@@ -136,18 +79,63 @@ class AbstractAccount extends AbstractEntity
      *
      * @return mixed
      */
-    public function getDepartmentName()
+    public function getToken()
     {
-        return $this->departmentName;
+        return $this->token;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getDepartmentCode()
+    public function getAccountNumer()
     {
-        return $this->departmentCode;
+        return $this->accountNumer;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountName()
+    {
+        return $this->accountName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountType()
+    {
+        return $this->accountType;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountClass()
+    {
+        return $this->accountClass;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountGroup()
+    {
+        return $this->accountGroup;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getParentAccountNumber()
+    {
+        return $this->parentAccountNumber;
     }
 
     /**
@@ -163,6 +151,24 @@ class AbstractAccount extends AbstractEntity
      *
      * @return mixed
      */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
@@ -172,18 +178,72 @@ class AbstractAccount extends AbstractEntity
      *
      * @return mixed
      */
-    public function getLastChangeBy()
+    public function getRemarks()
     {
-        return $this->lastChangeBy;
+        return $this->remarks;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getDepartmentNameLocal()
+    public function getAllowReconciliation()
     {
-        return $this->departmentNameLocal;
+        return $this->allowReconciliation;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getHasCostCenter()
+    {
+        return $this->hasCostCenter;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsClearingAccount()
+    {
+        return $this->isClearingAccount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsControlAccount()
+    {
+        return $this->isControlAccount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getManualPostingBlocked()
+    {
+        return $this->manualPostingBlocked;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAllowPosting()
+    {
+        return $this->allowPosting;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCoa()
+    {
+        return $this->coa;
     }
 
     /**
@@ -199,81 +259,18 @@ class AbstractAccount extends AbstractEntity
      *
      * @return mixed
      */
-    public function getCompany()
+    public function getLastChangeBy()
     {
-        return $this->company;
+        return $this->lastChangeBy;
     }
 
     /**
      *
-     * @param mixed $nodeId
+     * @param mixed $id
      */
-    protected function setNodeId($nodeId)
+    protected function setId($id)
     {
-        $this->nodeId = $nodeId;
-    }
-
-    /**
-     *
-     * @param mixed $nodeName
-     */
-    protected function setNodeName($nodeName)
-    {
-        $this->nodeName = $nodeName;
-    }
-
-    /**
-     *
-     * @param mixed $nodeParentId
-     */
-    protected function setNodeParentId($nodeParentId)
-    {
-        $this->nodeParentId = $nodeParentId;
-    }
-
-    /**
-     *
-     * @param mixed $path
-     */
-    protected function setPath($path)
-    {
-        $this->path = $path;
-    }
-
-    /**
-     *
-     * @param mixed $pathDepth
-     */
-    protected function setPathDepth($pathDepth)
-    {
-        $this->pathDepth = $pathDepth;
-    }
-
-    /**
-     *
-     * @param mixed $status
-     */
-    protected function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
-     *
-     * @param mixed $remarks
-     */
-    protected function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-    }
-
-    /**
-     *
-     * @param mixed $createdOn
-     */
-    protected function setCreatedOn($createdOn)
-    {
-        $this->createdOn = $createdOn;
+        $this->id = $id;
     }
 
     /**
@@ -287,20 +284,65 @@ class AbstractAccount extends AbstractEntity
 
     /**
      *
-     * @param mixed $departmentName
+     * @param mixed $token
      */
-    protected function setDepartmentName($departmentName)
+    protected function setToken($token)
     {
-        $this->departmentName = $departmentName;
+        $this->token = $token;
     }
 
     /**
      *
-     * @param mixed $departmentCode
+     * @param mixed $accountNumer
      */
-    protected function setDepartmentCode($departmentCode)
+    protected function setAccountNumer($accountNumer)
     {
-        $this->departmentCode = $departmentCode;
+        $this->accountNumer = $accountNumer;
+    }
+
+    /**
+     *
+     * @param mixed $accountName
+     */
+    protected function setAccountName($accountName)
+    {
+        $this->accountName = $accountName;
+    }
+
+    /**
+     *
+     * @param mixed $accountType
+     */
+    protected function setAccountType($accountType)
+    {
+        $this->accountType = $accountType;
+    }
+
+    /**
+     *
+     * @param mixed $accountClass
+     */
+    protected function setAccountClass($accountClass)
+    {
+        $this->accountClass = $accountClass;
+    }
+
+    /**
+     *
+     * @param mixed $accountGroup
+     */
+    protected function setAccountGroup($accountGroup)
+    {
+        $this->accountGroup = $accountGroup;
+    }
+
+    /**
+     *
+     * @param mixed $parentAccountNumber
+     */
+    protected function setParentAccountNumber($parentAccountNumber)
+    {
+        $this->parentAccountNumber = $parentAccountNumber;
     }
 
     /**
@@ -314,6 +356,24 @@ class AbstractAccount extends AbstractEntity
 
     /**
      *
+     * @param mixed $description
+     */
+    protected function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     *
+     * @param mixed $createdOn
+     */
+    protected function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
      * @param mixed $lastChangeOn
      */
     protected function setLastChangeOn($lastChangeOn)
@@ -323,20 +383,74 @@ class AbstractAccount extends AbstractEntity
 
     /**
      *
-     * @param mixed $lastChangeBy
+     * @param mixed $remarks
      */
-    protected function setLastChangeBy($lastChangeBy)
+    protected function setRemarks($remarks)
     {
-        $this->lastChangeBy = $lastChangeBy;
+        $this->remarks = $remarks;
     }
 
     /**
      *
-     * @param mixed $departmentNameLocal
+     * @param mixed $allowReconciliation
      */
-    protected function setDepartmentNameLocal($departmentNameLocal)
+    protected function setAllowReconciliation($allowReconciliation)
     {
-        $this->departmentNameLocal = $departmentNameLocal;
+        $this->allowReconciliation = $allowReconciliation;
+    }
+
+    /**
+     *
+     * @param mixed $hasCostCenter
+     */
+    protected function setHasCostCenter($hasCostCenter)
+    {
+        $this->hasCostCenter = $hasCostCenter;
+    }
+
+    /**
+     *
+     * @param mixed $isClearingAccount
+     */
+    protected function setIsClearingAccount($isClearingAccount)
+    {
+        $this->isClearingAccount = $isClearingAccount;
+    }
+
+    /**
+     *
+     * @param mixed $isControlAccount
+     */
+    protected function setIsControlAccount($isControlAccount)
+    {
+        $this->isControlAccount = $isControlAccount;
+    }
+
+    /**
+     *
+     * @param mixed $manualPostingBlocked
+     */
+    protected function setManualPostingBlocked($manualPostingBlocked)
+    {
+        $this->manualPostingBlocked = $manualPostingBlocked;
+    }
+
+    /**
+     *
+     * @param mixed $allowPosting
+     */
+    protected function setAllowPosting($allowPosting)
+    {
+        $this->allowPosting = $allowPosting;
+    }
+
+    /**
+     *
+     * @param mixed $coa
+     */
+    protected function setCoa($coa)
+    {
+        $this->coa = $coa;
     }
 
     /**
@@ -350,64 +464,10 @@ class AbstractAccount extends AbstractEntity
 
     /**
      *
-     * @param mixed $company
+     * @param mixed $lastChangeBy
      */
-    protected function setCompany($company)
+    protected function setLastChangeBy($lastChangeBy)
     {
-        $this->company = $company;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getParentName()
-    {
-        return $this->parentName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getParentCode()
-    {
-        return $this->parentCode;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    /**
-     *
-     * @param mixed $parentName
-     */
-    protected function setParentName($parentName)
-    {
-        $this->parentName = $parentName;
-    }
-
-    /**
-     *
-     * @param mixed $parentCode
-     */
-    protected function setParentCode($parentCode)
-    {
-        $this->parentCode = $parentCode;
-    }
-
-    /**
-     *
-     * @param mixed $token
-     */
-    protected function setToken($token)
-    {
-        $this->token = $token;
+        $this->lastChangeBy = $lastChangeBy;
     }
 }

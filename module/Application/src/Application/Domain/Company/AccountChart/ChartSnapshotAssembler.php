@@ -1,5 +1,5 @@
 <?php
-namespace Application\Domain\Company\Department;
+namespace Application\Domain\Company\AccountChart;
 
 use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
@@ -9,7 +9,7 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class DepartmentSnapshotAssembler
+class ChartSnapshotAssembler
 {
 
     private static $defaultExcludedFields = array(
@@ -42,7 +42,7 @@ class DepartmentSnapshotAssembler
 
     public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, ChartSnapshotAssembler::$defaultIncludedFields);
     }
 
     public static function updateExcludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
@@ -52,7 +52,7 @@ class DepartmentSnapshotAssembler
 
     public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultExcludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, ChartSnapshotAssembler::$defaultExcludedFields);
     }
 
     // from Object
@@ -69,7 +69,7 @@ class DepartmentSnapshotAssembler
 
     public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, ChartSnapshotAssembler::$defaultIncludedFields);
     }
 
     public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
@@ -79,6 +79,6 @@ class DepartmentSnapshotAssembler
 
     public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, ChartSnapshotAssembler::$defaultExcludedFields);
     }
 }

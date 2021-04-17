@@ -1,5 +1,5 @@
 <?php
-namespace Application\Domain\Company\Department;
+namespace Application\Domain\Company\AccountChart;
 
 use Application\Domain\Shared\Command\CommandOptions;
 use Ramsey\Uuid\Uuid;
@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class BaseDepartmentSnapshot extends DepartmentSnapshot
+class BaseChartSnapshot extends ChartSnapshot
 {
 
     public function init(CommandOptions $options)

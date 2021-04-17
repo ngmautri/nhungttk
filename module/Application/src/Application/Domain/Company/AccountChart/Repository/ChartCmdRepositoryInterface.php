@@ -12,11 +12,11 @@ use Application\Domain\Company\AccountChart\BaseChart;
 Interface ChartCmdRepositoryInterface
 {
 
-    public function store(BaseChart $chart);
+    public function store(BaseChart $rootEntity, $isPosting = false);
 
-    public function remove(BaseChart $chart);
+    public function remove(BaseChart $rootEntity, $isPosting = false);
 
-    public function storeAccount(BaseChart $chart, BaseAccount $account);
+    public function storeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false);
 
-    public function removeAccount(BaseChart $chart, BaseAccount $account);
+    public function removeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false);
 }

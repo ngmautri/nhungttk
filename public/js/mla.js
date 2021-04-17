@@ -1446,6 +1446,7 @@ function deleteArticleCat(cat_id) {
 function createRole(parent_id, node_id, node_text) {
 	$('#myModal1').modal();
 	var redirectUrl = "/user/role/list";
+	
 	$.post("/user/role/add", {
 		parent_name : parent_id,
 		role : node_text,

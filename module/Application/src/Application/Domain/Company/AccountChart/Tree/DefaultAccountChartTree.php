@@ -17,7 +17,7 @@ class DefaultAccountChartTree extends AbstractTree
 
     public function __construct(BaseChart $chart)
     {
-        if ($chart instanceof BaseChart) {
+        if (! $chart instanceof BaseChart) {
             throw new \InvalidArgumentException("BaseChart required!");
         }
 
@@ -38,7 +38,7 @@ class DefaultAccountChartTree extends AbstractTree
         $node = new AccountChartNode();
         $node->setContextObject(null);
 
-        $node->setId();
+        $node->setId($chartCode);
         $node->setNodeName($this->getChart()
             ->getCoaName());
         $node->setNodeCode($chartCode);

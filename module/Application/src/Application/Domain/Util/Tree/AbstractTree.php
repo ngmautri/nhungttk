@@ -237,4 +237,13 @@ abstract class AbstractTree implements TreeInterface
     {
         $children = $this->getChildrenStack()->top();
     }
+
+    /**
+     *
+     * @return Ambigous <\Application\Domain\Util\Tree\Node\GenericNode, mixed>
+     */
+    public function getRoot()
+    {
+        return $this->root;
+    }
 }

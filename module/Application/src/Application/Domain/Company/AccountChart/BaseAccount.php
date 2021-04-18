@@ -11,6 +11,15 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 class BaseAccount extends AbstractAccount
 {
 
+    public function equals(BaseAccount $other)
+    {
+        if ($other == null) {
+            return false;
+        }
+
+        return \strtolower(trim($this->getAccountNumer())) == \strtolower(trim($other->getAccountNumer()));
+    }
+
     /**
      *
      * @return \Application\Domain\Company\AccountChart\BaseAccountSnapshot

@@ -33,14 +33,14 @@ class DefaultAccountChartTree extends AbstractTree
     {
         $results = $this->getChart()->getAccountCollection();
         $chartCode = $this->getChart()->getCoaCode();
+        $chartName = $this->getChart()->getCoaName();
 
         // convert to Generic Component
         $node = new AccountChartNode();
         $node->setContextObject(null);
 
         $node->setId($chartCode);
-        $node->setNodeName($this->getChart()
-            ->getCoaName());
+        $node->setNodeName($chartName);
         $node->setNodeCode($chartCode);
 
         $this->data[$chartCode] = $node;

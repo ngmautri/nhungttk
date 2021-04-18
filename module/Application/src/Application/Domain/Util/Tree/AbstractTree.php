@@ -240,7 +240,7 @@ abstract class AbstractTree implements TreeInterface
 
     /**
      *
-     * @return Ambigous <\Application\Domain\Util\Tree\Node\GenericNode, mixed>
+     * @return \Application\Domain\Util\Tree\Node\GenericNode
      */
     public function getRoot()
     {

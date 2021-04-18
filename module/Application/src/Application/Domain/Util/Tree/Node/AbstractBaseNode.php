@@ -125,6 +125,25 @@ abstract class AbstractBaseNode extends AbstractNode
         return null;
     }
 
+    public function getNodeByCode($code)
+    {
+        $result = new ArrayCollection($this->display(new NodeArrayFormatter()));
+
+        foreach ($result as $r) {
+
+            /**
+             *
+             * @var AbstractBaseNode $r ;
+             */
+            if (\strtolower(trim($r->getNodeCode())) == \strtolower(trim($code))) {
+
+                return $r;
+            }
+        }
+
+        return null;
+    }
+
     /**
      *
      * @param AbstractNode $node

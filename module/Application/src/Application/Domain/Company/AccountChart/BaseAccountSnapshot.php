@@ -19,7 +19,7 @@ class BaseAccountSnapshot extends AccountSnapshot
 
         $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $this->setCreatedBy($createdBy);
-        $this->setRevisionNo(0);
+
         $this->setUuid(Uuid::uuid4()->toString());
         $this->setToken($this->uuid);
     }

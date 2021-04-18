@@ -1,21 +1,18 @@
 <?php
 namespace Application\Domain\Company;
 
-use Application\Application\Event\DefaultParameter;
-use Application\Domain\Company\Contracts\CompanyStatus;
-use Application\Domain\Company\Department\BaseDepartment;
+use Application\Domain\Company\AccountChart\ChartSnapshot;
+use Application\Domain\Company\AccountChart\Factory\ChartFactory;
+use Application\Domain\Company\Collection\AccountChartCollection;
 use Application\Domain\Company\Department\BaseDepartmentSnapshot;
 use Application\Domain\Company\Department\DepartmentSnapshot;
-use Application\Domain\Company\Department\GenericDepartment;
-use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
-use Application\Domain\Company\Validator\ValidatorFactory;
-use Application\Domain\Company\Validator\Contracts\DepartmentValidatorCollection;
-use Application\Domain\Event\Company\DepartmentSaved;
+use Application\Domain\Company\Department\Factory\DepartmentFactory;
 use Application\Domain\Service\SharedService;
 use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Webmozart\Assert\Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Closure;
 
 /**
  *
@@ -25,12 +22,26 @@ use Webmozart\Assert\Assert;
 class BaseCompany extends AbstractCompany
 {
 
-    protected $warehouses;
+    protected $warehouseCollection;
 
-    protected $departments;
+    protected $warehouseCollectionRef;
 
-    protected $postingPeriods;
+    protected $departmentCollection;
 
+    protected $departmentCollectionRef;
+
+    protected $accountChartCollection;
+
+    protected $accountChartCollectionRef;
+
+    protected $postingPeriodCollection;
+
+    protected $postingPeriodCollectionRef;
+
+    /**
+     *
+     * @return \Application\Domain\Company\CompanyVO
+     */
     public function createValueObject()
     {
         $vo = new CompanyVO();
@@ -38,7 +49,73 @@ class BaseCompany extends AbstractCompany
         return $vo;
     }
 
+    public function getLazyWarehouseCollection()
+    {
+        $ref = $this->getWarehouseCollectionRef();
+        if (! $ref instanceof Closure) {
+            return new ArrayCollection();
+        }
+
+        $this->warehouseCollection = $ref();
+        return $this->warehouseCollection;
+    }
+
+    public function getLazyDepartmentCollection()
+    {
+        $ref = $this->getDepartmentCollectionRef();
+        if (! $ref instanceof Closure) {
+            return new ArrayCollection();
+        }
+
+        $this->departmentCollection = $ref();
+        return $this->departmentCollection;
+    }
+
     /**
+     *
+     * @return \Application\Domain\Company\Collection\AccountChartCollection|mixed
+     */
+    public function getLazyAccountChartCollection()
+    {
+        $ref = $this->getAccountChartCollectionRef();
+        if (! $ref instanceof Closure) {
+            return new AccountChartCollection();
+        }
+
+        $this->accountChartCollection = $ref();
+        return $this->accountChartCollection;
+    }
+
+    public function getLazyPostingPeriodCollection()
+    {
+        $ref = $this->getPostingPeriodCollectionRef();
+        if (! $ref instanceof Closure) {
+            return new ArrayCollection();
+        }
+
+        $this->postingPeriodCollection = $ref();
+        return $this->postingPeriodCollection;
+    }
+
+    // ==========================================
+    // ===========Facade ========================
+    // ==========================================
+    /**
+     *
+     * @param ChartSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedServiceInterface $sharedService
+     * @param boolean $storeNow
+     * @return \Application\Domain\Company\BaseCompany
+     */
+    public function createAccoutChartFrom(ChartSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService, $storeNow = true)
+    {
+        return ChartFactory::createFrom($this, $snapshot, $options, $sharedService);
+    }
+
+    /**
+     * Implement Facade Pattern
+     * delegate to Department Factory
      *
      * @param DepartmentSnapshot $snapshot
      * @param CommandOptions $options
@@ -47,23 +124,12 @@ class BaseCompany extends AbstractCompany
      */
     public function removeDepartment(DepartmentSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        Assert::notEq($this->getStatus(), CompanyStatus::INACTIVE, sprintf("Company inactive! %s", $this->getId()));
-        Assert::notNull($snapshot, "Row Snapshot not founds");
-        Assert::notNull($options, "Options not founds");
-
-        /**
-         *
-         * @var DepartmentSnapshot $localSnapshot ;
-         * @var CompanyCmdRepositoryInterface $rep ;
-         *
-         */
-        $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rep->removeDepartment($this, $snapshot);
-
-        return $this;
+        return DepartmentFactory::remove($this, $snapshot, $options, $sharedService);
     }
 
     /**
+     * Implement Facade Pattern
+     * delegate to Department Factory
      *
      * @param BaseDepartmentSnapshot $snapshot
      * @param CommandOptions $options
@@ -74,69 +140,172 @@ class BaseCompany extends AbstractCompany
      */
     public function createDepartmentFrom(DepartmentSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService, $storeNow = true)
     {
-        Assert::notEq($this->getStatus(), CompanyStatus::INACTIVE, sprintf("Company inactive! %s", $this->getId()));
-        Assert::notNull($snapshot, "Row Snapshot not founds");
-        Assert::notNull($options, "Options not founds");
-
-        $validators = ValidatorFactory::createForDepartment($sharedService);
-        $snapshot->setCompany($options->getCompanyVO()
-            ->getId());
-
-        $createdDate = new \Datetime();
-        $snapshot->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $this->setCreatedBy($options->getUserId());
-
-        $department = GenericDepartment::createFromSnapshot($this, $snapshot);
-        $this->validateDepartment($department, $validators);
-
-        if ($this->hasErrors()) {
-            throw new \RuntimeException($this->getNotification()->errorMessage());
-        }
-
-        $this->clearEvents();
-
-        if (! $storeNow) {
-            return $this;
-        }
-
-        /**
-         *
-         * @var DepartmentSnapshot $localSnapshot ;
-         * @var CompanyCmdRepositoryInterface $rep ;
-         *
-         */
-        $rep = $sharedService->getPostingService()->getCmdRepository();
-        $localSnapshot = $rep->storeDeparment($this, $snapshot);
-
-        $params = [
-            "rowId" => $localSnapshot->getNodeId(),
-            "rowToken" => $localSnapshot->getToken()
-        ];
-
-        $target = $this->createValueObject();
-        $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($this->getId());
-        $defaultParams->setTargetToken($this->getToken());
-        // $defaultParams->setTargetDocVersion($this->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
-        $defaultParams->setTriggeredBy($options->getTriggeredBy());
-        $defaultParams->setUserId($options->getUserId());
-
-        $event = new DepartmentSaved($target, $defaultParams, $params);
-        $this->addEvent($event);
-
-        return $localSnapshot;
+        return DepartmentFactory::createFrom($this, $snapshot, $options, $sharedService);
     }
 
-    protected function validateDepartment(BaseDepartment $department, DepartmentValidatorCollection $validators, $isPosting = false)
+    /**
+     *
+     * @param Closure $warehouseCollectionRef
+     */
+    public function setWarehouseCollectionRef(Closure $warehouseCollectionRef)
     {
-        Assert::isInstanceOf($department, BaseDepartment::class, "BaseDepartment not given!");
+        $this->warehouseCollectionRef = $warehouseCollectionRef;
+    }
 
-        $validators->validate($department);
+    // ==========================================
+    // ========== Setter and Getter ============
+    // ==========================================
 
-        if ($department->hasErrors()) {
-            $this->addErrorArray($department->getErrors());
-            return;
-        }
+    /**
+     *
+     * @return mixed
+     */
+    public function getWarehouseCollection()
+    {
+        return $this->warehouseCollection;
+    }
+
+    /**
+     *
+     * @param mixed $warehouseCollection
+     */
+    public function setWarehouseCollection($warehouseCollection)
+    {
+        $this->warehouseCollection = $warehouseCollection;
+    }
+
+    /**
+     *
+     * @return Closure
+     */
+    public function getWarehouseCollectionRef()
+    {
+        return $this->warehouseCollectionRef;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDepartmentCollection()
+    {
+        return $this->departmentCollection;
+    }
+
+    /**
+     *
+     * @param mixed $departmentCollection
+     */
+    public function setDepartmentCollection($departmentCollection)
+    {
+        $this->departmentCollection = $departmentCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountChartCollection()
+    {
+        return $this->accountChartCollection;
+    }
+
+    /**
+     *
+     * @param mixed $accountChartCollection
+     */
+    public function setAccountChartCollection($accountChartCollection)
+    {
+        $this->accountChartCollection = $accountChartCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostingPeriods()
+    {
+        return $this->postingPeriods;
+    }
+
+    /**
+     *
+     * @param mixed $postingPeriods
+     */
+    public function setPostingPeriods($postingPeriods)
+    {
+        $this->postingPeriods = $postingPeriods;
+    }
+
+    /**
+     *
+     * @return Closure
+     */
+    public function getDepartmentCollectionRef()
+    {
+        return $this->departmentCollectionRef;
+    }
+
+    /**
+     *
+     * @param Closure $departmentCollectionRef
+     */
+    public function setDepartmentCollectionRef(Closure $departmentCollectionRef)
+    {
+        $this->departmentCollectionRef = $departmentCollectionRef;
+    }
+
+    /**
+     *
+     * @return Closure
+     */
+    public function getAccountChartCollectionRef()
+    {
+        return $this->accountChartCollectionRef;
+    }
+
+    /**
+     *
+     * @param Closure $accountChartCollectionRef
+     */
+    public function setAccountChartCollectionRef(Closure $accountChartCollectionRef)
+    {
+        $this->accountChartCollectionRef = $accountChartCollectionRef;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostingPeriodCollection()
+    {
+        return $this->postingPeriodCollection;
+    }
+
+    /**
+     *
+     * @param mixed $postingPeriodCollection
+     */
+    public function setPostingPeriodCollection($postingPeriodCollection)
+    {
+        $this->postingPeriodCollection = $postingPeriodCollection;
+    }
+
+    /**
+     *
+     * @return Closure
+     */
+    public function getPostingPeriodCollectionRef()
+    {
+        return $this->postingPeriodCollectionRef;
+    }
+
+    /**
+     *
+     * @param Closure $postingPeriodCollectionRef
+     */
+    public function setPostingPeriodCollectionRef(Closure $postingPeriodCollectionRef)
+    {
+        $this->postingPeriodCollectionRef = $postingPeriodCollectionRef;
     }
 }

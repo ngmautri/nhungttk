@@ -18,7 +18,7 @@ class BaseAccount extends AbstractAccount
     public function makeSnapshot()
     {
         $snapshot = new BaseAccountSnapshot();
-        GenericObjectAssembler::updateAllFieldsFrom($this, $snapshot);
+        GenericObjectAssembler::updateAllFieldsFrom($snapshot, $this);
         return $snapshot;
     }
 }

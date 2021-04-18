@@ -3,15 +3,17 @@ namespace Application\Domain\Company\AccountChart\Factory;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Company\BaseCompany;
-use Application\Domain\Company\BaseCompanySnapshot;
 use Application\Domain\Company\CompanySnapshot;
-use Application\Domain\Company\CompanySnapshotAssembler;
-use Application\Domain\Company\GenericCompany;
+use Application\Domain\Company\AccountChart\BaseChart;
+use Application\Domain\Company\AccountChart\BaseChartSnapshot;
+use Application\Domain\Company\AccountChart\ChartSnapshot;
+use Application\Domain\Company\AccountChart\ChartSnapshotAssembler;
+use Application\Domain\Company\AccountChart\GenericChart;
+use Application\Domain\Company\AccountChart\Validator\ChartValidatorFactory;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
-use Application\Domain\Company\Validator\ValidatorFactory;
-use Application\Domain\Event\Company\CompanyCreated;
 use Application\Domain\Event\Company\CompanyUpdated;
-use Application\Domain\Service\SharedService;
+use Application\Domain\Event\Company\AccountChart\ChartCreated;
+use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Webmozart\Assert\Assert;
@@ -25,99 +27,100 @@ use InvalidArgumentException;
 class ChartFactory
 {
 
-    /**
-     *
-     * @param CompanySnapshot $snapshot
-     * @throws InvalidArgumentException
-     * @return \Application\Domain\Company\GenericCompany
-     */
-    public static function contructFromDB(CompanySnapshot $snapshot)
+    public static function contructFromDB(ChartSnapshot $snapshot)
     {
-        if (! $snapshot instanceof CompanySnapshot) {
-            throw new InvalidArgumentException("CompanySnapshot not found!");
+        if (! $snapshot instanceof ChartSnapshot) {
+            throw new InvalidArgumentException("ChartSnapshot not found!");
         }
 
-        $instance = new GenericCompany();
+        $instance = new GenericChart();
         GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
         return $instance;
     }
 
     /**
      *
-     * @param CompanySnapshot $snapshot
+     * @param BaseCompany $companyEntity
+     * @param ChartSnapshot $snapshot
      * @param CommandOptions $options
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
-     * @return \Application\Domain\Company\GenericCompany
+     * @param SharedServiceInterface $sharedService
+     * @throws \InvalidArgumentException
+     * @return \Application\Domain\Company\AccountChart\GenericChart
      */
-    public static function createFrom(BaseCompanySnapshot $snapshot, CommandOptions $options = null, SharedService $sharedService = null)
+    public static function createFrom(BaseCompany $companyEntity, BaseChartSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService)
     {
-        Assert::notNull($snapshot, "CompanySnapshot not found");
+        Assert::notNull($companyEntity, "Company not found");
+        Assert::notNull($snapshot, "BaseChartSnapshot not found");
         Assert::notNull($sharedService, "SharedService service not found");
 
+        $localEntity = new GenericChart();
         $snapshot->init($options);
+        GenericObjectAssembler::updateAllFieldsFrom($localEntity, $snapshot);
 
-        $company = new GenericCompany();
-        GenericObjectAssembler::updateAllFieldsFrom($company, $snapshot);
+        $chartCollection = $companyEntity->getLazyAccountChartCollection();
 
-        $validationService = ValidatorFactory::create($sharedService);
-
-        // create default location.
-        $company->validate($validationService);
-
-        if ($company->hasErrors()) {
-            throw new \RuntimeException($company->getNotification()->errorMessage());
+        if ($chartCollection->isExits($localEntity)) {
+            throw new \InvalidArgumentException(\sprintf("Chart (%s) exits already!", $localEntity->getCoaCode()));
         }
 
-        $company->clearEvents();
+        $validationService = ChartValidatorFactory::forCreatingChart($sharedService);
+
+        // create default location.
+        $localEntity->validateChart($validationService);
+
+        if ($localEntity->hasErrors()) {
+            throw new \InvalidArgumentException($localEntity->getNotification()->errorMessage());
+        }
+
+        $localEntity->clearEvents();
 
         /**
          *
-         * @var CompanySnapshot $rootSnapshot ;
+         * @var ChartSnapshot $localSnapshot ;
          * @var CompanyCmdRepositoryInterface $rep ;
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->storeDeparment($company, true);
+        $localSnapshot = $rep->storeAccountChart($companyEntity, $localEntity, true);
 
-        $target = $rootSnapshot;
+        $target = $localSnapshot;
         $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
-        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTargetId($localSnapshot->getId());
+        $defaultParams->setTargetToken($localSnapshot->getToken());
+        $defaultParams->setTargetRrevisionNo($localSnapshot->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
         $params = null;
 
-        $event = new CompanyCreated($target, $defaultParams, $params);
-        $company->addEvent($event);
-        return $company;
+        $event = new ChartCreated($target, $defaultParams, $params);
+        $localEntity->addEvent($event);
+        return $localEntity;
     }
 
-    public static function updateFrom(BaseCompany $rootEntity, BaseCompanySnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
+    public static function updateFrom(BaseChart $companyEntity, ChartSnapshot $snapshot, CommandOptions $options, $params, SharedServiceInterface $sharedService)
     {
-        Assert::notNull($rootEntity, "BaseCompany not found.");
-        Assert::notNull($snapshot, "CompanySnapshot not found!");
+        Assert::notNull($companyEntity, "BaseChart not found.");
+        Assert::notNull($snapshot, "ChartSnapshot not found!");
         Assert::notNull($options, "Cmd options not found!");
         Assert::notNull($options, "SharedService service not found!");
 
-        CompanySnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);
+        ChartSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($companyEntity, $snapshot);
 
         $snapshot->update($options);
-        $validationService = ValidatorFactory::create($sharedService);
-        $rootEntity->validate($validationService);
+        $validationService = ChartValidatorFactory::create($sharedService);
+        $companyEntity->validate($validationService);
 
-        if ($rootEntity->hasErrors()) {
-            throw new \RuntimeException($rootEntity->getNotification()->errorMessage());
+        if ($companyEntity->hasErrors()) {
+            throw new \RuntimeException($companyEntity->getNotification()->errorMessage());
         }
 
-        $rootEntity->clearEvents();
+        $companyEntity->clearEvents();
         /**
          *
          * @var CompanySnapshot $rootSnapshot ;
          * @var CompanyCmdRepositoryInterface $rep ;
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->store($rootEntity, true);
+        $rootSnapshot = $rep->store($companyEntity, true);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -128,8 +131,8 @@ class ChartFactory
         $defaultParams->setUserId($options->getUserId());
 
         $event = new CompanyUpdated($target, $defaultParams, $params);
-        $rootEntity->addEvent($event);
+        $companyEntity->addEvent($event);
 
-        return $rootEntity;
+        return $companyEntity;
     }
 }

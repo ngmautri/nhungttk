@@ -3,6 +3,8 @@ namespace Application\Domain\Company\AccountChart\Validator\Contracts;
 
 use Application\Domain\Company\AccountChart\AbstractAccount;
 use Application\Domain\Company\AccountChart\AbstractChart;
+use Application\Domain\Company\AccountChart\BaseAccount;
+use Application\Domain\Company\AccountChart\BaseChart;
 
 /**
  *
@@ -17,6 +19,6 @@ interface AccountValidatorInterface
      * @param AbstractChart $rootEntity
      * @param AbstractAccount $localEntity
      */
-    public function validate(AbstractChart $rootEntity, AbstractAccount $localEntity);
+    public function validate(BaseChart $rootEntity, BaseAccount $localEntity);
 }
 

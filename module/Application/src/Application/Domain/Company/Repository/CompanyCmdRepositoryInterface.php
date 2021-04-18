@@ -1,7 +1,10 @@
 <?php
 namespace Application\Domain\Company\Repository;
 
+use Application\Domain\Company\BaseCompany;
 use Application\Domain\Company\GenericCompany;
+use Application\Domain\Company\AccountChart\BaseChart;
+use Application\Domain\Company\Department\DepartmentSnapshot;
 
 /**
  *
@@ -13,9 +16,16 @@ Interface CompanyCmdRepositoryInterface
 
     public function store(GenericCompany $company);
 
-    public function storeDeparment(GenericCompany $company, $department);
+    // ================================================================
+    // Delegation
+    // ================================================================
+    public function storeDeparment(BaseCompany $rootEntity, DepartmentSnapshot $localSnapshot, $isPosting = false);
 
-    public function removeDepartment(GenericCompany $company, $department);
+    public function removeDepartment(BaseCompany $rootEntity, DepartmentSnapshot $localSnapshot, $isPosting = false);
+
+    public function storeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity);
+
+    public function removeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity);
 
     public function storeWarehouse(GenericCompany $company, $warehouse);
 

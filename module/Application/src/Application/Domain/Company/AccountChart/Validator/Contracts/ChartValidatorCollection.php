@@ -1,7 +1,7 @@
 <?php
 namespace Application\Domain\Company\AccountChart\Validator\Contracts;
 
-use Application\Domain\Company\AccountChart\AbstractChart;
+use Application\Domain\Company\AccountChart\BaseChart;
 use InvalidArgumentException;
 
 /**
@@ -32,10 +32,10 @@ class ChartValidatorCollection implements ChartValidatorInterface
      * {@inheritdoc}
      * @see \Application\Domain\Company\AccountChart\Validator\Contracts\ChartValidatorInterface::validate()
      */
-    public function validate(AbstractChart $rootEntity)
+    public function validate(BaseChart $rootEntity)
     {
         if (count($this->validators) == 0) {
-            throw new InvalidArgumentException("Header Validator is required! but no is given.");
+            throw new InvalidArgumentException("BaseChart is required! but no is given.");
         }
 
         foreach ($this->validators as $validator) {

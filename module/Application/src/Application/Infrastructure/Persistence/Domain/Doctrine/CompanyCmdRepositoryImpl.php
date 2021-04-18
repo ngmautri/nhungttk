@@ -1,13 +1,15 @@
 <?php
 namespace Application\Infrastructure\Persistence\Domain\Doctrine;
 
+use Application\Domain\Company\BaseCompany;
 use Application\Domain\Company\GenericCompany;
+use Application\Domain\Company\AccountChart\BaseChart;
+use Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface;
 use Application\Domain\Company\Department\DepartmentSnapshot;
+use Application\Domain\Company\Department\Repository\DepartmentCmdRepositoryInterface;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Entity\NmtApplicationCompany;
-use Application\Entity\NmtApplicationDepartment;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\DepartmentMapper;
 use InvalidArgumentException;
 
 /**
@@ -18,72 +20,50 @@ use InvalidArgumentException;
 class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements CompanyCmdRepositoryInterface
 {
 
-    const ROOT_ENTITY_NAME = "\Application\Entity\NmtApplicationCompany";
+    private $chartCmdRepository;
 
-    const DEPT_ENTITY_NAME = "\Application\Entity\NmtApplicationDepartment";
+    private $departmentCmdRepository;
+
+    const COMPANY_ENTITY_NAME = "\Application\Entity\NmtApplicationCompany";
+
+    public function store(GenericCompany $company)
+    {}
+
+    // ================================================================
+    // Delegation
+    // ================================================================
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::AccountAccountChart()
+     */
+    public function removeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity)
+    {
+        $this->assertChartRepository();
+        return $this->getChartCmdRepository()->remove($rootEntity, $localEntity);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::storeAccountChart()
+     */
+    public function storeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity)
+    {
+        $this->assertChartRepository();
+        return $this->getChartCmdRepository()->store($rootEntity, $localEntity);
+    }
 
     /**
      *
      * {@inheritdoc}
      * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::removeDepartment()
      */
-    public function removeDepartment(GenericCompany $company, $department)
+    public function removeDepartment(BaseCompany $rootEntity, DepartmentSnapshot $localSnapshot, $isPosting = false)
     {
-        if ($company == null) {
-            throw new InvalidArgumentException("Root entity not given.");
-        }
-
-        /**
-         *
-         * @var DepartmentSnapshot $localSnapshot ;
-         */
-        $localSnapshot = $department;
-
-        /**
-         *
-         * @var NmtApplicationCompany $rootEntityDoctrine ;
-         */
-        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $company->getId());
-
-        if ($rootEntityDoctrine == null) {
-            throw new InvalidArgumentException("Doctrine root entity not found.");
-        }
-
-        /**
-         *
-         * @var NmtApplicationDepartment $rowEntityDoctrine ;
-         */
-        $rowEntityDoctrine = $this->getDoctrineEM()->find(self::DEPT_ENTITY_NAME, $localSnapshot->getNodeId());
-
-        if ($rowEntityDoctrine == null) {
-            throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localSnapshot->getNodeId()));
-        }
-
-        //
-        if ($rowEntityDoctrine->getCompany() == null) {
-            throw new InvalidArgumentException("Doctrine row entity is not valid");
-        }
-
-        if ($rowEntityDoctrine->getCompany()->getId() != $rootEntityDoctrine->getId()) {
-            throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getInvoice()->getId(), $localSnapshot->getNodeId()));
-        }
-
-        $isFlush = true;
-        $increaseVersion = false;
-
-        // remove now.
-        $this->getDoctrineEM()->remove($rowEntityDoctrine);
-
-        if ($increaseVersion) {
-            $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo() + 1);
-            $this->doctrineEM->persist($rootEntityDoctrine);
-        }
-
-        if ($isFlush) {
-            $this->doctrineEM->flush();
-        }
-
-        return true;
+        $this->assertDepartmentRepository();
+        return $this->getDepartmentCmdRepository()->removeDepartment($rootEntity, $localSnapshot, $isPosting);
     }
 
     /**
@@ -91,90 +71,94 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
      * {@inheritdoc}
      * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::storeDeparment()
      */
-    public function storeDeparment(GenericCompany $company, $department)
+    public function storeDeparment(BaseCompany $rootEntity, DepartmentSnapshot $localSnapshot, $isPosting = false)
     {
-        if ($company == null) {
-            throw new \InvalidArgumentException("Company not given.");
-        }
-
-        if ($department == null) {
-            throw new InvalidArgumentException("Deparment snapshot is not given!");
-        }
-
-        /**
-         *
-         * @var DepartmentSnapshot $localSnapshot ;
-         */
-        $localSnapshot = $department;
-
-        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $company->getId());
-
-        if (! $rootEntityDoctrine instanceof NmtApplicationCompany) {
-            throw new InvalidArgumentException("Doctrine root entity not given!");
-        }
-
-        $isFlush = true;
-        $increaseVersion = FALSE;
-
-        /**
-         *
-         * @var \Application\Entity\NmtApplicationDepartment $rowEntityDoctrine ;
-         */
-
-        if ($localSnapshot->getNodeId() > 0) {
-
-            $rowEntityDoctrine = $this->doctrineEM->find(self::DEPT_ENTITY_NAME, $localSnapshot->getNodeId());
-
-            if ($rowEntityDoctrine == null) {
-                throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localSnapshot->getNodeId()));
-            }
-
-            // to update
-            if ($rowEntityDoctrine->getCompany() == null) {
-                throw new InvalidArgumentException("Doctrine row entity is not valid");
-            }
-
-            // to update
-            if (! $rowEntityDoctrine->getCompany()->getId() == $rootEntityDoctrine->getId()) {
-                throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getGr()->getId(), $rootEntityDoctrine->getId()));
-            }
-        } else {
-            $localClassName = self::DEPT_ENTITY_NAME;
-            $rowEntityDoctrine = new $localClassName();
-
-            // to update
-            $rowEntityDoctrine->setCompany($rootEntityDoctrine);
-            $rowEntityDoctrine->setNodeParentId($localSnapshot->getNodeParentId());
-        }
-
-        $rowEntityDoctrine = DepartmentMapper::mapSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
-
-        $this->doctrineEM->persist($rowEntityDoctrine);
-
-        if ($increaseVersion) {
-            $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo() + 1);
-            $this->doctrineEM->persist($rootEntityDoctrine);
-        }
-
-        if ($isFlush) {
-            $this->doctrineEM->flush();
-        }
-
-        return $rowEntityDoctrine;
-
-        if ($rowEntityDoctrine == null) {
-            throw new \RuntimeException("Something wrong. Row Doctrine Entity not created");
-        }
-
-        return $localSnapshot;
+        $this->assertDepartmentRepository();
+        return $this->getDepartmentCmdRepository()->storeDepartment($rootEntity, $localSnapshot, $isPosting);
     }
-
-    public function store(GenericCompany $company)
-    {}
 
     public function storeWarehouse(GenericCompany $company, $warehouse)
     {}
 
     public function storePostingPeriod(GenericCompany $company)
     {}
+
+    // ==============================================
+    // SETTER AND GETTER
+    // ==============================================
+
+    /**
+     *
+     * @throws InvalidArgumentException
+     */
+    private function assertDepartmentRepository()
+    {
+        if ($this->getDepartmentCmdRepository() == null) {
+            throw new InvalidArgumentException("Deparment repository is not found!");
+        }
+    }
+
+    /**
+     *
+     * @throws InvalidArgumentException
+     */
+    private function assertChartRepository()
+    {
+        if ($this->getChartCmdRepository() == null) {
+            throw new InvalidArgumentException("Account Chart repository is not found!");
+        }
+    }
+
+    private function assertAndReturnCompany(BaseCompany $rootEntity)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("BaseCompany not given.");
+        }
+
+        /**
+         *
+         * @var NmtApplicationCompany $rowEntityDoctrine ;
+         */
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::COMPANNY_ENTITY_NAME, $rootEntity->getId());
+        if (! $rootEntityDoctrine instanceof NmtApplicationCompany) {
+            throw new InvalidArgumentException("Doctrine root entity not given!");
+        }
+
+        return $rootEntityDoctrine;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface
+     */
+    public function getChartCmdRepository()
+    {
+        return $this->chartCmdRepository;
+    }
+
+    /**
+     *
+     * @param ChartCmdRepositoryInterface $chartCmdRepository
+     */
+    public function setChartCmdRepository(ChartCmdRepositoryInterface $chartCmdRepository)
+    {
+        $this->chartCmdRepository = $chartCmdRepository;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Company\Department\Repository\DepartmentCmdRepositoryInterface
+     */
+    public function getDepartmentCmdRepository()
+    {
+        return $this->departmentCmdRepository;
+    }
+
+    /**
+     * ram DepartmentCmdRepositoryImpl $departmentCmdRepository
+     */
+    public function setDepartmentCmdRepository(DepartmentCmdRepositoryInterface $departmentCmdRepository)
+    {
+        $this->departmentCmdRepository = $departmentCmdRepository;
+    }
 }

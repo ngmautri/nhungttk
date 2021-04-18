@@ -24,6 +24,7 @@ class ChartMapper
         }
 
         // $entity->setId($snapshot->id);
+        // var_dump($snapshot);
         $entity->setUuid($snapshot->uuid);
         $entity->setCoaCode($snapshot->coaCode);
         $entity->setCoaName($snapshot->coaName);

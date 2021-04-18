@@ -1,8 +1,8 @@
 <?php
 namespace Application\Domain\Company\AccountChart\Validator\Contracts;
 
-use Application\Domain\Company\AccountChart\AbstractAccount;
-use Application\Domain\Company\AccountChart\AbstractChart;
+use Application\Domain\Company\AccountChart\BaseAccount;
+use Application\Domain\Company\AccountChart\BaseChart;
 use InvalidArgumentException;
 
 /**
@@ -34,7 +34,7 @@ class AccountValidatorCollection implements AccountValidatorInterface
      * {@inheritdoc}
      * @see \Application\Domain\Company\AccountChart\Validator\Contracts\AccountValidatorInterface::validate()
      */
-    public function validate(AbstractChart $rootEntity, AbstractAccount $localEntity)
+    public function validate(BaseChart $rootEntity, BaseAccount $localEntity)
     {
         if (count($this->validators) == 0) {
             throw new InvalidArgumentException("Header Validator is required! but no is given.");

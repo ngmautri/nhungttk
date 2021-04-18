@@ -1,15 +1,12 @@
 <?php
 namespace InventoryTest\Item\Command;
 
-use Doctrine\ORM\EntityManager;
-use Inventory\Application\Command\GenericCmd;
-use Inventory\Application\Command\Item\UpdateCmdHandler;
-use Inventory\Application\Command\Item\Options\UpdateItemOptions;
-use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Application\Eventbus\EventBusService;
-use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
+use Application\Application\Command\TransactionalCommandHandler;
+use Application\Application\Command\Doctrine\GenericCommand;
+use Application\Application\Command\Doctrine\Company\AccountChart\CreateChartCmdHandler;
+use Application\Application\Command\Options\CmdOptions;
+use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use ProcureTest\Bootstrap;
-use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use PHPUnit_Framework_TestCase;
 
 class UpdateCmdTest extends PHPUnit_Framework_TestCase
@@ -23,35 +20,31 @@ class UpdateCmdTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         try {
-            /** @var EntityManager $doctrineEM ; */
-            $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-            $eventBusService = Bootstrap::getServiceManager()->get(EventBusService::class);
 
-            $companyId = 1;
+            $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+            $rep = new CompanyQueryRepositoryImpl($doctrineEM);
+            // $filter = new CompanyQuerySqlFilter();
+            $company = $rep->getById(1);
+
             $userId = 39;
 
-            $rootEntityId = 5064;
-            $rootEntityToken = "12485d89-26f8-40b9-b796-0c6db59f2901";
-            $version = 13;
+            $data = [
+                'coaCode' => 'LAS_2009',
+                'coaName' => 'Chart of Laos 2009'
+            ];
 
-            $dto = new ItemDTO();
-            $dto->isModel = "1";
-            $dto->itemName = "Test AssetXYZ";
-            $dto->itemSku = 'xx';
+            $options = new CmdOptions($company->createValueObject(), $userId, __METHOD__);
 
-            $queryRep = new ItemQueryRepositoryImpl($doctrineEM);
-            $rootEntity = $queryRep->getRootEntityByTokenId($rootEntityId, $rootEntityToken);
-            $options = new UpdateItemOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
-
-            $cmdHandler = new UpdateCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator, $eventBusService);
+            $cmdHandler = new CreateChartCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($doctrineEM, $data, $options, $cmdHandlerDecorator);
             $cmd->execute();
-
-            var_dump($dto->getNotification());
+            var_dump($cmd->getNotification());
         } catch (\Exception $e) {
-            echo $e->getMessage() . "\n\n\n";
-            echo $e->getTraceAsString();
+            echo $e->getMessage();
+            echo "====================";
+            // echo $e->getTraceAsString();
         }
     }
+}
 }

@@ -1,9 +1,9 @@
 <?php
-namespace Application\Domain\Company\Validator;
+namespace Application\Domain\Company\AccountChart\Validator;
 
-use Application\Domain\Company\Department\BaseDepartment;
+use Application\Domain\Company\AccountChart\BaseAccount;
+use Application\Domain\Company\AccountChart\Validator\Contracts\AccountValidatorInterface;
 use Application\Domain\Company\Validator\Contracts\AbstractValidator;
-use Application\Domain\Company\Validator\Contracts\DepartmentValidatorInterface;
 use Exception;
 
 /**
@@ -11,18 +11,18 @@ use Exception;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class DepartmentDefaultValidator extends AbstractValidator implements DepartmentValidatorInterface
+class AccountDefaultValidator extends AbstractValidator implements AccountValidatorInterface
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Validator\Contracts\WarehouseValidatorInterface::validate()
+     * @see \Application\Domain\Company\AccountChart\Validator\Contracts\ChartValidatorInterface::validate()
      */
-    public function validate(BaseDepartment $rootEntity)
+    public function validate(BaseAccount $rootEntity)
     {
-        if (! $rootEntity instanceof BaseDepartment) {
-            $rootEntity->addError("BaseDepartment object not found");
+        if (! $rootEntity instanceof BaseAccount) {
+            $rootEntity->addError("BaseAccount object not found");
             return;
         }
 

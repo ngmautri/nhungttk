@@ -115,7 +115,7 @@ return array(
                 'label' => 'Department',
                 'route' => 'application/default',
                 'controller' => 'department',
-                'action' => 'list',
+                'action' => 'list2',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
             array(

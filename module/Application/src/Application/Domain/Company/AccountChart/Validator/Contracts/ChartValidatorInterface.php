@@ -1,7 +1,7 @@
 <?php
 namespace Application\Domain\Company\AccountChart\Validator\Contracts;
 
-use Application\Domain\Company\AccountChart\AbstractChart;
+use Application\Domain\Company\AccountChart\BaseChart;
 
 /**
  *
@@ -11,6 +11,6 @@ use Application\Domain\Company\AccountChart\AbstractChart;
 interface ChartValidatorInterface
 {
 
-    public function validate(AbstractChart $rootEntity);
+    public function validate(BaseChart $rootEntity);
 }
 

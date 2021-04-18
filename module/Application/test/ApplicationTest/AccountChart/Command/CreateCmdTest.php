@@ -1,13 +1,12 @@
 <?php
-namespace InventoryTest\Item\Command;
+namespace ApplicationTest\AccountChart\Command;
 
-use Doctrine\ORM\EntityManager;
-use Inventory\Application\Command\GenericCmd;
-use Inventory\Application\Command\Item\CreateCmdHandler;
-use Inventory\Application\Command\Item\Options\CreateItemOptions;
-use Inventory\Application\DTO\Item\ItemDTO;
-use ProcureTest\Bootstrap;
-use Procure\Application\Command\TransactionalCmdHandlerDecorator;
+use ApplicationTest\Bootstrap;
+use Application\Application\Command\TransactionalCommandHandler;
+use Application\Application\Command\Doctrine\GenericCommand;
+use Application\Application\Command\Doctrine\Company\AccountChart\CreateChartCmdHandler;
+use Application\Application\Command\Options\CmdOptions;
+use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 
 class CreateCmdTest extends PHPUnit_Framework_TestCase
@@ -21,36 +20,28 @@ class CreateCmdTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         try {
-            /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+            $rep = new CompanyQueryRepositoryImpl($doctrineEM);
+            // $filter = new CompanyQuerySqlFilter();
+            $company = $rep->getById(1);
 
-            $companyId = 1;
             $userId = 39;
+            $data = [
+                'coaCode' => 'SAP_IFRS',
+                'coaName' => 'Chart of Laos 2021'
+            ];
 
-            $dto = new ItemDTO();
+            $options = new CmdOptions($company->createValueObject(), $userId, __METHOD__);
 
-            $dto->itemTypeId = 1015;
-            $dto->itemSku = "2-5-1";
-            $dto->isActive = 1;
-            $dto->itemName = "Special Item 2-5 updated5";
-            $dto->itemDescription = "Special Item itemDescription";
-            $dto->remarks = "Special Item itemDescription";
-            $dto->standardUom = 1;
-            $dto->stockUom = 1;
-            $dto->stockUomConvertFactor = 1;
-            $dto->createdBy = $userId;
-            $dto->company = $companyId;
-            $options = new CreateItemOptions($companyId, $userId, __METHOD__);
-
-            $cmdHandler = new CreateCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
+            $cmdHandler = new CreateChartCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($doctrineEM, $data, $options, $cmdHandlerDecorator);
             $cmd->execute();
-            var_dump($dto->getNotification()->getErrors());
+            var_dump($cmd->getNotification());
         } catch (\Exception $e) {
             echo $e->getMessage();
             echo "====================";
-            // echo $e->getTraceAsString();
+            echo $e->getTraceAsString();
         }
     }
 }

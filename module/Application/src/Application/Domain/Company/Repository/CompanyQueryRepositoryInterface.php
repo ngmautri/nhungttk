@@ -17,6 +17,7 @@ Interface CompanyQueryRepositoryInterface
 
     public function getByUUID($uuid);
 
+    // Delegation
     public function getPostingPeriod($periodId);
 
     public function getDepartmentList(SqlFilterInterface $filter);

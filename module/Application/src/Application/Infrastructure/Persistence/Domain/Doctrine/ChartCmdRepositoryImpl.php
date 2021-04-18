@@ -1,6 +1,7 @@
 <?php
 namespace Application\Infrastructure\Persistence\Domain\Doctrine;
 
+use Application\Domain\Company\BaseCompany;
 use Application\Domain\Company\AccountChart\AccountSnapshot;
 use Application\Domain\Company\AccountChart\BaseAccount;
 use Application\Domain\Company\AccountChart\BaseChart;
@@ -8,6 +9,7 @@ use Application\Domain\Company\AccountChart\ChartSnapshot;
 use Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface;
 use Application\Entity\AppCoa;
 use Application\Entity\AppCoaAccount;
+use Application\Entity\NmtApplicationCompany;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\ChartMapper;
 use InvalidArgumentException;
@@ -20,32 +22,34 @@ use InvalidArgumentException;
 class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements ChartCmdRepositoryInterface
 {
 
-    const ROOT_ENTITY_NAME = "\Application\Entity\AppCoa";
+    const COMPANNY_ENTITY_NAME = "\Application\Entity\NmtApplicationCompany";
 
-    const DEPT_ENTITY_NAME = "\Application\Entity\AppCoaAccount";
+    const CHART_ENTITY_NAME = "\Application\Entity\AppCoa";
+
+    const ACCOUNT_ENTITY_NAME = "\Application\Entity\AppCoaAccount";
 
     /**
      *
      * {@inheritdoc}
      * @see \Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface::store()
      */
-    public function store(BaseChart $rootEntity, $isPosting = false)
+    public function store(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
     {
-        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+        $rootSnapshot = $this->_getRootSnapshot($localEntity);
 
         $isFlush = true;
         $increaseVersion = true;
         $entity = $this->_storeChart($rootSnapshot, $isPosting, $isFlush, $increaseVersion);
 
-        if ($entity == null) {
-            throw new InvalidArgumentException("Something wrong. Doctrine root entity not created");
-        }
-
         $rootSnapshot->id = $entity->getId();
         $rootSnapshot->revisionNo = $entity->getRevisionNo();
+        $rootSnapshot->version = $entity->getVersion();
 
         return $rootSnapshot;
     }
+
+    public function remove(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {}
 
     /**
      *
@@ -54,25 +58,12 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
      */
     public function storeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false)
     {
-        if ($rootEntity == null) {
-            throw new \InvalidArgumentException("Root entity not given.");
-        }
-
+        $rootEntityDoctrine = $this->assertAndReturnChart($rootEntity);
         $localSnapshot = $this->_getLocalSnapshot($localEntity);
-
-        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
-
-        if ($rootEntityDoctrine == null) {
-            throw new \RuntimeException("Doctrine root entity not found.");
-        }
 
         $isFlush = true;
         $increaseVersion = true;
         $rowEntityDoctrine = $this->_storeAccount($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
-
-        if ($rowEntityDoctrine == null) {
-            throw new \RuntimeException("Something wrong. Row Doctrine Entity not created");
-        }
 
         $localSnapshot->id = $rowEntityDoctrine->getId();
         $localSnapshot->revisionNo = $rowEntityDoctrine->getRevisionNo();
@@ -80,40 +71,17 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
         return $localSnapshot;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface::removeAccount()
+     */
     public function removeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("Root entity not given.");
-        }
+        $rootEntityDoctrine = $this->assertAndReturnChart($rootEntity);
 
-        /**
-         *
-         * @var AppCoa $rowEntityDoctrine ;
-         */
-        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
-
-        if ($rootEntityDoctrine == null) {
-            throw new InvalidArgumentException("Doctrine root entity not found.");
-        }
-
-        /**
-         *
-         * @var AppCoaAccount $rowEntityDoctrine ;
-         */
-        $rowEntityDoctrine = $this->getDoctrineEM()->find(self::LOCAL_ENTITY_NAME, $localEntity->getId());
-
-        if ($rowEntityDoctrine == null) {
-            throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localEntity->getId()));
-        }
-
-        //
-        if ($rowEntityDoctrine->getCoa() == null) {
-            throw new InvalidArgumentException("Doctrine row entity is not valid");
-        }
-
-        if ($rowEntityDoctrine->getCoa()->getId() != $rootEntity->getId()) {
-            throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getInvoice()->getId(), $rootEntity->getId()));
-        }
+        $localSnapshot = $this->_getLocalSnapshot($localEntity);
+        $rowEntityDoctrine = $this->assertAndReturnAccount($rootEntityDoctrine, $localSnapshot);
 
         $isFlush = true;
 
@@ -127,37 +95,18 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
         return true;
     }
 
-    private function _storeAccount($rootEntityDoctrine, AccountSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
+    /**
+     *
+     * @param AppCoa $rootEntityDoctrine
+     * @param AccountSnapshot $localSnapshot
+     * @param boolean $isPosting
+     * @param boolean $isFlush
+     * @param boolean $increaseVersion
+     * @return NULL|\Application\Entity\AppCoaAccount
+     */
+    private function _storeAccount(AppCoa $rootEntityDoctrine, AccountSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion)
     {
-
-        /**
-         *
-         * @var \Application\Entity\AppCoaAccount $rowEntityDoctrine ;
-         */
-        if ($localSnapshot->getId() > 0) {
-
-            $rowEntityDoctrine = $this->doctrineEM->find(self::LOCAL_ENTITY_NAME, $localSnapshot->getId());
-
-            if ($rowEntityDoctrine == null) {
-                throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localSnapshot->getId()));
-            }
-
-            // to update
-            if ($rowEntityDoctrine->getCoa() == null) {
-                throw new InvalidArgumentException("Doctrine row entity is not valid");
-            }
-
-            // to update
-            if (! $rowEntityDoctrine->getCoa()->getId() == $rootEntityDoctrine->getId()) {
-                throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getGr()->getId(), $rootEntityDoctrine->getId()));
-            }
-        } else {
-            $localClassName = self::LOCAL_ENTITY_NAME;
-            $rowEntityDoctrine = new $localClassName();
-
-            // to update
-            $rowEntityDoctrine->setInvoice($rootEntityDoctrine);
-        }
+        $rowEntityDoctrine = $this->assertAndReturnAccount($rootEntityDoctrine, $localSnapshot);
 
         $rowEntityDoctrine = ChartMapper::mapAccountEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
 
@@ -165,6 +114,10 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
 
         if ($isFlush) {
             $this->doctrineEM->flush();
+        }
+
+        if ($rowEntityDoctrine == null) {
+            throw new \RuntimeException("Something wrong. Row Doctrine Entity not created");
         }
 
         return $rowEntityDoctrine;
@@ -188,17 +141,12 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
          *
          */
         if ($rootSnapshot->getId() > 0) {
-            $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());
+            $entity = $this->getDoctrineEM()->find(self::CHART_ENTITY_NAME, $rootSnapshot->getId());
             if ($entity == null) {
                 throw new InvalidArgumentException(sprintf("Doctrine entity not found. %s", $rootSnapshot->getId()));
             }
-
-            // just in case, it is not updated.
-            if ($entity->getToken() == null) {
-                $entity->setToken($entity->getUuid());
-            }
         } else {
-            $rootClassName = self::ROOT_ENTITY_NAME;
+            $rootClassName = self::CHART_ENTITY_NAME;
             $entity = new $rootClassName();
         }
 
@@ -209,6 +157,10 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
 
         if ($isFlush) {
             $this->doctrineEM->flush();
+        }
+
+        if ($entity == null) {
+            throw new InvalidArgumentException("Something wrong. Doctrine root entity not created");
         }
 
         return $entity;
@@ -237,6 +189,89 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
         return $localEntity->makeSnapshot();
     }
 
-    public function remove(BaseChart $rootEntity, $isPosting = false)
-    {}
+    /**
+     *
+     * @param BaseCompany $rootEntity
+     * @throws InvalidArgumentException
+     */
+    private function assertAndReturnCompany(BaseCompany $rootEntity)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("BaseCompany not given.");
+        }
+
+        /**
+         *
+         * @var NmtApplicationCompany $rowEntityDoctrine ;
+         */
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::COMPANNY_ENTITY_NAME, $rootEntity->getId());
+        if (! $rootEntityDoctrine instanceof NmtApplicationCompany) {
+            throw new InvalidArgumentException("Doctrine root entity not given!");
+        }
+
+        return $rootEntityDoctrine;
+    }
+
+    private function assertAndReturnChart(BaseChart $rootEntity)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("BaseChart not given.");
+        }
+
+        /**
+         *
+         * @var AppCoa $rootEntityDoctrine ;
+         */
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::CHART_ENTITY_NAME, $rootEntity->getId());
+        if (! $rootEntityDoctrine instanceof AppCoa) {
+            throw new InvalidArgumentException("Account chart entity not found!");
+        }
+
+        return $rootEntityDoctrine;
+    }
+
+    private function assertAndReturnAccount(AppCoa $rootEntityDoctrine, AccountSnapshot $localSnapshot)
+    {
+        $rowEntityDoctrine = null;
+
+        if ($localSnapshot == null) {
+            throw new InvalidArgumentException(sprintf("Account snapshot not found! #%s", ""));
+        }
+
+        if ($localSnapshot->getId() > 0) {
+
+            /**
+             *
+             * @var AppCoaAccount $rowEntityDoctrine ;
+             */
+            $rowEntityDoctrine = $this->doctrineEM->find(self::ACCOUNT_ENTITY_NAME, $localSnapshot->getId());
+
+            if ($rowEntityDoctrine == null) {
+                throw new InvalidArgumentException(sprintf("Account entity not found! #%s", $localSnapshot->getId()));
+            }
+
+            // to update
+            if ($rowEntityDoctrine->getCoa() == null) {
+                throw new InvalidArgumentException("Account entity is not valid");
+            }
+
+            // to update
+            if (! $rowEntityDoctrine->getCoa()->getId() == $rootEntityDoctrine->getId()) {
+                throw new InvalidArgumentException(sprintf("Account entity is corrupted! %s <> %s ", $rowEntityDoctrine->getGr()->getId(), $rootEntityDoctrine->getId()));
+            }
+        } else {
+            $localClassName = self::ACCOUNT_ENTITY_NAME;
+            $rowEntityDoctrine = new $localClassName();
+
+            // to update
+            $rowEntityDoctrine->setCoa($rootEntityDoctrine);
+            $rowEntityDoctrine = new $localClassName();
+        }
+
+        if ($rowEntityDoctrine == null) {
+            throw new InvalidArgumentException("Can not create account  entity!");
+        }
+
+        return $rowEntityDoctrine;
+    }
 }

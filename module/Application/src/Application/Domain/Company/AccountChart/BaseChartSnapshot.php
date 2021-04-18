@@ -22,6 +22,8 @@ class BaseChartSnapshot extends ChartSnapshot
         $this->setRevisionNo(0);
         $this->setUuid(Uuid::uuid4()->toString());
         $this->setToken($this->uuid);
+        $this->setCompany($options->getCompanyVO()
+            ->getId());
     }
 
     public function update(CommandOptions $options)

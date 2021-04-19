@@ -5,13 +5,14 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Company\AccountChart\Tree\AccountChartNode;
 use Application\Domain\Company\AccountChart\Tree\DefaultAccountChartTree;
 use Application\Domain\Company\AccountChart\Validator\ChartValidatorFactory;
+use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
+use Application\Domain\Event\Company\AccountChart\AccountCreated;
 use Application\Domain\Service\Contracts\AccountChartValidationServiceInterface;
 use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Procure\Domain\AccountPayable\APRowSnapshot;
-use Procure\Domain\Event\Ap\ApRowAdded;
 use Webmozart\Assert\Assert;
 use Closure;
 
@@ -35,7 +36,7 @@ class BaseChart extends AbstractChart
 
         $validationService = ChartValidatorFactory::forCreatingChart($sharedService);
         $snapshot->init($options);
-
+        $snapshot->setCoa($this->getId());
         $account = GenericAccount::createFromSnapshot($this, $snapshot);
 
         $this->validateAccount($account, $validationService);
@@ -68,9 +69,7 @@ class BaseChart extends AbstractChart
         // var_dump($root->isNodeDescendant($node));
 
         $node->setParentId($parent->getId());
-        $parent->add($node);
-
-        echo $root->display();
+        $parent->add($node); // adding to tree. If ok, go further
 
         $this->clearEvents();
         // $this->addRow($account);
@@ -81,10 +80,11 @@ class BaseChart extends AbstractChart
 
         /**
          *
-         * @var APRowSnapshot $localSnapshot
+         * @var APRowSnapshot $localSnapshot ;
+         * @var CompanyCmdRepositoryInterface $rep ;
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $localSnapshot = $rep->storeRow($this, $row);
+        $localSnapshot = $rep->storeAccount($this, $account);
 
         $params = [
             "rowId" => $localSnapshot->getId(),
@@ -95,12 +95,12 @@ class BaseChart extends AbstractChart
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($this->getId());
         $defaultParams->setTargetToken($this->getToken());
-        $defaultParams->setTargetDocVersion($this->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        // $defaultParams->setTargetDocVersion($this->getDocVersion());
+        // $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
 
-        $event = new ApRowAdded($target, $defaultParams, $params);
+        $event = new AccountCreated($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;
@@ -115,7 +115,7 @@ class BaseChart extends AbstractChart
         return \strtolower(trim($this->getCoaCode())) == \strtolower(trim($other->getCoaCode()));
     }
 
-    public function getAccountCollection()
+    public function getLazyAccountCollection()
     {
         $ref = $this->getAccountCollectionRef();
         if (! $ref instanceof Closure) {
@@ -123,6 +123,11 @@ class BaseChart extends AbstractChart
         }
 
         $this->accountCollection = $ref();
+        return $this->accountCollection;
+    }
+
+    public function getAccountCollection()
+    {
         return $this->accountCollection;
     }
 
@@ -197,11 +202,11 @@ class BaseChart extends AbstractChart
 
     /**
      *
-     * @param ArrayCollection $accountList
+     * @param ArrayCollection $accountCollection
      */
-    public function setAccountCollection(ArrayCollection $accountList)
+    public function setAccountCollection(ArrayCollection $accountCollection)
     {
-        $this->accountCollection = $accountList;
+        $this->accountCollection = $accountCollection;
     }
 
     /**

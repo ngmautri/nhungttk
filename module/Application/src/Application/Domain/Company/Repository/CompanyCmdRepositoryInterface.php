@@ -3,6 +3,7 @@ namespace Application\Domain\Company\Repository;
 
 use Application\Domain\Company\BaseCompany;
 use Application\Domain\Company\GenericCompany;
+use Application\Domain\Company\AccountChart\BaseAccount;
 use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 
@@ -25,7 +26,11 @@ Interface CompanyCmdRepositoryInterface
 
     public function storeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity);
 
+    public function storeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false);
+
     public function removeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity);
+
+    public function removeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false);
 
     public function storeWarehouse(GenericCompany $company, $warehouse);
 

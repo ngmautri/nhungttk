@@ -9,7 +9,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UpdateRowCmdOptions extends CmdOptions
+class UpdateMemberCmdOptions extends CmdOptions
 {
 
     private $rootEntity;

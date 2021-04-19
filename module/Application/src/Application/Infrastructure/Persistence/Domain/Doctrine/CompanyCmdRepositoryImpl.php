@@ -3,6 +3,7 @@ namespace Application\Infrastructure\Persistence\Domain\Doctrine;
 
 use Application\Domain\Company\BaseCompany;
 use Application\Domain\Company\GenericCompany;
+use Application\Domain\Company\AccountChart\BaseAccount;
 use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface;
 use Application\Domain\Company\Department\DepartmentSnapshot;
@@ -53,6 +54,28 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     {
         $this->assertChartRepository();
         return $this->getChartCmdRepository()->store($rootEntity, $localEntity);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::storeAccount()
+     */
+    public function storeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false)
+    {
+        $this->assertChartRepository();
+        return $this->getChartCmdRepository()->storeAccount($rootEntity, $localEntity, $isPosting);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::removeAccount()
+     */
+    public function removeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false)
+    {
+        $this->assertChartRepository();
+        return $this->getChartCmdRepository()->removeAccount($rootEntity, $localEntity, $isPosting);
     }
 
     /**

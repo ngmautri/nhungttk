@@ -1,19 +1,19 @@
 <?php
 namespace Application\Infrastructure\Persistence\Domain\Doctrine;
 
+use Application\Domain\Company\CompanyQueryRepositoryInterface;
 use Application\Domain\Company\AccountChart\Factory\ChartFactory;
 use Application\Domain\Company\Collection\AccountChartCollection;
 use Application\Domain\Company\Factory\CompanyFactory;
-use Application\Domain\Company\Repository\CompanyQueryRepositoryInterface;
 use Application\Domain\Contracts\Repository\SqlFilterInterface;
 use Application\Entity\AppCoa;
 use Application\Entity\NmtApplicationDepartment;
 use Application\Entity\NmtFinPostingPeriod;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Application\Infrastructure\Mapper\CompanyMapper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Helper\CompanyHelper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\ChartMapper;
-use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\CompanyMapper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\DepartmentMapper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Webmozart\Assert\Assert;
@@ -131,7 +131,32 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
                 $localEnityDoctrine = $r;
                 $localSnapshot = ChartMapper::createChartSnapshot($localEnityDoctrine);
                 $chart = ChartFactory::contructFromDB($localSnapshot);
-                $collection->add($chart);
+
+                // Get Account
+                $criteria = array(
+                    "coa" => $localEnityDoctrine->getId()
+                );
+
+                $results1 = $this->doctrineEM->getRepository("\Application\Entity\AppCoaAccount")->findAll($criteria);
+
+                if (count($results1) == 0) {
+                    $collection->add($chart);
+                } else {
+
+                    $accountCollection = new ArrayCollection();
+                    foreach ($results1 as $r1) {
+
+                        /**
+                         *
+                         * @var \Application\Entity\AppCoaAccount $r1 ;
+                         */
+
+                        $accountSnaphot = ChartMapper::createAccountSnapshot($r1);
+                        $accountCollection->add($accountSnaphot);
+                    }
+                    $chart->setAccountCollection($accountCollection);
+                    $collection->add($chart);
+                }
             }
             return $collection;
         };

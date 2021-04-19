@@ -155,6 +155,41 @@ class AppCoaAccount
     private $allowPosting;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="account_number", type="string", length=45, nullable=true)
+     */
+    private $accountNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="account_feature", type="string", length=45, nullable=true)
+     */
+    private $accountFeature;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="control_for", type="string", length=45, nullable=true)
+     */
+    private $controlFor;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="version", type="integer", nullable=true)
+     */
+    private $version;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revisionNo", type="integer", nullable=true)
+     */
+    private $revisionno;
+
+    /**
      * @var \Application\Entity\AppCoa
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\AppCoa")
@@ -650,6 +685,126 @@ class AppCoaAccount
     public function getAllowPosting()
     {
         return $this->allowPosting;
+    }
+
+    /**
+     * Set accountNumber
+     *
+     * @param string $accountNumber
+     *
+     * @return AppCoaAccount
+     */
+    public function setAccountNumber($accountNumber)
+    {
+        $this->accountNumber = $accountNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get accountNumber
+     *
+     * @return string
+     */
+    public function getAccountNumber()
+    {
+        return $this->accountNumber;
+    }
+
+    /**
+     * Set accountFeature
+     *
+     * @param string $accountFeature
+     *
+     * @return AppCoaAccount
+     */
+    public function setAccountFeature($accountFeature)
+    {
+        $this->accountFeature = $accountFeature;
+
+        return $this;
+    }
+
+    /**
+     * Get accountFeature
+     *
+     * @return string
+     */
+    public function getAccountFeature()
+    {
+        return $this->accountFeature;
+    }
+
+    /**
+     * Set controlFor
+     *
+     * @param string $controlFor
+     *
+     * @return AppCoaAccount
+     */
+    public function setControlFor($controlFor)
+    {
+        $this->controlFor = $controlFor;
+
+        return $this;
+    }
+
+    /**
+     * Get controlFor
+     *
+     * @return string
+     */
+    public function getControlFor()
+    {
+        return $this->controlFor;
+    }
+
+    /**
+     * Set version
+     *
+     * @param integer $version
+     *
+     * @return AppCoaAccount
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return integer
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * Set revisionno
+     *
+     * @param integer $revisionno
+     *
+     * @return AppCoaAccount
+     */
+    public function setRevisionno($revisionno)
+    {
+        $this->revisionno = $revisionno;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionno
+     *
+     * @return integer
+     */
+    public function getRevisionno()
+    {
+        return $this->revisionno;
     }
 
     /**

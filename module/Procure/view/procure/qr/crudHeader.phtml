@@ -55,7 +55,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 10pt">
             <ul>
@@ -193,7 +193,7 @@ echo $form_action;
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2">Currency:</label>
                            <div class="col-sm-3">
-                              <select name="docCurrency" class="form-control input-sm">
+                              <select name="docCurrency" class="form-control input-sm chosen-select">
                                  <option value="">Select Currency</option>
  <?php
 // ================
@@ -230,7 +230,7 @@ echo $currency_option;
                         echo $this->translate("Incoterm");
                         ?>:</label>
                            <div class="col-sm-3">
-                              <select name="incoterm" class="form-control input-sm">
+                              <select name="incoterm" class="form-control input-sm chosen-select">
                                  <option value="">---</option>
 <?php
 // ================
@@ -253,7 +253,7 @@ echo $incoterm_option;
                         echo $this->translate("Payment Term");
                         ?>:</label>
                            <div class="col-sm-3">
-                              <select name="pmtTerm" class="form-control input-sm">
+                              <select name="pmtTerm" class="form-control input-sm chosen-select">
                                  <option value=""><?php
                                 echo $this->translate("---");
                                 ?></option>
@@ -280,7 +280,7 @@ echo $paymentTerm_option;
                         echo $this->translate("Target Warehouse");
                         ?>:</label>
                            <div class="col-sm-3">
-                              <select tabindex="9" name="warehouse" id="target_wh_id" class="form-control input-sm">
+                              <select tabindex="9" name="warehouse" id="target_wh_id" class="form-control input-sm chosen-select">
                                  <option value=""><?php
                                 echo $this->translate("...");
                                 ?></option>

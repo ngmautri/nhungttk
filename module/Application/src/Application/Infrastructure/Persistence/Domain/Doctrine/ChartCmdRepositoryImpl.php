@@ -66,7 +66,7 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
         $rowEntityDoctrine = $this->_storeAccount($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
 
         $localSnapshot->id = $rowEntityDoctrine->getId();
-        $localSnapshot->revisionNo = $rowEntityDoctrine->getRevisionNo();
+        // $localSnapshot->revisionNo = $rowEntityDoctrine->getV();
 
         return $localSnapshot;
     }

@@ -12,6 +12,13 @@ echo $this->baseUrl?>/application/department/list2"><i
 
 echo $this->translate("Department")?></a>
 	</li>
+   <li><a href="<?php
+
+echo $this->baseUrl?>/application/account-chart/list1"><i
+         class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;<?php
+
+        echo $this->translate("Chart of accounts")?></a>
+   </li>
 	<li><a
 		href="<?php
 

@@ -9,6 +9,10 @@ namespace Application\Application\Service\Contracts;
 interface EntityServiceInterface
 {
 
+    public function getRootEntityByUuid($uuid, $locale = 'en_EN');
+
+    public function getRootEntityById($id, $locale = 'en_EN');
+
     public function getRootEntityByTokenId($id, $token, $locale = 'en_EN');
 
     public function getRootEntityDetailByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN');

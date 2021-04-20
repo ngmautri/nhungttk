@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * AppCoaAccount
  *
- * @ORM\Table(name="app_coa_account", indexes={@ORM\Index(name="app_coa_account_FK1_idx", columns={"coa_id"}), @ORM\Index(name="app_coa_account_FK2_idx", columns={"created_by"}), @ORM\Index(name="app_coa_account_FK3_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="app_coa_account", indexes={@ORM\Index(name="app_coa_account_FK1_idx", columns={"coa_id"}), @ORM\Index(name="app_coa_account_FK2_idx", columns={"created_by"}), @ORM\Index(name="app_coa_account_FK3_idx", columns={"last_change_by"}), @ORM\Index(name="app_coa_account_idx1", columns={"coa_uuid"}), @ORM\Index(name="app_coa_account_idx2", columns={"uuid"})})
  * @ORM\Entity
  */
 class AppCoaAccount
@@ -38,9 +38,9 @@ class AppCoaAccount
     /**
      * @var string
      *
-     * @ORM\Column(name="account_numer", type="string", length=40, nullable=true)
+     * @ORM\Column(name="account_number", type="string", length=45, nullable=true)
      */
-    private $accountNumer;
+    private $accountNumber;
 
     /**
      * @var string
@@ -69,6 +69,13 @@ class AppCoaAccount
      * @ORM\Column(name="account_group", type="string", length=45, nullable=true)
      */
     private $accountGroup;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="account_feature", type="string", length=45, nullable=true)
+     */
+    private $accountFeature;
 
     /**
      * @var string
@@ -157,20 +164,6 @@ class AppCoaAccount
     /**
      * @var string
      *
-     * @ORM\Column(name="account_number", type="string", length=45, nullable=true)
-     */
-    private $accountNumber;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="account_feature", type="string", length=45, nullable=true)
-     */
-    private $accountFeature;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="control_for", type="string", length=45, nullable=true)
      */
     private $controlFor;
@@ -188,6 +181,13 @@ class AppCoaAccount
      * @ORM\Column(name="revisionNo", type="integer", nullable=true)
      */
     private $revisionno;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="coa_uuid", type="string", length=38, nullable=true)
+     */
+    private $coaUuid;
 
     /**
      * @var \Application\Entity\AppCoa
@@ -280,27 +280,27 @@ class AppCoaAccount
     }
 
     /**
-     * Set accountNumer
+     * Set accountNumber
      *
-     * @param string $accountNumer
+     * @param string $accountNumber
      *
      * @return AppCoaAccount
      */
-    public function setAccountNumer($accountNumer)
+    public function setAccountNumber($accountNumber)
     {
-        $this->accountNumer = $accountNumer;
+        $this->accountNumber = $accountNumber;
 
         return $this;
     }
 
     /**
-     * Get accountNumer
+     * Get accountNumber
      *
      * @return string
      */
-    public function getAccountNumer()
+    public function getAccountNumber()
     {
-        return $this->accountNumer;
+        return $this->accountNumber;
     }
 
     /**
@@ -397,6 +397,30 @@ class AppCoaAccount
     public function getAccountGroup()
     {
         return $this->accountGroup;
+    }
+
+    /**
+     * Set accountFeature
+     *
+     * @param string $accountFeature
+     *
+     * @return AppCoaAccount
+     */
+    public function setAccountFeature($accountFeature)
+    {
+        $this->accountFeature = $accountFeature;
+
+        return $this;
+    }
+
+    /**
+     * Get accountFeature
+     *
+     * @return string
+     */
+    public function getAccountFeature()
+    {
+        return $this->accountFeature;
     }
 
     /**
@@ -688,54 +712,6 @@ class AppCoaAccount
     }
 
     /**
-     * Set accountNumber
-     *
-     * @param string $accountNumber
-     *
-     * @return AppCoaAccount
-     */
-    public function setAccountNumber($accountNumber)
-    {
-        $this->accountNumber = $accountNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get accountNumber
-     *
-     * @return string
-     */
-    public function getAccountNumber()
-    {
-        return $this->accountNumber;
-    }
-
-    /**
-     * Set accountFeature
-     *
-     * @param string $accountFeature
-     *
-     * @return AppCoaAccount
-     */
-    public function setAccountFeature($accountFeature)
-    {
-        $this->accountFeature = $accountFeature;
-
-        return $this;
-    }
-
-    /**
-     * Get accountFeature
-     *
-     * @return string
-     */
-    public function getAccountFeature()
-    {
-        return $this->accountFeature;
-    }
-
-    /**
      * Set controlFor
      *
      * @param string $controlFor
@@ -805,6 +781,30 @@ class AppCoaAccount
     public function getRevisionno()
     {
         return $this->revisionno;
+    }
+
+    /**
+     * Set coaUuid
+     *
+     * @param string $coaUuid
+     *
+     * @return AppCoaAccount
+     */
+    public function setCoaUuid($coaUuid)
+    {
+        $this->coaUuid = $coaUuid;
+
+        return $this;
+    }
+
+    /**
+     * Get coaUuid
+     *
+     * @return string
+     */
+    public function getCoaUuid()
+    {
+        return $this->coaUuid;
     }
 
     /**

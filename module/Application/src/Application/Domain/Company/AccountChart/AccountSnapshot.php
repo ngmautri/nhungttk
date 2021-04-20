@@ -17,7 +17,7 @@ class AccountSnapshot extends AbstractDTO
 
     public $token;
 
-    public $accountNumer;
+    public $accountNumber;
 
     public $accountName;
 
@@ -26,6 +26,8 @@ class AccountSnapshot extends AbstractDTO
     public $accountClass;
 
     public $accountGroup;
+
+    public $accountFeature;
 
     public $parentAccountNumber;
 
@@ -50,6 +52,14 @@ class AccountSnapshot extends AbstractDTO
     public $manualPostingBlocked;
 
     public $allowPosting;
+
+    public $controlFor;
+
+    public $version;
+
+    public $revisionno;
+
+    public $coaUuid;
 
     public $coa;
 
@@ -115,18 +125,18 @@ class AccountSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    public function getAccountNumer()
+    public function getAccountNumber()
     {
-        return $this->accountNumer;
+        return $this->accountNumber;
     }
 
     /**
      *
-     * @param mixed $accountNumer
+     * @param mixed $accountNumber
      */
-    public function setAccountNumer($accountNumer)
+    public function setAccountNumber($accountNumber)
     {
-        $this->accountNumer = $accountNumer;
+        $this->accountNumber = $accountNumber;
     }
 
     /**
@@ -199,6 +209,24 @@ class AccountSnapshot extends AbstractDTO
     public function setAccountGroup($accountGroup)
     {
         $this->accountGroup = $accountGroup;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountFeature()
+    {
+        return $this->accountFeature;
+    }
+
+    /**
+     *
+     * @param mixed $accountFeature
+     */
+    public function setAccountFeature($accountFeature)
+    {
+        $this->accountFeature = $accountFeature;
     }
 
     /**
@@ -415,6 +443,78 @@ class AccountSnapshot extends AbstractDTO
     public function setAllowPosting($allowPosting)
     {
         $this->allowPosting = $allowPosting;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getControlFor()
+    {
+        return $this->controlFor;
+    }
+
+    /**
+     *
+     * @param mixed $controlFor
+     */
+    public function setControlFor($controlFor)
+    {
+        $this->controlFor = $controlFor;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     *
+     * @param mixed $version
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRevisionno()
+    {
+        return $this->revisionno;
+    }
+
+    /**
+     *
+     * @param mixed $revisionno
+     */
+    public function setRevisionno($revisionno)
+    {
+        $this->revisionno = $revisionno;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCoaUuid()
+    {
+        return $this->coaUuid;
+    }
+
+    /**
+     *
+     * @param mixed $coaUuid
+     */
+    public function setCoaUuid($coaUuid)
+    {
+        $this->coaUuid = $coaUuid;
     }
 
     /**

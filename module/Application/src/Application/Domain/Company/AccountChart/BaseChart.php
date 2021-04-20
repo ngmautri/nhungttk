@@ -62,8 +62,8 @@ class BaseChart extends AbstractChart
         $node->setParentId($parent->getId());
 
         $node->setContextObject($snapshot);
-        $node->setId($snapshot->getAccountNumer());
-        $node->setNodeCode($snapshot->getAccountNumer());
+        $node->setId($snapshot->getAccountNumber());
+        $node->setNodeCode($snapshot->getAccountNumber());
         $node->setNodeName($snapshot->getAccountName());
 
         // var_dump($root->isNodeDescendant($node));

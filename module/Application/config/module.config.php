@@ -26,6 +26,8 @@ use Application\Application\Eventbus\HandlerMapperFactory;
 use Application\Application\Eventbus\PsrHandlerResolver;
 use Application\Application\Eventbus\PsrHandlerResolverFactory;
 use Application\Application\Logger\LoggerFactory;
+use Application\Application\Service\AccountChart\AccountChartService;
+use Application\Application\Service\AccountChart\AccountChartServiceFactory;
 use Application\Application\Service\Shared\CommonCollection;
 use Application\Application\Service\Shared\CommonCollectionFactory;
 use Application\Application\Service\Uom\UomGroupService;
@@ -345,8 +347,11 @@ return array(
             "AppLogger" => LoggerFactory::class,
             "AppCache" => CacheFactory::class,
             "RedisCache" => RedisCacheFactory::class,
+
             UomService::class => UomServiceFactory::class,
             UomGroupService::class => UomGroupServiceFactory::class,
+
+            AccountChartService::class => AccountChartServiceFactory::class,
 
             CommonCollection::class => CommonCollectionFactory::class,
 
@@ -415,7 +420,8 @@ return array(
             'Application\Controller\Role' => 'Application\Controller\RoleControllerFactory',
 
             'Application\Controller\Country' => 'Application\Controller\CountryControllerFactory',
-            'Application\Controller\Department' => 'Application\Controller\DepartmentControllerFactory',
+            'Application\Controller\AccountChart' => 'Application\Controller\AccountChartControllerFactory',
+
             'Application\Controller\Currency' => 'Application\Controller\CurrencyControllerFactory',
             'Application\Controller\Uom' => 'Application\Controller\UomControllerFactory',
             'Application\Controller\UomGroup' => 'Application\Controller\UomGroupControllerFactory',

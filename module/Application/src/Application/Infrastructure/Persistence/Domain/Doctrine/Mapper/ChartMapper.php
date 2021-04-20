@@ -112,11 +112,12 @@ class ChartMapper
         // $entity->setId($snapshot->id);
         $entity->setUuid($snapshot->uuid);
         $entity->setToken($snapshot->token);
-        $entity->setAccountNumer($snapshot->accountNumer);
+        $entity->setAccountNumber($snapshot->accountNumber);
         $entity->setAccountName($snapshot->accountName);
         $entity->setAccountType($snapshot->accountType);
         $entity->setAccountClass($snapshot->accountClass);
         $entity->setAccountGroup($snapshot->accountGroup);
+        $entity->setAccountFeature($snapshot->accountFeature);
         $entity->setParentAccountNumber($snapshot->parentAccountNumber);
         $entity->setIsActive($snapshot->isActive);
         $entity->setDescription($snapshot->description);
@@ -127,6 +128,10 @@ class ChartMapper
         $entity->setIsControlAccount($snapshot->isControlAccount);
         $entity->setManualPostingBlocked($snapshot->manualPostingBlocked);
         $entity->setAllowPosting($snapshot->allowPosting);
+        $entity->setControlFor($snapshot->controlFor);
+        $entity->setVersion($snapshot->version);
+        $entity->setRevisionno($snapshot->revisionno);
+        $entity->setCoaUuid($snapshot->coaUuid);
 
         // Mapping Date
         // =====================
@@ -269,11 +274,12 @@ class ChartMapper
         $snapshot->id = $entity->getId();
         $snapshot->uuid = $entity->getUuid();
         $snapshot->token = $entity->getToken();
-        $snapshot->accountNumer = $entity->getAccountNumer();
+        $snapshot->accountNumber = $entity->getAccountNumber();
         $snapshot->accountName = $entity->getAccountName();
         $snapshot->accountType = $entity->getAccountType();
         $snapshot->accountClass = $entity->getAccountClass();
         $snapshot->accountGroup = $entity->getAccountGroup();
+        $snapshot->accountFeature = $entity->getAccountFeature();
         $snapshot->parentAccountNumber = $entity->getParentAccountNumber();
         $snapshot->isActive = $entity->getIsActive();
         $snapshot->description = $entity->getDescription();
@@ -284,6 +290,10 @@ class ChartMapper
         $snapshot->isControlAccount = $entity->getIsControlAccount();
         $snapshot->manualPostingBlocked = $entity->getManualPostingBlocked();
         $snapshot->allowPosting = $entity->getAllowPosting();
+        $snapshot->controlFor = $entity->getControlFor();
+        $snapshot->version = $entity->getVersion();
+        $snapshot->revisionno = $entity->getRevisionno();
+        $snapshot->coaUuid = $entity->getCoaUuid();
 
         // Mapping Date
         // =====================

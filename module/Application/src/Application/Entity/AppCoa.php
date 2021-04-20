@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * AppCoa
  *
- * @ORM\Table(name="app_coa", indexes={@ORM\Index(name="app_coa_FK1_idx", columns={"company_id"}), @ORM\Index(name="app_coa_FK2_idx", columns={"created_by"}), @ORM\Index(name="app_coa_FK3_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="app_coa", indexes={@ORM\Index(name="app_coa_FK1_idx", columns={"company_id"}), @ORM\Index(name="app_coa_FK2_idx", columns={"created_by"}), @ORM\Index(name="app_coa_FK3_idx", columns={"last_change_by"}), @ORM\Index(name="app_coa_FK4_idx", columns={"uuid"})})
  * @ORM\Entity
  */
 class AppCoa

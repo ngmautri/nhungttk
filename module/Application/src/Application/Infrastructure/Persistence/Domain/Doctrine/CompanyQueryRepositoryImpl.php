@@ -7,6 +7,7 @@ use Application\Domain\Company\Collection\AccountChartCollection;
 use Application\Domain\Company\Factory\CompanyFactory;
 use Application\Domain\Contracts\Repository\SqlFilterInterface;
 use Application\Entity\AppCoa;
+use Application\Entity\AppCoaAccount;
 use Application\Entity\NmtApplicationDepartment;
 use Application\Entity\NmtFinPostingPeriod;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
@@ -51,9 +52,9 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
         $entityRoot = CompanyFactory::contructFromDB($snapshot);
 
         Assert::notNull($entityRoot);
-        $entityRoot->setDepartmentCollectionRef($this->createDepartmentCollectionRef($id));
-        $entityRoot->setAccountChartCollectionRef($this->createAccountChartCollectionRef($id));
-        $entityRoot->setPostingPeriodCollectionRef($this->createPostingPeriodCollectionRef($id));
+        $entityRoot->setDepartmentCollectionRef($this->_createDepartmentCollectionRef($id));
+        $entityRoot->setAccountChartCollectionRef($this->_createAccountChartCollectionRef($id));
+        $entityRoot->setPostingPeriodCollectionRef($this->_createPostingPeriodCollectionRef($id));
         return $entityRoot;
     }
 
@@ -87,7 +88,7 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
     }
 
     // ===================================================
-    private function createDepartmentCollectionRef($id)
+    private function _createDepartmentCollectionRef($id)
     {
         return function () use ($id) {
 
@@ -111,7 +112,7 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
         };
     }
 
-    private function createAccountChartCollectionRef($id)
+    private function _createAccountChartCollectionRef($id)
     {
         return function () use ($id) {
 
@@ -132,37 +133,42 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
                 $localSnapshot = ChartMapper::createChartSnapshot($localEnityDoctrine);
                 $chart = ChartFactory::contructFromDB($localSnapshot);
 
-                // Get Account
-                $criteria = array(
-                    "coa" => $localEnityDoctrine->getId()
-                );
-
-                $results1 = $this->doctrineEM->getRepository("\Application\Entity\AppCoaAccount")->findAll($criteria);
-
-                if (count($results1) == 0) {
-                    $collection->add($chart);
-                } else {
-
-                    $accountCollection = new ArrayCollection();
-                    foreach ($results1 as $r1) {
-
-                        /**
-                         *
-                         * @var \Application\Entity\AppCoaAccount $r1 ;
-                         */
-
-                        $accountSnaphot = ChartMapper::createAccountSnapshot($r1);
-                        $accountCollection->add($accountSnaphot);
-                    }
-                    $chart->setAccountCollection($accountCollection);
-                    $collection->add($chart);
-                }
+                $chart->setAccountCollectionRef($this->_createAccountCollectionRef($chart->getId()));
+                $collection->add($chart);
             }
             return $collection;
         };
     }
 
-    private function createPostingPeriodCollectionRef($id)
+    private function _createAccountCollectionRef($id)
+    {
+        return function () use ($id) {
+
+            $criteria = [
+                'coa' => $id
+            ];
+            $results = $this->getDoctrineEM()
+                ->getRepository('\Application\Entity\AppCoaAccount')
+                ->findBy($criteria);
+
+            $collection = new ArrayCollection();
+
+            if (count($results) == 0) {
+                return $collection;
+            }
+
+            foreach ($results as $r) {
+
+                /**@var AppCoaAccount $localEnityDoctrine ;*/
+                $localEnityDoctrine = $r;
+                $localSnapshot = ChartMapper::createAccountSnapshot($localEnityDoctrine);
+                $collection->add($localSnapshot);
+            }
+            return $collection;
+        };
+    }
+
+    private function _createPostingPeriodCollectionRef($id)
     {
         return function () use ($id) {
 

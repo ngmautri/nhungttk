@@ -33,9 +33,10 @@ class CompanyQueryRepository1Test extends PHPUnit_Framework_TestCase
          * @var GenericChart $chart
          */
         $chart = $results->getLazyAccountChartCollection()->first();
-        $root = $chart->createChartTree()->getRoot();
-        echo $chart->getAccountCollection()->count();
 
-        echo $root->display();
+        \var_dump($chart->getLazyAccountCollection()->count());
+
+        // $root = $chart->createChartTree()->getRoot();
+        // echo $root->display();
     }
 }

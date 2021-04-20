@@ -46,11 +46,15 @@ class DefaultAccountChartTree extends AbstractTree
         $this->data[$chartCode] = $node;
         $this->index[][] = $chartCode;
 
+        if ($results == null) {
+            return $this;
+        }
+
         foreach ($results as $row) {
 
             /** @var BaseAccount $row ; */
 
-            $id = $row->getAccountNumer();
+            $id = $row->getAccountNumber();
             $parent_id = $row->getParentAccountNumber();
 
             // convert to Generic Component
@@ -58,8 +62,8 @@ class DefaultAccountChartTree extends AbstractTree
             $node->setContextObject($row);
 
             $node->setId($row->getId());
-            $node->setNodeName($row->getAccountName());
-            $node->setNodeCode($row->getAccountNumer());
+            $node->setNodeName($row->getAccountNumber());
+            $node->setNodeCode($row->getAccountNumber());
             $node->setNodeDescription($row->getRemarks());
 
             if ($parent_id == null) {

@@ -3,7 +3,7 @@ namespace Application\Controller\Contracts;
 
 use Application\Notification;
 use Application\Application\Command\TransactionalCommandHandler;
-use Application\Application\Command\Contracts\CmdHandlerAbstractFactory;
+use Application\Application\Command\Contracts\EntityCmdHandlerAbstractFactory;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Command\Options\CreateMemberCmdOptions;
@@ -374,7 +374,7 @@ abstract class EntityCRUDController extends AbstractGenericController
 
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
-        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
+        $rootEntity = $this->getEntityService()->getRootEntityByTokenId($id, $token, null, $this->getLocale());
 
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
@@ -391,8 +391,6 @@ abstract class EntityCRUDController extends AbstractGenericController
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
-            'localCurrencyId' => $this->getLocalCurrencyId(),
-            'defaultWarehouseId' => $this->getDefautWarehouseId(),
             'companyVO' => $this->getCompanyVO()
         ));
 
@@ -431,7 +429,7 @@ abstract class EntityCRUDController extends AbstractGenericController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'entity' => null,
+                'entityDTO' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -468,7 +466,7 @@ abstract class EntityCRUDController extends AbstractGenericController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'entity' => $cmd->getOutput(),
+                'entityDTO' => $cmd->getOutput(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -520,10 +518,10 @@ abstract class EntityCRUDController extends AbstractGenericController
             // probably this is the first time the form was loaded
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
-            $token = $this->params()->fromQuery('entity_token');
-            $dto = $this->getEntityService()->getRootEntityByTokenId($entity_id, $token);
+            $entity_token = $this->params()->fromQuery('entity_token');
+            $entityDTO = $this->getEntityService()->getRootEntityByTokenId($entity_id, $entity_token);
 
-            if ($dto == null) {
+            if ($entityDTO == null) {
                 return $this->redirect()->toRoute('not_found');
             }
 
@@ -531,9 +529,9 @@ abstract class EntityCRUDController extends AbstractGenericController
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
-                'entity_token' => $token,
-                'entity' => $dto,
-                'version' => $dto->getRevisionNo(),
+                'entity_token' => $entity_token,
+                'entityDTO' => $entityDTO,
+                'version' => $entityDTO->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -550,17 +548,17 @@ abstract class EntityCRUDController extends AbstractGenericController
             // POSTING
             $data = $prg;
 
-            $rootEntityId = $data['entity_id'];
-            $rootEntityToken = $data['entity_token'];
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
             $version = $data['version'];
 
-            $rootEntity = $this->getEntityService()->getRootEntityByTokenId($rootEntityId, $rootEntityToken);
+            $rootEntity = $this->getEntityService()->getRootEntityByTokenId($entity_id, $entity_token);
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new UpdateEntityCmdOptions($this->getCompanyVO(), $rootEntity, $rootEntityId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+            $options = new UpdateEntityCmdOptions($this->getCompanyVO(), $rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
 
             $cmdHandler = $this->getCmdHandlerFactory()->getUpdateHeaderCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
@@ -576,16 +574,14 @@ abstract class EntityCRUDController extends AbstractGenericController
             $viewModel = new ViewModel(array(
                 'errors' => $cmd->getNotification()->getErrors(),
                 'redirectUrl' => null,
-                'entity_id' => $rootEntityId,
-                'entity_token' => $rootEntityToken,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
                 'headerDTO' => $cmd->getOutput(),
                 'version' => $rootEntity->getRevisionNo(), // get current version.
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId(),
                 'companyVO' => $this->getCompanyVO()
             ));
 
@@ -595,7 +591,7 @@ abstract class EntityCRUDController extends AbstractGenericController
 
         $this->flashMessenger()->addMessage($cmd->getNotification()
             ->successMessage(false));
-        $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $rootEntityId, $rootEntityToken);
+        $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         // $this->flashMessenger()->addMessage($redirectUrl);
 
         return $this->redirect()->toUrl($redirectUrl);
@@ -641,9 +637,9 @@ abstract class EntityCRUDController extends AbstractGenericController
                 'entity_token' => null,
                 'target_id' => $target_id,
                 'target_token' => $target_token,
-                'dto' => null,
-                'entityDTO' => $rootEntity->makeHeaderDTO(),
-                'docRevisionNo' => $rootEntity->getRevisionNo(),
+                'memberDTO' => null,
+                'rootDTO' => $rootEntity->makeHeaderDTO(),
+                'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -694,9 +690,9 @@ abstract class EntityCRUDController extends AbstractGenericController
                 'entity_token' => null,
                 'target_id' => $target_id,
                 'target_token' => $target_token,
-                'dto' => $cmd->getOutput(),
-                'entityDTO' => $rootEntity->makeHeaderDTO(),
-                'docRevisionNo' => $rootEntity->getRevisionNo(),
+                'memberDTO' => $cmd->getOutput(),
+                'DTO' => $rootEntity->makeHeaderDTO(),
+                'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -1268,16 +1264,16 @@ abstract class EntityCRUDController extends AbstractGenericController
 
     /**
      *
-     * @param CmdHandlerAbstractFactory $cmdHandlerFactory
+     * @param EntityCmdHandlerAbstractFactory $cmdHandlerFactory
      */
-    public function setCmdHandlerFactory(CmdHandlerAbstractFactory $cmdHandlerFactory)
+    public function setCmdHandlerFactory(EntityCmdHandlerAbstractFactory $cmdHandlerFactory)
     {
         $this->cmdHandlerFactory = $cmdHandlerFactory;
     }
 
     /**
      *
-     * @return \Application\Application\Command\Contracts\CmdHandlerAbstractFactory
+     * @return \Application\Application\Command\Contracts\EntityCmdHandlerAbstractFactory
      */
     public function getCmdHandlerFactory()
     {

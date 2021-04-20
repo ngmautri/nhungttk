@@ -17,7 +17,7 @@ class AbstractAccount extends AbstractEntity
 
     protected $token;
 
-    protected $accountNumer;
+    protected $accountNumber;
 
     protected $accountName;
 
@@ -26,6 +26,8 @@ class AbstractAccount extends AbstractEntity
     protected $accountClass;
 
     protected $accountGroup;
+
+    protected $accountFeature;
 
     protected $parentAccountNumber;
 
@@ -50,6 +52,14 @@ class AbstractAccount extends AbstractEntity
     protected $manualPostingBlocked;
 
     protected $allowPosting;
+
+    protected $controlFor;
+
+    protected $version;
+
+    protected $revisionno;
+
+    protected $coaUuid;
 
     protected $coa;
 
@@ -88,9 +98,9 @@ class AbstractAccount extends AbstractEntity
      *
      * @return mixed
      */
-    public function getAccountNumer()
+    public function getAccountNumber()
     {
-        return $this->accountNumer;
+        return $this->accountNumber;
     }
 
     /**
@@ -127,6 +137,15 @@ class AbstractAccount extends AbstractEntity
     public function getAccountGroup()
     {
         return $this->accountGroup;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountFeature()
+    {
+        return $this->accountFeature;
     }
 
     /**
@@ -241,6 +260,42 @@ class AbstractAccount extends AbstractEntity
      *
      * @return mixed
      */
+    public function getControlFor()
+    {
+        return $this->controlFor;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRevisionno()
+    {
+        return $this->revisionno;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCoaUuid()
+    {
+        return $this->coaUuid;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getCoa()
     {
         return $this->coa;
@@ -293,11 +348,11 @@ class AbstractAccount extends AbstractEntity
 
     /**
      *
-     * @param mixed $accountNumer
+     * @param mixed $accountNumber
      */
-    protected function setAccountNumer($accountNumer)
+    protected function setAccountNumber($accountNumber)
     {
-        $this->accountNumer = $accountNumer;
+        $this->accountNumber = $accountNumber;
     }
 
     /**
@@ -334,6 +389,15 @@ class AbstractAccount extends AbstractEntity
     protected function setAccountGroup($accountGroup)
     {
         $this->accountGroup = $accountGroup;
+    }
+
+    /**
+     *
+     * @param mixed $accountFeature
+     */
+    protected function setAccountFeature($accountFeature)
+    {
+        $this->accountFeature = $accountFeature;
     }
 
     /**
@@ -442,6 +506,42 @@ class AbstractAccount extends AbstractEntity
     protected function setAllowPosting($allowPosting)
     {
         $this->allowPosting = $allowPosting;
+    }
+
+    /**
+     *
+     * @param mixed $controlFor
+     */
+    protected function setControlFor($controlFor)
+    {
+        $this->controlFor = $controlFor;
+    }
+
+    /**
+     *
+     * @param mixed $version
+     */
+    protected function setVersion($version)
+    {
+        $this->version = $version;
+    }
+
+    /**
+     *
+     * @param mixed $revisionno
+     */
+    protected function setRevisionno($revisionno)
+    {
+        $this->revisionno = $revisionno;
+    }
+
+    /**
+     *
+     * @param mixed $coaUuid
+     */
+    protected function setCoaUuid($coaUuid)
+    {
+        $this->coaUuid = $coaUuid;
     }
 
     /**

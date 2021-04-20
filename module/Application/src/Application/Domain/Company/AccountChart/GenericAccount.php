@@ -12,6 +12,16 @@ use Webmozart\Assert\Assert;
 class GenericAccount extends BaseAccount
 {
 
+    public static function constructFromDB(AccountSnapshot $snapshot)
+    {
+        Assert::isInstanceOf($snapshot, AccountSnapshot::class, "AccountSnapshot is required!");
+
+        $instance = new GenericAccount();
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+
+        return $instance;
+    }
+
     public static function createFromSnapshot(GenericChart $rootDoc, AccountSnapshot $snapshot)
     {
         Assert::isInstanceOf($rootDoc, GenericChart::class, "GenericChart required!");

@@ -39,9 +39,8 @@ class CompanyQueryRepositoryTest extends PHPUnit_Framework_TestCase
         $root = $chart->createChartTree()->getRoot();
 
         $snapshot = new BaseAccountSnapshot();
-        $snapshot->setAccountNumer('1113');
-        $snapshot->setAccountName('Cash on Hand USD');
-        $snapshot->setParentAccountNumber('111');
+        $snapshot->setAccountNumber('1112');
+        $snapshot->setAccountName('Cash on Hand LAK');
 
         $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
         $rep = new CompanyQueryRepositoryImpl($doctrineEM);

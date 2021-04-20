@@ -1,7 +1,7 @@
 <?php
 namespace Application\Controller;
 
-use Application\Application\Service\Uom\UomService;
+use Application\Application\Service\AccountChart\AccountChartService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -27,8 +27,8 @@ class AccountChartControllerFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $container->get(UomService::class);
-        $controller->setValueObjectService($sv);
+        $sv = $container->get(AccountChartService::class);
+        $controller->setEntityService($sv);
 
         return $controller;
     }

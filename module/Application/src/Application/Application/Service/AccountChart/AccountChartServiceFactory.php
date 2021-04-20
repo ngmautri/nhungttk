@@ -1,5 +1,5 @@
 <?php
-namespace Application\Application\Service\Uom;
+namespace Application\Application\Service\AccountChart;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;

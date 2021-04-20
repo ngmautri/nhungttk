@@ -6,7 +6,7 @@ namespace Application\Application\Command\Contracts;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-abstract class CmdHandlerAbstractFactory
+abstract class EntityCmdHandlerAbstractFactory
 {
 
     abstract function getCreateEntityCmdHandler();

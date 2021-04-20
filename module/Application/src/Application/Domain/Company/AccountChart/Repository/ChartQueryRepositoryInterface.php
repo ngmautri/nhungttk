@@ -11,7 +11,9 @@ use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
 Interface ChartQueryRepositoryInterface
 {
 
-    public function getById($id, CompanySqlFilterInterface $filter);
+    public function getById($id);
 
-    public function getByUUID($uuid, CompanySqlFilterInterface $filter);
+    public function getByUUID($uuid);
+
+    public function getList(CompanySqlFilterInterface $filter);
 }

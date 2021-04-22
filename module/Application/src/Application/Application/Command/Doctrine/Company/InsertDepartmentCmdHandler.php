@@ -47,6 +47,7 @@ class InsertDepartmentCmdHandler extends AbstractCommandHandler
 
             $snapshot->setCompany($options->getCompanyId());
             $snapshot->setCreatedBy($options->getUserId());
+            $this->setOutput($snapshot);
 
             $builder = new DepartmentTree();
             $builder->setDoctrineEM($cmd->getDoctrineEM());

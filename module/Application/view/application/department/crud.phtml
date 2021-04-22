@@ -1,23 +1,12 @@
 <?php
 use Application\Application\Helper\ErrorMessage;
-use Application\Application\Helper\OptionList;
 use Application\Application\Service\Department\Tree\DepartmentNode;
 
 /**
  *
  * @var DepartmentNode $departmentNode ;
  */
-
 $error_msg = ErrorMessage::showErrorMessage($errors);
-
-$currentParentName = null;
-if ($departmentNode !== null) {
-    $currentParentName = $departmentNode->getParent()->getNodeName();
-}
-
-$current_depmartment_option = OptionList::createDeptOption($departmentForOption, $currentParentName);
-$depmartment_option = OptionList::createDeptOption($departmentForOption, $parentName);
-
 ?>
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
@@ -30,8 +19,7 @@ $depmartment_option = OptionList::createDeptOption($departmentForOption, $parent
         <?php
         // ==================
         echo $error_msg;
-        // ==================
-        echo $form;
+        echo $form->renderForView($action, $this);
         ?>
 
    </div>

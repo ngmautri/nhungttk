@@ -264,6 +264,13 @@ class DepartmentController extends AbstractGenericController
 
         $prg = $this->prg($form_action, true);
 
+        $form = new DepartmentForm("dept_create_form");
+        $form->setHydrator(new Reflection());
+        $form->setRedirectUrl('/application/department/list2');
+        $departmentOptions = $root->display(new PureDepartmentWithRootForOptionFormatter());
+        $form->setDepartmentOptions($departmentOptions);
+        $form->refresh();
+
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
             return $prg;
@@ -272,18 +279,9 @@ class DepartmentController extends AbstractGenericController
             // probably this is the first time the form was loaded
 
             $parentName = $this->params()->fromQuery('p');
-
-            $departmentSnapshot = new DepartmentSnapshot();
-            $departmentSnapshot->setParentName($parentName);
-
-            $form = new DepartmentForm("Dept_create_form");
-            $form->setHydrator(new Reflection());
-            $departmentOptions = $root->display(new PureDepartmentWithRootForOptionFormatter());
-            $form->setDepartmentOptions($departmentOptions);
-            $form->refresh();
-            $form->bind($departmentSnapshot);
-
-            // var_dump($form->get("parentName")->getValue());
+            $snapshot = new DepartmentSnapshot();
+            $snapshot->setParentName($parentName);
+            $form->bind($snapshot);
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
@@ -300,8 +298,7 @@ class DepartmentController extends AbstractGenericController
                 'localCurrencyId' => $this->getLocalCurrencyId(),
                 'defaultWarehouseId' => $this->getDefautWarehouseId(),
                 'companyVO' => $this->getCompanyVO(),
-                'departmentForOption' => $departmentOptions,
-                'form' => $form->render()
+                'form' => $form
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -325,25 +322,24 @@ class DepartmentController extends AbstractGenericController
         }
 
         $notification = $cmd->getNotification();
+
+        $form->bind($cmd->getOutput());
+
         if ($notification->hasErrors()) {
 
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'departmentName' => null,
                 'departmentNode' => null,
-
                 'parentName' => null,
-
                 'redirectUrl' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
                 'sharedCollection' => $this->getSharedCollection(),
-                'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId(),
                 'companyVO' => $this->getCompanyVO(),
-                'departmentForOption' => $root->display(new DepartmentWithRootForOptionFormatter())
+                'form' => $form
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;

@@ -4,8 +4,10 @@ namespace Application\Form\Helper;
 use Zend\Form\Element;
 use Zend\Form\Element\Select;
 use Zend\Form\View\Helper\FormButton;
+use Zend\Form\View\Helper\FormCheckbox;
 use Zend\Form\View\Helper\FormHidden;
 use Zend\Form\View\Helper\FormInput;
+use Zend\Form\View\Helper\FormRadio;
 use Zend\Form\View\Helper\FormSelect;
 use Zend\Form\View\Helper\FormSubmit;
 use Zend\Form\View\Helper\FormTextarea;
@@ -87,6 +89,13 @@ class FormHelperFactory
 
             case "button":
                 $helper = new FormButton();
+                return $helper->render($element);
+
+            case "radio":
+                $helper = new FormRadio();
+                return $helper->render($element);
+            case "checkbox":
+                $helper = new FormCheckbox();
                 return $helper->render($element);
         }
 

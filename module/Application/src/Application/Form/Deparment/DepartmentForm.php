@@ -3,6 +3,7 @@ namespace Application\Form\Deparment;
 
 use Application\Form\Contracts\GenericForm;
 use Application\Form\Helper\OptionsHelperFactory;
+use Zend\Form\Element\Checkbox;
 use Zend\Form\Element\Select;
 use Zend\Form\Element\Textarea;
 
@@ -19,7 +20,7 @@ class DepartmentForm extends GenericForm
     public function __construct($id = null)
     {
         parent::__construct($id);
-        // Set POST method for this form
+        $this->id = $id;
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
         $this->setAction('/application/department/create');
@@ -52,6 +53,7 @@ class DepartmentForm extends GenericForm
                 ]
             ]
         ]);
+
         $this->add([
             'type' => 'text',
             'name' => 'departmentCode',
@@ -66,18 +68,25 @@ class DepartmentForm extends GenericForm
                 ]
             ]
         ]);
+
         $this->add([
-            'type' => 'text',
-            'name' => 'isActive',
+            'type' => Checkbox::class,
+            'name' => 'Is active',
             'attributes' => [
                 'id' => 'isActive',
                 'class' => "form-control input-sm"
             ],
             'options' => [
-                'label' => 'isActive',
+                'label' => '1',
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
-                ]
+                ],
+                'use_hidden_element' => true,
+                'checked_value' => '1',
+                'unchecked_value' => '0'
+            ],
+            'attributes' => [
+                'value' => '1'
             ]
         ]);
         $this->add([

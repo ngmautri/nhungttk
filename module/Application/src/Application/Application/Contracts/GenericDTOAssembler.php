@@ -74,4 +74,128 @@ class GenericDTOAssembler
             print \sprintf("\n \$snapshot->%s = \$entity->get%s();", $propertyName, ucfirst($propertyName));
         }
     }
+
+    /**
+     *
+     * @param string $className
+     */
+    public static function createFormElements1($className)
+    {
+        Assert::notNull($className);
+
+        $entity = new $className();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            $e = '$e= new Element();' . "\n";
+            $e = $e . \sprintf('$e->setName("%s");' . "\n", $propertyName);
+            $e = $e . \sprintf('$e->setAttributes([\'id\' => \'%s\',\'class\' => \'form-control input-sm\']);' . "\n", $propertyName);
+            $e = $e . \sprintf('$e->setOptions([\'label\' => \'%s\']);' . "\n", $propertyName);
+            $e = $e . '$this->add($e);' . "\n\n";
+
+            print $e;
+        }
+    }
+
+    public static function createFormElements($className)
+    {
+        Assert::notNull($className);
+
+        $entity = new $className();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            $a = sprintf("[
+               'type' => 'text',
+               'name' => '%s',
+               'attributes' => [
+                   'id' => '%s',
+                   'class' => 'form-control'
+               ],
+               'options' => [
+                   'label' => '%s'
+               ]
+           ]", $propertyName, $propertyName, $propertyName);
+
+            $e = \sprintf('$this->add(%s);' . "\n", $a);
+            echo $e;
+        }
+    }
+
+    public static function createFormElementsFor($className, $properties)
+    {
+        Assert::notNull($className);
+
+        $entity = new $className();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (in_array($propertyName, $properties)) {
+
+                $a = sprintf("[
+                   'type' => 'text',
+                   'name' => '%s',
+                   'attributes' => [
+                       'id' => '%s',
+                       'class' => 'form-control'
+                   ],
+                   'options' => [
+                       'label' => '%s'
+                   ]
+                ]", $propertyName, $propertyName, $propertyName);
+
+                $e = \sprintf('$this->add(%s);' . "\n", $a);
+                echo $e;
+            }
+        }
+    }
+
+    public static function createFormElementsExclude($className, $properties)
+    {
+        Assert::notNull($className);
+
+        $entity = new $className();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (! in_array($propertyName, $properties)) {
+
+                $a = sprintf("[
+                   'type' => 'text',
+                   'name' => '%s',
+                   'attributes' => [
+                       'id' => '%s',
+                       'class' => \"form-control input-sm\"
+                   ],
+                   'options' => [
+                       'label' => '%s',
+                       'label_attributes' => [
+                            'class' => \"control-label col-sm-2\"
+                        ]
+                   ]
+                ]", $propertyName, $propertyName, $propertyName);
+
+                $e = \sprintf('$this->add(%s);' . "\n", $a);
+                echo $e;
+            }
+        }
+    }
 }

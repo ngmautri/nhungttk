@@ -1,0 +1,113 @@
+<?php
+use Application\Application\Helper\ErrorMessage;
+use Application\Application\Helper\OptionList;
+use Application\Application\Service\Department\Tree\DepartmentNode;
+use Application\Domain\Contracts\FormActions;
+
+/**
+ *
+ * @var DepartmentNode $departmentNode ;
+ */
+
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
+$currentParentName = null;
+if ($departmentNode !== null) {
+    $currentParentName = $departmentNode->getParent()->getNodeName();
+}
+
+$current_depmartment_option = OptionList::createDeptOption($departmentForOption, $currentParentName);
+$depmartment_option = OptionList::createDeptOption($departmentForOption, $parentName);
+
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">Create New Department</a>
+      </li>
+   </ul>
+   <div id="general">
+
+   <?php
+// ==================
+echo $error_msg;
+// ==================
+?>
+
+   <?php
+echo $form;
+?>
+
+
+		<form class="form-horizontal" action="<?php
+
+echo $form_action;
+?>" method="post" enctype="multipart/form-data">
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2" for="inputTag">Department Name</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="departmentName" value="<?php
+            echo (! $departmentNode == null) ? $departmentNode->getNodeName() : "";
+            ?>">
+            </div>
+         </div>
+
+
+
+
+
+    <?php
+
+    if ($action == FormActions::MOVE) :
+        ?>
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2 input-sm" for="inputTag">Current Parent Deparment: </label>
+            <div class="col-sm-3">
+               <select disabled name="parentName" id="parent_id" class="chosen-select">
+<?php
+        // ================
+        echo $current_depmartment_option;
+        // ================
+        ?>
+       </select>
+            </div>
+         </div>
+ <?php endif;
+
+    ?>
+
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2 input-sm" for="inputTag">Parent Deparment: </label>
+            <div class="col-sm-3">
+               <select name="parentName" id="parent_id" class="chosen-select">
+<?php
+// ================
+echo $depmartment_option;
+// ================
+?>
+       </select>
+            </div>
+         </div>
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2" for="inputDescription">remarks</label>
+            <div class="col-sm-3">
+               <textarea class="form-control input-sm" id="inputDescription" placeholder="" rows="2" name="remarks"></textarea>
+            </div>
+         </div>
+         <div class="form-group margin-bottom">
+            <label class="control-label col-sm-2" for="inputTag">Status</label>
+            <div class="col-sm-3">
+               <select class="form-control input-sm chosen-select" name="parent">
+                  <option selected="selected" value="Activated">Activated</option>
+                  <option value="Deactivated">Deactivated</option>
+               </select>
+            </div>
+         </div>
+         <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+               <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+         </div>
+      </form>
+   </div>
+</div>

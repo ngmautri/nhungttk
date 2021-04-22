@@ -4,6 +4,7 @@
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===================================
  */
+use Application\Domain\Contracts\FormActions;
 use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
@@ -50,6 +51,9 @@ $canAcceptAmendment = false;
 
 $transactionStatus = "";
 $alert = "info";
+
+$upload_btn = "";
+$rows_upload_url = "/procure/po /upload-rows";
 
 if (! $headerDTO == null) {
 
@@ -119,6 +123,11 @@ if (! $headerDTO == null) {
     $pmtTermId = $headerDTO->getPmtTerm();
     $currencyId = $headerDTO->getDocCurrency();
     $incotermId = $headerDTO->getIncoterm();
+
+    $upload_url = sprintf('/procure/po/upload-rows?target_id=%s&target_token=%s', $headerDTO->getId(), $headerDTO->getToken());
+    $format = '<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="%s">
+  &nbsp;Upload <i class="fa fa-upload" aria-hidden="true"></i>&nbsp;</a>&nbsp;';
+    $upload_btn = sprintf($format, $upload_url);
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -270,6 +279,11 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
     // ================================
     echo $error_msg;
     // ===============================
+
+    if ($action == FormActions::UPLOAD) :
+        include (ROOT . '/module/Procure/view/procure/procure_rows_upload.php');
+    endif;
+
     ?>
 
 
@@ -320,11 +334,29 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                                 if ($headerDTO->getCurrentState() == "draftPo") :
                                     echo "selected"; endif ?>
 
+
+
+
+
+
+
+
+
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+
+
+
+
+
+
+
+
+
 
                                  value="finalPo">Final</option>
                               </select>
@@ -487,6 +519,13 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                                  &nbsp;&nbsp;
                                  <span class="caret"></span>
                               </button>
+
+                               <a>
+<?php
+
+echo $upload_btn;
+?>
+                              </a>
                               <a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="<?php
 
                             echo $this->translate("Refresh");

@@ -13,12 +13,16 @@ use Application\Application\Service\Department\Tree\DepartmentTree;
 use Application\Application\Service\Department\Tree\Output\DepartmentJsTreeFormatter;
 use Application\Application\Service\Department\Tree\Output\DepartmentWithOneLevelForOptionFormatter;
 use Application\Application\Service\Department\Tree\Output\DepartmentWithRootForOptionFormatter;
+use Application\Application\Service\Department\Tree\Output\PureDepartmentWithRootForOptionFormatter;
 use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Tree\Output\ForSelectListFormatter;
 use Application\Domain\Util\Tree\Output\OrnigrammFormatter;
+use Application\Form\Deparment\DepartmentForm;
 use Zend\Escaper\Escaper;
 use Zend\Http\Response;
+use Zend\Stdlib\Hydrator\Reflection;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -269,6 +273,20 @@ class DepartmentController extends AbstractGenericController
 
             $parentName = $this->params()->fromQuery('p');
 
+            $departmentSnapshot = new DepartmentSnapshot();
+            $departmentSnapshot->setParentName($parentName);
+            $departmentSnapshot->setDepartmentName("dfdssdfdgdg");
+            $departmentSnapshot->setRemarks("dfdsf");
+
+            $form = new DepartmentForm("Dept_create_form");
+            $form->setHydrator(new Reflection());
+            $departmentOptions = $root->display(new PureDepartmentWithRootForOptionFormatter());
+            $form->setDepartmentOptions($departmentOptions);
+            $form->refresh();
+            $form->bind($departmentSnapshot);
+
+            // var_dump($form->get("parentName")->getValue());
+
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'departmentName' => null,
@@ -284,7 +302,8 @@ class DepartmentController extends AbstractGenericController
                 'localCurrencyId' => $this->getLocalCurrencyId(),
                 'defaultWarehouseId' => $this->getDefautWarehouseId(),
                 'companyVO' => $this->getCompanyVO(),
-                'departmentForOption' => $root->display(new DepartmentWithRootForOptionFormatter())
+                'departmentForOption' => $departmentOptions,
+                'form' => $form->render()
             ));
 
             $viewModel->setTemplate($viewTemplete);

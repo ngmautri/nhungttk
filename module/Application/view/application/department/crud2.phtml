@@ -1,0 +1,148 @@
+<?php
+use Application\Application\Helper\ErrorMessage;
+use Application\Application\Helper\OptionList;
+use Application\Application\Service\Department\Tree\DepartmentNode;
+
+/**
+ *
+ * @var DepartmentNode $departmentNode ;
+ */
+
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
+$currentParentName = null;
+if ($departmentNode !== null) {
+    $currentParentName = $departmentNode->getParent()->getNodeName();
+}
+
+$current_depmartment_option = OptionList::createDeptOption($departmentForOption, $currentParentName);
+$depmartment_option = OptionList::createDeptOption($departmentForOption, $parentName);
+
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">Create New Department</a>
+      </li>
+   </ul>
+   <div id="general">
+
+   <?php
+// ==================
+echo $error_msg;
+// ==================
+?>
+
+
+
+         <div class="form-group margin-bottom">
+         <label class="control-label col-sm-2" for="inputTag">Department Name</label>
+         <div class="col-sm-3"></div>
+      </div>
+      <div class="form-group margin-bottom">
+         <label class="control-label col-sm-2 input-sm" for="inputTag">Current Parent Deparment: </label>
+         <div class="col-sm-3"></div>
+      </div>
+      <div class="form-group margin-bottom">
+         <label class="control-label col-sm-2 input-sm" for="inputTag">Parent Deparment: </label>
+         <div class="col-sm-3"></div>
+      </div>
+      <div class="form-group margin-bottom">
+         <label class="control-label col-sm-2" for="inputDescription">remarks</label>
+         <div class="col-sm-3"></div>
+      </div>
+      <div class="form-group margin-bottom">
+         <label class="control-label col-sm-2" for="inputTag">Status</label>
+         <div class="col-sm-3"></div>
+      </div>
+      <div class="form-group"></div>
+   </div>
+</div>
+
+
+<form action="" method="post" name="contact-form2" class="form-horizontal" id="contact-form2">
+   <div class="form-group margin-bottom">
+      <label for="departmentId">Department Name</label>
+      <div class="col-sm-3">
+         <input type="hidden" name="departmentId" value="">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label for="language">Department Name</label>
+      <div class="col-sm-3">
+         <select name="language">
+            <option value="0">French</option>
+            <option value="1">English</option>
+            <option value="2">Japanese</option>
+            <option value="3">Chinese</option>
+         </select>
+      </div>
+   </div>
+
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="nodeId">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="nodeId" id="nodeId" class="form-control&#x20;input-sm" value="">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="nodeName">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="nodeName" id="nodeName" class="form-control&#x20;input-sm" value="">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="nodeParentId">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="nodeParentId" id="nodeParentId" class="form-control&#x20;input-sm" value="">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="status">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="status" id="status" class="form-control&#x20;input-sm" value="">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="remarks">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="remarks" id="remarks" class="form-control&#x20;input-sm" value="">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="departmentName">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="departmentName" id="departmentName" class="form-control&#x20;input-sm" value="112">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="departmentCode">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="departmentCode" id="departmentCode" class="form-control&#x20;input-sm" value="ok">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="isActive">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="isActive" id="isActive" class="form-control&#x20;input-sm" value="">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="departmentNameLocal">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="departmentNameLocal" id="departmentNameLocal" class="form-control&#x20;input-sm" value="">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="parentName">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="parentName" id="parentName" class="form-control&#x20;input-sm" value="">
+      </div>
+   </div>
+   <div class="form-group margin-bottom">
+      <label class="control-label&#x20;col-sm-2" for="parentCode">Department Name</label>
+      <div class="col-sm-3">
+         <input type="text" name="parentCode" id="parentCode" class="form-control&#x20;input-sm" value="parent">
+      </div>
+   </div>
+</form>

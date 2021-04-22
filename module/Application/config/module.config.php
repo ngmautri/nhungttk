@@ -114,6 +114,13 @@ return array(
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
             array(
+                'label' => 'Chart of Account',
+                'route' => 'application/default',
+                'controller' => 'account-chart',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
+            array(
                 'label' => 'Department',
                 'route' => 'application/default',
                 'controller' => 'department',

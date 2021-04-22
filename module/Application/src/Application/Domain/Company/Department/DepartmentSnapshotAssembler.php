@@ -1,6 +1,7 @@
 <?php
 namespace Application\Domain\Company\Department;
 
+use Application\Application\Contracts\GenericDTOAssembler;
 use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
@@ -22,7 +23,9 @@ class DepartmentSnapshotAssembler
         "lastChangeOn",
         "lastChangeBy",
         "sysNumber",
-        "company"
+        "company",
+        "pathDepth",
+        "path"
     );
 
     private static $defaultIncludedFields = array(
@@ -80,5 +83,14 @@ class DepartmentSnapshotAssembler
     public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
     {
         return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+    }
+
+    // =====
+    public static function createFormElementsExclude($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultExcludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsExclude($className, $properties);
     }
 }

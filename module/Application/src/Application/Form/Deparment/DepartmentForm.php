@@ -22,6 +22,7 @@ class DepartmentForm extends GenericForm
         // Set POST method for this form
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
+        $this->setAction('/application/department/create');
     }
 
     public function setAction($url)

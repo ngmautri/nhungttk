@@ -37,7 +37,7 @@ class OptionsHelperFactory
         foreach ($list as $l) {
 
             $tmp1 = [
-                'value' => $l->getDepartmentCode(),
+                'value' => $l->getDepartmentName(),
                 'label' => $l->getDepartmentShowName()
             ];
 

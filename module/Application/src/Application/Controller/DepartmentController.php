@@ -275,8 +275,6 @@ class DepartmentController extends AbstractGenericController
 
             $departmentSnapshot = new DepartmentSnapshot();
             $departmentSnapshot->setParentName($parentName);
-            $departmentSnapshot->setDepartmentName("dfdssdfdgdg");
-            $departmentSnapshot->setRemarks("dfdsf");
 
             $form = new DepartmentForm("Dept_create_form");
             $form->setHydrator(new Reflection());

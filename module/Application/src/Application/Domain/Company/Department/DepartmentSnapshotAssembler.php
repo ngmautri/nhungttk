@@ -30,6 +30,9 @@ class DepartmentSnapshotAssembler
 
     private static $defaultIncludedFields = array(
         "isActive",
+        "departmentName",
+        "departmentCode",
+        "parentName",
         "remarks"
     );
 
@@ -85,12 +88,38 @@ class DepartmentSnapshotAssembler
         return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
     }
 
-    // =====
+    // ==================================
+    // ===== FOR FORM
+    // ==================================
     public static function createFormElementsExclude($className, $properties = null)
     {
         if ($properties == null) {
             $properties = self::$defaultExcludedFields;
         }
         return GenericDTOAssembler::createFormElementsExclude($className, $properties);
+    }
+
+    public static function createFormElementsFor($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFor($className, $properties);
+    }
+
+    public static function createFormElementsFunctionExclude($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultExcludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionExclude($className, $properties);
+    }
+
+    public static function createFormElementsFunctionFor($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionFor($className, $properties);
     }
 }

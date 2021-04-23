@@ -145,20 +145,7 @@ class GenericDTOAssembler
 
             if (in_array($propertyName, $properties)) {
 
-                $a = sprintf("[
-                   'type' => 'text',
-                   'name' => '%s',
-                   'attributes' => [
-                       'id' => '%s',
-                       'class' => 'form-control'
-                   ],
-                   'options' => [
-                       'label' => '%s'
-                   ]
-                ]", $propertyName, $propertyName, $propertyName);
-
-                $e = \sprintf('$this->add(%s);' . "\n", $a);
-                echo $e;
+                echo self::_createFormElement($propertyName);
             }
         }
     }
@@ -178,23 +165,86 @@ class GenericDTOAssembler
 
             if (! in_array($propertyName, $properties)) {
 
-                $a = sprintf("[
+                echo self::_createFormElement($propertyName);
+            }
+        }
+    }
+
+    private static function _createFormElement($propertyName)
+    {
+        $a = sprintf("[
                    'type' => 'text',
                    'name' => '%s',
                    'attributes' => [
                        'id' => '%s',
-                       'class' => \"form-control input-sm\"
+                       'class' => \"form-control input-sm\",
+                       'required' => FALSE,
                    ],
                    'options' => [
-                       'label' => '%s',
+                       'label' => Translator::translate('%s'),
                        'label_attributes' => [
                             'class' => \"control-label col-sm-2\"
                         ]
                    ]
                 ]", $propertyName, $propertyName, $propertyName);
 
-                $e = \sprintf('$this->add(%s);' . "\n", $a);
-                echo $e;
+        $tmp = "//======================================\n";
+        $e = \sprintf("\n%s //Form Element for {%s}\n" . ' %s $this->add(%s);' . "\n", $tmp, $propertyName, $tmp, $a);
+        return $e;
+    }
+
+    public static function createFormElementsFunctionExclude($className, $properties)
+    {
+        Assert::notNull($className);
+
+        $entity = new $className();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (! in_array($propertyName, $properties)) {
+
+                $fName = sprintf('get%s()', ucfirst($propertyName));
+                $fContent = sprintf('return $this->get("%s");', $propertyName);
+
+                $f = <<<EOD
+public function $fName {
+    $fContent\n
+}\n
+EOD;
+                echo $f;
+            }
+        }
+    }
+
+    public static function createFormElementsFunctionFor($className, $properties)
+    {
+        Assert::notNull($className);
+
+        $entity = new $className();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (in_array($propertyName, $properties)) {
+
+                $fName = sprintf('get%s()', ucfirst($propertyName));
+                $fContent = sprintf('return $this->get("%s");', $propertyName);
+
+                $f = <<<EOD
+public function $fName {
+    $fContent\n
+}\n
+EOD;
+                echo $f;
             }
         }
     }

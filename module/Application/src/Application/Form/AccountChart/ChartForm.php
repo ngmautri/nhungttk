@@ -1,21 +1,17 @@
 <?php
-namespace Application\Form\Deparment;
+namespace Application\Form\AccountChart;
 
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
-use Application\Form\Helper\OptionsHelperFactory;
 use Zend\Form\Element\Checkbox;
-use Zend\Form\Element\Select;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class DepartmentForm extends GenericForm
+class ChartForm extends GenericForm
 {
-
-    private $departmentOptions;
 
     public function __construct($id = null)
     {
@@ -23,7 +19,7 @@ class DepartmentForm extends GenericForm
         $this->id = $id;
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
-        $this->setAction('/application/department/create');
+        $this->setAction('/application/account-chart/create');
     }
 
     public function setAction($url)
@@ -40,19 +36,57 @@ class DepartmentForm extends GenericForm
     protected function addElements()
     {
         // ======================================
-        // Form Element for {remarks}
+        // Form Element for {coaCode}
+        // ======================================
+        $this->add([
+            'type' => 'text',
+            'name' => 'coaCode',
+            'attributes' => [
+                'id' => 'coaCode',
+                'class' => "form-control input-sm",
+                'required' => FALSE
+            ],
+            'options' => [
+                'label' => Translator::translate('Chart Code'),
+                'label_attributes' => [
+                    'class' => "control-label col-sm-2"
+                ]
+            ]
+        ]);
+
+        // ======================================
+        // Form Element for {coaName}
+        // ======================================
+        $this->add([
+            'type' => 'text',
+            'name' => 'coaName',
+            'attributes' => [
+                'id' => 'coaName',
+                'class' => "form-control input-sm",
+                'required' => FALSE
+            ],
+            'options' => [
+                'label' => Translator::translate('Chart Name'),
+                'label_attributes' => [
+                    'class' => "control-label col-sm-2"
+                ]
+            ]
+        ]);
+
+        // ======================================
+        // Form Element for {description}
         // ======================================
         $this->add([
             'type' => 'textarea',
-            'name' => 'remarks',
+            'name' => 'description',
             'attributes' => [
-                'id' => 'remarks',
+                'id' => 'description',
                 'class' => "form-control input-sm",
                 'required' => FALSE,
                 'rows' => 4
             ],
             'options' => [
-                'label' => Translator::translate('remarks'),
+                'label' => Translator::translate('description'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]
@@ -60,18 +94,18 @@ class DepartmentForm extends GenericForm
         ]);
 
         // ======================================
-        // Form Element for {departmentName}
+        // Form Element for {validFrom}
         // ======================================
         $this->add([
             'type' => 'text',
-            'name' => 'departmentName',
+            'name' => 'validFrom',
             'attributes' => [
-                'id' => 'departmentName',
+                'id' => 'validFrom',
                 'class' => "form-control input-sm",
-                'required' => true
+                'required' => FALSE
             ],
             'options' => [
-                'label' => Translator::translate('departmentName'),
+                'label' => Translator::translate('Valid from'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]
@@ -79,18 +113,18 @@ class DepartmentForm extends GenericForm
         ]);
 
         // ======================================
-        // Form Element for {departmentCode}
+        // Form Element for {validTo}
         // ======================================
         $this->add([
             'type' => 'text',
-            'name' => 'departmentCode',
+            'name' => 'validTo',
             'attributes' => [
-                'id' => 'departmentCode',
+                'id' => 'validTo',
                 'class' => "form-control input-sm",
-                'required' => true
+                'required' => FALSE
             ],
             'options' => [
-                'label' => Translator::translate('departmentCode'),
+                'label' => Translator::translate('Valid To'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]
@@ -120,65 +154,24 @@ class DepartmentForm extends GenericForm
                 'value' => '1'
             ]
         ]);
-
-        // select
-        $select = new Select();
-        $select->setName("parentName");
-        $select->setAttributes([
-            'id' => 'parentName',
-            'class' => "form-control input-sm chosen-select",
-            'required' => true
-        ]);
-
-        $select->setOptions([
-            'label' => 'Parent Name',
-            'label_attributes' => [
-                'class' => "control-label col-sm-2"
-            ]
-        ]);
-
-        // $select->setEmptyOption('Select parent department');
-        $o = OptionsHelperFactory::createDepartmentOptions1($this->getDepartmentOptions());
-
-        $select->setValueOptions($o);
-        // $select->setDisableInArrayValidator(false);
-        $this->add($select);
     }
 
-    /**
-     *
-     * @return mixed
-     */
-    public function getDepartmentOptions()
+    // ======================================
+    // Function to get Form Elements
+    // ======================================
+    public function getCoaCode()
     {
-        return $this->departmentOptions;
+        return $this->get("coaCode");
     }
 
-    /**
-     *
-     * @param mixed $departmentOptions
-     */
-    public function setDepartmentOptions($departmentOptions)
+    public function getCoaName()
     {
-        // \var_dump($departmentOptions);
-        $this->departmentOptions = $departmentOptions;
+        return $this->get("coaName");
     }
 
-    // Auto Generated
-    // ========================================================
-    public function getRemarks()
+    public function getDescription()
     {
-        return $this->get("remarks");
-    }
-
-    public function getDepartmentName()
-    {
-        return $this->get("departmentName");
-    }
-
-    public function getDepartmentCode()
-    {
-        return $this->get("departmentCode");
+        return $this->get("description");
     }
 
     public function getIsActive()
@@ -186,8 +179,13 @@ class DepartmentForm extends GenericForm
         return $this->get("isActive");
     }
 
-    public function getParentName()
+    public function getValidFrom()
     {
-        return $this->get("parentName");
+        return $this->get("validFrom");
+    }
+
+    public function getValidTo()
+    {
+        return $this->get("validTo");
     }
 }

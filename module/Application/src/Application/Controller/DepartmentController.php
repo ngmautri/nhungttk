@@ -269,6 +269,7 @@ class DepartmentController extends AbstractGenericController
         $form->setRedirectUrl('/application/department/list2');
         $departmentOptions = $root->display(new PureDepartmentWithRootForOptionFormatter());
         $form->setDepartmentOptions($departmentOptions);
+        $form->setFormAction($action);
         $form->refresh();
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {

@@ -5,6 +5,7 @@ use Zend\Form\Element;
 use Zend\Form\Element\Select;
 use Zend\Form\View\Helper\FormButton;
 use Zend\Form\View\Helper\FormCheckbox;
+use Zend\Form\View\Helper\FormDate;
 use Zend\Form\View\Helper\FormHidden;
 use Zend\Form\View\Helper\FormInput;
 use Zend\Form\View\Helper\FormRadio;
@@ -37,7 +38,13 @@ class FormHelperFactory
         throw new \InvalidArgumentException("Can not create Form helper");
     }
 
-    public static function render($element)
+    /**
+     *
+     * @param Element $element
+     * @throws \InvalidArgumentException
+     * @return NULL|string
+     */
+    public static function render(Element $element)
     {
         if (! $element instanceof Element) {
             return null;
@@ -45,35 +52,15 @@ class FormHelperFactory
 
         $type = $element->getAttribute('type');
         switch ($type) {
+
             case "text":
                 $helper = new FormInput();
                 return $helper->render($element);
 
             case "select":
                 $helper = new FormSelect();
-
-                /**
-                 *
-                 * @var Select $element ;
-                 */
-
-                $options = $element->getValueOptions();
-                $options1 = [];
-                $value = $element->getValue();
-
-                if (count($options) > 0) {
-                    foreach ($options as $o) {
-
-                        if ($o['value'] == $value) {
-                            $o['select'] = true;
-                            $options1[] = $o;
-                        }
-                        $options1[] = $o;
-                    }
-                }
-
-                $element->setValueOptions($options1);
-                return $helper->render($element);
+                $newElement = self::_updateValueOptions($element);
+                return $helper->render($newElement);
 
             case "hidden":
                 $helper = new FormHidden();
@@ -94,11 +81,46 @@ class FormHelperFactory
             case "radio":
                 $helper = new FormRadio();
                 return $helper->render($element);
+
             case "checkbox":
                 $helper = new FormCheckbox();
                 return $helper->render($element);
+
+            case "date":
+                $helper = new FormDate();
+                return $helper->render($element);
         }
 
-        throw new \InvalidArgumentException("Can not create Form helper");
+        throw new \InvalidArgumentException("Can not create Form helper for rendering");
+    }
+
+    /**
+     *
+     * @param Select $element
+     * @return \Zend\Form\Element\Select
+     */
+    private static function _updateValueOptions(Select $element)
+    {
+        /**
+         *
+         * @var Select $element ;
+         */
+        $options = $element->getValueOptions();
+        $options1 = [];
+        $value = $element->getValue();
+
+        if (count($options) > 0) {
+            foreach ($options as $o) {
+
+                if ($o['value'] == $value) {
+                    $o['select'] = true;
+                    $options1[] = $o;
+                }
+                $options1[] = $o;
+            }
+        }
+
+        $element->setValueOptions($options1);
+        return $element;
     }
 }

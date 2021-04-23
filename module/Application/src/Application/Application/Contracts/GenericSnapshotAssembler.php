@@ -181,6 +181,22 @@ class GenericSnapshotAssembler
         }
     }
 
+    public static function printAllSnapshotPropsInArrayFormat($className)
+    {
+        Assert::notNull($className);
+        $reflectionClass = new \ReflectionClass($className);
+        $itemProperites = $reflectionClass->getProperties();
+
+        $result = "[%s]";
+        $tmp = '';
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            $tmp = $tmp . "\n\"" . $propertyName . "\",";
+        }
+        echo \sprintf($result, $tmp);
+    }
+
     public static function createSnapshotProps($className, $baseClass)
     {
         Assert::notNull($className);

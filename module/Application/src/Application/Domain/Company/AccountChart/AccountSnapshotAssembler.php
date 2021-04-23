@@ -1,6 +1,7 @@
 <?php
 namespace Application\Domain\Company\AccountChart;
 
+use Application\Application\Contracts\GenericDTOAssembler;
 use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
@@ -12,23 +13,36 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 class AccountSnapshotAssembler
 {
 
-    private static $defaultExcludedFields = array(
+    private static $defaultExcludedFields = [
         "id",
         "uuid",
         "token",
-        "checksum",
-        "createdBy",
         "createdOn",
         "lastChangeOn",
-        "lastChangeBy",
-        "sysNumber",
-        "company"
-    );
+        "version",
+        "revisionno",
+        "coaUuid",
+        "coa",
+        "createdBy",
+        "lastChangeBy"
+    ];
 
-    private static $defaultIncludedFields = array(
+    private static $defaultIncludedFields = [
+        "accountNumber",
+        "accountName",
+        "accountType",
+        "parentAccountNumber",
         "isActive",
-        "remarks"
-    );
+        "description",
+        "remarks",
+        "allowReconciliation",
+        "hasCostCenter",
+        "isClearingAccount",
+        "isControlAccount",
+        "manualPostingBlocked",
+        "allowPosting",
+        "controlFor"
+    ];
 
     public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)
     {
@@ -80,5 +94,40 @@ class AccountSnapshotAssembler
     public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
     {
         return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+    }
+
+    // ==================================
+    // ===== FOR FORM
+    // ==================================
+    public static function createFormElementsExclude($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultExcludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsExclude($className, $properties);
+    }
+
+    public static function createFormElementsFor($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFor($className, $properties);
+    }
+
+    public static function createFormElementsFunctionExclude($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultExcludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionExclude($className, $properties);
+    }
+
+    public static function createFormElementsFunctionFor($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionFor($className, $properties);
     }
 }

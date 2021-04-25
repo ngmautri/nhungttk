@@ -1122,6 +1122,9 @@ echo $hoverMode;
                     newRow = obj.newRow,
                     type = obj.type,
                     rowData = obj.rowData;
+
+
+
                  if (type == 'add') {
                     var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
                     if (valid) {
@@ -1141,7 +1144,7 @@ echo $hoverMode;
 
                         }
                     }
-                }
+                  }
               }
 
               if (addList.length || updateList.length || deleteList.length) {

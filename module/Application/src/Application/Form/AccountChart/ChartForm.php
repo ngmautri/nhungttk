@@ -83,7 +83,7 @@ class ChartForm extends GenericForm
                 'id' => 'description',
                 'class' => "form-control input-sm",
                 'required' => FALSE,
-                'rows' => 4
+                'rows' => 3
             ],
             'options' => [
                 'label' => Translator::translate('description'),

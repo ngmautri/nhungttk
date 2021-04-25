@@ -1,9 +1,8 @@
 <?php
-namespace InventoryTest\Item\Search;
+namespace ApplicationTest\AccountChart\Service;
 
+use Application\Application\Service\AccountChart\AccountChartService;
 use Doctrine\ORM\EntityManager;
-use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImpl;
-use Inventory\Application\Service\Search\ZendSearch\Item\Filter\ItemQueryFilter;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
@@ -22,10 +21,16 @@ class ItemSearchQueryTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            $searcher = new ItemSearchQueryImpl();
-            $queryFilter = new ItemQueryFilter();
-            $results = $searcher->queryForAutoCompletion("820004043", $queryFilter);
-            var_dump(($results));
+            /**
+             *
+             * @var AccountChartService $service ;
+             */
+            $service = Bootstrap::getServiceManager()->get(AccountChartService::class);
+
+            $result = $service->getRootEntityById(13);
+            var_dump($result->createChartTree()
+                ->getRoot()
+                ->display());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

@@ -1,9 +1,12 @@
 <?php
 use Application\Application\Helper\ErrorMessage;
 use Application\Application\Service\Department\Tree\DepartmentNode;
+use Application\Form\Contracts\GenericForm;
+use Application\Form\Deparment\DepartmentFormRender;
 
 /**
  *
+ * @var GenericForm $form ;
  * @var DepartmentNode $departmentNode ;
  */
 $error_msg = ErrorMessage::showErrorMessage($errors);
@@ -19,7 +22,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
         <?php
         // ==================
         echo $error_msg;
-        echo $form->renderForView($action, $this);
+        echo $form->renderForView($this, new DepartmentFormRender());
         ?>
 
    </div>

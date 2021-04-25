@@ -28,22 +28,27 @@ class ChartFormRender extends AbstractFormRender
         $labelHelper = new FormLabel();
 
         $e = $form->getCoaCode();
+
+        $fs_title = \sprintf("<strong>CHART OF ACCOUNT: %s</strong>", \strtoupper($e->getValue()));
+        $this->append($this->openFieldSetTag("chart_header", $fs_title)); //
+
         $e1 = $form->getIsActive();
         $otherHtml = $this->drawElementOnly($e1, $labelHelper, $viewRender, 'col-sm-1', false, '<span>Is Acvice</span>');
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-1', true, $otherHtml);
+        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-2', true, $otherHtml);
         $this->append($htmlPart);
 
         $e = $form->getCoaName();
         $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3');
 
         $this->append($htmlPart);
+        $this->append($this->drawSeparator());
 
         $e = $form->getValidFrom();
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3');
-        $this->append($htmlPart);
 
-        $e = $form->getValidTo();
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3');
+        $e1 = $form->getValidTo();
+        $htmlPart1 = $this->drawElement($e1, $labelHelper, $viewRender, 'col-sm-3');
+        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3', true, $htmlPart1);
+
         $this->append($htmlPart);
 
         $this->append($this->drawSeparator());
@@ -55,6 +60,8 @@ class ChartFormRender extends AbstractFormRender
         $this->append($this->drawSeparator());
 
         $this->append($this->addButtons($form, $viewRender));
+
+        $this->append($this->closeFieldSetTag()); //
 
         return $this->getOutput();
     }

@@ -31,7 +31,7 @@ class DefaultAccountChartTree extends AbstractTree
      */
     public function initTree()
     {
-        $results = $this->getChart()->getAccountCollection();
+        $results = $this->getChart()->getLazyAccountCollection();
         $chartCode = $this->getChart()->getCoaCode();
         $chartName = $this->getChart()->getCoaName();
 

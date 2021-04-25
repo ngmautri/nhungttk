@@ -2,14 +2,14 @@
 namespace Application\Domain\Company\Collection;
 
 use Application\Domain\Company\Department\BaseDepartment;
-use Doctrine\Common\Collections\ArrayCollection;
+use Application\Domain\Util\Collection\GenericCollection;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class DepartmentCollection extends ArrayCollection
+class DepartmentCollection extends GenericCollection
 {
 
     public function isUnique(BaseDepartment $deparment)

@@ -2,13 +2,23 @@
 namespace Application\Application\Service\AccountChart;
 
 use Application\Application\Service\AccountChart\Contracts\AccountChartServiceInterface;
+use Application\Infrastructure\Persistence\Domain\Doctrine\ChartQueryRepositoryImpl;
 use Application\Service\AbstractService;
 
 class AccountChartService extends AbstractService implements AccountChartServiceInterface
 {
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Application\Service\Contracts\EntityServiceInterface::getRootEntityById()
+     */
     public function getRootEntityById($id, $locale = 'en_EN')
-    {}
+    {
+        $rep = new ChartQueryRepositoryImpl($this->getDoctrineEM());
+        $result = $rep->getById($id);
+        return $result;
+    }
 
     public function getRootEntityDetailByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {}

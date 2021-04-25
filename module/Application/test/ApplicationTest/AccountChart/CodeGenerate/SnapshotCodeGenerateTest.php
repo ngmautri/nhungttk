@@ -2,7 +2,7 @@
 namespace ApplicationTest\Department\CodeGenerate;
 
 use Application\Application\Contracts\GenericSnapshotAssembler;
-use Application\Entity\AppCoaAccount;
+use Application\Domain\Company\AccountChart\ChartSnapshot;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
@@ -22,7 +22,7 @@ class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
             // $result = GenericSnapshotAssembler::findMissingProps(AppCoa::class, AbstractChart::class);
             // $result = GenericSnapshotAssembler::findMissingProps(AppCoaAccount::class, AbstractAccount::class);
 
-            $result = GenericSnapshotAssembler::createAllSnapshotProps(AppCoaAccount::class);
+            $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(ChartSnapshot::class);
             // $result = GenericSnapshotAssembler::createSnapshotProps(UomGroup::class, BaseUomGroup::class);
 
             // \var_dump(($result));

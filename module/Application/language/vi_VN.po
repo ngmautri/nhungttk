@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-07 12:16+0700\n"
-"PO-Revision-Date: 2021-03-07 16:16+0700\n"
+"POT-Creation-Date: 2021-04-23 21:34+0700\n"
+"PO-Revision-Date: 2021-04-23 21:40+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -44,11 +44,11 @@ msgstr ""
 #: Inventory/view/inventory/transfer-create-wizard.php:27
 #: Payment/view/payment/outgoing-pmt-wizard.php:24
 #: Payment/view/payment/outgoing-pmt-wizard.php:28
-#: Procure/src/Procure/Application/Helper/Toolbar.php:26
-#: Procure/src/Procure/Application/Helper/Toolbar.php:73
-#: Procure/src/Procure/Application/Helper/Toolbar.php:76
-#: Procure/src/Procure/Application/Helper/Toolbar.php:134
-#: Procure/src/Procure/Application/Helper/Toolbar.php:169
+#: Procure/src/Procure/Application/Helper/Toolbar.php:25
+#: Procure/src/Procure/Application/Helper/Toolbar.php:72
+#: Procure/src/Procure/Application/Helper/Toolbar.php:75
+#: Procure/src/Procure/Application/Helper/Toolbar.php:136
+#: Procure/src/Procure/Application/Helper/Toolbar.php:171
 #: Procure/view/procure/ap-create-wizard.php:68
 #: Procure/view/procure/ap-create-wizard.php:85
 #: Procure/view/procure/create-wizard.php:60
@@ -74,10 +74,10 @@ msgstr "Kiểm tra & Ghi sổ"
 #: Inventory/src/Inventory/Application/Helper/Toolbar.php:59
 #: Inventory/src/Inventory/Application/Helper/Toolbar.php:103
 #: Inventory/src/Inventory/Application/Helper/Toolbar.php:137
-#: Procure/src/Procure/Application/Helper/Toolbar.php:29
-#: Procure/src/Procure/Application/Helper/Toolbar.php:82
-#: Procure/src/Procure/Application/Helper/Toolbar.php:136
-#: Procure/src/Procure/Application/Helper/Toolbar.php:172
+#: Procure/src/Procure/Application/Helper/Toolbar.php:28
+#: Procure/src/Procure/Application/Helper/Toolbar.php:81
+#: Procure/src/Procure/Application/Helper/Toolbar.php:138
+#: Procure/src/Procure/Application/Helper/Toolbar.php:174
 #: Finance/view/finance/v-invoice/copy/Copy of review.phtml:79
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:81
 #: Finance/view/finance/v-invoice/reverse.phtml:92
@@ -113,7 +113,7 @@ msgstr "Ghi sổ"
 #: Inventory/src/Inventory/Application/Helper/Toolbar.php:62
 #: Inventory/src/Inventory/Application/Helper/Toolbar.php:106
 #: Inventory/src/Inventory/Application/Helper/Toolbar.php:140
-#: Procure/src/Procure/Application/Helper/Toolbar.php:32
+#: Procure/src/Procure/Application/Helper/Toolbar.php:31
 #: Finance/view/finance/v-invoice/show.phtml:57
 #: Inventory/view/inventory/gi/show.phtml:41
 #: Inventory/view/inventory/transfer/show.phtml:41
@@ -128,19 +128,19 @@ msgstr ""
 #: Inventory/src/Inventory/Application/Helper/Toolbar.php:67
 #: Inventory/src/Inventory/Application/Helper/Toolbar.php:109
 #: Inventory/src/Inventory/Application/Helper/Toolbar.php:143
-#: Procure/src/Procure/Application/Helper/Toolbar.php:35
+#: Procure/src/Procure/Application/Helper/Toolbar.php:34
 msgid "Goods Return"
 msgstr ""
 
 #: Application/src/Application/Application/Helper/Toolbar.php:37
 #: Application/src/Application/Application/Helper/Toolbar.php:84
-#: Procure/src/Procure/Application/Helper/Toolbar.php:38
-#: Procure/src/Procure/Application/Helper/Toolbar.php:88
+#: Procure/src/Procure/Application/Helper/Toolbar.php:37
+#: Procure/src/Procure/Application/Helper/Toolbar.php:87
 msgid "Pay"
 msgstr ""
 
 #: Application/src/Application/Application/Helper/Toolbar.php:75
-#: Procure/src/Procure/Application/Helper/Toolbar.php:79
+#: Procure/src/Procure/Application/Helper/Toolbar.php:78
 #: Procure/view/procure/gr/review-v1.phtml:377
 #: Procure/view/procure/po/copy/review-v1.phtml:416
 #, fuzzy
@@ -149,7 +149,7 @@ msgid "Amendment"
 msgstr "Sửa"
 
 #: Application/src/Application/Application/Helper/Toolbar.php:81
-#: Procure/src/Procure/Application/Helper/Toolbar.php:85
+#: Procure/src/Procure/Application/Helper/Toolbar.php:84
 #: Procure/view/procure/gr/review-v1.phtml:336
 #: Procure/view/procure/po/copy/review-v1.phtml:375
 #, fuzzy
@@ -159,14 +159,14 @@ msgstr "Vị trí Công Việc"
 
 #: Application/src/Application/Application/Helper/Toolbar.php:87
 #: Application/view/inventory_menu.php:61
-#: Procure/src/Procure/Application/Helper/Toolbar.php:91
+#: Procure/src/Procure/Application/Helper/Toolbar.php:90
 #, fuzzy
 #| msgid "New Goods Receipt"
 msgid "Goods Receipt"
 msgstr "Nhập hàng"
 
 #: Application/src/Application/Application/Helper/Toolbar.php:90
-#: Procure/src/Procure/Application/Helper/Toolbar.php:94
+#: Procure/src/Procure/Application/Helper/Toolbar.php:93
 #, fuzzy
 #| msgid "AP Invoice has no line"
 msgid "A/P Invoice"
@@ -257,9 +257,220 @@ msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 msgid "Show"
 msgstr "Xem"
 
-#: Application/src/Application/Domain/Shared/Person/PersonName.php:35
-msgid "Length of code must be max.150 character"
+#: Application/src/Application/Domain/Shared/Person/Gender.php:27
+#, fuzzy
+#| msgid "Incoterm is not found!"
+msgid "Gender not set!"
+msgstr "Incoterm Object không tìm thấy!"
+
+#: Application/src/Application/Domain/Shared/Person/Gender.php:29
+#, fuzzy
+#| msgid "Date is not valid!"
+msgid "Gender in not valid"
+msgstr "Ngày không hợp lệ!"
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:25
+msgid "First name empty"
 msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:31
+msgid "First name has invalid character"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:34
+msgid "Middle name has invalid character"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:39
+msgid "Last name has invalid character"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:42
+msgid "First name too long (max.30 character)"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:43
+msgid "Middle name too long (max.30 character)"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:44
+msgid "Last name too long (max.30 character)"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:49
+#: Finance/view/finance/account/add.phtml:54
+#: Finance/view/finance/account/list.phtml:144
+msgid "Account Number"
+msgstr "Số Tài khoản"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:68
+msgid "Account Name"
+msgstr "Tên Tài khoản"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:87
+#: Finance/view/finance/account/list.phtml:145
+msgid "Account Type"
+msgstr "Loại tài khoản"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:106
+msgid "Parent Account Number"
+msgstr "Số tài khoản mẹ"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:125
+#, fuzzy
+#| msgid "Active"
+msgid "isActive"
+msgstr "hoạt động"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:145
+#: Application/view/application/pmt-method/crud.phtml:124
+#: Finance/view/finance/account/list.phtml:146
+#: HR/view/hr/leave-reason/add.phtml:80 HR/view/hr/position/add.phtml:86
+#: HR/view/hr/position/edit.phtml:93 HR/view/hr/position/show.phtml:90
+#: HR/view/hr/salary/edit.phtml:104
+#: Inventory/view/inventory/item-group/list.phtml:48
+#: Inventory/view/inventory/stock/list.phtml:48
+msgid "Description"
+msgstr "Chi tiết"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:164
+#: Application/src/Application/Form/Deparment/DepartmentForm.php:55
+#, fuzzy
+#| msgid "Remarks"
+msgid "remarks"
+msgstr "Ghi chú"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:183
+msgid "allowReconciliation"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:202
+#, fuzzy
+#| msgid "Issue for Cost Center"
+msgid "hasCostCenter"
+msgstr "Xuất dùng cho bô phận"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:221
+msgid "isClearingAccount"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:240
+#, fuzzy
+#| msgid "Chart of Accounts"
+msgid "isControlAccount"
+msgstr "Hệ thống tài khoản"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:259
+msgid "manualPostingBlocked"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:278
+#, fuzzy
+#| msgid "Posting"
+msgid "allowPosting"
+msgstr "Hạch toán"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:297
+#, fuzzy
+msgid "controlFor"
+msgstr "Kiểm soát"
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:50
+msgid "Chart Code"
+msgstr "Mã hệ thống tài khoản"
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:69
+msgid "Chart Name"
+msgstr "Tên hệ thống tài khoản"
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:89
+msgid "description"
+msgstr "Chi tiết"
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:108
+#: HR/view/hr/salary/edit.phtml:90
+msgid "Valid from"
+msgstr "Áp dụng từ"
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:127
+#: HR/view/hr/employee-contract/list1.phtml:31 HR/view/hr/salary/list1.phtml:41
+#: HR/view/hr/salary/simulate.phtml:37
+msgid "Valid To"
+msgstr "Áp dụng đến"
+
+#: Application/src/Application/Form/Deparment/DepartmentForm.php:74
+msgid "departmentName"
+msgstr "Tên phòng ban"
+
+#: Application/src/Application/Form/Deparment/DepartmentForm.php:93
+msgid "departmentCode"
+msgstr "Mã phòng ban"
+
+#: Application/src/Application/Form/Render/AbstractFormRender.php:192
+#: Application/src/Application/Form/Render/AbstractFormRender.php:206
+#: Application/view/application/incoterm/crud.phtml:110
+#: Application/view/application/payment-term/crud.phtml:117
+#: Application/view/application/pmt-method/crud.phtml:139
+#: Finance/view/finance/posting-period/add.phtml:129
+#: HR/view/hr/employee-contract/add.phtml:224
+#: HR/view/hr/employee-contract/amend.phtml:242
+#: HR/view/hr/employee-contract/terminate.phtml:242
+#: HR/view/hr/leave-reason/add.phtml:95 HR/view/hr/position/add.phtml:101
+#: HR/view/hr/position/edit.phtml:108 HR/view/hr/salary/edit.phtml:121
+#: Inventory/view/inventory/association-item/crud-v1.phtml:212
+#: Inventory/view/inventory/association-item/crud.phtml:205
+#: Inventory/view/inventory/similar-item/crud.phtml:245
+#: Inventory/view/inventory/warehouse/crud.phtml:245
+#: Inventory/view/inventory/warehouse/crud2.phtml:218
+#: Procure/view/procure/ap/crudRow.phtml:541
+#: Procure/view/procure/gr/crudRow.phtml:315
+#: Procure/view/procure/po-row/add-row.phtml:366
+#: Procure/view/procure/po/crudPORow.phtml:426
+#: Procure/view/procure/po/crudRow.phtml:458
+#: Procure/view/procure/pr-row-attachment/upload.phtml:161
+#: Procure/view/procure/pr-row/copy/edit.phtml:267
+#: Procure/view/procure/pr-row/edit.phtml:266
+#: Procure/view/procure/pr/crudRow.phtml:386
+#: Procure/view/procure/qr/crudRow.phtml:479
+msgid "Save"
+msgstr "Ghi"
+
+#: Application/src/Application/Form/Render/AbstractFormRender.php:199
+#: Application/view/application/incoterm/crud.phtml:113
+#: Application/view/application/payment-term/crud.phtml:120
+#: Application/view/application/pmt-method/crud.phtml:142
+#: HR/view/hr/employee-contract/add.phtml:227
+#: HR/view/hr/employee-contract/amend.phtml:245
+#: HR/view/hr/employee-contract/show.phtml:51
+#: HR/view/hr/employee-contract/terminate.phtml:245
+#: HR/view/hr/leave-reason/add.phtml:98 HR/view/hr/position/add.phtml:104
+#: HR/view/hr/position/edit.phtml:111 HR/view/hr/salary/assign.phtml:102
+#: HR/view/hr/salary/edit.phtml:123 HR/view/hr/salary/show.phtml:241
+#: Inventory/view/inventory/association-item/crud-v1.phtml:222
+#: Inventory/view/inventory/association-item/crud.phtml:215
+#: Inventory/view/inventory/association/crud-v1.phtml:589
+#: Inventory/view/inventory/gi/copy/crudHeader.phtml:22
+#: Inventory/view/inventory/gi/copy/crudHeader.phtml:40
+#: Inventory/view/inventory/gi/crudHeader.phtml:24
+#: Inventory/view/inventory/gr/crudHeader.phtml:23
+#: Inventory/view/inventory/item-opening-balance/crudHeader.phtml:23
+#: Inventory/view/inventory/item/crud-logistic.phtml:649
+#: Inventory/view/inventory/item/crud-v1.phtml:72
+#: Inventory/view/inventory/item/crud-v1.phtml:79
+#: Inventory/view/inventory/item/crud-v1.phtml:89
+#: Inventory/view/inventory/similar-item/crud.phtml:248
+#: Inventory/view/inventory/transfer-wh/crudHeader.phtml:23
+#: Inventory/view/inventory/warehouse/crud.phtml:248
+#: Inventory/view/inventory/warehouse/crud2.phtml:221
+#: Procure/view/procure/ap/crudRow.phtml:551
+#: Procure/view/procure/gr/crudRow.phtml:318
+#: Procure/view/procure/po-row/add-row.phtml:369
+#: Procure/view/procure/po/crudPORow.phtml:436
+#: Procure/view/procure/po/crudRow.phtml:468
+#: Procure/view/procure/pr/crudRow.phtml:396
+#: Procure/view/procure/qr/crudRow.phtml:489
+msgid "Cancel"
+msgstr "Thoát"
 
 #: Application/src/Application/Service/IncotermService.php:27
 msgid "Incoterm is not found!"
@@ -392,7 +603,7 @@ msgstr ""
 
 #: Application/view/finance_menu.php:37
 msgid "Chart of Accounts"
-msgstr ""
+msgstr "Hệ thống tài khoản"
 
 #: Application/view/finance_menu.php:46
 #: Finance/view/finance/posting-period/list.phtml:5
@@ -542,62 +753,70 @@ msgid "User Management"
 msgstr "Quản lý người dùng"
 
 #: Application/view/setting_menu.php:13
+#: Application/view/application/department/Copy of list2.phtml:11
 #: Application/view/application/department/list.phtml:4
+#: Application/view/application/department/list2.phtml:12
 #: HR/view/hr/employee/list.phtml:50 HR/view/hr/employee/list.phtml:53
 msgid "Department"
-msgstr "Phòng ban"
+msgstr ""
 
-#: Application/view/setting_menu.php:21
+#: Application/view/setting_menu.php:20
+#, fuzzy
+#| msgid "Chart of Accounts"
+msgid "Chart of accounts"
+msgstr "Hệ thống tài khoản"
+
+#: Application/view/setting_menu.php:28
 msgid "Access Control List (ACL)"
 msgstr "Phân quyền (ACL)"
 
-#: Application/view/setting_menu.php:28
+#: Application/view/setting_menu.php:35
 msgid "Workflow Management"
 msgstr "Quản lý quy trình"
 
-#: Application/view/setting_menu.php:50
+#: Application/view/setting_menu.php:57
 msgid "Backup Database"
 msgstr "Sao Lưu dữ liệu"
 
-#: Application/view/setting_menu.php:57
+#: Application/view/setting_menu.php:64
 msgid "Clear cache"
 msgstr ""
 
-#: Application/view/setting_menu.php:67
+#: Application/view/setting_menu.php:74
 msgid "Update Search Index"
 msgstr "Cập nhật danh mục tìm kiếm"
 
-#: Application/view/setting_menu.php:76
+#: Application/view/setting_menu.php:83
 #, fuzzy
 #| msgid "Update Search Index"
 msgid "Update Item Index"
 msgstr "Cập nhật danh mục tìm kiếm"
 
-#: Application/view/setting_menu.php:84
+#: Application/view/setting_menu.php:91
 #, fuzzy
 #| msgid "Update Search Index"
 msgid "Update PO Index"
 msgstr "Cập nhật danh mục tìm kiếm"
 
-#: Application/view/setting_menu.php:91
+#: Application/view/setting_menu.php:98
 #, fuzzy
 #| msgid "Update Search Index"
 msgid "Update A/P Index"
 msgstr "Cập nhật danh mục tìm kiếm"
 
-#: Application/view/setting_menu.php:100
+#: Application/view/setting_menu.php:107
 msgid "Console"
 msgstr ""
 
-#: Application/view/setting_menu.php:107
+#: Application/view/setting_menu.php:114
 msgid "API"
 msgstr ""
 
-#: Application/view/setting_menu.php:116
+#: Application/view/setting_menu.php:123
 msgid "Check Attachment"
 msgstr ""
 
-#: Application/view/setting_menu.php:124
+#: Application/view/setting_menu.php:131
 msgid "System Information"
 msgstr "Thông tin hệ thống"
 
@@ -827,6 +1046,25 @@ msgstr "Nếu không có Hóa đơn, nhấn vào"
 #: Procure/view/procure/gr-create-wizard.php:35
 msgid "here"
 msgstr "đây"
+
+#: HR/src/HR/Domain/Employee/Validator/DefaultEmployeeValidator.php:44
+#, fuzzy
+#| msgid "Employee Code"
+msgid "Employee code exits"
+msgstr "Mã nhân viên"
+
+#: HR/src/HR/Domain/Employee/Validator/DefaultIndividualValidator.php:40
+#, fuzzy
+#| msgid "Employee Code"
+msgid "Company not exits."
+msgstr "Mã nhân viên"
+
+#: HR/src/HR/Domain/Employee/Validator/DefaultIndividualValidator.php:51
+#: HR/src/HR/Domain/Employee/Validator/DefaultIndividualValidator.php:60
+#, fuzzy
+#| msgid "Invalid Argument! Incoterm Object not found!"
+msgid "User is not identified for this transaction"
+msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 
 #: HR/view/hr/salary-calculator/calculator-wizard.php:7
 #: HR/view/hr/salary-calculator/calculator-wizard.php:11
@@ -1345,8 +1583,8 @@ msgstr "Đơn vị tiền tệ"
 
 #: Inventory/src/Inventory/Domain/Transaction/GenericTrx.php:248
 #: Inventory/src/Inventory/Domain/Transaction/GenericTrx.php:373
-#: Procure/src/Procure/Domain/AccountPayable/GenericAP.php:303
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:274
+#: Procure/src/Procure/Domain/AccountPayable/GenericAP.php:342
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:318
 #, php-format
 msgid "Manual posting is not allowed on this document type! %s"
 msgstr ""
@@ -2246,12 +2484,13 @@ msgstr "Thanh toán"
 msgid "Payment Header"
 msgstr ""
 
-#: Procure/src/Procure/Application/Helper/Toolbar.php:70
-#: Procure/src/Procure/Application/Helper/Toolbar.php:166
+#: Procure/src/Procure/Application/Helper/Toolbar.php:69
+#: Procure/src/Procure/Application/Helper/Toolbar.php:131
+#: Procure/src/Procure/Application/Helper/Toolbar.php:168
 msgid "Clone"
 msgstr ""
 
-#: Procure/src/Procure/Application/Helper/Toolbar.php:132
+#: Procure/src/Procure/Application/Helper/Toolbar.php:134
 #, fuzzy
 #| msgid "Created Date"
 msgid "Create PO"
@@ -2300,7 +2539,7 @@ msgstr "Ngày tạo"
 #: Procure/view/procure/ap-report/dto_list_ajax.phtml:60
 #: Procure/view/procure/ap-report/dto_list_declare.phtml:60
 #: Procure/view/procure/ap/dto_list.phtml:56
-#: Procure/view/procure/ap/review-v1.phtml:579
+#: Procure/view/procure/ap/review-v1.phtml:578
 #: Procure/view/procure/gr/dto_list.phtml:56
 #: Procure/view/procure/gr/review-v1.phtml:625
 #: Procure/view/procure/po-report/dto_list_ajax.phtml:61
@@ -2308,7 +2547,7 @@ msgstr "Ngày tạo"
 #: Procure/view/procure/po/blank.phtml:598
 #: Procure/view/procure/po/copy/review-v1.phtml:702
 #: Procure/view/procure/po/dto_list.phtml:56
-#: Procure/view/procure/po/review-v1.phtml:465
+#: Procure/view/procure/po/review-v1.phtml:497
 #: Procure/view/procure/po/view-v1.phtml:547
 #: Procure/view/procure/pr-report/dto_list.phtml:64
 #: Procure/view/procure/pr/dto_list.phtml:58
@@ -2336,13 +2575,13 @@ msgstr "Xem"
 msgid "GR object is not found!"
 msgstr ""
 
-#: Procure/src/Procure/Domain/AccountPayable/GenericAP.php:308
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:279
+#: Procure/src/Procure/Domain/AccountPayable/GenericAP.php:347
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:323
 #, php-format
 msgid "Document is already posted/closed or being amended! %s"
 msgstr ""
 
-#: Procure/src/Procure/Domain/AccountPayable/GenericAP.php:356
+#: Procure/src/Procure/Domain/AccountPayable/GenericAP.php:395
 #, fuzzy, php-format
 #| msgid "Outgoing payment will be posted!"
 msgid "Document is already reversed! %s"
@@ -2379,28 +2618,30 @@ msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 msgid "Payment term is required!. "
 msgstr "Incoterm Object không tìm thấy!"
 
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:324
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:368
 #, fuzzy, php-format
 #| msgid "Outgoing payment will be posted!"
 msgid "Docuemnt is already reversed! %s"
 msgstr "Thanh toán sẽ được ghi sổ!"
 
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:329
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:373
 #, php-format
 msgid "Manual reserval is not allowed on this document type! %s"
 msgstr ""
 
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:334
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:378
 #, fuzzy, php-format
 #| msgid "Document is incomplete!"
 msgid "Document is not posted yet! %s"
 msgstr "Chứng từ chưa hoàn thiện!"
 
 #: Procure/src/Procure/Infrastructure/Doctrine/GRQueryRepositoryImpl.php:35
+#: Procure/src/Procure/Infrastructure/Persistence/Doctrine/Doctrine/GRQueryRepositoryImpl.php:35
 msgid "Could not create GR document. Document Id is empty"
 msgstr ""
 
 #: Procure/src/Procure/Infrastructure/Doctrine/GRQueryRepositoryImpl.php:49
+#: Procure/src/Procure/Infrastructure/Persistence/Doctrine/Doctrine/GRQueryRepositoryImpl.php:49
 msgid "Could not create GR Document with #%"
 msgstr ""
 
@@ -2892,7 +3133,7 @@ msgstr "Ngày Hóa Đơn không hợp lệ!"
 #: Procure/view/procure/po/blank.phtml:243
 #: Procure/view/procure/po/copy/review-v1.phtml:229
 #: Procure/view/procure/po/copy/review.phtml:67
-#: Procure/view/procure/po/review-v1.phtml:161
+#: Procure/view/procure/po/review-v1.phtml:170
 #: Procure/view/procure/po/view-v1.phtml:242
 #: Procure/view/procure/po/view.phtml:54
 #: Procure/view/procure/qr/review.phtml:201
@@ -2974,13 +3215,13 @@ msgstr ""
 #: Inventory/view/inventory/transfer/review.phtml:188
 #: Inventory/view/inventory/transfer/show.phtml:152
 #: Procure/view/procure/ap/crudHeader.phtml:258
-#: Procure/view/procure/ap/crudRow.phtml:329
+#: Procure/view/procure/ap/crudRow.phtml:336
 #: Procure/view/procure/ap/review-v1.phtml:475
 #: Procure/view/procure/ap/review.phtml:450
 #: Procure/view/procure/pr-row/add.phtml:349
 #: Procure/view/procure/pr-row/crud.phtml:368
 #: Procure/view/procure/pr/add.phtml:117 Procure/view/procure/pr/crud.phtml:187
-#: Procure/view/procure/pr/crudRow.phtml:336
+#: Procure/view/procure/pr/crudRow.phtml:343
 #: Procure/view/procure/pr/show.phtml:143
 #: Procure/view/procure/pr/view.phtml:143
 #: Procure/view/procure/qr/crudHeader.phtml:280
@@ -3015,14 +3256,14 @@ msgstr "Kho"
 #: Inventory/view/inventory/trx-report/in-out-onhand.phtml:54
 #: Inventory/view/inventory/trx-report/row-status.phtml:91
 #: Procure/view/procure/ap/crudHeader.phtml:263
-#: Procure/view/procure/ap/crudRow.phtml:334
-#: Procure/view/procure/ap/crudRow.phtml:479
+#: Procure/view/procure/ap/crudRow.phtml:341
+#: Procure/view/procure/ap/crudRow.phtml:486
 #: Procure/view/procure/ap/review-v1.phtml:480
 #: Procure/view/procure/ap/review.phtml:455
 #: Procure/view/procure/pr-row/crud.phtml:372
-#: Procure/view/procure/pr/crudRow.phtml:341
+#: Procure/view/procure/pr/crudRow.phtml:348
 #: Procure/view/procure/qr/crudHeader.phtml:285
-#: Procure/view/procure/qr/crudRow.phtml:419
+#: Procure/view/procure/qr/crudRow.phtml:424
 #: Procure/view/procure/qr/review.phtml:536
 msgid "..."
 msgstr ""
@@ -3061,11 +3302,11 @@ msgid "---"
 msgstr ""
 
 #: Procure/view/procure/pr/_header1.php:115
-#: Procure/view/procure/ap/review-v1.phtml:571
+#: Procure/view/procure/ap/review-v1.phtml:570
 #: Procure/view/procure/gr/review-v1.phtml:617
 #: Procure/view/procure/po/blank.phtml:590
 #: Procure/view/procure/po/copy/review-v1.phtml:694
-#: Procure/view/procure/po/review-v1.phtml:457
+#: Procure/view/procure/po/review-v1.phtml:489
 #: Procure/view/procure/po/view-v1.phtml:539
 #, fuzzy
 #| msgid "Contract Date"
@@ -3099,6 +3340,18 @@ msgstr "Ngày nhận hàng không hợp lệ!"
 #: User/src/User/Service/UserService.php:107
 msgid "Goods Issue Date is not correct or empty!"
 msgstr "Ngày xuất hàng không hợp lệ!"
+
+#: Application/view/application/account-chart/list.phtml:5
+#, fuzzy
+#| msgid "Account Number"
+msgid "Account Chart"
+msgstr "Số Tài khoản"
+
+#: Application/view/application/account-chart/list.phtml:16
+#, fuzzy
+#| msgid "Created Date"
+msgid "Create New"
+msgstr "Ngày tạo"
 
 #: Application/view/application/company/edit.phtml:32
 #: Application/view/application/company/show.phtml:32
@@ -3163,10 +3416,100 @@ msgstr ""
 msgid "Action"
 msgstr "Hành động"
 
-#: Application/view/application/department/list.phtml:10
+#: Application/view/application/department/Copy of list2.phtml:38
+#: list2.phtml:46 Application/view/application/department/list.phtml:10
 #: Application/view/application/department/list.phtml:14
+#: Application/view/application/department/list2.phtml:34
+#: Application/view/application/department/list2.phtml:42
 msgid "Add Department"
 msgstr "Thêm phòng ban"
+
+#: Application/view/application/department/Copy of list2.phtml:143
+#: Application/view/application/department/list2.phtml:111
+#, fuzzy
+#| msgid "Outgoing payment will be posted!"
+msgid "Department will be removed!"
+msgstr "Thanh toán sẽ được ghi sổ!"
+
+#: Application/view/application/department/Copy of list2.phtml:148
+#: Application/view/application/department/list2.phtml:116
+#: Procure/view/procure/ap/crudRow.phtml:593
+#: Procure/view/procure/po/crudRow.phtml:501
+#: Procure/view/procure/pr/crudRow.phtml:438
+#: Procure/view/procure/qr/crudRow.phtml:522
+msgid "Remove can not be recalled!"
+msgstr ""
+
+#: Application/view/application/department/Copy of list2.phtml:156
+#: Application/view/application/department/list2.phtml:124
+#: Finance/view/finance/v-invoice/copy/Copy review.phtml:336
+#: Finance/view/finance/v-invoice/copy/reverse.phtml:381
+#: Finance/view/finance/v-invoice/reverse.phtml:355
+#: Finance/view/finance/v-invoice/review.phtml:492
+#: Inventory/view/inventory/gi/reverse.phtml:232
+#: Inventory/view/inventory/gi/review-v1.phtml:524
+#: Inventory/view/inventory/gi/review-v1.phtml:557
+#: Inventory/view/inventory/gi/review-v1.phtml:587
+#: Inventory/view/inventory/gi/review.phtml:257
+#: Inventory/view/inventory/gr/review-v1.phtml:520
+#: Inventory/view/inventory/gr/review-v1.phtml:553
+#: Inventory/view/inventory/gr/review-v1.phtml:583
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:473
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:506
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:536
+#: Inventory/view/inventory/item-transaction/gi.phtml:172
+#: Inventory/view/inventory/opening-balance/review.phtml:270
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:506
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:539
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:569
+#: Inventory/view/inventory/transfer/review.phtml:277
+#: Payment/view/payment/outgoing/pay-ap.phtml:405
+#: Payment/view/payment/outgoing/pay-po.phtml:405
+#: Payment/view/payment/outgoing/reverse.phtml:381
+#: Payment/view/payment/outgoing/show.phtml:372
+#: Procure/view/procure/ap/crudRow.phtml:601
+#: Procure/view/procure/ap/review-v1.phtml:726
+#: Procure/view/procure/ap/review-v1.phtml:759
+#: Procure/view/procure/ap/review-v1.phtml:789
+#: Procure/view/procure/ap/review.phtml:677
+#: Procure/view/procure/ap/review.phtml:710
+#: Procure/view/procure/ap/review.phtml:740 Procure/view/procure/gr/Copy
+#: review.phtml:282 Procure/view/procure/gr/reverse.phtml:272
+#: Procure/view/procure/gr/review-v1.phtml:791
+#: Procure/view/procure/gr/review-v1.phtml:824
+#: Procure/view/procure/gr/review-v1.phtml:854
+#: Procure/view/procure/gr/review-v1.phtml:884
+#: Procure/view/procure/gr/review.phtml:340
+#: Procure/view/procure/po/blank.phtml:738
+#: Procure/view/procure/po/blank.phtml:771
+#: Procure/view/procure/po/blank.phtml:801
+#: Procure/view/procure/po/blank.phtml:831
+#: Procure/view/procure/po/copy/review-v1.phtml:843
+#: Procure/view/procure/po/copy/review-v1.phtml:876
+#: Procure/view/procure/po/copy/review-v1.phtml:906
+#: Procure/view/procure/po/copy/review-v1.phtml:936
+#: Procure/view/procure/po/copy/review.phtml:467
+#: Procure/view/procure/po/crudRow.phtml:509
+#: Procure/view/procure/po/review-v1.phtml:644
+#: Procure/view/procure/po/review-v1.phtml:677
+#: Procure/view/procure/po/review-v1.phtml:707
+#: Procure/view/procure/po/review-v1.phtml:737
+#: Procure/view/procure/po/view-v1.phtml:687
+#: Procure/view/procure/po/view-v1.phtml:720
+#: Procure/view/procure/po/view-v1.phtml:750
+#: Procure/view/procure/po/view-v1.phtml:780
+#: Procure/view/procure/po/view.phtml:436
+#: Procure/view/procure/pr/crudRow.phtml:446
+#: Procure/view/procure/pr/review-v1.phtml:468
+#: Procure/view/procure/pr/review-v1.phtml:501
+#: Procure/view/procure/pr/review-v1.phtml:531
+#: Procure/view/procure/qr/crudRow.phtml:530
+#: Procure/view/procure/qr/review.phtml:759
+#: Procure/view/procure/qr/review.phtml:792
+#: Procure/view/procure/qr/review.phtml:822
+#: Procure/view/procure/quote/show.phtml:375
+msgid "Do you want to continue?"
+msgstr "Bạn có muốn thực hiện không?"
 
 #: Application/view/application/incoterm/crud.phtml:13
 msgid "Add Incoterm:"
@@ -3179,69 +3522,6 @@ msgstr ""
 #: Application/view/application/incoterm/crud.phtml:86
 msgid "Location required"
 msgstr ""
-
-#: Application/view/application/incoterm/crud.phtml:110
-#: Application/view/application/payment-term/crud.phtml:117
-#: Application/view/application/pmt-method/crud.phtml:139
-#: Finance/view/finance/posting-period/add.phtml:129
-#: HR/view/hr/employee-contract/add.phtml:224
-#: HR/view/hr/employee-contract/amend.phtml:242
-#: HR/view/hr/employee-contract/terminate.phtml:242
-#: HR/view/hr/leave-reason/add.phtml:95 HR/view/hr/position/add.phtml:101
-#: HR/view/hr/position/edit.phtml:108 HR/view/hr/salary/edit.phtml:121
-#: Inventory/view/inventory/association-item/crud-v1.phtml:212
-#: Inventory/view/inventory/association-item/crud.phtml:205
-#: Inventory/view/inventory/similar-item/crud.phtml:245
-#: Inventory/view/inventory/warehouse/crud.phtml:245
-#: Inventory/view/inventory/warehouse/crud2.phtml:218
-#: Procure/view/procure/ap/crudRow.phtml:534
-#: Procure/view/procure/gr/crudRow.phtml:315
-#: Procure/view/procure/po-row/add-row.phtml:366
-#: Procure/view/procure/po/crudPORow.phtml:426
-#: Procure/view/procure/po/crudRow.phtml:410
-#: Procure/view/procure/pr-row-attachment/upload.phtml:161
-#: Procure/view/procure/pr-row/copy/edit.phtml:267
-#: Procure/view/procure/pr-row/edit.phtml:266
-#: Procure/view/procure/pr/crudRow.phtml:379
-#: Procure/view/procure/qr/crudRow.phtml:474
-msgid "Save"
-msgstr "Ghi"
-
-#: Application/view/application/incoterm/crud.phtml:113
-#: Application/view/application/payment-term/crud.phtml:120
-#: Application/view/application/pmt-method/crud.phtml:142
-#: HR/view/hr/employee-contract/add.phtml:227
-#: HR/view/hr/employee-contract/amend.phtml:245
-#: HR/view/hr/employee-contract/show.phtml:51
-#: HR/view/hr/employee-contract/terminate.phtml:245
-#: HR/view/hr/leave-reason/add.phtml:98 HR/view/hr/position/add.phtml:104
-#: HR/view/hr/position/edit.phtml:111 HR/view/hr/salary/assign.phtml:102
-#: HR/view/hr/salary/edit.phtml:123 HR/view/hr/salary/show.phtml:241
-#: Inventory/view/inventory/association-item/crud-v1.phtml:222
-#: Inventory/view/inventory/association-item/crud.phtml:215
-#: Inventory/view/inventory/association/crud-v1.phtml:589
-#: Inventory/view/inventory/gi/copy/crudHeader.phtml:22
-#: Inventory/view/inventory/gi/copy/crudHeader.phtml:40
-#: Inventory/view/inventory/gi/crudHeader.phtml:24
-#: Inventory/view/inventory/gr/crudHeader.phtml:23
-#: Inventory/view/inventory/item-opening-balance/crudHeader.phtml:23
-#: Inventory/view/inventory/item/crud-logistic.phtml:649
-#: Inventory/view/inventory/item/crud-v1.phtml:72
-#: Inventory/view/inventory/item/crud-v1.phtml:79
-#: Inventory/view/inventory/item/crud-v1.phtml:89
-#: Inventory/view/inventory/similar-item/crud.phtml:248
-#: Inventory/view/inventory/transfer-wh/crudHeader.phtml:23
-#: Inventory/view/inventory/warehouse/crud.phtml:248
-#: Inventory/view/inventory/warehouse/crud2.phtml:221
-#: Procure/view/procure/ap/crudRow.phtml:544
-#: Procure/view/procure/gr/crudRow.phtml:318
-#: Procure/view/procure/po-row/add-row.phtml:369
-#: Procure/view/procure/po/crudPORow.phtml:436
-#: Procure/view/procure/po/crudRow.phtml:420
-#: Procure/view/procure/pr/crudRow.phtml:389
-#: Procure/view/procure/qr/crudRow.phtml:484
-msgid "Cancel"
-msgstr "Thoát"
 
 #: Application/view/application/incoterm/list.phtml:10
 #, fuzzy
@@ -3402,10 +3682,10 @@ msgstr "Tên kỳ hạch toán"
 #: Payment/view/payment/outgoing/pay-po.phtml:199
 #: Payment/view/payment/outgoing/reverse.phtml:207
 #: Payment/view/payment/outgoing/show.phtml:177
-#: Procure/view/procure/ap/crudRow.phtml:472
+#: Procure/view/procure/ap/crudRow.phtml:479
 #: Procure/view/procure/gr-row/add.phtml:458
 #: Procure/view/procure/gr-row/copy/add-row.phtml:275
-#: Procure/view/procure/qr/crudRow.phtml:412
+#: Procure/view/procure/qr/crudRow.phtml:417
 msgid "GL Account"
 msgstr ""
 
@@ -3443,32 +3723,20 @@ msgstr ""
 #: Payment/view/payment/outgoing/pay-po.phtml:203
 #: Payment/view/payment/outgoing/reverse.phtml:211
 #: Payment/view/payment/outgoing/show.phtml:181
-#: Procure/view/procure/ap/crudRow.phtml:477
+#: Procure/view/procure/ap/crudRow.phtml:484
 #: Procure/view/procure/gr-row/add.phtml:461
 #: Procure/view/procure/gr-row/copy/add-row.phtml:278
-#: Procure/view/procure/qr/crudRow.phtml:417
+#: Procure/view/procure/qr/crudRow.phtml:422
 msgid "Select GL Account"
 msgstr ""
-
-#: Application/view/application/pmt-method/crud.phtml:124
-#: Finance/view/finance/account/list.phtml:146
-#: HR/view/hr/leave-reason/add.phtml:80 HR/view/hr/position/add.phtml:86
-#: HR/view/hr/position/edit.phtml:93 HR/view/hr/position/show.phtml:90
-#: HR/view/hr/salary/edit.phtml:104
-#: Inventory/view/inventory/item-group/list.phtml:48
-#: Inventory/view/inventory/stock/list.phtml:48
-msgid "Description"
-msgstr "Chi tiết"
 
 #: Application/view/application/pmt-method/list.phtml:13
 msgid "Add Payment Method"
 msgstr ""
 
 #: Application/view/application/pmt-method/list.phtml:42
-#, fuzzy
-#| msgid "Description"
 msgid "Desciption"
-msgstr "Chi tiết"
+msgstr "Chi tiết "
 
 #: Application/view/application/pmt-method/list.phtml:43
 #: HR/view/hr/employee/applicant-list.phtml:53
@@ -3754,11 +4022,11 @@ msgstr "Không có ngoại lệ sẵn có"
 msgid "An error occurred"
 msgstr "An error occurred"
 
-#: Application/view/layout/layout-fluid.phtml:202
+#: Application/view/layout/layout-fluid.phtml:210
 msgid "SETTING"
 msgstr "Thiết Lập"
 
-#: Application/view/layout/layout-fluid.phtml:209
+#: Application/view/layout/layout-fluid.phtml:221
 #: BP/view/layout/layout-fluid.phtml:209
 #: Calendar/view/layout/layout-fluid.phtml:206
 #: Finance/view/finance/v-invoice/list.phtml:19
@@ -3772,8 +4040,8 @@ msgstr "Thiết Lập"
 #: PM/view/layout/layout-fluid.phtml:189
 #: Payment/view/layout/layout-fluid.phtml:189 Procure/view/layout/Copy of
 #: layout-fluid.phtml:193 Procure/view/layout/layout-blank.phtml:201
-#: Procure/view/layout/layout-fluid-1.phtml:183
-#: Procure/view/layout/layout-fluid.phtml:201
+#: Procure/view/layout/layout-fluid-1.phtml:198
+#: Procure/view/layout/layout-fluid.phtml:213
 #: Procure/view/procure/ap-report/bk/dto_list.phtml:118
 #: Procure/view/procure/ap-report/dto_list.phtml:50
 #: Procure/view/procure/ap-search/do.phtml:15
@@ -3946,11 +4214,6 @@ msgstr ""
 msgid "New G/L Account"
 msgstr ""
 
-#: Finance/view/finance/account/add.phtml:54
-#: Finance/view/finance/account/list.phtml:144
-msgid "Account Number"
-msgstr "Số Tài khoản"
-
 #: Finance/view/finance/account/edit.phtml:5
 #: Finance/view/finance/v-invoice-row/Copy of edit.phtml:25
 #: Finance/view/finance/v-invoice/edit.phtml:5
@@ -3980,10 +4243,6 @@ msgstr "Số Chứng từ"
 
 #: Finance/view/finance/account/list.phtml:11
 msgid "New GL Account"
-msgstr ""
-
-#: Finance/view/finance/account/list.phtml:145
-msgid "Account Type"
 msgstr ""
 
 #: Finance/view/finance/fx/list.phtml:11
@@ -4062,10 +4321,10 @@ msgstr ""
 #: Inventory/view/inventory/transfer-row/crudGI108.phtml:188
 #: Inventory/view/inventory/transfer-wh/crudRowGI108.phtml:238
 #: Inventory/view/inventory/transfer-wh/crudRowGR000.phtml:283
-#: Procure/view/procure/ap/crudRow.phtml:491
+#: Procure/view/procure/ap/crudRow.phtml:498
 #: Procure/view/procure/gr-row/add.phtml:489
 #: Procure/view/procure/gr-row/copy/add-row.phtml:306
-#: Procure/view/procure/qr/crudRow.phtml:431
+#: Procure/view/procure/qr/crudRow.phtml:436
 msgid "Cost Center"
 msgstr ""
 
@@ -4199,10 +4458,10 @@ msgstr "Đóng"
 #: Inventory/view/inventory/transfer-row/crudGI108.phtml:193
 #: Inventory/view/inventory/transfer-wh/crudRowGI108.phtml:244
 #: Inventory/view/inventory/transfer-wh/crudRowGR000.phtml:289
-#: Procure/view/procure/ap/crudRow.phtml:496
+#: Procure/view/procure/ap/crudRow.phtml:503
 #: Procure/view/procure/gr-row/add.phtml:492
 #: Procure/view/procure/gr-row/copy/add-row.phtml:309
-#: Procure/view/procure/qr/crudRow.phtml:436
+#: Procure/view/procure/qr/crudRow.phtml:441
 #, fuzzy
 #| msgid "Issue for Cost Center"
 msgid "Select Cost Center"
@@ -4279,15 +4538,16 @@ msgstr "Lịch sử thay đổi"
 #: Finance/view/finance/v-invoice-row/crud.phtml:159
 #: Finance/view/finance/v-invoice-row/crud.phtml:200
 #: Finance/view/finance/v-invoice-row/edit.phtml:258
-#: Procure/view/procure/ap/crudRow.phtml:209
-#: Procure/view/procure/ap/crudRow.phtml:246
+#: Procure/view/procure/ap/crudRow.phtml:215
+#: Procure/view/procure/ap/crudRow.phtml:252
 #: Procure/view/procure/gr-row/add.phtml:257
 #: Procure/view/procure/gr-row/add.phtml:297
 #: Procure/view/procure/gr/crudRow.phtml:136
 #: Procure/view/procure/po-row/add-row.phtml:147
 #: Procure/view/procure/po/crudPORow.phtml:167
-#: Procure/view/procure/po/crudRow.phtml:177
-#: Procure/view/procure/qr/crudRow.phtml:180
+#: Procure/view/procure/po/crudRow.phtml:187
+#: Procure/view/procure/po/crudRow.phtml:224
+#: Procure/view/procure/qr/crudRow.phtml:185
 #: Procure/view/procure/quote-row/add.phtml:144
 msgid "Line Detail"
 msgstr ""
@@ -4322,18 +4582,18 @@ msgstr ""
 #: Inventory/view/inventory/transfer-row/crudGI108.phtml:136
 #: Inventory/view/inventory/transfer-wh/crudRowGI108.phtml:197
 #: Inventory/view/inventory/transfer-wh/crudRowGR000.phtml:186
-#: Procure/view/procure/ap/crudRow.phtml:288
+#: Procure/view/procure/ap/crudRow.phtml:294
 #: Procure/view/procure/gr-row/add.phtml:339
 #: Procure/view/procure/gr/crudRow.phtml:167
 #: Procure/view/procure/po-row/add-row.phtml:191
 #: Procure/view/procure/po/crudPORow.phtml:211
-#: Procure/view/procure/po/crudRow.phtml:221
+#: Procure/view/procure/po/crudRow.phtml:269
 #: Procure/view/procure/pr-row/add.phtml:264
 #: Procure/view/procure/pr-row/copy/edit.phtml:123
 #: Procure/view/procure/pr-row/crud.phtml:278
 #: Procure/view/procure/pr-row/edit.phtml:122
-#: Procure/view/procure/pr/crudRow.phtml:247
-#: Procure/view/procure/qr/crudRow.phtml:222
+#: Procure/view/procure/pr/crudRow.phtml:254
+#: Procure/view/procure/qr/crudRow.phtml:227
 #: Procure/view/procure/quote-row/add.phtml:184
 #, fuzzy
 #| msgid "Item Name"
@@ -4432,7 +4692,7 @@ msgstr ""
 #: Procure/view/procure/po/crud.phtml:215
 #: Procure/view/procure/po/crudHeader.phtml:260
 #: Procure/view/procure/po/crudPO.phtml:252
-#: Procure/view/procure/po/review-v1.phtml:409
+#: Procure/view/procure/po/review-v1.phtml:441
 #: Procure/view/procure/po/view-v1.phtml:491
 #: Procure/view/procure/po/view.phtml:275
 #: Procure/view/procure/price-comparison/price-of-item.phtml:25
@@ -4463,7 +4723,7 @@ msgstr "Tạo yêu cầu mua"
 #: Procure/view/procure/po/crud.phtml:243
 #: Procure/view/procure/po/crudHeader.phtml:274
 #: Procure/view/procure/po/crudPO.phtml:267
-#: Procure/view/procure/po/review-v1.phtml:422
+#: Procure/view/procure/po/review-v1.phtml:454
 #: Procure/view/procure/po/view-v1.phtml:504
 #: Procure/view/procure/po/view.phtml:301
 #: Procure/view/procure/price-comparison/price-of-item.phtml:26
@@ -4494,7 +4754,7 @@ msgstr "Thiết lập các khoản thu nhập"
 #: Procure/view/procure/po/crud.phtml:255
 #: Procure/view/procure/po/crudHeader.phtml:286
 #: Procure/view/procure/po/crudPO.phtml:284
-#: Procure/view/procure/po/review-v1.phtml:434
+#: Procure/view/procure/po/review-v1.phtml:466
 #: Procure/view/procure/po/view-v1.phtml:516
 #: Procure/view/procure/po/view.phtml:311
 #: Procure/view/procure/qr/crudHeader.phtml:253
@@ -4518,71 +4778,6 @@ msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
 #: Procure/view/procure/quote/show.phtml:367
 msgid " will be posted!"
 msgstr " sẽ được ghi sổ!"
-
-#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:336
-#: Finance/view/finance/v-invoice/copy/reverse.phtml:381
-#: Finance/view/finance/v-invoice/reverse.phtml:355
-#: Finance/view/finance/v-invoice/review.phtml:492
-#: Inventory/view/inventory/gi/reverse.phtml:232
-#: Inventory/view/inventory/gi/review-v1.phtml:524
-#: Inventory/view/inventory/gi/review-v1.phtml:557
-#: Inventory/view/inventory/gi/review-v1.phtml:587
-#: Inventory/view/inventory/gi/review.phtml:257
-#: Inventory/view/inventory/gr/review-v1.phtml:520
-#: Inventory/view/inventory/gr/review-v1.phtml:553
-#: Inventory/view/inventory/gr/review-v1.phtml:583
-#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:473
-#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:506
-#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:536
-#: Inventory/view/inventory/item-transaction/gi.phtml:172
-#: Inventory/view/inventory/opening-balance/review.phtml:270
-#: Inventory/view/inventory/transfer-wh/review-v1.phtml:506
-#: Inventory/view/inventory/transfer-wh/review-v1.phtml:539
-#: Inventory/view/inventory/transfer-wh/review-v1.phtml:569
-#: Inventory/view/inventory/transfer/review.phtml:277
-#: Payment/view/payment/outgoing/pay-ap.phtml:405
-#: Payment/view/payment/outgoing/pay-po.phtml:405
-#: Payment/view/payment/outgoing/reverse.phtml:381
-#: Payment/view/payment/outgoing/show.phtml:372
-#: Procure/view/procure/ap/review-v1.phtml:729
-#: Procure/view/procure/ap/review-v1.phtml:762
-#: Procure/view/procure/ap/review-v1.phtml:792
-#: Procure/view/procure/ap/review.phtml:677
-#: Procure/view/procure/ap/review.phtml:710
-#: Procure/view/procure/ap/review.phtml:740 Procure/view/procure/gr/Copy
-#: review.phtml:282 Procure/view/procure/gr/reverse.phtml:272
-#: Procure/view/procure/gr/review-v1.phtml:791
-#: Procure/view/procure/gr/review-v1.phtml:824
-#: Procure/view/procure/gr/review-v1.phtml:854
-#: Procure/view/procure/gr/review-v1.phtml:884
-#: Procure/view/procure/gr/review.phtml:340
-#: Procure/view/procure/po/blank.phtml:738
-#: Procure/view/procure/po/blank.phtml:771
-#: Procure/view/procure/po/blank.phtml:801
-#: Procure/view/procure/po/blank.phtml:831
-#: Procure/view/procure/po/copy/review-v1.phtml:843
-#: Procure/view/procure/po/copy/review-v1.phtml:876
-#: Procure/view/procure/po/copy/review-v1.phtml:906
-#: Procure/view/procure/po/copy/review-v1.phtml:936
-#: Procure/view/procure/po/copy/review.phtml:467
-#: Procure/view/procure/po/review-v1.phtml:605
-#: Procure/view/procure/po/review-v1.phtml:638
-#: Procure/view/procure/po/review-v1.phtml:668
-#: Procure/view/procure/po/review-v1.phtml:698
-#: Procure/view/procure/po/view-v1.phtml:687
-#: Procure/view/procure/po/view-v1.phtml:720
-#: Procure/view/procure/po/view-v1.phtml:750
-#: Procure/view/procure/po/view-v1.phtml:780
-#: Procure/view/procure/po/view.phtml:436
-#: Procure/view/procure/pr/review-v1.phtml:468
-#: Procure/view/procure/pr/review-v1.phtml:501
-#: Procure/view/procure/pr/review-v1.phtml:531
-#: Procure/view/procure/qr/review.phtml:760
-#: Procure/view/procure/qr/review.phtml:793
-#: Procure/view/procure/qr/review.phtml:823
-#: Procure/view/procure/quote/show.phtml:375
-msgid "Do you want to continue?"
-msgstr "Bạn có muốn thực hiện không?"
 
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:51
 #: Payment/view/payment/outgoing/reverse.phtml:51
@@ -4691,9 +4886,9 @@ msgstr "Thanh toán sẽ được ghi sổ!"
 #: Payment/view/payment/outgoing/pay-po.phtml:400
 #: Payment/view/payment/outgoing/reverse.phtml:376
 #: Payment/view/payment/outgoing/show.phtml:367
-#: Procure/view/procure/ap/review-v1.phtml:721
-#: Procure/view/procure/ap/review-v1.phtml:754
-#: Procure/view/procure/ap/review-v1.phtml:787
+#: Procure/view/procure/ap/review-v1.phtml:718
+#: Procure/view/procure/ap/review-v1.phtml:751
+#: Procure/view/procure/ap/review-v1.phtml:784
 #: Procure/view/procure/ap/review.phtml:669
 #: Procure/view/procure/ap/review.phtml:702
 #: Procure/view/procure/ap/review.phtml:735
@@ -4712,10 +4907,10 @@ msgstr "Thanh toán sẽ được ghi sổ!"
 #: Procure/view/procure/po/copy/review-v1.phtml:901
 #: Procure/view/procure/po/copy/review-v1.phtml:931
 #: Procure/view/procure/po/copy/review.phtml:462
-#: Procure/view/procure/po/review-v1.phtml:597
-#: Procure/view/procure/po/review-v1.phtml:630
-#: Procure/view/procure/po/review-v1.phtml:663
-#: Procure/view/procure/po/review-v1.phtml:693
+#: Procure/view/procure/po/review-v1.phtml:636
+#: Procure/view/procure/po/review-v1.phtml:669
+#: Procure/view/procure/po/review-v1.phtml:702
+#: Procure/view/procure/po/review-v1.phtml:732
 #: Procure/view/procure/po/view-v1.phtml:679
 #: Procure/view/procure/po/view-v1.phtml:712
 #: Procure/view/procure/po/view-v1.phtml:745
@@ -4724,9 +4919,9 @@ msgstr "Thanh toán sẽ được ghi sổ!"
 #: Procure/view/procure/pr/review-v1.phtml:460
 #: Procure/view/procure/pr/review-v1.phtml:493
 #: Procure/view/procure/pr/review-v1.phtml:526
-#: Procure/view/procure/qr/review.phtml:752
-#: Procure/view/procure/qr/review.phtml:785
-#: Procure/view/procure/qr/review.phtml:818
+#: Procure/view/procure/qr/review.phtml:751
+#: Procure/view/procure/qr/review.phtml:784
+#: Procure/view/procure/qr/review.phtml:817
 #: Procure/view/procure/quote/show.phtml:370
 #, fuzzy
 #| msgid "Document can't be changed anymore when submitted!"
@@ -4806,7 +5001,7 @@ msgstr "Kho"
 #: Inventory/view/inventory/trx-report/Copy
 #: Procure/view/procure/ap-report/bk/row-status.phtml:231
 #: Procure/view/procure/ap-report/row-status.phtml:231
-#: Procure/view/procure/ap/review-v1.phtml:616
+#: Procure/view/procure/ap/review-v1.phtml:613
 #: Procure/view/procure/ap/review.phtml:564
 #: Procure/view/procure/gr/review-v1.phtml:652
 #: Procure/view/procure/po-report/row-status.phtml:231
@@ -4815,7 +5010,7 @@ msgstr "Kho"
 #: Procure/view/procure/po/copy/review-v1.phtml:729
 #: Procure/view/procure/po/copy/review.phtml:369
 #: Procure/view/procure/po/copy/show.phtml:222
-#: Procure/view/procure/po/review-v1.phtml:492
+#: Procure/view/procure/po/review-v1.phtml:531
 #: Procure/view/procure/po/view-v1.phtml:574
 #: Procure/view/procure/po/view.phtml:352
 #: Procure/view/procure/pr-report/row-status.phtml:230
@@ -4832,14 +5027,14 @@ msgid "Refresh"
 msgstr ""
 
 #: Finance/view/finance/v-invoice/review.phtml:417
-#: Procure/view/procure/ap/review-v1.phtml:624
+#: Procure/view/procure/ap/review-v1.phtml:621
 #: Procure/view/procure/ap/review.phtml:572
 #: Procure/view/procure/gr/review-v1.phtml:660
 #: Procure/view/procure/po/blank.phtml:633
 #: Procure/view/procure/po/copy/review-v1.phtml:738
 #: Procure/view/procure/po/copy/review.phtml:373
 #: Procure/view/procure/po/copy/show.phtml:226
-#: Procure/view/procure/po/review-v1.phtml:500
+#: Procure/view/procure/po/review-v1.phtml:539
 #: Procure/view/procure/po/view-v1.phtml:582
 #: Procure/view/procure/po/view.phtml:356
 #: Procure/view/procure/pr/copy/review.phtml:355
@@ -5066,17 +5261,8 @@ msgstr "Thiết Lập HR"
 
 #: HR/view/hr/employee-contract/list1.phtml:30 HR/view/hr/salary/list1.phtml:40
 #: HR/view/hr/salary/simulate.phtml:36
-#, fuzzy
-#| msgid "Vadid From"
 msgid "Valid From"
 msgstr "Áp dụng từ"
-
-#: HR/view/hr/employee-contract/list1.phtml:31 HR/view/hr/salary/list1.phtml:41
-#: HR/view/hr/salary/simulate.phtml:37
-#, fuzzy
-#| msgid "Vadid To"
-msgid "Valid To"
-msgstr "Áp dụng đến"
 
 #: HR/view/hr/employee-contract/list1.phtml:65
 #: HR/view/hr/employee-contract/list2.phtml:65
@@ -5525,13 +5711,9 @@ msgstr ""
 msgid "Payment Frequerency"
 msgstr ""
 
-#: HR/view/hr/salary/edit.phtml:90
-msgid "Valid from"
-msgstr ""
-
 #: HR/view/hr/salary/edit.phtml:96
 msgid "Valid to"
-msgstr ""
+msgstr "Áp dụng từ"
 
 #: HR/view/hr/salary/list1.phtml:8
 msgid "Add Income"
@@ -6078,10 +6260,10 @@ msgstr "Kho"
 
 #: Inventory/view/inventory/gi/crudRowGI099.phtml:238
 #: Inventory/view/inventory/gi/crudRowGI102.phtml:243
-#: Procure/view/procure/ap/crudRow.phtml:361
-#: Procure/view/procure/po/crudRow.phtml:276
-#: Procure/view/procure/pr/crudRow.phtml:301
-#: Procure/view/procure/qr/crudRow.phtml:277
+#: Procure/view/procure/ap/crudRow.phtml:368
+#: Procure/view/procure/po/crudRow.phtml:324
+#: Procure/view/procure/pr/crudRow.phtml:308
+#: Procure/view/procure/qr/crudRow.phtml:282
 #, fuzzy
 #| msgid "Contract Date"
 msgid "Document Unit"
@@ -6089,10 +6271,10 @@ msgstr "Ngày Hợp đồng"
 
 #: Inventory/view/inventory/gi/crudRowGI099.phtml:244
 #: Inventory/view/inventory/gi/crudRowGI102.phtml:249
-#: Procure/view/procure/ap/crudRow.phtml:367
-#: Procure/view/procure/po/crudRow.phtml:282
-#: Procure/view/procure/pr/crudRow.phtml:307
-#: Procure/view/procure/qr/crudRow.phtml:283
+#: Procure/view/procure/ap/crudRow.phtml:374
+#: Procure/view/procure/po/crudRow.phtml:330
+#: Procure/view/procure/pr/crudRow.phtml:314
+#: Procure/view/procure/qr/crudRow.phtml:288
 #, fuzzy
 #| msgid "Issue for Cost Center"
 msgid "Select doc unit"
@@ -6161,17 +6343,17 @@ msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
 #: Inventory/view/inventory/gr/review-v1.phtml:507
 #: Inventory/view/inventory/item-opening-balance/review-v1.phtml:460
 #: Inventory/view/inventory/transfer-wh/review-v1.phtml:493
-#: Procure/view/procure/ap/review-v1.phtml:716
+#: Procure/view/procure/ap/review-v1.phtml:713
 #: Procure/view/procure/ap/review.phtml:664
 #: Procure/view/procure/gr/review-v1.phtml:778
 #: Procure/view/procure/po/blank.phtml:725
 #: Procure/view/procure/po/copy/review-v1.phtml:830
 #: Procure/view/procure/po/copy/review.phtml:459
-#: Procure/view/procure/po/review-v1.phtml:592
+#: Procure/view/procure/po/review-v1.phtml:631
 #: Procure/view/procure/po/view-v1.phtml:674
 #: Procure/view/procure/po/view.phtml:428
 #: Procure/view/procure/pr/review-v1.phtml:455
-#: Procure/view/procure/qr/review.phtml:747
+#: Procure/view/procure/qr/review.phtml:746
 #, fuzzy
 #| msgid " will be posted!"
 msgid "PO will be posted!"
@@ -6181,10 +6363,10 @@ msgstr " sẽ được ghi sổ!"
 #: Inventory/view/inventory/gr/review-v1.phtml:540
 #: Inventory/view/inventory/item-opening-balance/review-v1.phtml:493
 #: Inventory/view/inventory/transfer-wh/review-v1.phtml:526
-#: Procure/view/procure/ap/review-v1.phtml:749
+#: Procure/view/procure/ap/review-v1.phtml:746
 #: Procure/view/procure/ap/review.phtml:697
 #: Procure/view/procure/pr/review-v1.phtml:488
-#: Procure/view/procure/qr/review.phtml:780
+#: Procure/view/procure/qr/review.phtml:779
 #, fuzzy
 #| msgid " will be posted!"
 msgid "Invoice will be reversed!"
@@ -6194,15 +6376,15 @@ msgstr " sẽ được ghi sổ!"
 #: Inventory/view/inventory/gr/review-v1.phtml:573
 #: Inventory/view/inventory/item-opening-balance/review-v1.phtml:526
 #: Inventory/view/inventory/transfer-wh/review-v1.phtml:559
-#: Procure/view/procure/ap/review-v1.phtml:782
+#: Procure/view/procure/ap/review-v1.phtml:779
 #: Procure/view/procure/ap/review.phtml:730
 #: Procure/view/procure/gr/review-v1.phtml:874
 #: Procure/view/procure/po/blank.phtml:821
 #: Procure/view/procure/po/copy/review-v1.phtml:926
-#: Procure/view/procure/po/review-v1.phtml:688
+#: Procure/view/procure/po/review-v1.phtml:727
 #: Procure/view/procure/po/view-v1.phtml:770
 #: Procure/view/procure/pr/review-v1.phtml:521
-#: Procure/view/procure/qr/review.phtml:813
+#: Procure/view/procure/qr/review.phtml:812
 #, fuzzy
 #| msgid " will be posted!"
 msgid "Document header amendment will be posted!"
@@ -6757,14 +6939,14 @@ msgstr "Thanh toán sẽ được ghi sổ!"
 
 #: Procure/view/layout/Copy of layout-fluid.phtml:190
 #: Procure/view/layout/layout-blank.phtml:198
-#: Procure/view/layout/layout-fluid-1.phtml:180
-#: Procure/view/layout/layout-fluid.phtml:198
+#: Procure/view/layout/layout-fluid-1.phtml:191
+#: Procure/view/layout/layout-fluid.phtml:206
 msgid "PROCUREMENT"
 msgstr "QUẢN LÝ THU MUA"
 
-#: Procure/view/layout/layout-fluid-1.phtml:292
-#: Procure/view/layout/layout-fluid.phtml:318
-#: Procure/view/layout/layout-fullscreen.phtml:231
+#: Procure/view/layout/layout-fluid-1.phtml:311
+#: Procure/view/layout/layout-fluid.phtml:334
+#: Procure/view/layout/layout-fullscreen.phtml:236
 msgid "Processing........Please Wait!"
 msgstr "Đang xử lý……. Vui lòng đơi!"
 
@@ -6785,6 +6967,22 @@ msgstr "Tất cả yêu cầu mua."
 #: Procure/view/procure/ap/dto_list.phtml:20
 msgid "INVOICE LIST"
 msgstr ""
+
+#: Procure/view/procure/ap/crudRow.phtml:86
+#: Procure/view/procure/po/crudRow.phtml:53
+#: Procure/view/procure/pr/crudRow.phtml:109
+#: Procure/view/procure/qr/crudRow.phtml:54
+msgid "Remove"
+msgstr ""
+
+#: Procure/view/procure/ap/crudRow.phtml:588
+#: Procure/view/procure/po/crudRow.phtml:496
+#: Procure/view/procure/pr/crudRow.phtml:433
+#: Procure/view/procure/qr/crudRow.phtml:517
+#, fuzzy
+#| msgid " will be posted!"
+msgid "Row will be removed!"
+msgstr " sẽ được ghi sổ!"
 
 #: Procure/view/procure/ap/list.phtml:199
 #: Procure/view/procure/po/copy/dto_list.phtml:198
@@ -6862,7 +7060,7 @@ msgstr ""
 #: Procure/view/procure/po/blank.phtml:141
 #: Procure/view/procure/po/copy/review-v1.phtml:129
 #: Procure/view/procure/po/copy/review.phtml:33
-#: Procure/view/procure/po/review-v1.phtml:139
+#: Procure/view/procure/po/review-v1.phtml:148
 #: Procure/view/procure/po/view-v1.phtml:140
 #: Procure/view/procure/po/view.phtml:14
 #, fuzzy
@@ -6907,7 +7105,7 @@ msgstr ""
 #: Procure/view/procure/gr/review-v1.phtml:811
 #: Procure/view/procure/po/blank.phtml:758
 #: Procure/view/procure/po/copy/review-v1.phtml:863
-#: Procure/view/procure/po/review-v1.phtml:625
+#: Procure/view/procure/po/review-v1.phtml:664
 #: Procure/view/procure/po/view-v1.phtml:707
 msgid "PO will be enabled for ammendment!"
 msgstr ""
@@ -6915,7 +7113,7 @@ msgstr ""
 #: Procure/view/procure/gr/review-v1.phtml:844
 #: Procure/view/procure/po/blank.phtml:791
 #: Procure/view/procure/po/copy/review-v1.phtml:896
-#: Procure/view/procure/po/review-v1.phtml:658
+#: Procure/view/procure/po/review-v1.phtml:697
 #: Procure/view/procure/po/view-v1.phtml:740
 #, fuzzy
 #| msgid " will be posted!"

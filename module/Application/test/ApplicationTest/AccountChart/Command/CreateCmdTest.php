@@ -27,7 +27,7 @@ class CreateCmdTest extends PHPUnit_Framework_TestCase
 
             $userId = 39;
             $data = [
-                'coaCode' => 'SAP_IFRS',
+                'coaCode' => 'LAS_2009',
                 'coaName' => 'Chart of Laos 2021'
             ];
 

@@ -18,7 +18,7 @@ class AccountForm extends GenericForm
         $this->id = $id;
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
-        $this->setAction('/application/account-chart/create');
+        $this->setAction('/application/account-chart/add-member');
     }
 
     public function setAction($url)
@@ -46,7 +46,7 @@ class AccountForm extends GenericForm
                 'required' => FALSE
             ],
             'options' => [
-                'label' => Translator::translate('accountNumber'),
+                'label' => Translator::translate('Account Number'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]
@@ -65,7 +65,7 @@ class AccountForm extends GenericForm
                 'required' => FALSE
             ],
             'options' => [
-                'label' => Translator::translate('accountName'),
+                'label' => Translator::translate('Account Name'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]
@@ -84,7 +84,7 @@ class AccountForm extends GenericForm
                 'required' => FALSE
             ],
             'options' => [
-                'label' => Translator::translate('accountType'),
+                'label' => Translator::translate('Account Type'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]
@@ -103,7 +103,7 @@ class AccountForm extends GenericForm
                 'required' => FALSE
             ],
             'options' => [
-                'label' => Translator::translate('parentAccountNumber'),
+                'label' => Translator::translate('Parent Account Number'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]
@@ -133,15 +133,16 @@ class AccountForm extends GenericForm
         // Form Element for {description}
         // ======================================
         $this->add([
-            'type' => 'text',
+            'type' => 'textarea',
             'name' => 'description',
             'attributes' => [
                 'id' => 'description',
                 'class' => "form-control input-sm",
-                'required' => FALSE
+                'required' => FALSE,
+                'rows' => 3
             ],
             'options' => [
-                'label' => Translator::translate('description'),
+                'label' => Translator::translate('Description'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]

@@ -36,7 +36,10 @@ if ($dto != null) {
 
 // select pr item
 $( "#qr_item_name" ).autocomplete({
-    source: "/procure/qr-search/auto-complete",
+    source: "/procure/qr-search/auto-complete?vendor_id=<?php
+
+    echo $headerDTO->getVendor();
+    ?>",
     minLength: 2,
     select: function( event, ui ) {
 

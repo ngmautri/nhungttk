@@ -1,33 +1,40 @@
-
-<div id="tabs" style="font-size: 9.5pt">
-	<ul>
-		<li><a href="#general"><?php
-echo $this->translate('Account Chart');
-?></li>
-	</ul>
-
-	<div id="general">
-		<a class="btn btn-default btn-sm"
-			href="<?php
-
-echo $this->baseUrl?>/application/department/add"><small><i
-				class="glyphicon glyphicon-plus"> </i></small>&nbsp;<?php
-
-    echo $this->translate('Add Chart');
-    ?></a>
-
-		<hr>
-		<div id="html" class="demo">
-
 <?php
+use Application\Application\Service\AccountChart\Formatter\ExportAsHtmlTable;
 
-var_dump(get_class($chart));
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general"><?php
+
+        echo $this->translate('Account Chart');
+        ?>
+
+      </li>
+   </ul>
+   <div id="general">
+      <a class="btn btn-default btn-sm" href="<?php
+
+    echo $this->baseUrl?>/application/account-chart/create">
+         <small>
+            <i class="glyphicon glyphicon-plus"> </i>
+         </small>&nbsp;<?php
+
+        echo $this->translate('Create New');
+        ?></a>
+      <hr>
+      <div id="html" class="demo">
+<?php
+$export = new ExportAsHtmlTable();
+echo $export->execute($chart);
 ?>
 			<ul>
-
-			</ul>
-		</div>
-
-	</div>
+         </ul>
+      </div>
+   </div>
 </div>
-

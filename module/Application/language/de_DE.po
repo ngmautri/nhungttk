@@ -1,19 +1,167 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NMT\n"
-"POT-Creation-Date: 2020-04-04 22:10+0700\n"
-"PO-Revision-Date: 2020-04-04 22:14+0700\n"
+"POT-Creation-Date: 2021-04-23 21:41+0700\n"
+"PO-Revision-Date: 2021-04-23 21:43+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.1\n"
 "X-Poedit-Basepath: ../..\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-KeywordsList: translate;_\n"
 "X-Poedit-SearchPath-0: .\n"
+
+#: Application/src/Application/Application/Helper/Toolbar.php:25
+#: Application/src/Application/Application/Helper/Toolbar.php:69
+#: Application/src/Application/Application/Helper/Toolbar.php:72
+#: Application/src/Application/Application/Helper/Toolbar.php:130
+#: Finance/view/finance/ap-create-wizard.php:24
+#: Finance/view/finance/ap-create-wizard.php:28
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:22
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:56
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:100
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:134
+#: Inventory/view/inventory/gi-create-wizard.php:67
+#: Inventory/view/inventory/gi-create-wizard.php:84
+#: Inventory/view/inventory/gi-create-wizard1.php:33
+#: Inventory/view/inventory/gi-create-wizard1.php:37
+#: Inventory/view/inventory/gr-create-wizard.php:67
+#: Inventory/view/inventory/gr-create-wizard.php:84
+#: Inventory/view/inventory/ob-create-wizard.php:29
+#: Inventory/view/inventory/ob-create-wizard.php:33
+#: Inventory/view/inventory/opening-balance-create-wizard.php:67
+#: Inventory/view/inventory/opening-balance-create-wizard.php:84
+#: Inventory/view/inventory/transfer-create-wizard.php:23
+#: Inventory/view/inventory/transfer-create-wizard.php:27
+#: Payment/view/payment/outgoing-pmt-wizard.php:24
+#: Payment/view/payment/outgoing-pmt-wizard.php:28
+#: Procure/src/Procure/Application/Helper/Toolbar.php:25
+#: Procure/src/Procure/Application/Helper/Toolbar.php:72
+#: Procure/src/Procure/Application/Helper/Toolbar.php:75
+#: Procure/src/Procure/Application/Helper/Toolbar.php:136
+#: Procure/src/Procure/Application/Helper/Toolbar.php:171
+#: Procure/view/procure/ap-create-wizard.php:68
+#: Procure/view/procure/ap-create-wizard.php:85
+#: Procure/view/procure/create-wizard.php:60
+#: Procure/view/procure/create-wizard.php:72
+#: Procure/view/procure/gr-create-wizard.php:23
+#: Finance/view/finance/v-invoice-row/add.phtml:485
+#: Finance/view/finance/v-invoice-row/crud.phtml:516
+#: Inventory/view/inventory/opening-balance-row/add.phtml:170
+#: Inventory/view/inventory/opening-balance-row/edit.phtml:178
+#: Inventory/view/inventory/transfer-row/crudGI108.phtml:250
+#: Procure/view/procure/gr-row/add.phtml:546
+#: Procure/view/procure/gr-row/copy/add-row.phtml:444
+#: Procure/view/procure/gr/show.phtml:36
+#: Procure/view/procure/po-row/add-row.phtml:379
+#: Procure/view/procure/quote-row/add.phtml:335
+msgid "Review & Post"
+msgstr ""
+
+#: Application/src/Application/Application/Helper/Toolbar.php:28
+#: Application/src/Application/Application/Helper/Toolbar.php:78
+#: Application/src/Application/Application/Helper/Toolbar.php:133
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:25
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:59
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:103
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:137
+#: Procure/src/Procure/Application/Helper/Toolbar.php:28
+#: Procure/src/Procure/Application/Helper/Toolbar.php:81
+#: Procure/src/Procure/Application/Helper/Toolbar.php:138
+#: Procure/src/Procure/Application/Helper/Toolbar.php:174
+#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:79
+#: Finance/view/finance/v-invoice/copy/reverse.phtml:81
+#: Finance/view/finance/v-invoice/reverse.phtml:92
+#: Finance/view/finance/v-invoice/review.phtml:74
+#: Inventory/view/inventory/gi/reverse.phtml:89
+#: Inventory/view/inventory/gi/review-v1.phtml:325
+#: Inventory/view/inventory/gi/review.phtml:60
+#: Inventory/view/inventory/gr/review-v1.phtml:320
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:274
+#: Inventory/view/inventory/item-transaction/gi.phtml:146
+#: Inventory/view/inventory/opening-balance/review.phtml:54
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:278
+#: Inventory/view/inventory/transfer/review.phtml:64
+#: Payment/view/payment/outgoing/pay-ap.phtml:372
+#: Payment/view/payment/outgoing/pay-po.phtml:372
+#: Payment/view/payment/outgoing/reverse.phtml:81
+#: Procure/view/procure/ap/review-v1.phtml:293
+#: Procure/view/procure/ap/review.phtml:268 Procure/view/procure/gr/Copy
+#: review.phtml:71 Procure/view/procure/gr/reverse.phtml:95
+#: Procure/view/procure/gr/review-v1.phtml:320
+#: Procure/view/procure/gr/review.phtml:97
+#: Procure/view/procure/po/copy/review-v1.phtml:359
+#: Procure/view/procure/po/copy/review.phtml:143
+#: Procure/view/procure/po/view.phtml:130
+#: Procure/view/procure/pr/review-v1.phtml:271
+#: Procure/view/procure/qr/review.phtml:349
+#: Procure/view/procure/quote/show.phtml:90
+msgid "Post"
+msgstr ""
+
+#: Application/src/Application/Application/Helper/Toolbar.php:31
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:28
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:62
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:106
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:140
+#: Procure/src/Procure/Application/Helper/Toolbar.php:31
+#: Finance/view/finance/v-invoice/show.phtml:57
+#: Inventory/view/inventory/gi/show.phtml:41
+#: Inventory/view/inventory/transfer/show.phtml:41
+#: Payment/view/payment/outgoing/show.phtml:337
+#: Procure/view/procure/gr/show.phtml:54
+msgid "Reverse"
+msgstr ""
+
+#: Application/src/Application/Application/Helper/Toolbar.php:34
+#: Application/view/procure_menu.php:80
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:31
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:67
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:109
+#: Inventory/src/Inventory/Application/Helper/Toolbar.php:143
+#: Procure/src/Procure/Application/Helper/Toolbar.php:34
+msgid "Goods Return"
+msgstr ""
+
+#: Application/src/Application/Application/Helper/Toolbar.php:37
+#: Application/src/Application/Application/Helper/Toolbar.php:84
+#: Procure/src/Procure/Application/Helper/Toolbar.php:37
+#: Procure/src/Procure/Application/Helper/Toolbar.php:87
+msgid "Pay"
+msgstr ""
+
+#: Application/src/Application/Application/Helper/Toolbar.php:75
+#: Procure/src/Procure/Application/Helper/Toolbar.php:78
+#: Procure/view/procure/gr/review-v1.phtml:377
+#: Procure/view/procure/po/copy/review-v1.phtml:416
+#, fuzzy
+#| msgid "Amend"
+msgid "Amendment"
+msgstr "Ändern"
+
+#: Application/src/Application/Application/Helper/Toolbar.php:81
+#: Procure/src/Procure/Application/Helper/Toolbar.php:84
+#: Procure/view/procure/gr/review-v1.phtml:336
+#: Procure/view/procure/po/copy/review-v1.phtml:375
+msgid "Post Amendment"
+msgstr ""
+
+#: Application/src/Application/Application/Helper/Toolbar.php:87
+#: Application/view/inventory_menu.php:61
+#: Procure/src/Procure/Application/Helper/Toolbar.php:90
+#, fuzzy
+#| msgid "Project List"
+msgid "Goods Receipt"
+msgstr "Projektsliste"
+
+#: Application/src/Application/Application/Helper/Toolbar.php:90
+#: Procure/src/Procure/Application/Helper/Toolbar.php:93
+msgid "A/P Invoice"
+msgstr ""
 
 #: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:106
 #: Application/src/Application/Service/Upload/AbstractUploadService.php:174
@@ -69,6 +217,253 @@ msgstr ""
 msgid "Invalid Argument! Attachment Entity not found for editing"
 msgstr ""
 
+#: Application/src/Application/Controller/Contracts/CRUDController.php:281
+#: Application/src/Application/Controller/Contracts/ValueObjectCRUDController.php:194
+#: Finance/view/finance/v-invoice/vendor.phtml:180
+#: HR/view/hr/contract/index.phtml:35 HR/view/hr/contract/index.phtml:45
+#: HR/view/hr/employee-contract/list1.phtml:59
+#: HR/view/hr/employee-contract/list2.phtml:53
+#: HR/view/hr/employee-contract/list2.phtml:63
+#: HR/view/hr/employee/applicant-list.phtml:154
+#: HR/view/hr/employee/list.phtml:171 HR/view/hr/income-setup/index.phtml:63
+#: HR/view/hr/leave-reason/list.phtml:63 HR/view/hr/minimum-wage/index.phtml:35
+#: HR/view/hr/minimum-wage/index.phtml:44 HR/view/hr/position/index.phtml:37
+#: HR/view/hr/position/index.phtml:47 HR/view/hr/position/list.phtml:61
+#: HR/view/hr/salary/list2.phtml:53 HR/view/hr/salary/list2.phtml:63
+#: HR/view/hr/sso/index.phtml:37 HR/view/hr/sso/index.phtml:47
+#: Inventory/view/inventory/item-accounting/list.phtml:101
+#: Inventory/view/inventory/item-serial/list.phtml:105
+#: Inventory/view/inventory/item-transaction/list.phtml:322
+#: Inventory/view/inventory/item-transaction/list.phtml:391
+#: Inventory/view/inventory/item-variant/list.phtml:105
+#: Inventory/view/inventory/opening-balance/list.phtml:170
+#: Procure/view/procure/po-row/row-of-vendor.phtml:160
+#: Procure/view/procure/po/vendor.phtml:167
+msgid "Show"
+msgstr "Sehen"
+
+#: Application/src/Application/Domain/Shared/Person/Gender.php:27
+#, fuzzy
+#| msgid "Currency"
+msgid "Gender not set!"
+msgstr "Währung"
+
+#: Application/src/Application/Domain/Shared/Person/Gender.php:29
+#, fuzzy
+#| msgid "Posting Period"
+msgid "Gender in not valid"
+msgstr "Peride"
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:25
+msgid "First name empty"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:31
+msgid "First name has invalid character"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:34
+msgid "Middle name has invalid character"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:39
+msgid "Last name has invalid character"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:42
+msgid "First name too long (max.30 character)"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:43
+msgid "Middle name too long (max.30 character)"
+msgstr ""
+
+#: Application/src/Application/Domain/Shared/Person/PersonName.php:44
+msgid "Last name too long (max.30 character)"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:49
+#: Finance/view/finance/account/add.phtml:54
+#: Finance/view/finance/account/list.phtml:144
+msgid "Account Number"
+msgstr "Kontonumber"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:68
+msgid "Account Name"
+msgstr "Kontoname"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:87
+#: Finance/view/finance/account/list.phtml:145
+msgid "Account Type"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:106
+#, fuzzy
+#| msgid "Contract number"
+msgid "Parent Account Number"
+msgstr "Vertragsnumber"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:125
+#, fuzzy
+#| msgid "Active"
+msgid "isActive"
+msgstr "Aktiviert"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:145
+#: Application/view/application/pmt-method/crud.phtml:124
+#: Finance/view/finance/account/list.phtml:146
+#: HR/view/hr/leave-reason/add.phtml:80 HR/view/hr/position/add.phtml:86
+#: HR/view/hr/position/edit.phtml:93 HR/view/hr/position/show.phtml:90
+#: HR/view/hr/salary/edit.phtml:104
+#: Inventory/view/inventory/item-group/list.phtml:48
+#: Inventory/view/inventory/stock/list.phtml:48
+msgid "Description"
+msgstr "Beschreibung"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:164
+#: Application/src/Application/Form/Deparment/DepartmentForm.php:55
+#, fuzzy
+#| msgid "Remarks"
+msgid "remarks"
+msgstr "Notizen"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:183
+msgid "allowReconciliation"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:202
+msgid "hasCostCenter"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:221
+msgid "isClearingAccount"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:240
+#, fuzzy
+#| msgid "Inventory"
+msgid "isControlAccount"
+msgstr "Waren"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:259
+msgid "manualPostingBlocked"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:278
+#, fuzzy
+#| msgid "Posting Period"
+msgid "allowPosting"
+msgstr "Peride"
+
+#: Application/src/Application/Form/AccountChart/AccountForm.php:297
+msgid "controlFor"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:50
+msgid "Chart Code"
+msgstr "Kontoschema Number"
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:69
+msgid "Chart Name"
+msgstr "Kontoschema Name"
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:89
+#, fuzzy
+#| msgid "Description"
+msgid "description"
+msgstr "Beschreibung"
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:108
+#: HR/view/hr/salary/edit.phtml:90
+msgid "Valid from"
+msgstr ""
+
+#: Application/src/Application/Form/AccountChart/ChartForm.php:127
+#: HR/view/hr/employee-contract/list1.phtml:31 HR/view/hr/salary/list1.phtml:41
+#: HR/view/hr/salary/simulate.phtml:37
+#, fuzzy
+#| msgid "Vadid To"
+msgid "Valid To"
+msgstr "Gültig bis"
+
+#: Application/src/Application/Form/Deparment/DepartmentForm.php:74
+#, fuzzy
+#| msgid "Department"
+msgid "departmentName"
+msgstr "Abteilungen"
+
+#: Application/src/Application/Form/Deparment/DepartmentForm.php:93
+#, fuzzy
+#| msgid "Department"
+msgid "departmentCode"
+msgstr "Abteilungen"
+
+#: Application/src/Application/Form/Render/AbstractFormRender.php:192
+#: Application/src/Application/Form/Render/AbstractFormRender.php:206
+#: Application/view/application/incoterm/crud.phtml:110
+#: Application/view/application/payment-term/crud.phtml:117
+#: Application/view/application/pmt-method/crud.phtml:139
+#: Finance/view/finance/posting-period/add.phtml:129
+#: HR/view/hr/employee-contract/add.phtml:224
+#: HR/view/hr/employee-contract/amend.phtml:242
+#: HR/view/hr/employee-contract/terminate.phtml:242
+#: HR/view/hr/leave-reason/add.phtml:95 HR/view/hr/position/add.phtml:101
+#: HR/view/hr/position/edit.phtml:108 HR/view/hr/salary/edit.phtml:121
+#: Inventory/view/inventory/association-item/crud-v1.phtml:212
+#: Inventory/view/inventory/association-item/crud.phtml:205
+#: Inventory/view/inventory/similar-item/crud.phtml:245
+#: Inventory/view/inventory/warehouse/crud.phtml:245
+#: Inventory/view/inventory/warehouse/crud2.phtml:218
+#: Procure/view/procure/ap/crudRow.phtml:541
+#: Procure/view/procure/gr/crudRow.phtml:315
+#: Procure/view/procure/po-row/add-row.phtml:366
+#: Procure/view/procure/po/crudPORow.phtml:426
+#: Procure/view/procure/po/crudRow.phtml:458
+#: Procure/view/procure/pr-row-attachment/upload.phtml:161
+#: Procure/view/procure/pr-row/copy/edit.phtml:267
+#: Procure/view/procure/pr-row/edit.phtml:266
+#: Procure/view/procure/pr/crudRow.phtml:386
+#: Procure/view/procure/qr/crudRow.phtml:479
+msgid "Save"
+msgstr "Speichern"
+
+#: Application/src/Application/Form/Render/AbstractFormRender.php:199
+#: Application/view/application/incoterm/crud.phtml:113
+#: Application/view/application/payment-term/crud.phtml:120
+#: Application/view/application/pmt-method/crud.phtml:142
+#: HR/view/hr/employee-contract/add.phtml:227
+#: HR/view/hr/employee-contract/amend.phtml:245
+#: HR/view/hr/employee-contract/show.phtml:51
+#: HR/view/hr/employee-contract/terminate.phtml:245
+#: HR/view/hr/leave-reason/add.phtml:98 HR/view/hr/position/add.phtml:104
+#: HR/view/hr/position/edit.phtml:111 HR/view/hr/salary/assign.phtml:102
+#: HR/view/hr/salary/edit.phtml:123 HR/view/hr/salary/show.phtml:241
+#: Inventory/view/inventory/association-item/crud-v1.phtml:222
+#: Inventory/view/inventory/association-item/crud.phtml:215
+#: Inventory/view/inventory/association/crud-v1.phtml:589
+#: Inventory/view/inventory/gi/copy/crudHeader.phtml:22
+#: Inventory/view/inventory/gi/copy/crudHeader.phtml:40
+#: Inventory/view/inventory/gi/crudHeader.phtml:24
+#: Inventory/view/inventory/gr/crudHeader.phtml:23
+#: Inventory/view/inventory/item-opening-balance/crudHeader.phtml:23
+#: Inventory/view/inventory/item/crud-logistic.phtml:649
+#: Inventory/view/inventory/item/crud-v1.phtml:72
+#: Inventory/view/inventory/item/crud-v1.phtml:79
+#: Inventory/view/inventory/item/crud-v1.phtml:89
+#: Inventory/view/inventory/similar-item/crud.phtml:248
+#: Inventory/view/inventory/transfer-wh/crudHeader.phtml:23
+#: Inventory/view/inventory/warehouse/crud.phtml:248
+#: Inventory/view/inventory/warehouse/crud2.phtml:221
+#: Procure/view/procure/ap/crudRow.phtml:551
+#: Procure/view/procure/gr/crudRow.phtml:318
+#: Procure/view/procure/po-row/add-row.phtml:369
+#: Procure/view/procure/po/crudPORow.phtml:436
+#: Procure/view/procure/po/crudRow.phtml:468
+#: Procure/view/procure/pr/crudRow.phtml:396
+#: Procure/view/procure/qr/crudRow.phtml:489
+msgid "Cancel"
+msgstr "Abbrechen"
+
 #: Application/src/Application/Service/IncotermService.php:27
 msgid "Incoterm is not found!"
 msgstr ""
@@ -84,6 +479,7 @@ msgstr ""
 #: Inventory/src/Inventory/Service/Item/ItemService.php:33
 #: Inventory/src/Inventory/Service/ItemGroupService.php:33
 #: Inventory/src/Inventory/Service/Report/TransactionReportService.php:33
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:31
 #: Inventory/src/Inventory/Service/WarehouseService.php:33
 #: Payment/src/Payment/Service/APPaymentService.php:39
 #: Payment/src/Payment/Service/POPaymentService.php:39
@@ -169,20 +565,20 @@ msgstr ""
 msgid "Invalid Argument! Attachment Object not found!"
 msgstr ""
 
-#: Application/view/finance_menu.php:13
+#: Application/view/finance_menu.php:27
 msgid "Journal Entry"
 msgstr ""
 
-#: Application/view/finance_menu.php:18
+#: Application/view/finance_menu.php:37
 msgid "Chart of Accounts"
-msgstr ""
+msgstr "Kontoschema"
 
-#: Application/view/finance_menu.php:21
+#: Application/view/finance_menu.php:46
 #: Finance/view/finance/posting-period/list.phtml:5
 msgid "Posting Period"
 msgstr "Peride"
 
-#: Application/view/finance_menu.php:23 Finance/view/finance/fx/list.phtml:5
+#: Application/view/finance_menu.php:55 Finance/view/finance/fx/list.phtml:5
 #: Finance/view/finance/je-row/list.phtml:5
 #: Finance/view/finance/je/list.phtml:5
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:322
@@ -193,8 +589,8 @@ msgstr "Peride"
 msgid "Exchange Rate"
 msgstr ""
 
-#: Application/view/finance_menu.php:27 Application/view/inventory_menu.php:37
-#: Application/view/procure_menu.php:40
+#: Application/view/finance_menu.php:63 Application/view/inventory_menu.php:94
+#: Application/view/procure_menu.php:95
 msgid "Log"
 msgstr ""
 
@@ -222,9 +618,8 @@ msgstr "Abwesenheitsgrund"
 msgid "Salary Calculation"
 msgstr ""
 
-#: Application/view/hr_menu.php:17 Application/view/inventory_menu.php:28
+#: Application/view/hr_menu.php:17 Application/view/inventory_menu.php:78
 #: HR/view/hr/reporting/index.phtml:5
-#: Inventory/view/inventory/report/index.phtml:5
 msgid "Reporting"
 msgstr "Berichten"
 
@@ -236,29 +631,26 @@ msgstr ""
 msgid "Evaluation for Productivity Bonus"
 msgstr ""
 
-#: Application/view/hr_menu.php:25 Application/view/inventory_menu.php:33
+#: Application/view/hr_menu.php:25 Application/view/inventory_menu.php:86
 #: Application/view/navbar.php:113
 msgid "Setup"
 msgstr "Einrichten"
 
-#: Application/view/inventory_menu.php:4
+#: Application/view/inventory_menu.php:8
 msgid "Dashboard"
 msgstr ""
 
-#: Application/view/inventory_menu.php:7
+#: Application/view/inventory_menu.php:18
 msgid "Create new item"
 msgstr "Neuer Artikel"
 
-#: Application/view/inventory_menu.php:18
-#: Application/view/inventory_menu.php:20
-msgid "New Goods Issue"
-msgstr ""
+#: Application/view/inventory_menu.php:52
+#, fuzzy
+#| msgid "Created Date"
+msgid "Goods Issue"
+msgstr "Erstellsdatum"
 
-#: Application/view/inventory_menu.php:23
-msgid "New Goods Receipt"
-msgstr ""
-
-#: Application/view/inventory_menu.php:25
+#: Application/view/inventory_menu.php:70
 msgid "New Goods Transfer"
 msgstr ""
 
@@ -308,90 +700,91 @@ msgstr "Projektsliste"
 msgid "Calendar"
 msgstr "Kalender"
 
-#: Application/view/procure_menu.php:2
+#: Application/view/procure_menu.php:5
 msgid "New Purchase Request (PR)"
 msgstr "Erstelle neuer Einkauf"
 
-#: Application/view/procure_menu.php:11
-#: Procure/view/procure/quote/list.phtml:10
+#: Application/view/procure_menu.php:25
+#: Procure/view/procure/quote/list.phtml:14
 msgid "New Quotation"
 msgstr ""
 
-#: Application/view/procure_menu.php:13
-#: Procure/view/procure/quote-create-wizard.php:3
+#: Application/view/procure_menu.php:32
+#: Procure/view/procure/quote-create-wizard.php:6
 msgid "Quotation List"
 msgstr ""
 
-#: Application/view/procure_menu.php:35
-msgid "Goods Return"
-msgstr ""
-
-#: Application/view/procure_menu.php:37
+#: Application/view/procure_menu.php:87
 msgid "Return list"
 msgstr ""
 
-#: Application/view/setting_menu.php:4
+#: Application/view/setting_menu.php:7
 msgid "User Management"
 msgstr "Benutzerverwaltung"
 
-#: Application/view/setting_menu.php:6
+#: Application/view/setting_menu.php:13
+#: Application/view/application/department/Copy of list2.phtml:11
 #: Application/view/application/department/list.phtml:4
+#: Application/view/application/department/list2.phtml:12
 #: HR/view/hr/employee/list.phtml:50 HR/view/hr/employee/list.phtml:53
 msgid "Department"
 msgstr "Abteilungen"
 
-#: Application/view/setting_menu.php:10
+#: Application/view/setting_menu.php:20
+msgid "Chart of accounts"
+msgstr "Kontoschema"
+
+#: Application/view/setting_menu.php:28
 msgid "Access Control List (ACL)"
 msgstr "Zugriffrechten (ACL)"
 
-#: Application/view/setting_menu.php:13
+#: Application/view/setting_menu.php:35
 msgid "Workflow Management"
 msgstr ""
 
-#: Application/view/setting_menu.php:31
+#: Application/view/setting_menu.php:57
 msgid "Backup Database"
 msgstr ""
 
-#: Application/view/setting_menu.php:34
-msgid "Caching Manager"
+#: Application/view/setting_menu.php:64
+msgid "Clear cache"
 msgstr ""
 
-#: Application/view/setting_menu.php:39
+#: Application/view/setting_menu.php:74
 msgid "Update Search Index"
 msgstr ""
 
-#: Application/view/setting_menu.php:44
+#: Application/view/setting_menu.php:83
 msgid "Update Item Index"
 msgstr ""
 
-#: Application/view/setting_menu.php:48
+#: Application/view/setting_menu.php:91
 msgid "Update PO Index"
 msgstr ""
 
-#: Application/view/setting_menu.php:51
+#: Application/view/setting_menu.php:98
 msgid "Update A/P Index"
 msgstr ""
 
-#: Application/view/setting_menu.php:56
+#: Application/view/setting_menu.php:107
 msgid "Console"
 msgstr ""
 
-#: Application/view/setting_menu.php:59
+#: Application/view/setting_menu.php:114
 msgid "API"
 msgstr ""
 
-#: Application/view/setting_menu.php:64
+#: Application/view/setting_menu.php:123
 msgid "Check Attachment"
 msgstr ""
 
-#: Application/view/setting_menu.php:68
+#: Application/view/setting_menu.php:131
 msgid "System Information"
 msgstr "Systemsinformation"
 
 #: Finance/src/Finance/Controller/BK/VInvoiceController.php:107
 #: Payment/src/Payment/Service/APPaymentService.php:476
 #: Payment/src/Payment/Service/POPaymentService.php:472
-#: Procure/src/Procure/Controller/GrController.php:301
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:1337
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/PurchaseOrder.php:1337
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/QuotationOrder.php:1337
@@ -434,8 +827,8 @@ msgstr ""
 
 #: Finance/src/Finance/Controller/BK/VInvoiceController.php:159
 #: Finance/src/Finance/Controller/BK/VInvoiceController.php:495
-#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:662
-#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:865
+#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:660
+#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:863
 #: Inventory/src/Inventory/Controller/StockController.php:121
 #: Payment/src/Payment/Service/APPaymentService.php:546
 #: Payment/src/Payment/Service/POPaymentService.php:542
@@ -464,8 +857,8 @@ msgstr ""
 
 #: Finance/src/Finance/Controller/BK/VInvoiceController.php:403
 #: Finance/src/Finance/Controller/BK/VInvoiceController.php:667
-#: Finance/src/Finance/Controller/VInvoiceController.php:466
-#: Procure/src/Procure/Controller/GrController.php:678
+#: Finance/src/Finance/Controller/VInvoiceController.php:470
+#: Procure/src/Procure/Controller/Copy/GrController.php:885
 #: Procure/src/Procure/Controller/QuoteController.php:244
 #: Procure/src/Procure/Controller/QuoteController.php:377
 msgid "Document is incomplete!"
@@ -500,8 +893,8 @@ msgid "Invoice Date is not correct or empty!"
 msgstr ""
 
 #: Finance/src/Finance/Controller/BK/VInvoiceController.php:513
-#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:626
-#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:829
+#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:624
+#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:827
 #: Inventory/src/Inventory/Controller/StockController.php:85
 #: Payment/src/Payment/Service/APPaymentService.php:590
 #: Payment/src/Payment/Service/APPaymentService.php:610
@@ -549,12 +942,11 @@ msgstr ""
 msgid "Warehouse can't be empty. Please select a warehouse!"
 msgstr ""
 
-#: Finance/src/Finance/Controller/VInvoiceController.php:99
-#: Inventory/src/Inventory/Controller/GIController.php:111
+#: Finance/src/Finance/Controller/VInvoiceController.php:101
 #: Inventory/src/Inventory/Controller/TransferController.php:224
 #: Payment/src/Payment/Controller/OutgoingController.php:140
-#: Procure/src/Procure/Controller/GrController.php:71
-#: Procure/src/Procure/Controller/GrController.php:92
+#: Procure/src/Procure/Controller/Copy/GrController.php:669
+#: Procure/src/Procure/Controller/Copy/GrController.php:689
 msgid "Reversal failed!"
 msgstr ""
 
@@ -567,6 +959,7 @@ msgid "Invalid Argument! Account Object not found!"
 msgstr ""
 
 #: Finance/view/finance/ap-create-wizard.php:4
+#: Procure/view/procure/ap-create-wizard.php:6
 #, fuzzy
 #| msgid "Project List"
 msgid "AP List"
@@ -574,6 +967,8 @@ msgstr "Projektsliste"
 
 #: Finance/view/finance/ap-create-wizard.php:9
 #: Finance/view/finance/ap-create-wizard.php:12
+#: Procure/view/procure/ap-create-wizard.php:16
+#: Procure/view/procure/ap-create-wizard.php:25
 msgid "A/P Invoice Header"
 msgstr ""
 
@@ -581,48 +976,42 @@ msgstr ""
 #: Finance/view/finance/ap-create-wizard.php:20
 #: Payment/view/payment/outgoing-pmt-wizard.php:16
 #: Payment/view/payment/outgoing-pmt-wizard.php:20
+#: Procure/view/procure/ap-create-wizard.php:38
+#: Procure/view/procure/ap-create-wizard.php:55
 msgid "A/P Invoice Line"
 msgstr ""
 
-#: Finance/view/finance/ap-create-wizard.php:24
-#: Finance/view/finance/ap-create-wizard.php:28
-#: Inventory/view/inventory/gi-create-wizard.php:23
-#: Inventory/view/inventory/gi-create-wizard.php:27
-#: Inventory/view/inventory/gi-create-wizard1.php:33
-#: Inventory/view/inventory/gi-create-wizard1.php:37
-#: Inventory/view/inventory/ob-create-wizard.php:29
-#: Inventory/view/inventory/ob-create-wizard.php:33
-#: Inventory/view/inventory/transfer-create-wizard.php:23
-#: Inventory/view/inventory/transfer-create-wizard.php:27
-#: Payment/view/payment/outgoing-pmt-wizard.php:24
-#: Payment/view/payment/outgoing-pmt-wizard.php:28
-#: Procure/view/procure/create-wizard.php:21
-#: Procure/view/procure/create-wizard.php:25
-#: Procure/view/procure/gr-create-wizard.php:23
-#: Finance/view/finance/v-invoice-row/add.phtml:485
-#: Finance/view/finance/v-invoice-row/crud.phtml:516
-#: Inventory/view/inventory/opening-balance-row/add.phtml:170
-#: Inventory/view/inventory/opening-balance-row/edit.phtml:178
-#: Inventory/view/inventory/transfer-row/crudGI108.phtml:250
-#: Procure/view/procure/gr-row/add.phtml:546
-#: Procure/view/procure/gr-row/copy/add-row.phtml:444
-#: Procure/view/procure/gr/show.phtml:36
-#: Procure/view/procure/po-row/add-row.phtml:379
-#: Procure/view/procure/quote-row/add.phtml:335
-msgid "Review & Post"
-msgstr ""
-
 #: Finance/view/finance/ap-create-wizard.php:37
+#: Procure/view/procure/ap-create-wizard.php:102
 msgid "Goods receipt with invoice"
 msgstr ""
 
 #: Finance/view/finance/ap-create-wizard.php:37
+#: Procure/view/procure/ap-create-wizard.php:105
 msgid "Without invoice, please click "
 msgstr ""
 
 #: Finance/view/finance/ap-create-wizard.php:39
+#: Procure/view/procure/ap-create-wizard.php:110
 #: Procure/view/procure/gr-create-wizard.php:35
 msgid "here"
+msgstr ""
+
+#: HR/src/HR/Domain/Employee/Validator/DefaultEmployeeValidator.php:44
+#, fuzzy
+#| msgid "Employee Code"
+msgid "Employee code exits"
+msgstr "Mitarbeitersnummer"
+
+#: HR/src/HR/Domain/Employee/Validator/DefaultIndividualValidator.php:40
+#, fuzzy
+#| msgid "Employee Code"
+msgid "Company not exits."
+msgstr "Mitarbeitersnummer"
+
+#: HR/src/HR/Domain/Employee/Validator/DefaultIndividualValidator.php:51
+#: HR/src/HR/Domain/Employee/Validator/DefaultIndividualValidator.php:60
+msgid "User is not identified for this transaction"
 msgstr ""
 
 #: HR/view/hr/salary-calculator/calculator-wizard.php:7
@@ -669,139 +1058,88 @@ msgstr ""
 msgid "Submision for Approval"
 msgstr ""
 
-#: Inventory/src/Inventory/Application/Service/Item/FIFOLayerService.php:51
-#: Inventory/src/Inventory/Application/Service/Item/FIFOService.php:51
+#: Inventory/src/Inventory/Application/Service/Item/FIFOLayerService.php:53
+#: Inventory/src/Inventory/Application/Service/Item/FIFOService.php:52
+#: Inventory/src/Inventory/Application/Service/Item/FIFOServiceImpl.php:53
+#: Inventory/src/Inventory/Application/Service/Item/FIFOServiceImpl.php:197
+#: Inventory/src/Inventory/Application/Service/Item/FIFOServiceImpl1.php:52
 #: Inventory/src/Inventory/Service/FIFOLayerService.php:59
 msgid ""
 "Goods Issue imposible. Please check the stock quantity and the issue date"
 msgstr ""
 
-#: Inventory/src/Inventory/Application/Service/Item/FIFOLayerService.php:128
-#: Inventory/src/Inventory/Application/Service/Item/FIFOService.php:127
+#: Inventory/src/Inventory/Application/Service/Item/FIFOLayerService.php:130
+#: Inventory/src/Inventory/Application/Service/Item/FIFOService.php:128
+#: Inventory/src/Inventory/Application/Service/Item/FIFOServiceImpl.php:131
+#: Inventory/src/Inventory/Application/Service/Item/FIFOServiceImpl.php:276
+#: Inventory/src/Inventory/Application/Service/Item/FIFOServiceImpl1.php:128
 #: Inventory/src/Inventory/Service/FIFOLayerService.php:136
 #: Inventory/src/Inventory/Service/FIFOLayerService.php:258
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:1014
 msgid "Goods Issue imposible. Issue Quantity > On-hand Quantity"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/GIController.php:85
-#: Inventory/src/Inventory/Controller/TransferController.php:198
-msgid "WH Transaction not found. Please check."
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/GIController.php:326
-#: Inventory/src/Inventory/Controller/GIController.php:355
-#: Inventory/src/Inventory/Controller/GIController.php:391
-#: Inventory/src/Inventory/Controller/GIController.php:454
-#: Inventory/src/Inventory/Controller/GIController.php:735
-msgid "Edit Good Issue"
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/GIController.php:344
-#: Inventory/src/Inventory/Controller/GIController.php:437
-#: Inventory/src/Inventory/Controller/TransferController.php:467
-#: Inventory/src/Inventory/Controller/TransferController.php:562
-msgid ""
-"No authority to perform this operation on this object! Only the owner or the "
-"administrator has the right to do it."
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/GIController.php:348
-#: Inventory/src/Inventory/Controller/GIController.php:441
-#: Inventory/src/Inventory/Controller/TransferController.php:471
-#: Inventory/src/Inventory/Controller/TransferController.php:566
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:160
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1071
-msgid "ACL checking failed"
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/GIController.php:446
-#: Inventory/src/Inventory/Controller/TransferController.php:571
-msgid " can not change."
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/GIController.php:522
-#: Inventory/src/Inventory/Controller/GIController.php:561
-#: Inventory/src/Inventory/Controller/GIController.php:612
+#: Inventory/src/Inventory/Controller/ItemController.php:207
 #, fuzzy
 #| msgid "Created Date"
-msgid "Create Good Issue"
+msgid "Create Item"
 msgstr "Erstellsdatum"
 
-#: Inventory/src/Inventory/Controller/GRController.php:159
-msgid "Local currency is not defined. Please check!"
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/GRController.php:165
-msgid "Goods Issue Type is not valid!"
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/GRController.php:173
-#: User/src/User/Service/UserService.php:107
-msgid "Goods Issue Date is not correct or empty!"
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/GRController.php:187
-#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:640
-#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:651
-#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:843
-#: Inventory/src/Inventory/Controller/StockController.php:99
-#: Inventory/src/Inventory/Controller/StockController.php:110
-#: Procure/src/Procure/Controller/GrController.php:347
-msgid "Warehouse can't be empty. Please select a Wahrhouse!"
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/GRController.php:338
-msgid "Transaction Date is not correct or empty!"
-msgstr ""
-
-#: Inventory/src/Inventory/Controller/ItemController.php:616
-#: Inventory/src/Inventory/Controller/ItemController.php:641
-#: Inventory/src/Inventory/Controller/ItemController.php:666
-#: Inventory/src/Inventory/Controller/ItemController.php:690
-#: Inventory/src/Inventory/Controller/ItemController.php:1053
-#: Inventory/src/Inventory/Controller/ItemController.php:1078
-#: Inventory/src/Inventory/Controller/ItemController.php:1102
+#: Inventory/src/Inventory/Controller/ItemController.php:1095
+#: Inventory/src/Inventory/Controller/ItemController.php:1120
+#: Inventory/src/Inventory/Controller/ItemController.php:1145
+#: Inventory/src/Inventory/Controller/ItemController.php:1169
+#: Inventory/src/Inventory/Controller/ItemController.php:1533
+#: Inventory/src/Inventory/Controller/ItemController.php:1558
+#: Inventory/src/Inventory/Controller/ItemController.php:1582
 msgid "Please give conversion factor"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/ItemController.php:620
-#: Inventory/src/Inventory/Controller/ItemController.php:645
-#: Inventory/src/Inventory/Controller/ItemController.php:670
-#: Inventory/src/Inventory/Controller/ItemController.php:694
-#: Inventory/src/Inventory/Controller/ItemController.php:1057
-#: Inventory/src/Inventory/Controller/ItemController.php:1082
-#: Inventory/src/Inventory/Controller/ItemController.php:1106
+#: Inventory/src/Inventory/Controller/ItemController.php:1099
+#: Inventory/src/Inventory/Controller/ItemController.php:1124
+#: Inventory/src/Inventory/Controller/ItemController.php:1149
+#: Inventory/src/Inventory/Controller/ItemController.php:1173
+#: Inventory/src/Inventory/Controller/ItemController.php:1537
+#: Inventory/src/Inventory/Controller/ItemController.php:1562
+#: Inventory/src/Inventory/Controller/ItemController.php:1586
 msgid "Conversion Factor must be greater than 0!"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:854
+#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:638
+#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:649
+#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:841
+#: Inventory/src/Inventory/Controller/StockController.php:99
+#: Inventory/src/Inventory/Controller/StockController.php:110
+msgid "Warehouse can't be empty. Please select a Wahrhouse!"
+msgstr ""
+
+#: Inventory/src/Inventory/Controller/OpeningBalanceController.php:852
 msgid "GL can't be empty. Please select a account!"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:199
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:433
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:194
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:428
 #: Inventory/src/Inventory/Service/GIService.php:135
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:972
 msgid "No Item is selected"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:202
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:436
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:197
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:431
 #: Inventory/src/Inventory/Service/GIService.php:138
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:975
 msgid "Item is not kept in stock"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:214
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:448
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:209
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:443
 #: Inventory/src/Inventory/Service/GIService.php:149
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:986
 msgid "Quantity must be a number!"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:217
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:451
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:212
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:446
 #: Inventory/src/Inventory/Service/GIService.php:152
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:989
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:323
@@ -814,13 +1152,13 @@ msgstr ""
 msgid "Quantity must be greater than 0!"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:230
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:464
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:225
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:459
 msgid "Unit Price must be a number!"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:233
-#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:467
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:228
+#: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:462
 msgid "Unit Price  must be greater than 0!"
 msgstr ""
 
@@ -830,6 +1168,10 @@ msgstr ""
 #| msgid "Created Date"
 msgid "Create Good Transfer"
 msgstr "Erstellsdatum"
+
+#: Inventory/src/Inventory/Controller/TransferController.php:198
+msgid "WH Transaction not found. Please check."
+msgstr ""
 
 #: Inventory/src/Inventory/Controller/TransferController.php:384
 msgid "Show Goods Transfer"
@@ -842,6 +1184,24 @@ msgstr ""
 msgid "Edit Goods Transfer"
 msgstr ""
 
+#: Inventory/src/Inventory/Controller/TransferController.php:467
+#: Inventory/src/Inventory/Controller/TransferController.php:562
+msgid ""
+"No authority to perform this operation on this object! Only the owner or the "
+"administrator has the right to do it."
+msgstr ""
+
+#: Inventory/src/Inventory/Controller/TransferController.php:471
+#: Inventory/src/Inventory/Controller/TransferController.php:566
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:160
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1071
+msgid "ACL checking failed"
+msgstr ""
+
+#: Inventory/src/Inventory/Controller/TransferController.php:571
+msgid " can not change."
+msgstr ""
+
 #: Inventory/src/Inventory/Controller/TransferRowController.php:116
 msgid "New Goods Transfer Row"
 msgstr ""
@@ -851,63 +1211,101 @@ msgstr ""
 msgid "New Goods Transfer Line"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:88
+#: Inventory/src/Inventory/Controller/depreceted/GIController.php:354
+#: Inventory/src/Inventory/Controller/depreceted/GRController.php:259
+#: Inventory/src/Inventory/Controller/depreceted/ItemOpeningBalanceController.php:218
+#: Inventory/src/Inventory/Controller/depreceted/TransferWhController.php:218
+#, fuzzy
+#| msgid "Termination Date"
+msgid "Show Transaction"
+msgstr "Kündigungsdatum"
+
+#: Inventory/src/Inventory/Controller/depreceted/GIController.php:515
+#, fuzzy
+#| msgid "Created Date"
+msgid "Create Good Issue"
+msgstr "Erstellsdatum"
+
+#: Inventory/src/Inventory/Controller/depreceted/GRController.php:317
+#, fuzzy
+#| msgid "Created Date"
+msgid "Create Good Receipt"
+msgstr "Erstellsdatum"
+
+#: Inventory/src/Inventory/Controller/depreceted/ItemOpeningBalanceController.php:322
+msgid "Create Opening Balance"
+msgstr ""
+
+#: Inventory/src/Inventory/Controller/depreceted/TransferWhController.php:325
+#, fuzzy
+#| msgid "Created Date"
+msgid "Create WH Transfer"
+msgstr "Erstellsdatum"
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:100
 #: Inventory/src/Inventory/Model/Constants.php:70
 msgid "Issue for reparing machine (no exchange of part)"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:89
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:101
 #: Inventory/src/Inventory/Model/Constants.php:71
 msgid ""
 "Issue part for repairing of machine. The requester must not give any part"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:93
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:105
 #: Inventory/src/Inventory/Model/Constants.php:75
 msgid "Issue for reparing machine (exchange of part)"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:94
-#: Inventory/src/Inventory/Model/Constants.php:76
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:106
 msgid ""
-"Exchange parts for repairing of machine.<ul><li>Spare part controller will "
+"Exchange parts for repairing of machine.<br>- Spare part controller will "
 "issue new parts and receive old /defect one back to store for disposal "
-"process.</li><li>Asset code is required.</li></ul>"
+"process.<br>- Asset code is required."
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:98
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:110
+msgid "Issue for returning"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:111
+msgid "Item will be retured if not met requirment. "
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:115
 #: Inventory/src/Inventory/Model/Constants.php:80
 msgid "Issue for Project (e.g IE Project)"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:99
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:116
 #: Inventory/src/Inventory/Model/Constants.php:81
 msgid ""
 "Spare part, materials will be consumpted by the project.<br>Project must be "
 "given! "
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:103
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:120
 #: Inventory/src/Inventory/Model/Constants.php:85
 msgid "Issue for Cost Center"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:104
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:121
 #: Inventory/src/Inventory/Model/Constants.php:86
 msgid ""
 "Spare part, materials will be consumpted by an cost center.<br>Cost Center "
 "must be given! "
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:108
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:113
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:125
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:130
 #: Inventory/src/Inventory/Model/Constants.php:90
 #: Inventory/src/Inventory/Model/Constants.php:95
 msgid "Issue for Production Order"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:109
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:114
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:126
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:131
 #: Inventory/src/Inventory/Model/Constants.php:91
 #: Inventory/src/Inventory/Model/Constants.php:96
 msgid ""
@@ -915,98 +1313,198 @@ msgid ""
 "Order must be given! "
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:118
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:135
 #: Inventory/src/Inventory/Model/Constants.php:100
 msgid "Issue for Repairing"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:119
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:136
 #: Inventory/src/Inventory/Model/Constants.php:101
 msgid ""
 "Spare part, materials will be repaired by external party. After repaired, "
 "part will be received again"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:123
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:140
 #: Inventory/src/Inventory/Model/Constants.php:105
 msgid "Issue for Maintenance Work"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:124
-#: Inventory/src/Inventory/Model/Constants.php:106
-msgid "Spare part, materials will be issued for maintenance  worked."
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:141
+msgid "Spare part, materials will be issued for maintenance worked."
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:128
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:145
 #: Inventory/src/Inventory/Model/Constants.php:110
 msgid "Issue for Asset"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:129
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:146
 #: Inventory/src/Inventory/Model/Constants.php:111
 msgid ""
 "Spare part, materials will be issued for an asset. Asset ID is required."
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:133
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:150
 #: Inventory/src/Inventory/Model/Constants.php:115
 msgid "Issue for return PO"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:134
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:151
 #: Inventory/src/Inventory/Model/Constants.php:116
 msgid "goods will be issued for returning to supplier. PO is required!"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:138
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:155
 #: Inventory/src/Inventory/Model/Constants.php:120
 msgid "Transfer to other warehouse"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:139
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:156
 #: Inventory/src/Inventory/Model/Constants.php:121
 msgid "goods will be issued for other warehouse."
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:143
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:160
 #: Inventory/src/Inventory/Model/Constants.php:125
 msgid "Transfer to other location"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:144
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:161
 #: Inventory/src/Inventory/Model/Constants.php:126
 msgid "goods will be issued for other location in warehouse."
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:148
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:165
+msgid "Goods issue from purchasing reversal"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:166
+msgid "This is automatically post when AP, PO GR reversal posted"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:170
+msgid "Goods issue from WH GR reversal"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:171
+msgid "This is automatically post when WH-GR reversal posted"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:175
+msgid "Goods issue after counting (Adjustment)"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:176
+msgid "Stock quantity decreases after after actual counting!"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:180
 #: Inventory/src/Inventory/Model/Constants.php:130
 msgid "Issue for diposal"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:149
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:181
 #: Inventory/src/Inventory/Model/Constants.php:131
 msgid "goods will be disposed.PO is required!"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:225
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:226
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:238
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:239
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:191
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:192
+msgid "Opening balance"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:196
+msgid "Goods receipt from purchasing"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:197
+msgid ""
+"Good Receipt from purchasing. This transaction is created automatically when "
+"procurment enter goods receipt. if goods does not meet requirment, please "
+"create return transaction!"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:200
+msgid "Goods Receipt from warehouse transfer"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:201
+msgid "Good Receipt from warehouse transfer"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:204
+#, fuzzy
+#| msgid "Project List"
+msgid "Goods Receipt from exchange"
+msgstr "Projektsliste"
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:205
+msgid "Good Receipt from exchange"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:208
+msgid "Receipt of free items"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:209
+msgid "Receipt of free items - Zero Valua invoice"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:213
+msgid "Goods receipt from WH GI reversal"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:214
+msgid "This is automatically post when WH-GI reversal posted"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:217
+msgid "Goods receipt after counting (Adjustment)"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/Contracts/TrxType.php:218
+msgid "Stock quantity increase after after actual counting!"
+msgstr ""
+
+#: Inventory/src/Inventory/Domain/Transaction/GR/Validator/Header/OpeningBalanceHeaderValidator.php:40
+#: Procure/src/Procure/Domain/AccountPayable/Validator/Header/DefaultHeaderValidator.php:63
+#, fuzzy
+#| msgid "Currency"
+msgid "Local currency is not set"
+msgstr "Währung"
+
+#: Inventory/src/Inventory/Domain/Transaction/GR/Validator/Header/OpeningBalanceHeaderValidator.php:44
+#: Procure/src/Procure/Domain/AccountPayable/Validator/Header/DefaultHeaderValidator.php:67
+#, fuzzy
+#| msgid "Currency"
+msgid "Local currency not exits..."
+msgstr "Währung"
+
+#: Inventory/src/Inventory/Domain/Transaction/GenericTrx.php:248
+#: Inventory/src/Inventory/Domain/Transaction/GenericTrx.php:373
+#: Procure/src/Procure/Domain/AccountPayable/GenericAP.php:342
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:318
+#, php-format
+msgid "Manual posting is not allowed on this document type! %s"
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:76
+msgid ""
+"Exchange parts for repairing of machine.<ul><li>Spare part controller will "
+"issue new parts and receive old /defect one back to store for disposal "
+"process.</li><li>Asset code is required.</li></ul>"
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:106
+msgid "Spare part, materials will be issued for maintenance  worked."
+msgstr ""
+
 #: Inventory/src/Inventory/Model/Constants.php:224
 #: Inventory/src/Inventory/Model/Constants.php:225
 #: Inventory/src/Inventory/Model/Constants.php:232
 #: Inventory/src/Inventory/Model/Constants.php:233
 msgid "Goods receipt from purchase"
-msgstr ""
-
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:230
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:243
-msgid "Goods receipt from exchange part"
-msgstr ""
-
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:231
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:244
-msgid "Goods receipt from exchange part. This is normally posted automaticaly"
 msgstr ""
 
 #: Inventory/src/Inventory/Model/GI/GIforCostCenter.php:25
@@ -1108,6 +1606,7 @@ msgstr ""
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:139
 #: Inventory/src/Inventory/Service/Item/ItemService.php:180
 #: Inventory/src/Inventory/Service/ItemGroupService.php:180
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:178
 #: Inventory/src/Inventory/Service/WarehouseService.php:163
 #: Procure/src/Procure/Service/GrService.php:111
 #: Procure/src/Procure/Service/GrService.php:655
@@ -1276,11 +1775,13 @@ msgstr ""
 
 #: Inventory/src/Inventory/Service/Item/ItemService.php:29
 #: Inventory/src/Inventory/Service/ItemGroupService.php:29
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:27
 msgid "Item Groupp is not found!"
 msgstr ""
 
 #: Inventory/src/Inventory/Service/Item/ItemService.php:45
 #: Inventory/src/Inventory/Service/ItemGroupService.php:45
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:43
 msgid "No input given groupName"
 msgstr ""
 
@@ -1288,11 +1789,14 @@ msgstr ""
 #: Inventory/src/Inventory/Service/Item/ItemService.php:57
 #: Inventory/src/Inventory/Service/ItemGroupService.php:51
 #: Inventory/src/Inventory/Service/ItemGroupService.php:57
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:49
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:55
 msgid "invalide input revenue_account_id"
 msgstr ""
 
 #: Inventory/src/Inventory/Service/Item/ItemService.php:63
 #: Inventory/src/Inventory/Service/ItemGroupService.php:63
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:61
 msgid "invalide input expense_account_id"
 msgstr ""
 
@@ -1300,36 +1804,44 @@ msgstr ""
 #: Inventory/src/Inventory/Service/Item/ItemService.php:75
 #: Inventory/src/Inventory/Service/ItemGroupService.php:69
 #: Inventory/src/Inventory/Service/ItemGroupService.php:75
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:67
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:73
 msgid "invalide input cogs_account_id"
 msgstr ""
 
 #: Inventory/src/Inventory/Service/Item/ItemService.php:81
 #: Inventory/src/Inventory/Service/ItemGroupService.php:81
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:79
 msgid "invalide input default_warehouse_id"
 msgstr ""
 
 #: Inventory/src/Inventory/Service/Item/ItemService.php:87
 #: Inventory/src/Inventory/Service/ItemGroupService.php:87
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:85
 msgid "invalide input isActive"
 msgstr ""
 
 #: Inventory/src/Inventory/Service/Item/ItemService.php:93
 #: Inventory/src/Inventory/Service/ItemGroupService.php:93
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:91
 msgid "invalide input description"
 msgstr ""
 
 #: Inventory/src/Inventory/Service/Item/ItemService.php:147
 #: Inventory/src/Inventory/Service/ItemGroupService.php:147
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:145
 msgid "Please give group name!"
 msgstr ""
 
 #: Inventory/src/Inventory/Service/Item/ItemService.php:161
 #: Inventory/src/Inventory/Service/ItemGroupService.php:161
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:159
 msgid "Record exists already!"
 msgstr ""
 
 #: Inventory/src/Inventory/Service/Item/ItemService.php:184
 #: Inventory/src/Inventory/Service/ItemGroupService.php:184
+#: Inventory/src/Inventory/Service/Warehouse/ItemService.php:182
 msgid "Invalid Argument. Item Group object is not found!"
 msgstr ""
 
@@ -1502,38 +2014,48 @@ msgstr ""
 msgid "Invalid Argument. Warehouse object is not found!"
 msgstr ""
 
-#: Inventory/view/inventory/gi-create-wizard.php:4
+#: Inventory/view/inventory/gi-create-wizard.php:6
 #: Inventory/view/inventory/gi-create-wizard1.php:14
+#: Inventory/view/inventory/gr-create-wizard.php:6
 #: Inventory/view/inventory/ob-create-wizard.php:4
+#: Inventory/view/inventory/opening-balance-create-wizard.php:6
 #: Inventory/view/inventory/transfer-create-wizard.php:4
 #, fuzzy
 #| msgid "Termination Date"
 msgid "Transaction List"
 msgstr "Kündigungsdatum"
 
-#: Inventory/view/inventory/gi-create-wizard.php:8
-#: Inventory/view/inventory/gi-create-wizard.php:11
+#: Inventory/view/inventory/gi-create-wizard.php:15
+#: Inventory/view/inventory/gi-create-wizard.php:24
 #: Inventory/view/inventory/gi-create-wizard1.php:18
 #: Inventory/view/inventory/gi-create-wizard1.php:21
 msgid "Goods Issue Header"
 msgstr ""
 
-#: Inventory/view/inventory/gi-create-wizard.php:15
+#: Inventory/view/inventory/gi-create-wizard.php:37
 #: Inventory/view/inventory/gi-create-wizard1.php:25
+#: Inventory/view/inventory/gr-create-wizard.php:37
+#: Inventory/view/inventory/gr-create-wizard.php:54
 #: Procure/view/procure/gr-create-wizard.php:15
 #: Procure/view/procure/gr-create-wizard.php:19
 msgid "Goods Receipt Line"
 msgstr ""
 
-#: Inventory/view/inventory/gi-create-wizard.php:19
+#: Inventory/view/inventory/gi-create-wizard.php:54
 #: Inventory/view/inventory/gi-create-wizard1.php:29
 msgid "Goods Issue Line"
+msgstr ""
+
+#: Inventory/view/inventory/gr-create-wizard.php:15
+#: Inventory/view/inventory/gr-create-wizard.php:24
+#: Procure/view/procure/gr-create-wizard.php:8
+#: Procure/view/procure/gr-create-wizard.php:11
+msgid "Goods Receipt Header"
 msgstr ""
 
 #: Inventory/view/inventory/ob-create-wizard.php:8
 #: Inventory/view/inventory/ob-create-wizard.php:11
 #: Inventory/view/inventory/opening-balance/list.phtml:5
-#: Inventory/view/inventory/report/index.phtml:13
 #: Inventory/view/inventory/setting/index.phtml:13
 msgid "Opening Balance"
 msgstr ""
@@ -1544,7 +2066,14 @@ msgstr ""
 
 #: Inventory/view/inventory/ob-create-wizard.php:21
 #: Inventory/view/inventory/ob-create-wizard.php:25
+#: Inventory/view/inventory/opening-balance-create-wizard.php:37
+#: Inventory/view/inventory/opening-balance-create-wizard.php:54
 msgid "Opening Balance Line"
+msgstr ""
+
+#: Inventory/view/inventory/opening-balance-create-wizard.php:15
+#: Inventory/view/inventory/opening-balance-create-wizard.php:24
+msgid "Opening Balance Header"
 msgstr ""
 
 #: Inventory/view/inventory/transfer-create-wizard.php:8
@@ -1567,6 +2096,29 @@ msgstr ""
 
 #: Inventory/view/inventory/transfer-create-wizard.php:49
 msgid "Goods tranfer will be posted. No change can be made"
+msgstr ""
+
+#: Inventory/view/inventory/trx_summary.php:3 Procure/view/gr_summary.php:6
+#: Procure/view/procure/ap_summary.php:3 Procure/view/procure/gr_summary.php:4
+#: Procure/view/procure/po_summary.php:3 Procure/view/procure/pr_summary.php:6
+#: Procure/view/procure/qr_summary.php:3
+#: Finance/view/finance/v-invoice-row/copy/add.phtml:51
+#: Inventory/view/inventory/gi-row/add.phtml:47
+#: Inventory/view/inventory/gr-row/add.phtml:45
+#: Procure/view/procure/gr-row/add.phtml:34
+#: Procure/view/procure/gr-row/copy/add-row.phtml:19
+#: Procure/view/procure/gr/crudRow.phtml:54
+#: Procure/view/procure/po-row/add-row.phtml:35
+#: Procure/view/procure/po-row/copy/add.phtml:39
+#: Procure/view/procure/po/blank.phtml:155
+#: Procure/view/procure/po/copy/review-v1.phtml:143
+#: Procure/view/procure/po/copy/review.phtml:44
+#: Procure/view/procure/po/view-v1.phtml:154
+#: Procure/view/procure/po/view.phtml:24
+#: Procure/view/procure/pr-row/copy/add.phtml:46
+#: Procure/view/procure/qr/review.phtml:116
+#: Procure/view/procure/return-row/add.phtml:39
+msgid "Summary:"
 msgstr ""
 
 #: Payment/src/Payment/Service/APPaymentService.php:28
@@ -1704,65 +2256,154 @@ msgstr ""
 msgid "Payment Header"
 msgstr ""
 
-#: Procure/src/Procure/Controller/Copy/PoController.php:1225
-#: Procure/src/Procure/Controller/PoController.php:1434
-#: Procure/view/procure/po/review.phtml:20
+#: Procure/src/Procure/Application/Helper/Toolbar.php:69
+#: Procure/src/Procure/Application/Helper/Toolbar.php:131
+#: Procure/src/Procure/Application/Helper/Toolbar.php:168
+msgid "Clone"
+msgstr ""
+
+#: Procure/src/Procure/Application/Helper/Toolbar.php:134
+#, fuzzy
+#| msgid "Created Date"
+msgid "Create PO"
+msgstr "Erstellsdatum"
+
+#: Procure/src/Procure/Application/Reporting/PO/Helper/ListHelper.php:32
+#: Procure/view/procure/pr/_header1.php:123
+#: Application/view/application/company/list.phtml:53
+#: Application/view/application/country/list.phtml:70
+#: Application/view/application/incoterm/list.phtml:70
+#: Application/view/application/payment-term/list.phtml:72
+#: Application/view/application/pmt-method/list.phtml:69
+#: Finance/view/finance/fx/list.phtml:79 Finance/view/finance/je/list.phtml:79
+#: Finance/view/finance/posting-period/list.phtml:41
+#: Finance/view/finance/posting-period/list.phtml:79
+#: HR/view/hr/employee-contract/list1.phtml:62
+#: HR/view/hr/employee-contract/show.phtml:48
+#: HR/view/hr/employee/applicant-list.phtml:156
+#: HR/view/hr/employee/list.phtml:173 HR/view/hr/income-setup/index.phtml:64
+#: HR/view/hr/leave-reason/list.phtml:65 HR/view/hr/position/list.phtml:63
+#: HR/view/hr/salary/list1.phtml:83 HR/view/hr/salary/show.phtml:238
+#: HR/view/hr/salary/simulate.phtml:79
+#: Inventory/view/inventory/association/show.phtml:87
+#: Inventory/view/inventory/gi/review.phtml:53
+#: Inventory/view/inventory/item-accounting/list.phtml:103
+#: Inventory/view/inventory/item-accounting/list1.phtml:90
+#: Inventory/view/inventory/item-group/list.phtml:73
+#: Inventory/view/inventory/item-group/list1.phtml:90
+#: Inventory/view/inventory/item-report/dto_list_ajax.phtml:60
+#: Inventory/view/inventory/item-report/dto_list_declare.phtml:60
+#: Inventory/view/inventory/item-serial/list.phtml:107
+#: Inventory/view/inventory/item-transaction/list.phtml:334
+#: Inventory/view/inventory/item-transaction/list.phtml:369
+#: Inventory/view/inventory/item-transaction/list.phtml:403
+#: Inventory/view/inventory/item-variant/list.phtml:107
+#: Inventory/view/inventory/item-variant/list1.phtml:90
+#: Inventory/view/inventory/item/show.phtml:87
+#: Inventory/view/inventory/stock-report/dto_list.phtml:62
+#: Inventory/view/inventory/stock/list.phtml:73
+#: Inventory/view/inventory/stock/list1.phtml:90
+#: Inventory/view/inventory/transfer/review.phtml:60
+#: Inventory/view/inventory/trx-report/dto_list.phtml:62
+#: Inventory/view/inventory/warehouse/list.phtml:81
+#: Payment/view/payment/outgoing/show.phtml:333
+#: Procure/view/procure/ap-report/bk/dto_list.phtml:62
+#: Procure/view/procure/ap-report/dto_list_ajax.phtml:60
+#: Procure/view/procure/ap-report/dto_list_declare.phtml:60
+#: Procure/view/procure/ap/dto_list.phtml:56
+#: Procure/view/procure/ap/review-v1.phtml:578
+#: Procure/view/procure/gr/dto_list.phtml:56
+#: Procure/view/procure/gr/review-v1.phtml:625
+#: Procure/view/procure/po-report/dto_list_ajax.phtml:61
+#: Procure/view/procure/po-report/dto_list_declare.phtml:60
+#: Procure/view/procure/po/blank.phtml:598
+#: Procure/view/procure/po/copy/review-v1.phtml:702
+#: Procure/view/procure/po/dto_list.phtml:56
+#: Procure/view/procure/po/review-v1.phtml:497
+#: Procure/view/procure/po/view-v1.phtml:547
+#: Procure/view/procure/pr-report/dto_list.phtml:64
+#: Procure/view/procure/pr/dto_list.phtml:58
+#: Procure/view/procure/qr/dto_list.phtml:55
+msgid "Edit"
+msgstr "Editieren"
+
+#: Procure/src/Procure/Controller/Copy/ApController.php:901
+msgid "Show Invoice"
+msgstr ""
+
+#: Procure/src/Procure/Controller/Copy/ApController.php:996
+#: Procure/src/Procure/Controller/Copy/PoController.php:1092
+#: Procure/src/Procure/Controller/Copy/PoController.php:1144
+#: Procure/src/Procure/Controller/Copy/QrController.php:909
+#: Procure/view/procure/po/copy/review.phtml:20
 #, fuzzy
 #| msgid "Show"
 msgid "Show PO"
 msgstr "Sehen"
 
-#: Procure/src/Procure/Controller/GrController.php:309
-msgid "Currency can't be empty. Please select a currency!"
-msgstr ""
-
-#: Procure/src/Procure/Controller/GrController.php:317
-msgid "Goods receipt Date is not correct or empty!"
-msgstr ""
-
-#: Procure/src/Procure/Controller/GrController.php:596
+#: Procure/src/Procure/Controller/Copy/GrController.php:803
 msgid "GR object is not found!"
 msgstr ""
 
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:106
+#: Procure/src/Procure/Domain/AccountPayable/GenericAP.php:347
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:323
 #, php-format
-msgid "GR document can not be amended! %s"
+msgid "Document is already posted/closed or being amended! %s"
 msgstr ""
 
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:110
-msgid "Validators not found"
-msgstr ""
-
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:113
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:175
-msgid "SharedService service not found"
-msgstr ""
-
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:117
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:179
-msgid "postingService service not found"
-msgstr ""
-
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:121
-msgid "command options not found"
-msgstr ""
-
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:125
-msgid "GR is completed"
-msgstr ""
-
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:149
+#: Procure/src/Procure/Domain/AccountPayable/GenericAP.php:395
 #, php-format
-msgid "Error orcured when enabling GR for amendment #%s"
+msgid "Document is already reversed! %s"
 msgstr ""
 
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:167
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:171
-msgid "HeaderValidatorCollection not found"
+#: Procure/src/Procure/Domain/AccountPayable/Validator/Header/DefaultHeaderValidator.php:40
+#: Procure/src/Procure/Domain/PurchaseRequest/Validator/Header/DefaultHeaderValidator.php:40
+#: Procure/src/Procure/Domain/QuotationRequest/Validator/Header/DefaultHeaderValidator.php:40
+#, fuzzy
+#| msgid "Employee Code"
+msgid "Company not exits. #"
+msgstr "Mitarbeitersnummer"
+
+#: Procure/src/Procure/Domain/AccountPayable/Validator/Header/DefaultHeaderValidator.php:45
+msgid "Vendor is not set"
 msgstr ""
 
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:183
-msgid "Comnand Options not found!"
+#: Procure/src/Procure/Domain/AccountPayable/Validator/Header/DefaultHeaderValidator.php:78
+#: Procure/src/Procure/Domain/AccountPayable/Validator/Header/DefaultHeaderValidator.php:87
+#: Procure/src/Procure/Domain/PurchaseRequest/Validator/Header/DefaultHeaderValidator.php:84
+#: Procure/src/Procure/Domain/PurchaseRequest/Validator/Header/DefaultHeaderValidator.php:93
+#: Procure/src/Procure/Domain/QuotationRequest/Validator/Header/DefaultHeaderValidator.php:114
+#: Procure/src/Procure/Domain/QuotationRequest/Validator/Header/DefaultHeaderValidator.php:123
+msgid "User is not identified for this transaction. #"
+msgstr ""
+
+#: Procure/src/Procure/Domain/AccountPayable/Validator/Header/InvoiceAndPaymentTermValidator.php:56
+msgid "Payment term is required!. "
+msgstr ""
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:368
+#, php-format
+msgid "Docuemnt is already reversed! %s"
+msgstr ""
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:373
+#, php-format
+msgid "Manual reserval is not allowed on this document type! %s"
+msgstr ""
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:378
+#, php-format
+msgid "Document is not posted yet! %s"
+msgstr ""
+
+#: Procure/src/Procure/Infrastructure/Doctrine/GRQueryRepositoryImpl.php:35
+#: Procure/src/Procure/Infrastructure/Persistence/Doctrine/Doctrine/GRQueryRepositoryImpl.php:35
+msgid "Could not create GR document. Document Id is empty"
+msgstr ""
+
+#: Procure/src/Procure/Infrastructure/Doctrine/GRQueryRepositoryImpl.php:49
+#: Procure/src/Procure/Infrastructure/Persistence/Doctrine/Doctrine/GRQueryRepositoryImpl.php:49
+msgid "Could not create GR Document with #%"
 msgstr ""
 
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:33
@@ -2170,13 +2811,29 @@ msgstr ""
 msgid "Quotation Date is not correct or empty!"
 msgstr ""
 
-#: Procure/view/procure/create-wizard.php:7
-#: Procure/view/procure/create-wizard.php:10
+#: Procure/view/gr_summary.php:54 Procure/view/procure/pr_summary.php:54
+#: Procure/view/procure/ap/review-v1.phtml:131
+#: Procure/view/procure/ap/review.phtml:120
+#: Procure/view/procure/gr/review-v1.phtml:191
+#: Procure/view/procure/po/blank.phtml:243
+#: Procure/view/procure/po/copy/review-v1.phtml:229
+#: Procure/view/procure/po/copy/review.phtml:67
+#: Procure/view/procure/po/review-v1.phtml:170
+#: Procure/view/procure/po/view-v1.phtml:242
+#: Procure/view/procure/po/view.phtml:54
+#: Procure/view/procure/qr/review.phtml:201
+msgid ""
+"Please post when PO /Contract is signed. Document can't be changed anymore "
+"when posted! <br> "
+msgstr ""
+
+#: Procure/view/procure/create-wizard.php:16
+#: Procure/view/procure/create-wizard.php:25
 msgid "PO Header"
 msgstr ""
 
-#: Procure/view/procure/create-wizard.php:14
-#: Procure/view/procure/create-wizard.php:18
+#: Procure/view/procure/create-wizard.php:38
+#: Procure/view/procure/create-wizard.php:48
 msgid "PO Line"
 msgstr ""
 
@@ -2184,14 +2841,9 @@ msgstr ""
 msgid "GR List"
 msgstr ""
 
-#: Procure/view/procure/gr-create-wizard.php:8
-#: Procure/view/procure/gr-create-wizard.php:11
-msgid "Goods Receipt Header"
-msgstr ""
-
 #: Procure/view/procure/gr-create-wizard.php:27
-#: Procure/view/procure/quote-create-wizard.php:24
-#: Procure/view/procure/quote-create-wizard.php:27
+#: Procure/view/procure/quote-create-wizard.php:66
+#: Procure/view/procure/quote-create-wizard.php:74
 msgid "Finish"
 msgstr ""
 
@@ -2203,24 +2855,24 @@ msgstr ""
 msgid "if it is with invoice, please click "
 msgstr ""
 
-#: Procure/view/procure/pr-create-wizard.php:3
+#: Procure/view/procure/pr-create-wizard.php:6
 #, fuzzy
 #| msgid "Project List"
 msgid "PR List"
 msgstr "Projektsliste"
 
-#: Procure/view/procure/pr-create-wizard.php:8
-#: Procure/view/procure/pr-create-wizard.php:12
+#: Procure/view/procure/pr-create-wizard.php:15
+#: Procure/view/procure/pr-create-wizard.php:24
 msgid "PR Header"
 msgstr ""
 
-#: Procure/view/procure/pr-create-wizard.php:16
-#: Procure/view/procure/pr-create-wizard.php:20
+#: Procure/view/procure/pr-create-wizard.php:37
+#: Procure/view/procure/pr-create-wizard.php:54
 msgid "PR Line"
 msgstr ""
 
-#: Procure/view/procure/pr-create-wizard.php:25
-#: Procure/view/procure/pr-create-wizard.php:28
+#: Procure/view/procure/pr-create-wizard.php:75
+#: Procure/view/procure/pr-create-wizard.php:83
 #: Procure/view/procure/pr-row/add.phtml:454
 #: Procure/view/procure/pr-row/copy/edit.phtml:278
 #: Procure/view/procure/pr-row/crud.phtml:476
@@ -2228,13 +2880,121 @@ msgstr ""
 msgid "Review & Submit"
 msgstr ""
 
-#: Procure/view/procure/quote-create-wizard.php:8
-#: Procure/view/procure/quote-create-wizard.php:12
+#: Procure/view/procure/pr/_header.php:70
+#: Procure/view/procure/pr/_header1.php:70
+#: Procure/view/procure/pr/copy/_header.php:70
+#: Finance/view/finance/v-invoice-row/add.phtml:428
+#: Finance/view/finance/v-invoice-row/crud.phtml:282
+#: Finance/view/finance/v-invoice/add_ap.phtml:250
+#: Finance/view/finance/v-invoice/crud.phtml:279
+#: Inventory/view/inventory/transfer-wh/crudHeader.phtml:178
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:394
+#: Inventory/view/inventory/transfer/crud.phtml:182
+#: Inventory/view/inventory/transfer/crudGI108.phtml:184
+#: Inventory/view/inventory/transfer/review.phtml:188
+#: Inventory/view/inventory/transfer/show.phtml:152
+#: Procure/view/procure/ap/crudHeader.phtml:258
+#: Procure/view/procure/ap/crudRow.phtml:336
+#: Procure/view/procure/ap/review-v1.phtml:475
+#: Procure/view/procure/ap/review.phtml:450
+#: Procure/view/procure/pr-row/add.phtml:349
+#: Procure/view/procure/pr-row/crud.phtml:368
+#: Procure/view/procure/pr/add.phtml:117 Procure/view/procure/pr/crud.phtml:187
+#: Procure/view/procure/pr/crudRow.phtml:343
+#: Procure/view/procure/pr/show.phtml:143
+#: Procure/view/procure/pr/view.phtml:143
+#: Procure/view/procure/qr/crudHeader.phtml:280
+#: Procure/view/procure/qr/review.phtml:531
+msgid "Target Warehouse"
+msgstr ""
+
+#: Procure/view/procure/pr/_header.php:75
+#: Procure/view/procure/pr/_header1.php:75
+#: Procure/view/procure/pr/copy/_header.php:75
+#: Finance/view/finance/v-invoice-row/add.phtml:432
+#: Finance/view/finance/v-invoice-row/crud.phtml:286
+#: Finance/view/finance/v-invoice/add_ap.phtml:254
+#: Finance/view/finance/v-invoice/crud.phtml:285
+#: Inventory/view/inventory/item-report/in-out-onhand.phtml:78
+#: Inventory/view/inventory/item-transaction/crud.phtml:145
+#: Inventory/view/inventory/transfer/crud-location.phtml:145
+#: Inventory/view/inventory/transfer/crud-wh.phtml:145
+#: Inventory/view/inventory/transfer/crud.phtml:148
+#: Inventory/view/inventory/transfer/crud.phtml:187
+#: Inventory/view/inventory/transfer/crudGI108.phtml:150
+#: Inventory/view/inventory/transfer/crudGI108.phtml:189
+#: Inventory/view/inventory/transfer/crudGI109.phtml:150
+#: Inventory/view/inventory/transfer/crudGI109.phtml:189
+#: Inventory/view/inventory/transfer/crudGI109.phtml:227
+#: Inventory/view/inventory/transfer/review.phtml:154
+#: Inventory/view/inventory/transfer/review.phtml:192
+#: Inventory/view/inventory/transfer/show.phtml:118
+#: Inventory/view/inventory/transfer/show.phtml:156
+#: Inventory/view/inventory/trx-report/in-out-onhand.phtml:54
+#: Inventory/view/inventory/trx-report/row-status.phtml:91
+#: Procure/view/procure/ap/crudHeader.phtml:263
+#: Procure/view/procure/ap/crudRow.phtml:341
+#: Procure/view/procure/ap/crudRow.phtml:486
+#: Procure/view/procure/ap/review-v1.phtml:480
+#: Procure/view/procure/ap/review.phtml:455
+#: Procure/view/procure/pr-row/crud.phtml:372
+#: Procure/view/procure/pr/crudRow.phtml:348
+#: Procure/view/procure/qr/crudHeader.phtml:285
+#: Procure/view/procure/qr/crudRow.phtml:424
+#: Procure/view/procure/qr/review.phtml:536
+msgid "..."
+msgstr ""
+
+#: Procure/view/procure/pr/_header.php:87
+#: Procure/view/procure/pr/_header1.php:87
+#: Procure/view/procure/pr/copy/_header.php:87
+#, fuzzy
+#| msgid "Department"
+msgid "Department:"
+msgstr "Abteilungen"
+
+#: Procure/view/procure/pr/_header.php:92
+#: Procure/view/procure/pr/_header1.php:92
+#: Procure/view/procure/pr/copy/_header.php:92
+#: Finance/view/finance/v-invoice/crud.phtml:388
+#: Finance/view/finance/v-invoice/review.phtml:332
+#: Inventory/view/inventory/item-group/add.phtml:226
+#: Inventory/view/inventory/item-group/crud.phtml:264
+#: Procure/view/procure/ap/crudHeader.phtml:320
+#: Procure/view/procure/ap/review-v1.phtml:537
+#: Procure/view/procure/ap/review.phtml:512
+#: Procure/view/procure/gr/crud.phtml:218
+#: Procure/view/procure/gr/crudHeader.phtml:226
+#: Procure/view/procure/gr/crudHeader.phtml:337
+#: Procure/view/procure/gr/review.phtml:256
+#: Procure/view/procure/gr/show.phtml:208
+#: Procure/view/procure/po/copy/crudPO-v1.phtml:238
+#: Procure/view/procure/po/crud.phtml:258
+#: Procure/view/procure/po/crudHeader.phtml:292
+#: Procure/view/procure/po/crudPO.phtml:290
+#: Procure/view/procure/qr/crudHeader.phtml:258
+#: Procure/view/procure/qr/review.phtml:593
+#: Procure/view/procure/return/crud.phtml:258
+msgid "---"
+msgstr ""
+
+#: Procure/view/procure/pr/_header1.php:115
+#: Procure/view/procure/ap/review-v1.phtml:570
+#: Procure/view/procure/gr/review-v1.phtml:617
+#: Procure/view/procure/po/blank.phtml:590
+#: Procure/view/procure/po/copy/review-v1.phtml:694
+#: Procure/view/procure/po/review-v1.phtml:489
+#: Procure/view/procure/po/view-v1.phtml:539
+msgid "Update document hearder"
+msgstr ""
+
+#: Procure/view/procure/quote-create-wizard.php:15
+#: Procure/view/procure/quote-create-wizard.php:24
 msgid "Quotation Header"
 msgstr ""
 
-#: Procure/view/procure/quote-create-wizard.php:16
-#: Procure/view/procure/quote-create-wizard.php:20
+#: Procure/view/procure/quote-create-wizard.php:37
+#: Procure/view/procure/quote-create-wizard.php:46
 msgid "Quotation Line"
 msgstr ""
 
@@ -2249,6 +3009,22 @@ msgstr ""
 #: User/src/User/Service/UserService.php:86
 msgid "Inventory movement is not selected!"
 msgstr ""
+
+#: User/src/User/Service/UserService.php:107
+msgid "Goods Issue Date is not correct or empty!"
+msgstr ""
+
+#: Application/view/application/account-chart/list.phtml:5
+#, fuzzy
+#| msgid "Contract number"
+msgid "Account Chart"
+msgstr "Vertragsnumber"
+
+#: Application/view/application/account-chart/list.phtml:16
+#, fuzzy
+#| msgid "Created Date"
+msgid "Create New"
+msgstr "Erstellsdatum"
 
 #: Application/view/application/company/edit.phtml:32
 #: Application/view/application/company/show.phtml:32
@@ -2274,43 +3050,6 @@ msgstr ""
 msgid "Default Currency"
 msgstr "Währung"
 
-#: Application/view/application/company/list.phtml:53
-#: Application/view/application/country/list.phtml:70
-#: Application/view/application/incoterm/list.phtml:70
-#: Application/view/application/payment-term/list.phtml:72
-#: Application/view/application/pmt-method/list.phtml:69
-#: Finance/view/finance/fx/list.phtml:79 Finance/view/finance/je/list.phtml:79
-#: Finance/view/finance/posting-period/list.phtml:41
-#: Finance/view/finance/posting-period/list.phtml:79
-#: HR/view/hr/employee-contract/list1.phtml:62
-#: HR/view/hr/employee-contract/show.phtml:48
-#: HR/view/hr/employee/applicant-list.phtml:156
-#: HR/view/hr/employee/list.phtml:173 HR/view/hr/income-setup/index.phtml:64
-#: HR/view/hr/leave-reason/list.phtml:65 HR/view/hr/position/list.phtml:63
-#: HR/view/hr/salary/list1.phtml:83 HR/view/hr/salary/show.phtml:238
-#: HR/view/hr/salary/simulate.phtml:79
-#: Inventory/view/inventory/gi/review.phtml:34
-#: Inventory/view/inventory/item-accounting/list.phtml:103
-#: Inventory/view/inventory/item-accounting/list1.phtml:90
-#: Inventory/view/inventory/item-group/list.phtml:73
-#: Inventory/view/inventory/item-group/list1.phtml:90
-#: Inventory/view/inventory/item-serial/list.phtml:107
-#: Inventory/view/inventory/item-serial/list1.phtml:94
-#: Inventory/view/inventory/item-transaction/list.phtml:197
-#: Inventory/view/inventory/item-transaction/list.phtml:205
-#: Inventory/view/inventory/item-transaction/list.phtml:214
-#: Inventory/view/inventory/item-variant/list.phtml:107
-#: Inventory/view/inventory/item-variant/list1.phtml:90
-#: Inventory/view/inventory/item/show.phtml:50
-#: Inventory/view/inventory/stock/list.phtml:73
-#: Inventory/view/inventory/stock/list1.phtml:90
-#: Inventory/view/inventory/transfer/review.phtml:60
-#: Inventory/view/inventory/warehouse/list.phtml:81
-#: Payment/view/payment/outgoing/show.phtml:333
-#: Procure/view/procure/po/review-v1.phtml:461
-msgid "Edit"
-msgstr "Editieren"
-
 #: Application/view/application/country/edit.phtml:21
 msgid "Edit Country"
 msgstr ""
@@ -2334,6 +3073,7 @@ msgstr ""
 #: HR/view/hr/position/list.phtml:40 HR/view/hr/salary/assign.phtml:65
 #: HR/view/hr/salary/list1.phtml:42 HR/view/hr/salary/simulate.phtml:38
 #: HR/view/hr/sso/index.phtml:23
+#: Inventory/view/inventory/association-item/list.phtml:103
 #: Inventory/view/inventory/item-accounting/assign.phtml:61
 #: Inventory/view/inventory/item-batch/assign.phtml:54
 #: Inventory/view/inventory/item-group/assign.phtml:54
@@ -2344,15 +3084,103 @@ msgstr ""
 #: Inventory/view/inventory/serial-number/assign.phtml:54
 #: Inventory/view/inventory/stock/assign.phtml:54
 #: Inventory/view/inventory/stock/list.phtml:49
-#: Inventory/view/inventory/stock/summary.phtml:60
+#: Inventory/view/inventory/stock/summary.phtml:137
 #: Inventory/view/inventory/warehouse/list.phtml:42
 msgid "Action"
 msgstr "Aktionen"
 
-#: Application/view/application/department/list.phtml:10
+#: Application/view/application/department/Copy of list2.phtml:38
+#: list2.phtml:46 Application/view/application/department/list.phtml:10
 #: Application/view/application/department/list.phtml:14
+#: Application/view/application/department/list2.phtml:34
+#: Application/view/application/department/list2.phtml:42
 msgid "Add Department"
 msgstr "Neue Abteilung"
+
+#: Application/view/application/department/Copy of list2.phtml:143
+#: Application/view/application/department/list2.phtml:111
+msgid "Department will be removed!"
+msgstr ""
+
+#: Application/view/application/department/Copy of list2.phtml:148
+#: Application/view/application/department/list2.phtml:116
+#: Procure/view/procure/ap/crudRow.phtml:593
+#: Procure/view/procure/po/crudRow.phtml:501
+#: Procure/view/procure/pr/crudRow.phtml:438
+#: Procure/view/procure/qr/crudRow.phtml:522
+msgid "Remove can not be recalled!"
+msgstr ""
+
+#: Application/view/application/department/Copy of list2.phtml:156
+#: Application/view/application/department/list2.phtml:124
+#: Finance/view/finance/v-invoice/copy/Copy review.phtml:336
+#: Finance/view/finance/v-invoice/copy/reverse.phtml:381
+#: Finance/view/finance/v-invoice/reverse.phtml:355
+#: Finance/view/finance/v-invoice/review.phtml:492
+#: Inventory/view/inventory/gi/reverse.phtml:232
+#: Inventory/view/inventory/gi/review-v1.phtml:524
+#: Inventory/view/inventory/gi/review-v1.phtml:557
+#: Inventory/view/inventory/gi/review-v1.phtml:587
+#: Inventory/view/inventory/gi/review.phtml:257
+#: Inventory/view/inventory/gr/review-v1.phtml:520
+#: Inventory/view/inventory/gr/review-v1.phtml:553
+#: Inventory/view/inventory/gr/review-v1.phtml:583
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:473
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:506
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:536
+#: Inventory/view/inventory/item-transaction/gi.phtml:172
+#: Inventory/view/inventory/opening-balance/review.phtml:270
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:506
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:539
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:569
+#: Inventory/view/inventory/transfer/review.phtml:277
+#: Payment/view/payment/outgoing/pay-ap.phtml:405
+#: Payment/view/payment/outgoing/pay-po.phtml:405
+#: Payment/view/payment/outgoing/reverse.phtml:381
+#: Payment/view/payment/outgoing/show.phtml:372
+#: Procure/view/procure/ap/crudRow.phtml:601
+#: Procure/view/procure/ap/review-v1.phtml:726
+#: Procure/view/procure/ap/review-v1.phtml:759
+#: Procure/view/procure/ap/review-v1.phtml:789
+#: Procure/view/procure/ap/review.phtml:677
+#: Procure/view/procure/ap/review.phtml:710
+#: Procure/view/procure/ap/review.phtml:740 Procure/view/procure/gr/Copy
+#: review.phtml:282 Procure/view/procure/gr/reverse.phtml:272
+#: Procure/view/procure/gr/review-v1.phtml:791
+#: Procure/view/procure/gr/review-v1.phtml:824
+#: Procure/view/procure/gr/review-v1.phtml:854
+#: Procure/view/procure/gr/review-v1.phtml:884
+#: Procure/view/procure/gr/review.phtml:340
+#: Procure/view/procure/po/blank.phtml:738
+#: Procure/view/procure/po/blank.phtml:771
+#: Procure/view/procure/po/blank.phtml:801
+#: Procure/view/procure/po/blank.phtml:831
+#: Procure/view/procure/po/copy/review-v1.phtml:843
+#: Procure/view/procure/po/copy/review-v1.phtml:876
+#: Procure/view/procure/po/copy/review-v1.phtml:906
+#: Procure/view/procure/po/copy/review-v1.phtml:936
+#: Procure/view/procure/po/copy/review.phtml:467
+#: Procure/view/procure/po/crudRow.phtml:509
+#: Procure/view/procure/po/review-v1.phtml:644
+#: Procure/view/procure/po/review-v1.phtml:677
+#: Procure/view/procure/po/review-v1.phtml:707
+#: Procure/view/procure/po/review-v1.phtml:737
+#: Procure/view/procure/po/view-v1.phtml:687
+#: Procure/view/procure/po/view-v1.phtml:720
+#: Procure/view/procure/po/view-v1.phtml:750
+#: Procure/view/procure/po/view-v1.phtml:780
+#: Procure/view/procure/po/view.phtml:436
+#: Procure/view/procure/pr/crudRow.phtml:446
+#: Procure/view/procure/pr/review-v1.phtml:468
+#: Procure/view/procure/pr/review-v1.phtml:501
+#: Procure/view/procure/pr/review-v1.phtml:531
+#: Procure/view/procure/qr/crudRow.phtml:530
+#: Procure/view/procure/qr/review.phtml:759
+#: Procure/view/procure/qr/review.phtml:792
+#: Procure/view/procure/qr/review.phtml:822
+#: Procure/view/procure/quote/show.phtml:375
+msgid "Do you want to continue?"
+msgstr ""
 
 #: Application/view/application/incoterm/crud.phtml:13
 msgid "Add Incoterm:"
@@ -2365,44 +3193,6 @@ msgstr ""
 #: Application/view/application/incoterm/crud.phtml:86
 msgid "Location required"
 msgstr ""
-
-#: Application/view/application/incoterm/crud.phtml:110
-#: Application/view/application/payment-term/crud.phtml:117
-#: Application/view/application/pmt-method/crud.phtml:139
-#: Finance/view/finance/posting-period/add.phtml:129
-#: HR/view/hr/employee-contract/add.phtml:224
-#: HR/view/hr/employee-contract/amend.phtml:242
-#: HR/view/hr/employee-contract/terminate.phtml:242
-#: HR/view/hr/leave-reason/add.phtml:95 HR/view/hr/position/add.phtml:101
-#: HR/view/hr/position/edit.phtml:108 HR/view/hr/salary/edit.phtml:121
-#: Inventory/view/inventory/similar-item/crud.phtml:245
-#: Inventory/view/inventory/warehouse/crud.phtml:245
-#: Inventory/view/inventory/warehouse/crud2.phtml:218
-#: Procure/view/procure/po-row/add-row.phtml:366
-#: Procure/view/procure/po/crudPORow.phtml:385
-#: Procure/view/procure/pr-row-attachment/upload.phtml:161
-#: Procure/view/procure/pr-row/copy/edit.phtml:267
-#: Procure/view/procure/pr-row/edit.phtml:266
-msgid "Save"
-msgstr "Speichern"
-
-#: Application/view/application/incoterm/crud.phtml:113
-#: Application/view/application/payment-term/crud.phtml:120
-#: Application/view/application/pmt-method/crud.phtml:142
-#: HR/view/hr/employee-contract/add.phtml:227
-#: HR/view/hr/employee-contract/amend.phtml:245
-#: HR/view/hr/employee-contract/show.phtml:51
-#: HR/view/hr/employee-contract/terminate.phtml:245
-#: HR/view/hr/leave-reason/add.phtml:98 HR/view/hr/position/add.phtml:104
-#: HR/view/hr/position/edit.phtml:111 HR/view/hr/salary/assign.phtml:102
-#: HR/view/hr/salary/edit.phtml:123 HR/view/hr/salary/show.phtml:241
-#: Inventory/view/inventory/similar-item/crud.phtml:248
-#: Inventory/view/inventory/warehouse/crud.phtml:248
-#: Inventory/view/inventory/warehouse/crud2.phtml:221
-#: Procure/view/procure/po-row/add-row.phtml:369
-#: Procure/view/procure/po/crudPORow.phtml:388
-msgid "Cancel"
-msgstr "Abbrechen"
 
 #: Application/view/application/incoterm/list.phtml:10
 #, fuzzy
@@ -2419,34 +3209,47 @@ msgstr "Neu Einkauf"
 msgid "Inventory Setting"
 msgstr "Waren"
 
-#: Application/view/application/message-store/list1.phtml:54
+#: Application/view/application/message-store/list1.phtml:68
+#: Inventory/view/inventory/association-item/list.phtml:79
+#: Inventory/view/inventory/association-item/list1.phtml:63
+#: Inventory/view/inventory/item/view-v1.phtml:282
 msgid "#"
 msgstr ""
 
-#: Application/view/application/message-store/list1.phtml:55
+#: Application/view/application/message-store/list1.phtml:74
+#: Inventory/view/inventory/association-item/list1.phtml:69
 msgid "Ver."
 msgstr ""
 
-#: Application/view/application/message-store/list1.phtml:56
+#: Application/view/application/message-store/list1.phtml:80
+#: Inventory/view/inventory/association-item/list1.phtml:75
 msgid "Rev."
 msgstr ""
 
-#: Application/view/application/message-store/list1.phtml:57
+#: Application/view/application/message-store/list1.phtml:86
+#: Inventory/view/inventory/association-item/list1.phtml:81
 msgid "Event Name"
 msgstr ""
 
-#: Application/view/application/message-store/list1.phtml:58
+#: Application/view/application/message-store/list1.phtml:92
 #: BP/view/bp/activity-log/list1.phtml:24
 #: Finance/view/finance/activity-log/list1.phtml:24
 #: HR/view/hr/activity-log/list1.phtml:24
 #: Inventory/view/inventory/activity-log/list1.phtml:24
+#: Inventory/view/inventory/association-item/list1.phtml:87
 #: Payment/view/payment/activity-log/list1.phtml:24
 #: Procure/view/procure/activity-log/list1.phtml:24
 msgid "Date"
 msgstr ""
 
-#: Application/view/application/message-store/list1.phtml:59
+#: Application/view/application/message-store/list1.phtml:98
+#: Inventory/view/inventory/association-item/list1.phtml:93
 msgid "Change Log"
+msgstr ""
+
+#: Application/view/application/message-store/list1.phtml:104
+#: Inventory/view/inventory/association-item/list1.phtml:99
+msgid "By"
 msgstr ""
 
 #: Application/view/application/payment-term/crud.phtml:13
@@ -2542,14 +3345,16 @@ msgstr "Periodenname"
 #: Payment/view/payment/outgoing/pay-po.phtml:199
 #: Payment/view/payment/outgoing/reverse.phtml:207
 #: Payment/view/payment/outgoing/show.phtml:177
+#: Procure/view/procure/ap/crudRow.phtml:479
 #: Procure/view/procure/gr-row/add.phtml:458
 #: Procure/view/procure/gr-row/copy/add-row.phtml:275
+#: Procure/view/procure/qr/crudRow.phtml:417
 msgid "GL Account"
 msgstr ""
 
 #: Application/view/application/pmt-method/crud.phtml:90
 #: BP/view/bp/vendor/add.phtml:35 BP/view/bp/vendor/edit.phtml:52
-#: BP/view/bp/vendor/show.phtml:64 Finance/view/finance/v-invoice-row/Copy of
+#: BP/view/bp/vendor/show.phtml:152 Finance/view/finance/v-invoice-row/Copy of
 #: edit.phtml:291 Finance/view/finance/v-invoice-row/add.phtml:360
 #: Finance/view/finance/v-invoice-row/copy/add.phtml:361
 #: Finance/view/finance/v-invoice-row/crud.phtml:411
@@ -2581,20 +3386,12 @@ msgstr ""
 #: Payment/view/payment/outgoing/pay-po.phtml:203
 #: Payment/view/payment/outgoing/reverse.phtml:211
 #: Payment/view/payment/outgoing/show.phtml:181
+#: Procure/view/procure/ap/crudRow.phtml:484
 #: Procure/view/procure/gr-row/add.phtml:461
 #: Procure/view/procure/gr-row/copy/add-row.phtml:278
+#: Procure/view/procure/qr/crudRow.phtml:422
 msgid "Select GL Account"
 msgstr ""
-
-#: Application/view/application/pmt-method/crud.phtml:124
-#: Finance/view/finance/account/list.phtml:146
-#: HR/view/hr/leave-reason/add.phtml:80 HR/view/hr/position/add.phtml:86
-#: HR/view/hr/position/edit.phtml:93 HR/view/hr/position/show.phtml:90
-#: HR/view/hr/salary/edit.phtml:104
-#: Inventory/view/inventory/item-group/list.phtml:48
-#: Inventory/view/inventory/stock/list.phtml:48
-msgid "Description"
-msgstr "Beschreibung"
 
 #: Application/view/application/pmt-method/list.phtml:13
 msgid "Add Payment Method"
@@ -2613,6 +3410,43 @@ msgstr "Beschreibung"
 #: Inventory/view/inventory/warehouse/list.phtml:40
 msgid "Created Date"
 msgstr "Erstellsdatum"
+
+#: Application/view/application/uom-group/crud.phtml:57
+msgid "Base Unit of Measurment"
+msgstr ""
+
+#: Application/view/application/uom-group/crud.phtml:63
+#: Application/view/application/uom/crud.phtml:68
+#: Inventory/view/inventory/association/crud-v1.phtml:369
+#: Inventory/view/inventory/association/crud.phtml:163
+#: Inventory/view/inventory/item/crud-logistic.phtml:433
+#: Inventory/view/inventory/item/crud-v1.phtml:504
+#: Inventory/view/inventory/item/crud.phtml:163
+#: Procure/view/procure/po/crudPORow.phtml:272
+#: Procure/view/procure/po/crudPORow.phtml:309
+msgid "Select Standard unit"
+msgstr ""
+
+#: Application/view/application/uom/crud.phtml:62
+#: Inventory/view/inventory/association/add.phtml:126
+#: Inventory/view/inventory/association/copy/add.phtml:126
+#: Inventory/view/inventory/association/crud-v1.phtml:363
+#: Inventory/view/inventory/association/crud.phtml:158
+#: Inventory/view/inventory/association/edit.phtml:146
+#: Inventory/view/inventory/association/show.phtml:624
+#: Inventory/view/inventory/association/show1.phtml:251
+#: Inventory/view/inventory/item/add.phtml:126
+#: Inventory/view/inventory/item/copy/add.phtml:126
+#: Inventory/view/inventory/item/crud-logistic.phtml:427
+#: Inventory/view/inventory/item/crud-v1.phtml:498
+#: Inventory/view/inventory/item/crud.phtml:158
+#: Inventory/view/inventory/item/edit.phtml:146
+#: Inventory/view/inventory/item/show.phtml:624
+#: Inventory/view/inventory/item/show1.phtml:561
+#: Procure/view/procure/po/crudPORow.phtml:266
+#: Procure/view/procure/po/crudPORow.phtml:303
+msgid "Standard Unit"
+msgstr ""
 
 #: Application/view/error/404.phtml:1 BP/view/error/404.phtml:1
 #: Calendar/view/error/404.phtml:1 Finance/view/error/404.phtml:1
@@ -2835,29 +3669,43 @@ msgstr ""
 msgid "An error occurred"
 msgstr ""
 
-#: Application/view/layout/layout-fluid.phtml:202
+#: Application/view/layout/layout-fluid.phtml:210
 #, fuzzy
 #| msgid "HR SETTING"
 msgid "SETTING"
 msgstr "HR Einrichten"
 
-#: Application/view/layout/layout-fluid.phtml:209
+#: Application/view/layout/layout-fluid.phtml:221
 #: BP/view/layout/layout-fluid.phtml:209
 #: Calendar/view/layout/layout-fluid.phtml:206
-#: Finance/view/finance/v-invoice/list.phtml:15
+#: Finance/view/finance/v-invoice/list.phtml:19
 #: Finance/view/layout/layout-fluid.phtml:209
 #: HR/view/layout/layout-fluid.phtml:209
 #: Inventory/view/inventory/item-category/list2.phtml:8
-#: Inventory/view/layout/layout-fluid.phtml:196
+#: Inventory/view/inventory/item-report/dto_list.phtml:48
+#: Inventory/view/inventory/stock-report/dto_list.phtml:118
+#: Inventory/view/inventory/trx-report/dto_list.phtml:118
+#: Inventory/view/layout/layout-fluid.phtml:175
 #: PM/view/layout/layout-fluid.phtml:189
 #: Payment/view/layout/layout-fluid.phtml:189 Procure/view/layout/Copy of
 #: layout-fluid.phtml:193 Procure/view/layout/layout-blank.phtml:201
-#: Procure/view/layout/layout-fluid-1.phtml:183
-#: Procure/view/layout/layout-fluid.phtml:201
+#: Procure/view/layout/layout-fluid-1.phtml:198
+#: Procure/view/layout/layout-fluid.phtml:213
+#: Procure/view/procure/ap-report/bk/dto_list.phtml:118
+#: Procure/view/procure/ap-report/dto_list.phtml:50
 #: Procure/view/procure/ap-search/do.phtml:15
-#: Procure/view/procure/po-search/do.phtml:12
-#: Procure/view/procure/po/dto_list.phtml:15
-#: Procure/view/procure/po/list.phtml:15
+#: Procure/view/procure/ap/dto_list.phtml:112
+#: Procure/view/procure/ap/list.phtml:15
+#: Procure/view/procure/gr/dto_list.phtml:113
+#: Procure/view/procure/po-report/dto_list.phtml:48
+#: Procure/view/procure/po-search/do.phtml:14
+#: Procure/view/procure/po/copy/dto_list.phtml:15
+#: Procure/view/procure/po/dto_list.phtml:112
+#: Procure/view/procure/po/list.phtml:22
+#: Procure/view/procure/pr-report/dto_list.phtml:130
+#: Procure/view/procure/pr/dto_list.phtml:122
+#: Procure/view/procure/qr/dto_list.phtml:111
+#: Procure/view/procure/qr/list.phtml:15
 #: Production/view/layout/layout-fluid.phtml:189
 msgid "enter search term ..."
 msgstr ""
@@ -3001,7 +3849,7 @@ msgid "Valid"
 msgstr ""
 
 #: BP/view/bp/vendor/add.phtml:32 BP/view/bp/vendor/edit.phtml:49
-#: BP/view/bp/vendor/show.phtml:61
+#: BP/view/bp/vendor/show.phtml:146
 msgid "Control G/L Account"
 msgstr ""
 
@@ -3016,13 +3864,6 @@ msgstr ""
 #: Finance/view/finance/account/add.phtml:19
 msgid "New G/L Account"
 msgstr ""
-
-#: Finance/view/finance/account/add.phtml:54
-#: Finance/view/finance/account/list.phtml:144
-#, fuzzy
-#| msgid "Contract number"
-msgid "Account Number"
-msgstr "Vertragsnumber"
 
 #: Finance/view/finance/account/edit.phtml:5
 #: Finance/view/finance/v-invoice-row/Copy of edit.phtml:25
@@ -3057,10 +3898,6 @@ msgstr "Vertragsnumber"
 msgid "New GL Account"
 msgstr ""
 
-#: Finance/view/finance/account/list.phtml:145
-msgid "Account Type"
-msgstr ""
-
 #: Finance/view/finance/fx/list.phtml:11
 #: Finance/view/finance/je-row/list.phtml:11
 #: Finance/view/finance/je/list.phtml:11
@@ -3082,7 +3919,8 @@ msgstr "Vertragsnumber"
 
 #: Finance/view/finance/je-row/list.phtml:50
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:157
-#: Inventory/view/inventory/stock/summary.phtml:51
+#: Inventory/view/inventory/stock/summary.phtml:91
+#: Inventory/view/inventory/stock/summary1.phtml:28
 #: Payment/view/payment/outgoing/pay-ap.phtml:142
 #: Payment/view/payment/outgoing/pay-po.phtml:142
 #: Payment/view/payment/outgoing/reverse.phtml:157
@@ -3126,13 +3964,24 @@ msgstr ""
 #: Inventory/view/inventory/gi-row/crud.phtml:172
 #: Inventory/view/inventory/gi-row/crudGI100.phtml:218
 #: Inventory/view/inventory/gi-row/crudGI102.phtml:174
+#: Inventory/view/inventory/gi/crudRowGI099.phtml:308
+#: Inventory/view/inventory/gi/crudRowGI102.phtml:270
+#: Inventory/view/inventory/gi/crudRowGR106.phtml:239
+#: Inventory/view/inventory/gr/crudRowGI102.phtml:238
+#: Inventory/view/inventory/gr/crudRowGR000.phtml:312
 #: Inventory/view/inventory/item-group/add.phtml:189
 #: Inventory/view/inventory/item-group/crud.phtml:225
 #: Inventory/view/inventory/item-group/edit.phtml:194
+#: Inventory/view/inventory/item-opening-balance/crudRowGI102.phtml:238
+#: Inventory/view/inventory/item-opening-balance/crudRowGR000.phtml:283
 #: Inventory/view/inventory/transfer-row/crud.phtml:193
 #: Inventory/view/inventory/transfer-row/crudGI108.phtml:188
+#: Inventory/view/inventory/transfer-wh/crudRowGI108.phtml:238
+#: Inventory/view/inventory/transfer-wh/crudRowGR000.phtml:283
+#: Procure/view/procure/ap/crudRow.phtml:498
 #: Procure/view/procure/gr-row/add.phtml:489
 #: Procure/view/procure/gr-row/copy/add-row.phtml:306
+#: Procure/view/procure/qr/crudRow.phtml:436
 msgid "Cost Center"
 msgstr ""
 
@@ -3252,13 +4101,24 @@ msgstr "Schließen"
 #: Inventory/view/inventory/gi-row/crud.phtml:177
 #: Inventory/view/inventory/gi-row/crudGI100.phtml:223
 #: Inventory/view/inventory/gi-row/crudGI102.phtml:179
+#: Inventory/view/inventory/gi/crudRowGI099.phtml:314
+#: Inventory/view/inventory/gi/crudRowGI102.phtml:276
+#: Inventory/view/inventory/gi/crudRowGR106.phtml:245
+#: Inventory/view/inventory/gr/crudRowGI102.phtml:244
+#: Inventory/view/inventory/gr/crudRowGR000.phtml:318
 #: Inventory/view/inventory/item-group/add.phtml:192
 #: Inventory/view/inventory/item-group/crud.phtml:228
 #: Inventory/view/inventory/item-group/edit.phtml:197
+#: Inventory/view/inventory/item-opening-balance/crudRowGI102.phtml:244
+#: Inventory/view/inventory/item-opening-balance/crudRowGR000.phtml:289
 #: Inventory/view/inventory/transfer-row/crud.phtml:198
 #: Inventory/view/inventory/transfer-row/crudGI108.phtml:193
+#: Inventory/view/inventory/transfer-wh/crudRowGI108.phtml:244
+#: Inventory/view/inventory/transfer-wh/crudRowGR000.phtml:289
+#: Procure/view/procure/ap/crudRow.phtml:503
 #: Procure/view/procure/gr-row/add.phtml:492
 #: Procure/view/procure/gr-row/copy/add-row.phtml:309
+#: Procure/view/procure/qr/crudRow.phtml:441
 msgid "Select Cost Center"
 msgstr ""
 
@@ -3275,20 +4135,37 @@ msgstr ""
 #: Finance/view/finance/v-invoice-row/add.phtml:73
 #: Finance/view/finance/v-invoice-row/crud.phtml:78
 #: Finance/view/finance/v-invoice/crud.phtml:66
+#: Inventory/view/inventory/association/copy/show.phtml:80
+#: Inventory/view/inventory/association/copy/show1.phtml:80
+#: Inventory/view/inventory/association/show.phtml:352
+#: Inventory/view/inventory/association/show1.phtml:136
 #: Inventory/view/inventory/gi-row/addGI099.phtml:59
 #: Inventory/view/inventory/gi-row/addGI100.phtml:59
 #: Inventory/view/inventory/gi-row/addGI102.phtml:65
 #: Inventory/view/inventory/gi-row/crud.phtml:65
 #: Inventory/view/inventory/gi-row/crudGI100.phtml:69
 #: Inventory/view/inventory/gi-row/crudGI102.phtml:69
+#: Inventory/view/inventory/gi/crudRowGI099.phtml:142
+#: Inventory/view/inventory/gi/crudRowGI102.phtml:144
+#: Inventory/view/inventory/gi/crudRowGI104.phtml:134
+#: Inventory/view/inventory/gi/crudRowGI900.phtml:134
+#: Inventory/view/inventory/gi/crudRowGR106.phtml:134
+#: Inventory/view/inventory/gr/crudRowGI102.phtml:133
+#: Inventory/view/inventory/gr/crudRowGI900.phtml:134
+#: Inventory/view/inventory/gr/crudRowGR000.phtml:132
+#: Inventory/view/inventory/gr/crudRowGR106.phtml:132
+#: Inventory/view/inventory/item-opening-balance/crudRowGI102.phtml:133
+#: Inventory/view/inventory/item-opening-balance/crudRowGR000.phtml:125
 #: Inventory/view/inventory/item-transaction/crud.phtml:45
 #: Inventory/view/inventory/item/copy/show.phtml:80
 #: Inventory/view/inventory/item/copy/show1.phtml:80
-#: Inventory/view/inventory/item/show.phtml:126
-#: Inventory/view/inventory/item/show1.phtml:136
+#: Inventory/view/inventory/item/show.phtml:352
+#: Inventory/view/inventory/item/show1.phtml:389
 #: Inventory/view/inventory/similar-item/crud.phtml:32
 #: Inventory/view/inventory/transfer-row/crud.phtml:60
 #: Inventory/view/inventory/transfer-row/crudGI108.phtml:55
+#: Inventory/view/inventory/transfer-wh/crudRowGI108.phtml:133
+#: Inventory/view/inventory/transfer-wh/crudRowGR000.phtml:125
 #: Inventory/view/inventory/transfer/crud-location.phtml:45
 #: Inventory/view/inventory/transfer/crud-wh.phtml:45
 #: Inventory/view/inventory/transfer/crud.phtml:45
@@ -3314,10 +4191,16 @@ msgstr ""
 #: Finance/view/finance/v-invoice-row/crud.phtml:159
 #: Finance/view/finance/v-invoice-row/crud.phtml:200
 #: Finance/view/finance/v-invoice-row/edit.phtml:258
+#: Procure/view/procure/ap/crudRow.phtml:215
+#: Procure/view/procure/ap/crudRow.phtml:252
 #: Procure/view/procure/gr-row/add.phtml:257
 #: Procure/view/procure/gr-row/add.phtml:297
+#: Procure/view/procure/gr/crudRow.phtml:136
 #: Procure/view/procure/po-row/add-row.phtml:147
-#: Procure/view/procure/po/crudPORow.phtml:166
+#: Procure/view/procure/po/crudPORow.phtml:167
+#: Procure/view/procure/po/crudRow.phtml:187
+#: Procure/view/procure/po/crudRow.phtml:224
+#: Procure/view/procure/qr/crudRow.phtml:185
 #: Procure/view/procure/quote-row/add.phtml:144
 msgid "Line Detail"
 msgstr ""
@@ -3325,6 +4208,10 @@ msgstr ""
 #: Finance/view/finance/v-invoice-row/add.phtml:235
 #: Finance/view/finance/v-invoice-row/crud.phtml:241
 #: Finance/view/finance/v-invoice-row/edit.phtml:299
+#: Inventory/view/inventory/association-item/crud-v1.phtml:121
+#: Inventory/view/inventory/association-item/crud-v1.phtml:182
+#: Inventory/view/inventory/association-item/crud.phtml:109
+#: Inventory/view/inventory/association-item/crud.phtml:175
 #: Inventory/view/inventory/gi-row/addGI099.phtml:139
 #: Inventory/view/inventory/gi-row/addGI100.phtml:139
 #: Inventory/view/inventory/gi-row/addGI102.phtml:141
@@ -3332,15 +4219,34 @@ msgstr ""
 #: Inventory/view/inventory/gi-row/crudGI100.phtml:143
 #: Inventory/view/inventory/gi-row/crudGI100.phtml:194
 #: Inventory/view/inventory/gi-row/crudGI102.phtml:143
+#: Inventory/view/inventory/gi/crudRowGI099.phtml:203
+#: Inventory/view/inventory/gi/crudRowGI099.phtml:283
+#: Inventory/view/inventory/gi/crudRowGI102.phtml:208
+#: Inventory/view/inventory/gi/crudRowGI104.phtml:198
+#: Inventory/view/inventory/gi/crudRowGI900.phtml:198
+#: Inventory/view/inventory/gi/crudRowGR106.phtml:198
+#: Inventory/view/inventory/gr/crudRowGI102.phtml:197
+#: Inventory/view/inventory/gr/crudRowGI900.phtml:198
+#: Inventory/view/inventory/gr/crudRowGR000.phtml:194
+#: Inventory/view/inventory/gr/crudRowGR106.phtml:194
+#: Inventory/view/inventory/item-opening-balance/crudRowGI102.phtml:197
+#: Inventory/view/inventory/item-opening-balance/crudRowGR000.phtml:186
 #: Inventory/view/inventory/transfer-row/crud.phtml:141
 #: Inventory/view/inventory/transfer-row/crudGI108.phtml:136
+#: Inventory/view/inventory/transfer-wh/crudRowGI108.phtml:197
+#: Inventory/view/inventory/transfer-wh/crudRowGR000.phtml:186
+#: Procure/view/procure/ap/crudRow.phtml:294
 #: Procure/view/procure/gr-row/add.phtml:339
+#: Procure/view/procure/gr/crudRow.phtml:167
 #: Procure/view/procure/po-row/add-row.phtml:191
-#: Procure/view/procure/po/crudPORow.phtml:210
+#: Procure/view/procure/po/crudPORow.phtml:211
+#: Procure/view/procure/po/crudRow.phtml:269
 #: Procure/view/procure/pr-row/add.phtml:264
 #: Procure/view/procure/pr-row/copy/edit.phtml:123
 #: Procure/view/procure/pr-row/crud.phtml:278
 #: Procure/view/procure/pr-row/edit.phtml:122
+#: Procure/view/procure/pr/crudRow.phtml:254
+#: Procure/view/procure/qr/crudRow.phtml:227
 #: Procure/view/procure/quote-row/add.phtml:184
 msgid "Item Detail"
 msgstr ""
@@ -3355,85 +4261,35 @@ msgstr ""
 msgid "Convert Factor"
 msgstr ""
 
-#: Finance/view/finance/v-invoice-row/add.phtml:428
-#: Finance/view/finance/v-invoice-row/crud.phtml:282
-#: Finance/view/finance/v-invoice/add_ap.phtml:250
-#: Finance/view/finance/v-invoice/crud.phtml:279
-#: Inventory/view/inventory/transfer/crud.phtml:182
-#: Inventory/view/inventory/transfer/crudGI108.phtml:184
-#: Inventory/view/inventory/transfer/review.phtml:188
-#: Inventory/view/inventory/transfer/show.phtml:152
-#: Procure/view/procure/pr-row/add.phtml:349
-#: Procure/view/procure/pr-row/crud.phtml:368
-#: Procure/view/procure/pr/add.phtml:117 Procure/view/procure/pr/crud.phtml:187
-#: Procure/view/procure/pr/show.phtml:143
-#: Procure/view/procure/pr/view.phtml:143
-msgid "Target Warehouse"
-msgstr ""
-
-#: Finance/view/finance/v-invoice-row/add.phtml:432
-#: Finance/view/finance/v-invoice-row/crud.phtml:286
-#: Finance/view/finance/v-invoice/add_ap.phtml:254
-#: Finance/view/finance/v-invoice/crud.phtml:285
-#: Inventory/view/inventory/item-transaction/crud.phtml:145
-#: Inventory/view/inventory/transfer/crud-location.phtml:145
-#: Inventory/view/inventory/transfer/crud-wh.phtml:145
-#: Inventory/view/inventory/transfer/crud.phtml:148
-#: Inventory/view/inventory/transfer/crud.phtml:187
-#: Inventory/view/inventory/transfer/crudGI108.phtml:150
-#: Inventory/view/inventory/transfer/crudGI108.phtml:189
-#: Inventory/view/inventory/transfer/crudGI109.phtml:150
-#: Inventory/view/inventory/transfer/crudGI109.phtml:189
-#: Inventory/view/inventory/transfer/crudGI109.phtml:227
-#: Inventory/view/inventory/transfer/review.phtml:154
-#: Inventory/view/inventory/transfer/review.phtml:192
-#: Inventory/view/inventory/transfer/show.phtml:118
-#: Inventory/view/inventory/transfer/show.phtml:156
-#: Procure/view/procure/pr-row/crud.phtml:372
-msgid "..."
-msgstr ""
-
-#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:14
+#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:13
+#: Inventory/view/inventory/association/copy/show.phtml:78
+#: Inventory/view/inventory/association/copy/show1.phtml:78
+#: Inventory/view/inventory/association/show.phtml:336
+#: Inventory/view/inventory/association/show1.phtml:134
 #: Inventory/view/inventory/item/copy/show.phtml:78
 #: Inventory/view/inventory/item/copy/show1.phtml:78
-#: Inventory/view/inventory/item/show.phtml:124
-#: Inventory/view/inventory/item/show1.phtml:134
+#: Inventory/view/inventory/item/show.phtml:336
+#: Inventory/view/inventory/item/show1.phtml:372
 msgid "AP Invoice"
 msgstr ""
 
-#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:24
+#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:36
 #: Procure/view/procure/pr-row/add.phtml:289
 #: Procure/view/procure/pr-row/copy/edit.phtml:148
 #: Procure/view/procure/pr-row/crud.phtml:303
 #: Procure/view/procure/pr-row/edit.phtml:147
-#: Procure/view/procure/quote-row/qo-of-item.phtml:16
+#: Procure/view/procure/quote-row/qo-of-item.phtml:31
 #, fuzzy
 #| msgid "Name"
 msgid "Item Name"
 msgstr "Namen"
 
-#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:25
+#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:42
 msgid "Vendor Item code"
 msgstr ""
 
 #: Finance/view/finance/v-invoice-row/copy/add.phtml:26
 msgid "New Row"
-msgstr ""
-
-#: Finance/view/finance/v-invoice-row/copy/add.phtml:51
-#: Inventory/view/inventory/gi-row/add.phtml:47
-#: Inventory/view/inventory/gr-row/add.phtml:45
-#: Procure/view/procure/gr-row/add.phtml:34
-#: Procure/view/procure/gr-row/copy/add-row.phtml:19
-#: Procure/view/procure/po-row/add-row.phtml:35
-#: Procure/view/procure/po-row/copy/add.phtml:39
-#: Procure/view/procure/po/crudPORow.phtml:57
-#: Procure/view/procure/po/review-v1.phtml:172
-#: Procure/view/procure/po/review.phtml:44
-#: Procure/view/procure/po/view.phtml:24
-#: Procure/view/procure/pr-row/copy/add.phtml:46
-#: Procure/view/procure/return-row/add.phtml:39
-msgid "Summary:"
 msgstr ""
 
 #: Finance/view/finance/v-invoice-row/crud.phtml:23
@@ -3463,15 +4319,26 @@ msgstr ""
 #: Finance/view/finance/v-invoice/add_ap.phtml:301
 #: Finance/view/finance/v-invoice/crud.phtml:338
 #: Finance/view/finance/v-invoice/review.phtml:289
+#: Procure/view/procure/ap/crudHeader.phtml:292
+#: Procure/view/procure/ap/review-v1.phtml:509
+#: Procure/view/procure/ap/review.phtml:484
+#: Procure/view/procure/gr/crudHeader.phtml:305
+#: Procure/view/procure/gr/review-v1.phtml:569
 #: Procure/view/procure/po/add.phtml:196
+#: Procure/view/procure/po/blank.phtml:542
 #: Procure/view/procure/po/copy-from-qo.phtml:165
+#: Procure/view/procure/po/copy/crudPO-v1.phtml:191
+#: Procure/view/procure/po/copy/review-v1.phtml:644
+#: Procure/view/procure/po/copy/review.phtml:290
 #: Procure/view/procure/po/crud.phtml:215
-#: Procure/view/procure/po/crudPO-v1.phtml:191
-#: Procure/view/procure/po/crudPO.phtml:235
-#: Procure/view/procure/po/review-v1.phtml:419
-#: Procure/view/procure/po/review.phtml:290
+#: Procure/view/procure/po/crudHeader.phtml:260
+#: Procure/view/procure/po/crudPO.phtml:252
+#: Procure/view/procure/po/review-v1.phtml:441
+#: Procure/view/procure/po/view-v1.phtml:491
 #: Procure/view/procure/po/view.phtml:275
 #: Procure/view/procure/price-comparison/price-of-item.phtml:25
+#: Procure/view/procure/qr/crudHeader.phtml:230
+#: Procure/view/procure/qr/review.phtml:565
 #: Procure/view/procure/quote/add.phtml:196
 #: Procure/view/procure/quote/show.phtml:229
 #: Procure/view/procure/return/crud.phtml:215
@@ -3481,15 +4348,26 @@ msgstr ""
 #: Finance/view/finance/v-invoice/add_ap.phtml:329
 #: Finance/view/finance/v-invoice/crud.phtml:371
 #: Finance/view/finance/v-invoice/review.phtml:317
+#: Procure/view/procure/ap/crudHeader.phtml:305
+#: Procure/view/procure/ap/review-v1.phtml:522
+#: Procure/view/procure/ap/review.phtml:497
+#: Procure/view/procure/gr/crudHeader.phtml:319
+#: Procure/view/procure/gr/review-v1.phtml:582
 #: Procure/view/procure/po/add.phtml:224
+#: Procure/view/procure/po/blank.phtml:555
 #: Procure/view/procure/po/copy-from-qo.phtml:193
+#: Procure/view/procure/po/copy/crudPO-v1.phtml:223
+#: Procure/view/procure/po/copy/review-v1.phtml:657
+#: Procure/view/procure/po/copy/review.phtml:318
 #: Procure/view/procure/po/crud.phtml:243
-#: Procure/view/procure/po/crudPO-v1.phtml:223
-#: Procure/view/procure/po/crudPO.phtml:247
-#: Procure/view/procure/po/review-v1.phtml:427
-#: Procure/view/procure/po/review.phtml:318
+#: Procure/view/procure/po/crudHeader.phtml:274
+#: Procure/view/procure/po/crudPO.phtml:267
+#: Procure/view/procure/po/review-v1.phtml:454
+#: Procure/view/procure/po/view-v1.phtml:504
 #: Procure/view/procure/po/view.phtml:301
 #: Procure/view/procure/price-comparison/price-of-item.phtml:26
+#: Procure/view/procure/qr/crudHeader.phtml:243
+#: Procure/view/procure/qr/review.phtml:578
 #: Procure/view/procure/quote/add.phtml:224
 #: Procure/view/procure/quote/show.phtml:257
 #: Procure/view/procure/return/crud.phtml:243
@@ -3499,14 +4377,25 @@ msgstr ""
 #: Finance/view/finance/v-invoice/add_ap.phtml:339
 #: Finance/view/finance/v-invoice/crud.phtml:383
 #: Finance/view/finance/v-invoice/review.phtml:329
+#: Procure/view/procure/ap/crudHeader.phtml:315
+#: Procure/view/procure/ap/review-v1.phtml:532
+#: Procure/view/procure/ap/review.phtml:507
+#: Procure/view/procure/gr/crudHeader.phtml:331
+#: Procure/view/procure/gr/review-v1.phtml:594
 #: Procure/view/procure/po/add.phtml:234
+#: Procure/view/procure/po/blank.phtml:567
 #: Procure/view/procure/po/copy-from-qo.phtml:203
+#: Procure/view/procure/po/copy/crudPO-v1.phtml:235
+#: Procure/view/procure/po/copy/review-v1.phtml:670
+#: Procure/view/procure/po/copy/review.phtml:328
 #: Procure/view/procure/po/crud.phtml:255
-#: Procure/view/procure/po/crudPO-v1.phtml:235
-#: Procure/view/procure/po/crudPO.phtml:259
-#: Procure/view/procure/po/review-v1.phtml:437
-#: Procure/view/procure/po/review.phtml:328
+#: Procure/view/procure/po/crudHeader.phtml:286
+#: Procure/view/procure/po/crudPO.phtml:284
+#: Procure/view/procure/po/review-v1.phtml:466
+#: Procure/view/procure/po/view-v1.phtml:516
 #: Procure/view/procure/po/view.phtml:311
+#: Procure/view/procure/qr/crudHeader.phtml:253
+#: Procure/view/procure/qr/review.phtml:588
 #: Procure/view/procure/return/crud.phtml:255
 msgid "Payment Term"
 msgstr ""
@@ -3519,58 +4408,12 @@ msgstr ""
 msgid "Document can't be changed anymore when submitted!"
 msgstr ""
 
-#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:79
-#: Finance/view/finance/v-invoice/copy/reverse.phtml:81
-#: Finance/view/finance/v-invoice/reverse.phtml:92
-#: Finance/view/finance/v-invoice/review.phtml:74
-#: Inventory/view/inventory/gi/reverse.phtml:89
-#: Inventory/view/inventory/gi/review.phtml:38
-#: Inventory/view/inventory/item-transaction/gi.phtml:146
-#: Inventory/view/inventory/opening-balance/review.phtml:54
-#: Inventory/view/inventory/transfer/review.phtml:64
-#: Payment/view/payment/outgoing/pay-ap.phtml:372
-#: Payment/view/payment/outgoing/pay-po.phtml:372
-#: Payment/view/payment/outgoing/reverse.phtml:81 Procure/view/procure/gr/Copy
-#: review.phtml:71 Procure/view/procure/gr/reverse.phtml:95
-#: Procure/view/procure/gr/review.phtml:97
-#: Procure/view/procure/po/review-v1.phtml:271
-#: Procure/view/procure/po/review.phtml:143
-#: Procure/view/procure/po/view.phtml:130
-#: Procure/view/procure/quote/show.phtml:90
-msgid "Post"
-msgstr ""
-
 #: Finance/view/finance/v-invoice/copy/Copy of review.phtml:328
 #: Finance/view/finance/v-invoice/review.phtml:484
 #: Inventory/view/inventory/item-transaction/gi.phtml:164
 #: Procure/view/procure/gr/Copy review.phtml:274
 #: Procure/view/procure/quote/show.phtml:367
 msgid " will be posted!"
-msgstr ""
-
-#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:336
-#: Finance/view/finance/v-invoice/copy/reverse.phtml:381
-#: Finance/view/finance/v-invoice/reverse.phtml:355
-#: Finance/view/finance/v-invoice/review.phtml:492
-#: Inventory/view/inventory/gi/reverse.phtml:232
-#: Inventory/view/inventory/gi/review.phtml:177
-#: Inventory/view/inventory/item-transaction/gi.phtml:172
-#: Inventory/view/inventory/opening-balance/review.phtml:270
-#: Inventory/view/inventory/transfer/review.phtml:277
-#: Payment/view/payment/outgoing/pay-ap.phtml:405
-#: Payment/view/payment/outgoing/pay-po.phtml:405
-#: Payment/view/payment/outgoing/reverse.phtml:381
-#: Payment/view/payment/outgoing/show.phtml:372 Procure/view/procure/gr/Copy
-#: review.phtml:282 Procure/view/procure/gr/reverse.phtml:272
-#: Procure/view/procure/gr/review.phtml:340
-#: Procure/view/procure/po/review-v1.phtml:573
-#: Procure/view/procure/po/review-v1.phtml:601
-#: Procure/view/procure/po/review-v1.phtml:626
-#: Procure/view/procure/po/review-v1.phtml:651
-#: Procure/view/procure/po/review.phtml:467
-#: Procure/view/procure/po/view.phtml:436
-#: Procure/view/procure/quote/show.phtml:375
-msgid "Do you want to continue?"
 msgstr ""
 
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:51
@@ -3581,8 +4424,16 @@ msgstr ""
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:57
 #: Finance/view/finance/v-invoice/reverse.phtml:68
 #: Inventory/view/inventory/gi/reverse.phtml:64
+#: Inventory/view/inventory/gi/review-v1.phtml:304
+#: Inventory/view/inventory/gr/review-v1.phtml:299
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:253
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:257
 #: Payment/view/payment/outgoing/reverse.phtml:57
+#: Procure/view/procure/ap/review-v1.phtml:272
+#: Procure/view/procure/ap/review.phtml:247
 #: Procure/view/procure/gr/reverse.phtml:71
+#: Procure/view/procure/pr/review-v1.phtml:250
+#: Procure/view/procure/qr/review.phtml:328
 msgid "Reversal Date"
 msgstr ""
 
@@ -3618,7 +4469,7 @@ msgstr ""
 #: Payment/view/payment/outgoing/reverse.phtml:256
 #: Payment/view/payment/outgoing/show.phtml:226
 #: Procure/view/procure/gr/list.phtml:158
-#: Procure/view/procure/po-row/po-of-item.phtml:14
+#: Procure/view/procure/po-row/po-of-item.phtml:22
 #: Procure/view/procure/price-comparison/price-of-item.phtml:19
 msgid "Vendor"
 msgstr ""
@@ -3648,41 +4499,74 @@ msgstr ""
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:376
 #: Finance/view/finance/v-invoice/reverse.phtml:350
 #: Inventory/view/inventory/gi/reverse.phtml:227
+#: Inventory/view/inventory/gi/review-v1.phtml:516
+#: Inventory/view/inventory/gi/review-v1.phtml:549
+#: Inventory/view/inventory/gi/review-v1.phtml:582
+#: Inventory/view/inventory/gr/review-v1.phtml:512
+#: Inventory/view/inventory/gr/review-v1.phtml:545
+#: Inventory/view/inventory/gr/review-v1.phtml:578
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:465
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:498
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:531
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:498
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:531
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:564
 #: Payment/view/payment/outgoing/pay-ap.phtml:400
 #: Payment/view/payment/outgoing/pay-po.phtml:400
 #: Payment/view/payment/outgoing/reverse.phtml:376
 #: Payment/view/payment/outgoing/show.phtml:367
+#: Procure/view/procure/ap/review-v1.phtml:718
+#: Procure/view/procure/ap/review-v1.phtml:751
+#: Procure/view/procure/ap/review-v1.phtml:784
+#: Procure/view/procure/ap/review.phtml:669
+#: Procure/view/procure/ap/review.phtml:702
+#: Procure/view/procure/ap/review.phtml:735
 #: Procure/view/procure/gr/reverse.phtml:267
+#: Procure/view/procure/gr/review-v1.phtml:783
+#: Procure/view/procure/gr/review-v1.phtml:816
+#: Procure/view/procure/gr/review-v1.phtml:849
+#: Procure/view/procure/gr/review-v1.phtml:879
 #: Procure/view/procure/gr/review.phtml:335
-#: Procure/view/procure/po/review-v1.phtml:568
-#: Procure/view/procure/po/review-v1.phtml:596
-#: Procure/view/procure/po/review-v1.phtml:624
-#: Procure/view/procure/po/review-v1.phtml:649
-#: Procure/view/procure/po/review.phtml:462
+#: Procure/view/procure/po/blank.phtml:730
+#: Procure/view/procure/po/blank.phtml:763
+#: Procure/view/procure/po/blank.phtml:796
+#: Procure/view/procure/po/blank.phtml:826
+#: Procure/view/procure/po/copy/review-v1.phtml:835
+#: Procure/view/procure/po/copy/review-v1.phtml:868
+#: Procure/view/procure/po/copy/review-v1.phtml:901
+#: Procure/view/procure/po/copy/review-v1.phtml:931
+#: Procure/view/procure/po/copy/review.phtml:462
+#: Procure/view/procure/po/review-v1.phtml:636
+#: Procure/view/procure/po/review-v1.phtml:669
+#: Procure/view/procure/po/review-v1.phtml:702
+#: Procure/view/procure/po/review-v1.phtml:732
+#: Procure/view/procure/po/view-v1.phtml:679
+#: Procure/view/procure/po/view-v1.phtml:712
+#: Procure/view/procure/po/view-v1.phtml:745
+#: Procure/view/procure/po/view-v1.phtml:775
 #: Procure/view/procure/po/view.phtml:431
+#: Procure/view/procure/pr/review-v1.phtml:460
+#: Procure/view/procure/pr/review-v1.phtml:493
+#: Procure/view/procure/pr/review-v1.phtml:526
+#: Procure/view/procure/qr/review.phtml:751
+#: Procure/view/procure/qr/review.phtml:784
+#: Procure/view/procure/qr/review.phtml:817
 #: Procure/view/procure/quote/show.phtml:370
 msgid "Document can't be changed anymore when posted!"
 msgstr ""
 
-#: Finance/view/finance/v-invoice/crud.phtml:388
-#: Finance/view/finance/v-invoice/review.phtml:332
-#: Inventory/view/inventory/item-group/add.phtml:226
-#: Inventory/view/inventory/item-group/crud.phtml:264
-#: Procure/view/procure/gr/crud.phtml:218
-#: Procure/view/procure/gr/review.phtml:256
-#: Procure/view/procure/gr/show.phtml:208
-#: Procure/view/procure/po/crud.phtml:258
-#: Procure/view/procure/po/crudPO-v1.phtml:238
-#: Procure/view/procure/po/crudPO.phtml:262
-#: Procure/view/procure/return/crud.phtml:258
-msgid "---"
-msgstr ""
-
 #: Finance/view/finance/v-invoice/crud.phtml:418
 #: Finance/view/finance/v-invoice/review.phtml:367
+#: Procure/view/procure/ap/crudHeader.phtml:332
+#: Procure/view/procure/ap/review-v1.phtml:549
+#: Procure/view/procure/ap/review.phtml:524
+#: Procure/view/procure/gr/crudHeader.phtml:350
+#: Procure/view/procure/po/copy/crudPO-v1.phtml:264
 #: Procure/view/procure/po/crud.phtml:288
-#: Procure/view/procure/po/crudPO-v1.phtml:264
-#: Procure/view/procure/po/crudPO.phtml:274
+#: Procure/view/procure/po/crudHeader.phtml:305
+#: Procure/view/procure/po/crudPO.phtml:305
+#: Procure/view/procure/qr/crudHeader.phtml:270
+#: Procure/view/procure/qr/review.phtml:605
 #: Procure/view/procure/return/crud.phtml:288
 msgid "Payment Term Detail"
 msgstr ""
@@ -3698,12 +4582,31 @@ msgstr ""
 
 #: Finance/view/finance/v-invoice/reverse.phtml:62
 #: Inventory/view/inventory/gi/reverse.phtml:58
+#: Inventory/view/inventory/gi/review-v1.phtml:297
+#: Inventory/view/inventory/gr/review-v1.phtml:292
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:246
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:250
+#: Procure/view/procure/ap/review-v1.phtml:265
+#: Procure/view/procure/ap/review.phtml:240
 #: Procure/view/procure/gr/reverse.phtml:65
+#: Procure/view/procure/pr/review-v1.phtml:243
+#: Procure/view/procure/qr/review.phtml:321
 msgid "Reserval Header"
 msgstr ""
 
 #: Finance/view/finance/v-invoice/review.phtml:258
-#: Inventory/view/inventory/gi/crud.phtml:130
+#: Inventory/view/inventory/gi/copy/crudHeader.phtml:162
+#: Inventory/view/inventory/gi/crud.phtml:153
+#: Inventory/view/inventory/gi/crudHeader.phtml:178
+#: Inventory/view/inventory/gi/review-v1.phtml:436
+#: Inventory/view/inventory/gr/crudHeader.phtml:157
+#: Inventory/view/inventory/gr/review-v1.phtml:431
+#: Inventory/view/inventory/item-opening-balance/crudHeader.phtml:159
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:385
+#: Inventory/view/inventory/transfer-wh/crudHeader.phtml:166
+#: Inventory/view/inventory/transfer-wh/crudHeader.phtml:184
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:382
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:400
 #: Procure/view/procure/pr-row/add.phtml:353
 #: Procure/view/procure/pr/add.phtml:121 Procure/view/procure/pr/crud.phtml:191
 #: Procure/view/procure/pr/show.phtml:147
@@ -3712,32 +4615,55 @@ msgid "Select Warehouse"
 msgstr ""
 
 #: Finance/view/finance/v-invoice/review.phtml:413
+#: Inventory/view/inventory/item-report/default.phtml:226
 #: Inventory/view/inventory/opening-balance/review.phtml:215
-#: Procure/view/procure/ap-report/row-status.phtml:238
+#: Inventory/view/inventory/stock-report/Copy of row-status.phtml:238
+#: Inventory/view/inventory/stock-report/row-status.phtml:173
+#: Inventory/view/inventory/trx-report/Copy
+#: Procure/view/procure/ap-report/bk/row-status.phtml:231
+#: Procure/view/procure/ap-report/row-status.phtml:231
+#: Procure/view/procure/ap/review-v1.phtml:613
+#: Procure/view/procure/ap/review.phtml:564
+#: Procure/view/procure/gr/review-v1.phtml:652
+#: Procure/view/procure/po-report/row-status.phtml:231
 #: Procure/view/procure/po-row/status-report.phtml:189
+#: Procure/view/procure/po/blank.phtml:625
+#: Procure/view/procure/po/copy/review-v1.phtml:729
+#: Procure/view/procure/po/copy/review.phtml:369
 #: Procure/view/procure/po/copy/show.phtml:222
-#: Procure/view/procure/po/review-v1.phtml:498
-#: Procure/view/procure/po/review.phtml:369
+#: Procure/view/procure/po/review-v1.phtml:531
+#: Procure/view/procure/po/view-v1.phtml:574
 #: Procure/view/procure/po/view.phtml:352
+#: Procure/view/procure/pr-report/row-status.phtml:230
 #: Procure/view/procure/pr-row/pr-gird.phtml:189
 #: Procure/view/procure/pr-row/status-report.phtml:189
-#: Procure/view/procure/pr/review.phtml:242
+#: Procure/view/procure/pr/copy/review.phtml:347
+#: Procure/view/procure/pr/review-v1.phtml:330
 #: Procure/view/procure/pr/show.phtml:211
 #: Procure/view/procure/pr/view.phtml:213
 #: Procure/view/procure/price-comparison/copy/show.phtml:222
+#: Procure/view/procure/qr/review.phtml:645
 #: Procure/view/procure/quote/show.phtml:300
 msgid "Refresh"
 msgstr ""
 
 #: Finance/view/finance/v-invoice/review.phtml:417
+#: Procure/view/procure/ap/review-v1.phtml:621
+#: Procure/view/procure/ap/review.phtml:572
+#: Procure/view/procure/gr/review-v1.phtml:660
+#: Procure/view/procure/po/blank.phtml:633
+#: Procure/view/procure/po/copy/review-v1.phtml:738
+#: Procure/view/procure/po/copy/review.phtml:373
 #: Procure/view/procure/po/copy/show.phtml:226
-#: Procure/view/procure/po/review-v1.phtml:502
-#: Procure/view/procure/po/review.phtml:373
+#: Procure/view/procure/po/review-v1.phtml:539
+#: Procure/view/procure/po/view-v1.phtml:582
 #: Procure/view/procure/po/view.phtml:356
-#: Procure/view/procure/pr/review.phtml:248
+#: Procure/view/procure/pr/copy/review.phtml:355
+#: Procure/view/procure/pr/review-v1.phtml:338
 #: Procure/view/procure/pr/show.phtml:214
 #: Procure/view/procure/pr/view.phtml:219
 #: Procure/view/procure/price-comparison/copy/show.phtml:226
+#: Procure/view/procure/qr/review.phtml:653
 #: Procure/view/procure/quote/show.phtml:304
 msgid "Full Screen"
 msgstr ""
@@ -3750,41 +4676,9 @@ msgstr ""
 msgid "Reverse AP Invoice"
 msgstr ""
 
-#: Finance/view/finance/v-invoice/show.phtml:57
-#: Inventory/view/inventory/gi/show.phtml:41
-#: Inventory/view/inventory/transfer/show.phtml:41
-#: Payment/view/payment/outgoing/show.phtml:337
-#: Procure/view/procure/gr/show.phtml:54
-msgid "Reverse"
-msgstr ""
-
 #: Finance/view/finance/v-invoice/show.phtml:58
 msgid "Pay AP"
 msgstr ""
-
-#: Finance/view/finance/v-invoice/vendor.phtml:180
-#: HR/view/hr/contract/index.phtml:35 HR/view/hr/contract/index.phtml:45
-#: HR/view/hr/employee-contract/list1.phtml:59
-#: HR/view/hr/employee-contract/list2.phtml:53
-#: HR/view/hr/employee-contract/list2.phtml:63
-#: HR/view/hr/employee/applicant-list.phtml:154
-#: HR/view/hr/employee/list.phtml:171 HR/view/hr/income-setup/index.phtml:63
-#: HR/view/hr/leave-reason/list.phtml:63 HR/view/hr/minimum-wage/index.phtml:35
-#: HR/view/hr/minimum-wage/index.phtml:44 HR/view/hr/position/index.phtml:37
-#: HR/view/hr/position/index.phtml:47 HR/view/hr/position/list.phtml:61
-#: HR/view/hr/salary/list2.phtml:53 HR/view/hr/salary/list2.phtml:63
-#: HR/view/hr/sso/index.phtml:37 HR/view/hr/sso/index.phtml:47
-#: Inventory/view/inventory/item-accounting/list.phtml:101
-#: Inventory/view/inventory/item-serial/list.phtml:105
-#: Inventory/view/inventory/item-transaction/list.phtml:195
-#: Inventory/view/inventory/item-transaction/list.phtml:203
-#: Inventory/view/inventory/item-transaction/list.phtml:212
-#: Inventory/view/inventory/item-variant/list.phtml:105
-#: Inventory/view/inventory/opening-balance/list.phtml:170
-#: Procure/view/procure/po-row/row-of-vendor.phtml:160
-#: Procure/view/procure/po/vendor.phtml:167
-msgid "Show"
-msgstr "Sehen"
 
 #: Finance/view/layout/layout-fluid.phtml:202
 msgid "FINANCE"
@@ -3997,13 +4891,6 @@ msgstr "HR Einrichten"
 msgid "Valid From"
 msgstr "Gültig vom"
 
-#: HR/view/hr/employee-contract/list1.phtml:31 HR/view/hr/salary/list1.phtml:41
-#: HR/view/hr/salary/simulate.phtml:37
-#, fuzzy
-#| msgid "Vadid To"
-msgid "Valid To"
-msgstr "Gültig bis"
-
 #: HR/view/hr/employee-contract/list1.phtml:65
 #: HR/view/hr/employee-contract/list2.phtml:65
 #: HR/view/hr/employee-contract/show.phtml:54 HR/view/hr/salary/list2.phtml:65
@@ -4028,7 +4915,6 @@ msgstr "Vertragsstatus"
 #: Inventory/view/inventory/opening-balance/assign.phtml:50
 #: Inventory/view/inventory/serial-number/assign.phtml:50
 #: Inventory/view/inventory/stock/assign.phtml:50
-#: Inventory/view/inventory/stock/summary.phtml:22
 msgid "All"
 msgstr "Alle "
 
@@ -4472,10 +5358,6 @@ msgstr ""
 msgid "Payment Frequerency"
 msgstr ""
 
-#: HR/view/hr/salary/edit.phtml:90
-msgid "Valid from"
-msgstr ""
-
 #: HR/view/hr/salary/edit.phtml:96
 msgid "Valid to"
 msgstr ""
@@ -4535,6 +5417,390 @@ msgstr "HR MANGEMENT"
 msgid "search term..."
 msgstr "Suchbegriff..."
 
+#: Inventory/view/inventory/association-item/crud-v1.phtml:145
+#: Inventory/view/inventory/association-item/crud.phtml:133
+#, fuzzy
+#| msgid "Action"
+msgid "Association"
+msgstr "Aktionen"
+
+#: Inventory/view/inventory/association-item/crud-v1.phtml:150
+#: Inventory/view/inventory/association-item/crud.phtml:138
+#, fuzzy
+#| msgid "Action"
+msgid "Select Association"
+msgstr "Aktionen"
+
+#: Inventory/view/inventory/association-item/list.phtml:85
+#: Inventory/view/inventory/association-item/list.phtml:97
+#: Inventory/view/inventory/item-batch/list.phtml:122
+#: Inventory/view/inventory/item/view-v1.phtml:288
+#: Inventory/view/inventory/item/view-v1.phtml:300
+#: Inventory/view/inventory/serial-number/list.phtml:122
+msgid "Item"
+msgstr ""
+
+#: Inventory/view/inventory/association-item/list.phtml:91
+#: Inventory/view/inventory/item/view-v1.phtml:294
+#, fuzzy
+#| msgid "Action"
+msgid "Assocation"
+msgstr "Aktionen"
+
+#: Inventory/view/inventory/association/add.phtml:130
+#: Inventory/view/inventory/association/copy/add.phtml:130
+#: Inventory/view/inventory/association/edit.phtml:150
+#: Inventory/view/inventory/association/show.phtml:631
+#: Inventory/view/inventory/association/show1.phtml:255
+#: Inventory/view/inventory/item/add.phtml:130
+#: Inventory/view/inventory/item/copy/add.phtml:130
+#: Inventory/view/inventory/item/edit.phtml:150
+#: Inventory/view/inventory/item/show.phtml:631
+#: Inventory/view/inventory/item/show1.phtml:567
+msgid "Select standard unit"
+msgstr ""
+
+#: Inventory/view/inventory/association/add.phtml:159
+#: Inventory/view/inventory/association/copy/add.phtml:159
+#: Inventory/view/inventory/association/crud-v1.phtml:380
+#: Inventory/view/inventory/association/crud.phtml:192
+#: Inventory/view/inventory/association/edit.phtml:179
+#: Inventory/view/inventory/association/show.phtml:663
+#: Inventory/view/inventory/association/show1.phtml:284
+#: Inventory/view/inventory/item/add.phtml:159
+#: Inventory/view/inventory/item/copy/add.phtml:159
+#: Inventory/view/inventory/item/crud-logistic.phtml:444
+#: Inventory/view/inventory/item/crud-v1.phtml:515
+#: Inventory/view/inventory/item/crud.phtml:192
+#: Inventory/view/inventory/item/edit.phtml:179
+#: Inventory/view/inventory/item/show.phtml:663
+#: Inventory/view/inventory/item/show1.phtml:597
+#, fuzzy
+#| msgid "Inventory"
+msgid "Inventory Unit"
+msgstr "Waren"
+
+#: Inventory/view/inventory/association/add.phtml:164
+#: Inventory/view/inventory/association/copy/add.phtml:164
+#: Inventory/view/inventory/association/crud-v1.phtml:386
+#: Inventory/view/inventory/association/crud.phtml:197
+#: Inventory/view/inventory/association/edit.phtml:184
+#: Inventory/view/inventory/association/show.phtml:671
+#: Inventory/view/inventory/association/show1.phtml:289
+#: Inventory/view/inventory/item/add.phtml:164
+#: Inventory/view/inventory/item/copy/add.phtml:164
+#: Inventory/view/inventory/item/crud-logistic.phtml:450
+#: Inventory/view/inventory/item/crud-v1.phtml:521
+#: Inventory/view/inventory/item/crud.phtml:197
+#: Inventory/view/inventory/item/edit.phtml:184
+#: Inventory/view/inventory/item/show.phtml:671
+#: Inventory/view/inventory/item/show1.phtml:603
+msgid "Select inventory unit"
+msgstr ""
+
+#: Inventory/view/inventory/association/add.phtml:190
+#: Inventory/view/inventory/association/add.phtml:237
+#: Inventory/view/inventory/association/add.phtml:284
+#: Inventory/view/inventory/association/copy/add.phtml:190
+#: Inventory/view/inventory/association/copy/add.phtml:237
+#: Inventory/view/inventory/association/copy/add.phtml:284
+#: Inventory/view/inventory/association/crud-v1.phtml:395
+#: Inventory/view/inventory/association/crud-v1.phtml:426
+#: Inventory/view/inventory/association/crud-v1.phtml:459
+#: Inventory/view/inventory/association/crud.phtml:222
+#: Inventory/view/inventory/association/crud.phtml:268
+#: Inventory/view/inventory/association/crud.phtml:315
+#: Inventory/view/inventory/association/edit.phtml:210
+#: Inventory/view/inventory/association/edit.phtml:257
+#: Inventory/view/inventory/association/edit.phtml:304
+#: Inventory/view/inventory/association/show.phtml:700
+#: Inventory/view/inventory/association/show.phtml:760
+#: Inventory/view/inventory/association/show.phtml:819
+#: Inventory/view/inventory/association/show1.phtml:315
+#: Inventory/view/inventory/association/show1.phtml:362
+#: Inventory/view/inventory/association/show1.phtml:409
+#: Inventory/view/inventory/item/add.phtml:190
+#: Inventory/view/inventory/item/add.phtml:237
+#: Inventory/view/inventory/item/add.phtml:284
+#: Inventory/view/inventory/item/copy/add.phtml:190
+#: Inventory/view/inventory/item/copy/add.phtml:237
+#: Inventory/view/inventory/item/copy/add.phtml:284
+#: Inventory/view/inventory/item/crud-logistic.phtml:459
+#: Inventory/view/inventory/item/crud-logistic.phtml:490
+#: Inventory/view/inventory/item/crud-logistic.phtml:519
+#: Inventory/view/inventory/item/crud-v1.phtml:530
+#: Inventory/view/inventory/item/crud-v1.phtml:561
+#: Inventory/view/inventory/item/crud-v1.phtml:590
+#: Inventory/view/inventory/item/crud.phtml:222
+#: Inventory/view/inventory/item/crud.phtml:268
+#: Inventory/view/inventory/item/crud.phtml:315
+#: Inventory/view/inventory/item/edit.phtml:210
+#: Inventory/view/inventory/item/edit.phtml:257
+#: Inventory/view/inventory/item/edit.phtml:304
+#: Inventory/view/inventory/item/show.phtml:700
+#: Inventory/view/inventory/item/show.phtml:760
+#: Inventory/view/inventory/item/show.phtml:819
+#: Inventory/view/inventory/item/show1.phtml:631
+#: Inventory/view/inventory/item/show1.phtml:680
+#: Inventory/view/inventory/item/show1.phtml:729
+msgid "Conversion Factor"
+msgstr ""
+
+#: Inventory/view/inventory/association/add.phtml:204
+#: Inventory/view/inventory/association/copy/add.phtml:204
+#: Inventory/view/inventory/association/crud-v1.phtml:410
+#: Inventory/view/inventory/association/crud.phtml:236
+#: Inventory/view/inventory/association/edit.phtml:224
+#: Inventory/view/inventory/association/show.phtml:721
+#: Inventory/view/inventory/association/show1.phtml:329
+#: Inventory/view/inventory/item/add.phtml:204
+#: Inventory/view/inventory/item/copy/add.phtml:204
+#: Inventory/view/inventory/item/crud-logistic.phtml:474
+#: Inventory/view/inventory/item/crud-v1.phtml:545
+#: Inventory/view/inventory/item/crud.phtml:236
+#: Inventory/view/inventory/item/edit.phtml:224
+#: Inventory/view/inventory/item/show.phtml:721
+#: Inventory/view/inventory/item/show1.phtml:646
+msgid "Purchase Unit"
+msgstr ""
+
+#: Inventory/view/inventory/association/add.phtml:209
+#: Inventory/view/inventory/association/copy/add.phtml:209
+#: Inventory/view/inventory/association/crud-v1.phtml:416
+#: Inventory/view/inventory/association/crud.phtml:241
+#: Inventory/view/inventory/association/edit.phtml:229
+#: Inventory/view/inventory/association/show.phtml:729
+#: Inventory/view/inventory/association/show1.phtml:334
+#: Inventory/view/inventory/item/add.phtml:209
+#: Inventory/view/inventory/item/copy/add.phtml:209
+#: Inventory/view/inventory/item/crud-logistic.phtml:480
+#: Inventory/view/inventory/item/crud-v1.phtml:551
+#: Inventory/view/inventory/item/crud.phtml:241
+#: Inventory/view/inventory/item/edit.phtml:229
+#: Inventory/view/inventory/item/show.phtml:729
+#: Inventory/view/inventory/item/show1.phtml:652
+msgid "Select purchase unit"
+msgstr ""
+
+#: Inventory/view/inventory/association/add.phtml:251
+#: Inventory/view/inventory/association/copy/add.phtml:251
+#: Inventory/view/inventory/association/crud-v1.phtml:441
+#: Inventory/view/inventory/association/crud.phtml:282
+#: Inventory/view/inventory/association/edit.phtml:271
+#: Inventory/view/inventory/association/show.phtml:780
+#: Inventory/view/inventory/association/show1.phtml:376
+#: Inventory/view/inventory/item/add.phtml:251
+#: Inventory/view/inventory/item/copy/add.phtml:251
+#: Inventory/view/inventory/item/crud-logistic.phtml:505
+#: Inventory/view/inventory/item/crud-v1.phtml:576
+#: Inventory/view/inventory/item/crud.phtml:282
+#: Inventory/view/inventory/item/edit.phtml:271
+#: Inventory/view/inventory/item/show.phtml:780
+#: Inventory/view/inventory/item/show1.phtml:695
+msgid "Sales Unit"
+msgstr ""
+
+#: Inventory/view/inventory/association/add.phtml:256
+#: Inventory/view/inventory/association/copy/add.phtml:256
+#: Inventory/view/inventory/association/crud.phtml:287
+#: Inventory/view/inventory/association/edit.phtml:276
+#: Inventory/view/inventory/association/show.phtml:788
+#: Inventory/view/inventory/association/show1.phtml:381
+#: Inventory/view/inventory/item/add.phtml:256
+#: Inventory/view/inventory/item/copy/add.phtml:256
+#: Inventory/view/inventory/item/crud.phtml:287
+#: Inventory/view/inventory/item/edit.phtml:276
+#: Inventory/view/inventory/item/show.phtml:788
+#: Inventory/view/inventory/item/show1.phtml:701
+msgid "Select Sales Unit"
+msgstr ""
+
+#: Inventory/view/inventory/association/add.phtml:314
+#: Inventory/view/inventory/association/copy/add.phtml:314
+#: Inventory/view/inventory/association/copy/edit.phtml:202
+#: Inventory/view/inventory/association/copy/show.phtml:268
+#: Inventory/view/inventory/association/copy/show1.phtml:248
+#: Inventory/view/inventory/association/crud-v1.phtml:477
+#: Inventory/view/inventory/association/crud.phtml:331
+#: Inventory/view/inventory/association/edit.phtml:334
+#: Inventory/view/inventory/association/show.phtml:870
+#: Inventory/view/inventory/association/show1.phtml:439
+#: Inventory/view/inventory/item-group/add.phtml:21
+#: Inventory/view/inventory/item-group/add.phtml:39
+#: Inventory/view/inventory/item-group/crud.phtml:68
+#: Inventory/view/inventory/item-group/edit.phtml:19
+#: Inventory/view/inventory/item-group/edit.phtml:45
+#: Inventory/view/inventory/item/add.phtml:314
+#: Inventory/view/inventory/item/copy/add.phtml:314
+#: Inventory/view/inventory/item/copy/edit.phtml:202
+#: Inventory/view/inventory/item/copy/show.phtml:268
+#: Inventory/view/inventory/item/copy/show1.phtml:248
+#: Inventory/view/inventory/item/crud-logistic.phtml:537
+#: Inventory/view/inventory/item/crud-v1.phtml:631
+#: Inventory/view/inventory/item/crud.phtml:331
+#: Inventory/view/inventory/item/edit.phtml:334
+#: Inventory/view/inventory/item/show.phtml:870
+#: Inventory/view/inventory/item/show1.phtml:768
+#: Inventory/view/inventory/setting/index.phtml:14
+#: Inventory/view/inventory/stock/add.phtml:19
+#: Inventory/view/inventory/stock/add.phtml:37
+#: Inventory/view/inventory/stock/edit.phtml:19
+#: Inventory/view/inventory/stock/edit.phtml:45
+msgid "Item Group"
+msgstr ""
+
+#: Inventory/view/inventory/association/add.phtml:317
+#: Inventory/view/inventory/association/copy/add.phtml:317
+#: Inventory/view/inventory/association/copy/edit.phtml:205
+#: Inventory/view/inventory/association/copy/show.phtml:271
+#: Inventory/view/inventory/association/copy/show1.phtml:251
+#: Inventory/view/inventory/association/crud-v1.phtml:483
+#: Inventory/view/inventory/association/crud.phtml:334
+#: Inventory/view/inventory/association/edit.phtml:337
+#: Inventory/view/inventory/association/show.phtml:876
+#: Inventory/view/inventory/association/show1.phtml:442
+#: Inventory/view/inventory/item/add.phtml:317
+#: Inventory/view/inventory/item/copy/add.phtml:317
+#: Inventory/view/inventory/item/copy/edit.phtml:205
+#: Inventory/view/inventory/item/copy/show.phtml:271
+#: Inventory/view/inventory/item/copy/show1.phtml:251
+#: Inventory/view/inventory/item/crud-logistic.phtml:543
+#: Inventory/view/inventory/item/crud-v1.phtml:637
+#: Inventory/view/inventory/item/crud.phtml:334
+#: Inventory/view/inventory/item/edit.phtml:337
+#: Inventory/view/inventory/item/show.phtml:876
+#: Inventory/view/inventory/item/show1.phtml:774
+msgid "Select Group"
+msgstr ""
+
+#: Inventory/view/inventory/association/copy/edit.phtml:44
+#: Inventory/view/inventory/association/edit.phtml:40
+#: Inventory/view/inventory/item/copy/edit.phtml:44
+#: Inventory/view/inventory/item/edit.phtml:40
+msgid "Item#"
+msgstr ""
+
+#: Inventory/view/inventory/association/copy/show.phtml:46
+#: Inventory/view/inventory/association/copy/show1.phtml:46
+#: Inventory/view/inventory/association/show.phtml:172
+#: Inventory/view/inventory/association/show1.phtml:101
+#: Inventory/view/inventory/item/copy/show.phtml:46
+#: Inventory/view/inventory/item/copy/show1.phtml:46
+#: Inventory/view/inventory/item/show.phtml:172
+#: Inventory/view/inventory/item/show1.phtml:201
+msgid "Picture"
+msgstr ""
+
+#: Inventory/view/inventory/association/copy/show.phtml:62
+#: Inventory/view/inventory/association/copy/show1.phtml:62
+#: Inventory/view/inventory/association/show.phtml:249
+#: Inventory/view/inventory/association/show1.phtml:117
+#: Inventory/view/inventory/item/copy/show.phtml:62
+#: Inventory/view/inventory/item/copy/show1.phtml:62
+#: Inventory/view/inventory/item/show.phtml:249
+#: Inventory/view/inventory/item/show1.phtml:282
+msgid "Attachments"
+msgstr ""
+
+#: Inventory/view/inventory/association/copy/show.phtml:70
+#: Inventory/view/inventory/association/copy/show1.phtml:70
+#: Inventory/view/inventory/association/show.phtml:286
+#: Inventory/view/inventory/association/show1.phtml:126
+#: Inventory/view/inventory/item/copy/show.phtml:70
+#: Inventory/view/inventory/item/copy/show1.phtml:70
+#: Inventory/view/inventory/item/show.phtml:286
+#: Inventory/view/inventory/item/show1.phtml:321
+#: Procure/view/procure/pr-report/dto_list.phtml:23
+#: Procure/view/procure/pr-row/pr-of-item.phtml:13
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:11
+#, fuzzy
+#| msgid "New Purchase Request (PR)"
+msgid "Purchase Request"
+msgstr "Erstelle neuer Einkauf"
+
+#: Inventory/view/inventory/association/copy/show.phtml:73
+#: Inventory/view/inventory/association/copy/show1.phtml:73
+#: Inventory/view/inventory/association/show.phtml:303
+#: Inventory/view/inventory/association/show1.phtml:129
+#: Inventory/view/inventory/item/copy/show.phtml:73
+#: Inventory/view/inventory/item/copy/show1.phtml:73
+#: Inventory/view/inventory/item/show.phtml:303
+#: Inventory/view/inventory/item/show1.phtml:338
+#: Procure/view/procure/quote-row/qo-of-item.phtml:11
+msgid "Quotation"
+msgstr ""
+
+#: Inventory/view/inventory/association/copy/show.phtml:76
+#: Inventory/view/inventory/association/copy/show1.phtml:76
+#: Inventory/view/inventory/association/show.phtml:320
+#: Inventory/view/inventory/association/show1.phtml:132
+#: Inventory/view/inventory/item/copy/show.phtml:76
+#: Inventory/view/inventory/item/copy/show1.phtml:76
+#: Inventory/view/inventory/item/show.phtml:320
+#: Inventory/view/inventory/item/show1.phtml:355
+#: Procure/view/procure/po-row/po-of-item.phtml:11
+#: Procure/view/procure/price-comparison/price-of-item.phtml:7
+msgid "Purchase Order"
+msgstr ""
+
+#: Inventory/view/inventory/association/copy/show.phtml:211
+#: Inventory/view/inventory/item/copy/show.phtml:211
+msgid "Select Measure"
+msgstr ""
+
+#: Inventory/view/inventory/association/crud.phtml:52
+#: Inventory/view/inventory/association/show.phtml:416
+#: Inventory/view/inventory/item/crud.phtml:52
+#: Inventory/view/inventory/item/show.phtml:416
+msgid "Fixed Asset"
+msgstr ""
+
+#: Inventory/view/inventory/association/crud.phtml:56
+#: Inventory/view/inventory/association/show.phtml:431
+#: Inventory/view/inventory/item/crud.phtml:56
+#: Inventory/view/inventory/item/show.phtml:431
+#, fuzzy
+#| msgid "Inventory"
+msgid "Inventory Item"
+msgstr "Waren"
+
+#: Inventory/view/inventory/association/crud.phtml:60
+#: Inventory/view/inventory/association/show.phtml:446
+#: Inventory/view/inventory/item/crud.phtml:60
+#: Inventory/view/inventory/item/show.phtml:446
+#, fuzzy
+#| msgid "Inventory"
+msgid "None-Inventory Item"
+msgstr "Waren"
+
+#: Inventory/view/inventory/association/crud.phtml:64
+#: Inventory/view/inventory/association/show.phtml:461
+#: Inventory/view/inventory/item/crud.phtml:64
+#: Inventory/view/inventory/item/show.phtml:461
+msgid "Service"
+msgstr ""
+
+#: Inventory/view/inventory/association/show.phtml:156
+#: Inventory/view/inventory/association/show1.phtml:94
+#: Inventory/view/inventory/item/show.phtml:156
+#: Inventory/view/inventory/item/show1.phtml:185
+msgid "Price Comparison"
+msgstr ""
+
+#: Inventory/view/inventory/association/show.phtml:366
+#: Inventory/view/inventory/association/show1.phtml:140
+#: Inventory/view/inventory/item/show.phtml:366
+#: Inventory/view/inventory/item/show1.phtml:410
+msgid "Item Attributes"
+msgstr ""
+
+#: Inventory/view/inventory/association/show.phtml:370
+#: Inventory/view/inventory/association/show1.phtml:141
+#: Inventory/view/inventory/item/show.phtml:370
+#: Inventory/view/inventory/item/show1.phtml:414
+msgid "Attributes"
+msgstr ""
+
 #: Inventory/view/inventory/dashboard/index.phtml:48
 msgid "Recently received items"
 msgstr ""
@@ -4562,7 +5828,8 @@ msgid "Unit"
 msgstr ""
 
 #: Inventory/view/inventory/dashboard/last-received-items.phtml:25
-#: Inventory/view/inventory/stock/summary.phtml:54
+#: Inventory/view/inventory/stock/summary.phtml:109
+#: Inventory/view/inventory/stock/summary1.phtml:31
 #: Procure/view/procure/price-comparison/price-of-item.phtml:20
 msgid "Unit Price"
 msgstr ""
@@ -4601,15 +5868,26 @@ msgstr ""
 
 #: Inventory/view/inventory/gi/Copy of add.phtml:86
 #: Inventory/view/inventory/gi/add.phtml:106
-#: Inventory/view/inventory/gi/crud.phtml:125
+#: Inventory/view/inventory/gi/copy/crudHeader.phtml:156
+#: Inventory/view/inventory/gi/crud.phtml:147
+#: Inventory/view/inventory/gi/crudHeader.phtml:172
 #: Inventory/view/inventory/gi/reverse.phtml:173
-#: Inventory/view/inventory/gi/review.phtml:120
+#: Inventory/view/inventory/gi/review-v1.phtml:430
+#: Inventory/view/inventory/gi/review.phtml:174
 #: Inventory/view/inventory/gi/show.phtml:110
-#: Inventory/view/inventory/gr/show.phtml:100
+#: Inventory/view/inventory/gr/crudHeader.phtml:151
+#: Inventory/view/inventory/gr/deprecated/show.phtml:100
+#: Inventory/view/inventory/gr/review-v1.phtml:425
+#: Inventory/view/inventory/item-opening-balance/crudHeader.phtml:153
+#: Inventory/view/inventory/item-opening-balance/deprecated/show.phtml:100
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:379
 #: Inventory/view/inventory/item-transaction/crud.phtml:141
 #: Inventory/view/inventory/item-transaction/gi.phtml:84
 #: Inventory/view/inventory/opening-balance/add.phtml:145
 #: Inventory/view/inventory/opening-balance/review.phtml:166
+#: Inventory/view/inventory/transfer-wh/crudHeader.phtml:160
+#: Inventory/view/inventory/transfer-wh/deprecated/show.phtml:100
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:376
 #: Inventory/view/inventory/transfer/add.phtml:106
 #: Inventory/view/inventory/transfer/crud-location.phtml:141
 #: Inventory/view/inventory/transfer/crud-wh.phtml:141
@@ -4621,6 +5899,55 @@ msgstr ""
 msgid "Source Warehouse"
 msgstr ""
 
+#: Inventory/view/inventory/gi/crudRowGI099.phtml:238
+#: Inventory/view/inventory/gi/crudRowGI102.phtml:243
+#: Procure/view/procure/ap/crudRow.phtml:368
+#: Procure/view/procure/po/crudRow.phtml:324
+#: Procure/view/procure/pr/crudRow.phtml:308
+#: Procure/view/procure/qr/crudRow.phtml:282
+#, fuzzy
+#| msgid "Contract number"
+msgid "Document Unit"
+msgstr "Vertragsnumber"
+
+#: Inventory/view/inventory/gi/crudRowGI099.phtml:244
+#: Inventory/view/inventory/gi/crudRowGI102.phtml:249
+#: Procure/view/procure/ap/crudRow.phtml:374
+#: Procure/view/procure/po/crudRow.phtml:330
+#: Procure/view/procure/pr/crudRow.phtml:314
+#: Procure/view/procure/qr/crudRow.phtml:288
+msgid "Select doc unit"
+msgstr ""
+
+#: Inventory/view/inventory/gi/crudRowGI100.phtml:139
+msgid "change logs"
+msgstr ""
+
+#: Inventory/view/inventory/gi/crudRowGI100.phtml:200
+#: Inventory/view/inventory/gi/crudRowGI100.phtml:291
+#, fuzzy
+#| msgid "Period Code"
+msgid "item detail"
+msgstr "Periode"
+
+#: Inventory/view/inventory/gi/crudRowGI100.phtml:244
+#, fuzzy
+#| msgid "Contract number"
+msgid "document unit"
+msgstr "Vertragsnumber"
+
+#: Inventory/view/inventory/gi/crudRowGI100.phtml:250
+msgid "select doc unit"
+msgstr ""
+
+#: Inventory/view/inventory/gi/crudRowGI100.phtml:316
+msgid "cost center"
+msgstr ""
+
+#: Inventory/view/inventory/gi/crudRowGI100.phtml:322
+msgid "select cost center"
+msgstr ""
+
 #: Inventory/view/inventory/gi/reverse.phtml:27
 msgid "Reverse Goods Issue"
 msgstr ""
@@ -4630,16 +5957,68 @@ msgstr ""
 msgid "Good receipt will be reversed!"
 msgstr ""
 
-#: Inventory/view/inventory/gi/review.phtml:32
+#: Inventory/view/inventory/gi/review-v1.phtml:172
+#: Inventory/view/inventory/gr/review-v1.phtml:165
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:176
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:180
+msgid "Document can't be changed anymore when posted! <br> "
+msgstr ""
+
+#: Inventory/view/inventory/gi/review-v1.phtml:511
+#: Inventory/view/inventory/gr/review-v1.phtml:507
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:460
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:493
+#: Procure/view/procure/ap/review-v1.phtml:713
+#: Procure/view/procure/ap/review.phtml:664
+#: Procure/view/procure/gr/review-v1.phtml:778
+#: Procure/view/procure/po/blank.phtml:725
+#: Procure/view/procure/po/copy/review-v1.phtml:830
+#: Procure/view/procure/po/copy/review.phtml:459
+#: Procure/view/procure/po/review-v1.phtml:631
+#: Procure/view/procure/po/view-v1.phtml:674
+#: Procure/view/procure/po/view.phtml:428
+#: Procure/view/procure/pr/review-v1.phtml:455
+#: Procure/view/procure/qr/review.phtml:746
+msgid "PO will be posted!"
+msgstr ""
+
+#: Inventory/view/inventory/gi/review-v1.phtml:544
+#: Inventory/view/inventory/gr/review-v1.phtml:540
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:493
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:526
+#: Procure/view/procure/ap/review-v1.phtml:746
+#: Procure/view/procure/ap/review.phtml:697
+#: Procure/view/procure/pr/review-v1.phtml:488
+#: Procure/view/procure/qr/review.phtml:779
+msgid "Invoice will be reversed!"
+msgstr ""
+
+#: Inventory/view/inventory/gi/review-v1.phtml:577
+#: Inventory/view/inventory/gr/review-v1.phtml:573
+#: Inventory/view/inventory/item-opening-balance/review-v1.phtml:526
+#: Inventory/view/inventory/transfer-wh/review-v1.phtml:559
+#: Procure/view/procure/ap/review-v1.phtml:779
+#: Procure/view/procure/ap/review.phtml:730
+#: Procure/view/procure/gr/review-v1.phtml:874
+#: Procure/view/procure/po/blank.phtml:821
+#: Procure/view/procure/po/copy/review-v1.phtml:926
+#: Procure/view/procure/po/review-v1.phtml:727
+#: Procure/view/procure/po/view-v1.phtml:770
+#: Procure/view/procure/pr/review-v1.phtml:521
+#: Procure/view/procure/qr/review.phtml:812
+msgid "Document header amendment will be posted!"
+msgstr ""
+
+#: Inventory/view/inventory/gi/review.phtml:40
 #: Inventory/view/inventory/transfer/review.phtml:58
 msgid "Edit Document Header"
 msgstr ""
 
-#: Inventory/view/inventory/gi/review.phtml:169
+#: Inventory/view/inventory/gi/review.phtml:243
 msgid " Good issue will be posted!"
 msgstr ""
 
-#: Inventory/view/inventory/gi/review.phtml:172
+#: Inventory/view/inventory/gi/review.phtml:249
 #: Inventory/view/inventory/transfer/review.phtml:272
 msgid ""
 "Document can't be changed anymore when submitted! <br> Journal entry will be "
@@ -4670,44 +6049,15 @@ msgstr ""
 #: Inventory/view/inventory/item-serial/assign.phtml:53
 #: Inventory/view/inventory/item-variant/assign.phtml:53
 #: Inventory/view/inventory/opening-balance/assign.phtml:53
-#: Inventory/view/inventory/report/index.phtml:15
 #: Inventory/view/inventory/serial-number/assign.phtml:53
 #: Inventory/view/inventory/setting/index.phtml:15
 #: Inventory/view/inventory/stock/assign.phtml:53
 msgid "Serial Number"
 msgstr ""
 
-#: Inventory/view/inventory/item-batch/list.phtml:122
-#: Inventory/view/inventory/serial-number/list.phtml:122
-msgid "Item"
-msgstr ""
-
 #: Inventory/view/inventory/item-category/list2.phtml:19
 #: Inventory/view/inventory/item-category/list3.phtml:6
 msgid "ITEM CATEGORY"
-msgstr ""
-
-#: Inventory/view/inventory/item-group/add.phtml:21
-#: Inventory/view/inventory/item-group/add.phtml:39
-#: Inventory/view/inventory/item-group/crud.phtml:68
-#: Inventory/view/inventory/item-group/edit.phtml:19
-#: Inventory/view/inventory/item-group/edit.phtml:45
-#: Inventory/view/inventory/item/add.phtml:314
-#: Inventory/view/inventory/item/copy/add.phtml:314
-#: Inventory/view/inventory/item/copy/edit.phtml:202
-#: Inventory/view/inventory/item/copy/show.phtml:268
-#: Inventory/view/inventory/item/copy/show1.phtml:248
-#: Inventory/view/inventory/item/crud.phtml:331
-#: Inventory/view/inventory/item/edit.phtml:334
-#: Inventory/view/inventory/item/show.phtml:456
-#: Inventory/view/inventory/item/show1.phtml:439
-#: Inventory/view/inventory/report/index.phtml:14
-#: Inventory/view/inventory/setting/index.phtml:14
-#: Inventory/view/inventory/stock/add.phtml:19
-#: Inventory/view/inventory/stock/add.phtml:37
-#: Inventory/view/inventory/stock/edit.phtml:19
-#: Inventory/view/inventory/stock/edit.phtml:45
-msgid "Item Group"
 msgstr ""
 
 #: Inventory/view/inventory/item-group/add.phtml:57
@@ -4789,12 +6139,49 @@ msgstr "Waren"
 msgid "Created On"
 msgstr "Erstellsdatum"
 
-#: Inventory/view/inventory/item-serial/edit.phtml:126
+#: Inventory/view/inventory/item-report/dto_list_ajax.phtml:20
+#: Inventory/view/inventory/item-report/dto_list_declare.phtml:20
+#: Procure/view/procure/ap-report/dto_list_ajax.phtml:20
+#: Procure/view/procure/po-report/dto_list_ajax.phtml:21
+#: Procure/view/procure/po-report/dto_list_declare.phtml:20
+#: Procure/view/procure/po/dto_list.phtml:20
+msgid "PURCHASE ORDER LIST"
+msgstr ""
+
+#: Inventory/view/inventory/item-report/dto_list_ajax.phtml:55
+#: Inventory/view/inventory/item-report/dto_list_declare.phtml:55
+#: Inventory/view/inventory/item-transaction/list.phtml:357
+#: Inventory/view/inventory/stock-report/dto_list.phtml:57
+#: Inventory/view/inventory/trx-report/dto_list.phtml:57
+#: Procure/view/procure/ap-report/bk/dto_list.phtml:57
+#: Procure/view/procure/ap-report/dto_list_ajax.phtml:55
+#: Procure/view/procure/ap-report/dto_list_declare.phtml:55
+#: Procure/view/procure/ap/dto_list.phtml:51
+#: Procure/view/procure/gr/dto_list.phtml:51
+#: Procure/view/procure/po-report/dto_list_ajax.phtml:56
+#: Procure/view/procure/po-report/dto_list_declare.phtml:55
+#: Procure/view/procure/po/dto_list.phtml:51
+#: Procure/view/procure/pr-report/dto_list.phtml:59
+#: Procure/view/procure/pr/dto_list.phtml:53
+#: Procure/view/procure/qr/dto_list.phtml:50
+msgid "View"
+msgstr ""
+
+#: Inventory/view/inventory/item-report/in-out-onhand.phtml:73
+#: Inventory/view/inventory/setting/index.phtml:17
+#: Inventory/view/inventory/stock/summary.phtml:85
+#: Inventory/view/inventory/stock/summary1.phtml:27
+#: Inventory/view/inventory/trx-report/in-out-onhand.phtml:49
+#: Inventory/view/inventory/trx-report/row-status.phtml:86
+msgid "Warehouse"
+msgstr ""
+
+#: Inventory/view/inventory/item-serial/edit.phtml:214
 #: Inventory/view/inventory/item-variant/edit.phtml:126
 msgid "Origin"
 msgstr ""
 
-#: Inventory/view/inventory/item-serial/edit.phtml:129
+#: Inventory/view/inventory/item-serial/edit.phtml:220
 #: Inventory/view/inventory/item-variant/edit.phtml:129
 #: Inventory/view/inventory/similar-item/crud.phtml:118
 #: Inventory/view/inventory/warehouse/crud.phtml:118
@@ -4802,39 +6189,33 @@ msgstr ""
 msgid "Select Country"
 msgstr ""
 
-#: Inventory/view/inventory/item-serial/edit.phtml:160
+#: Inventory/view/inventory/item-serial/edit.phtml:252
 #: Inventory/view/inventory/item-variant/edit.phtml:160
 msgid "Capacity (W)"
 msgstr ""
 
-#: Inventory/view/inventory/item-serial/list1.phtml:97
-#: Inventory/view/inventory/opening-balance/import.phtml:30
-#: Procure/view/procure/pr-row-attachment/upload.phtml:16
-msgid "Upload"
-msgstr ""
-
-#: Inventory/view/inventory/item-transaction/list.phtml:5
+#: Inventory/view/inventory/item-transaction/list.phtml:6
 #: Procure/view/procure/gr/list.phtml:5
 #, fuzzy
 #| msgid "Project List"
 msgid "Goods Receipt List"
 msgstr "Projektsliste"
 
-#: Inventory/view/inventory/item-transaction/list.phtml:140
+#: Inventory/view/inventory/item-transaction/list.phtml:176
 #: Inventory/view/inventory/opening-balance/list.phtml:142
 #: Procure/view/procure/gr/list.phtml:150
 msgid "Ref.No."
 msgstr ""
 
-#: Inventory/view/inventory/item-transaction/list.phtml:141
+#: Inventory/view/inventory/item-transaction/list.phtml:182
 msgid "Flow"
 msgstr ""
 
-#: Inventory/view/inventory/item-transaction/list.phtml:142
+#: Inventory/view/inventory/item-transaction/list.phtml:188
 msgid "Reversed"
 msgstr ""
 
-#: Inventory/view/inventory/item-transaction/list.phtml:144
+#: Inventory/view/inventory/item-transaction/list.phtml:194
 #: Inventory/view/inventory/opening-balance/list.phtml:143
 #: Procure/view/procure/gr/list.phtml:151
 #, fuzzy
@@ -4842,24 +6223,24 @@ msgstr ""
 msgid "Doc Status"
 msgstr "Status"
 
-#: Inventory/view/inventory/item-transaction/list.phtml:145
+#: Inventory/view/inventory/item-transaction/list.phtml:200
 #: Procure/view/procure/gr/list.phtml:152
 #, fuzzy
 #| msgid "Status"
 msgid "Trx Status"
 msgstr "Status"
 
-#: Inventory/view/inventory/item-transaction/list.phtml:147
+#: Inventory/view/inventory/item-transaction/list.phtml:206
 #: Procure/view/procure/gr/list.phtml:154
 msgid "Receipt Date"
 msgstr ""
 
-#: Inventory/view/inventory/item-transaction/list.phtml:148
+#: Inventory/view/inventory/item-transaction/list.phtml:212
 #: Procure/view/procure/gr/list.phtml:155
 msgid "Draft"
 msgstr ""
 
-#: Inventory/view/inventory/item-transaction/list.phtml:149
+#: Inventory/view/inventory/item-transaction/list.phtml:218
 #: Inventory/view/inventory/opening-balance/review.phtml:59
 #: Procure/view/procure/gr/list.phtml:156
 #, fuzzy
@@ -4867,215 +6248,33 @@ msgstr ""
 msgid "Posted"
 msgstr "Peride"
 
-#: Inventory/view/inventory/item-transaction/list.phtml:150
-#: Inventory/view/inventory/item-transaction/list.phtml:151
+#: Inventory/view/inventory/item-transaction/list.phtml:224
+#: Inventory/view/inventory/item-transaction/list.phtml:231
 msgid "Movement Type"
 msgstr ""
 
-#: Inventory/view/inventory/item/add.phtml:126
-#: Inventory/view/inventory/item/copy/add.phtml:126
-#: Inventory/view/inventory/item/crud.phtml:158
-#: Inventory/view/inventory/item/edit.phtml:146
-#: Inventory/view/inventory/item/show.phtml:267
-#: Inventory/view/inventory/item/show1.phtml:251
-msgid "Standard Unit"
+#: Inventory/view/inventory/item/crud-v1.phtml:610
+msgid "Uom Group"
 msgstr ""
 
-#: Inventory/view/inventory/item/add.phtml:130
-#: Inventory/view/inventory/item/copy/add.phtml:130
-#: Inventory/view/inventory/item/edit.phtml:150
-#: Inventory/view/inventory/item/show.phtml:271
-#: Inventory/view/inventory/item/show1.phtml:255
-msgid "Select standard unit"
+#: Inventory/view/inventory/item/crud-v1.phtml:616
+msgid "Select Uom Group"
 msgstr ""
 
-#: Inventory/view/inventory/item/add.phtml:159
-#: Inventory/view/inventory/item/copy/add.phtml:159
-#: Inventory/view/inventory/item/crud.phtml:192
-#: Inventory/view/inventory/item/edit.phtml:179
-#: Inventory/view/inventory/item/show.phtml:300
-#: Inventory/view/inventory/item/show1.phtml:284
-#, fuzzy
-#| msgid "Inventory"
-msgid "Inventory Unit"
-msgstr "Waren"
-
-#: Inventory/view/inventory/item/add.phtml:164
-#: Inventory/view/inventory/item/copy/add.phtml:164
-#: Inventory/view/inventory/item/crud.phtml:197
-#: Inventory/view/inventory/item/edit.phtml:184
-#: Inventory/view/inventory/item/show.phtml:305
-#: Inventory/view/inventory/item/show1.phtml:289
-msgid "Select inventory unit"
+#: Inventory/view/inventory/mfg-catalog/tree1.phtml:17
+msgid "MFG Catalog"
 msgstr ""
 
-#: Inventory/view/inventory/item/add.phtml:190
-#: Inventory/view/inventory/item/add.phtml:237
-#: Inventory/view/inventory/item/add.phtml:284
-#: Inventory/view/inventory/item/copy/add.phtml:190
-#: Inventory/view/inventory/item/copy/add.phtml:237
-#: Inventory/view/inventory/item/copy/add.phtml:284
-#: Inventory/view/inventory/item/crud.phtml:222
-#: Inventory/view/inventory/item/crud.phtml:268
-#: Inventory/view/inventory/item/crud.phtml:315
-#: Inventory/view/inventory/item/edit.phtml:210
-#: Inventory/view/inventory/item/edit.phtml:257
-#: Inventory/view/inventory/item/edit.phtml:304
-#: Inventory/view/inventory/item/show.phtml:331
-#: Inventory/view/inventory/item/show.phtml:379
-#: Inventory/view/inventory/item/show.phtml:426
-#: Inventory/view/inventory/item/show1.phtml:315
-#: Inventory/view/inventory/item/show1.phtml:362
-#: Inventory/view/inventory/item/show1.phtml:409
-msgid "Conversion Factor"
-msgstr ""
-
-#: Inventory/view/inventory/item/add.phtml:204
-#: Inventory/view/inventory/item/copy/add.phtml:204
-#: Inventory/view/inventory/item/crud.phtml:236
-#: Inventory/view/inventory/item/edit.phtml:224
-#: Inventory/view/inventory/item/show.phtml:346
-#: Inventory/view/inventory/item/show1.phtml:329
-msgid "Purchase Unit"
-msgstr ""
-
-#: Inventory/view/inventory/item/add.phtml:209
-#: Inventory/view/inventory/item/copy/add.phtml:209
-#: Inventory/view/inventory/item/crud.phtml:241
-#: Inventory/view/inventory/item/edit.phtml:229
-#: Inventory/view/inventory/item/show.phtml:351
-#: Inventory/view/inventory/item/show1.phtml:334
-msgid "Select purchase unit"
-msgstr ""
-
-#: Inventory/view/inventory/item/add.phtml:251
-#: Inventory/view/inventory/item/copy/add.phtml:251
-#: Inventory/view/inventory/item/crud.phtml:282
-#: Inventory/view/inventory/item/edit.phtml:271
-#: Inventory/view/inventory/item/show.phtml:393
-#: Inventory/view/inventory/item/show1.phtml:376
-msgid "Sales Unit"
-msgstr ""
-
-#: Inventory/view/inventory/item/add.phtml:256
-#: Inventory/view/inventory/item/copy/add.phtml:256
-#: Inventory/view/inventory/item/crud.phtml:287
-#: Inventory/view/inventory/item/edit.phtml:276
-#: Inventory/view/inventory/item/show.phtml:398
-#: Inventory/view/inventory/item/show1.phtml:381
-msgid "Select Sales Unit"
-msgstr ""
-
-#: Inventory/view/inventory/item/add.phtml:317
-#: Inventory/view/inventory/item/copy/add.phtml:317
-#: Inventory/view/inventory/item/copy/edit.phtml:205
-#: Inventory/view/inventory/item/copy/show.phtml:271
-#: Inventory/view/inventory/item/copy/show1.phtml:251
-#: Inventory/view/inventory/item/crud.phtml:334
-#: Inventory/view/inventory/item/edit.phtml:337
-#: Inventory/view/inventory/item/show.phtml:459
-#: Inventory/view/inventory/item/show1.phtml:442
-msgid "Select Group"
-msgstr ""
-
-#: Inventory/view/inventory/item/copy/edit.phtml:44
-#: Inventory/view/inventory/item/edit.phtml:40
-msgid "Item#"
-msgstr ""
-
-#: Inventory/view/inventory/item/copy/show.phtml:46
-#: Inventory/view/inventory/item/copy/show1.phtml:46
-#: Inventory/view/inventory/item/show.phtml:91
-#: Inventory/view/inventory/item/show1.phtml:101
-msgid "Picture"
-msgstr ""
-
-#: Inventory/view/inventory/item/copy/show.phtml:62
-#: Inventory/view/inventory/item/copy/show1.phtml:62
-#: Inventory/view/inventory/item/show.phtml:107
-#: Inventory/view/inventory/item/show1.phtml:117
-msgid "Attachments"
-msgstr ""
-
-#: Inventory/view/inventory/item/copy/show.phtml:70
-#: Inventory/view/inventory/item/copy/show1.phtml:70
-#: Inventory/view/inventory/item/show.phtml:116
-#: Inventory/view/inventory/item/show1.phtml:126
-#: Procure/view/procure/pr-row/pr-of-item.phtml:7
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:7
-#, fuzzy
-#| msgid "New Purchase Request (PR)"
-msgid "Purchase Request"
-msgstr "Erstelle neuer Einkauf"
-
-#: Inventory/view/inventory/item/copy/show.phtml:73
-#: Inventory/view/inventory/item/copy/show1.phtml:73
-#: Inventory/view/inventory/item/show.phtml:119
-#: Inventory/view/inventory/item/show1.phtml:129
-#: Procure/view/procure/quote-row/qo-of-item.phtml:7
-msgid "Quotation"
-msgstr ""
-
-#: Inventory/view/inventory/item/copy/show.phtml:76
-#: Inventory/view/inventory/item/copy/show1.phtml:76
-#: Inventory/view/inventory/item/show.phtml:122
-#: Inventory/view/inventory/item/show1.phtml:132
-#: Procure/view/procure/po-row/po-of-item.phtml:7
-#: Procure/view/procure/price-comparison/price-of-item.phtml:7
-msgid "Purchase Order"
-msgstr ""
-
-#: Inventory/view/inventory/item/copy/show.phtml:211
-msgid "Select Measure"
-msgstr ""
-
-#: Inventory/view/inventory/item/crud.phtml:52
-#: Inventory/view/inventory/item/show.phtml:161
-msgid "Fixed Asset"
-msgstr ""
-
-#: Inventory/view/inventory/item/crud.phtml:56
-#: Inventory/view/inventory/item/show.phtml:165
-#, fuzzy
-#| msgid "Inventory"
-msgid "Inventory Item"
-msgstr "Waren"
-
-#: Inventory/view/inventory/item/crud.phtml:60
-#: Inventory/view/inventory/item/show.phtml:169
-#, fuzzy
-#| msgid "Inventory"
-msgid "None-Inventory Item"
-msgstr "Waren"
-
-#: Inventory/view/inventory/item/crud.phtml:64
-#: Inventory/view/inventory/item/show.phtml:173
-msgid "Service"
-msgstr ""
-
-#: Inventory/view/inventory/item/crud.phtml:163
-msgid "Select Standard unit"
-msgstr ""
-
-#: Inventory/view/inventory/item/show.phtml:86
-#: Inventory/view/inventory/item/show1.phtml:94
-msgid "Price Comparison"
-msgstr ""
-
-#: Inventory/view/inventory/item/show.phtml:129
-#: Inventory/view/inventory/item/show1.phtml:140
-msgid "Item Attributes"
-msgstr ""
-
-#: Inventory/view/inventory/item/show.phtml:130
-#: Inventory/view/inventory/item/show1.phtml:141
-msgid "Attributes"
+#: Inventory/view/inventory/opening-balance/import.phtml:30
+#: Procure/view/procure/pr-row-attachment/upload.phtml:16
+msgid "Upload"
 msgstr ""
 
 #: Inventory/view/inventory/opening-balance/list.phtml:171
+#: Procure/view/procure/gr/review-v1.phtml:359
+#: Procure/view/procure/po/copy/review-v1.phtml:398
+#: Procure/view/procure/po/copy/review.phtml:155
 #: Procure/view/procure/po/copy/show.phtml:83
-#: Procure/view/procure/po/review-v1.phtml:290
-#: Procure/view/procure/po/review.phtml:155
 #: Procure/view/procure/po/view.phtml:142
 #: Procure/view/procure/price-comparison/copy/show.phtml:83
 #: Procure/view/procure/quote/show.phtml:103
@@ -5096,27 +6295,19 @@ msgid ""
 "will be created automatically!"
 msgstr ""
 
-#: Inventory/view/inventory/report/index.phtml:16
-#: Inventory/view/inventory/setting/index.phtml:16
-msgid "Batch Number"
-msgstr ""
-
-#: Inventory/view/inventory/report/index.phtml:17
-#: Inventory/view/inventory/setting/index.phtml:17
-#: Inventory/view/inventory/stock/summary.phtml:50
-msgid "Warehouse"
-msgstr ""
-
-#: Inventory/view/inventory/report/index.phtml:19
-#: Inventory/view/inventory/setting/index.phtml:18
-msgid "Check Picture"
-msgstr ""
-
-#: Inventory/view/inventory/report/index.phtml:25
+#: Inventory/view/inventory/report/index.phtml:6
 #, fuzzy
 #| msgid "Monthly Reporting"
 msgid "Inventory Reporting"
 msgstr "MonatsBerichten"
+
+#: Inventory/view/inventory/setting/index.phtml:16
+msgid "Batch Number"
+msgstr ""
+
+#: Inventory/view/inventory/setting/index.phtml:18
+msgid "Check Picture"
+msgstr ""
 
 #: Inventory/view/inventory/similar-item/crud.phtml:14
 #: Inventory/view/inventory/warehouse/crud.phtml:14
@@ -5192,28 +6383,41 @@ msgstr ""
 msgid "Select User"
 msgstr ""
 
-#: Inventory/view/inventory/stock/summary.phtml:18
-msgid "Exchanged"
-msgstr ""
+#: Inventory/view/inventory/stock-report/dto_list.phtml:22
+#: Inventory/view/inventory/trx-report/dto_list.phtml:22
+#, fuzzy
+#| msgid "Monthly Reporting"
+msgid "Inventory Transaction"
+msgstr "MonatsBerichten"
 
-#: Inventory/view/inventory/stock/summary.phtml:20
-msgid "Disposal"
+#: Inventory/view/inventory/stock/summary.phtml:14
+#: Inventory/view/inventory/stock/summary1.phtml:18
+msgid "Journal"
 msgstr ""
 
 #: Inventory/view/inventory/stock/summary.phtml:52
+msgid "Recycle Bin"
+msgstr ""
+
+#: Inventory/view/inventory/stock/summary.phtml:97
+#: Inventory/view/inventory/stock/summary1.phtml:29
 msgid "Posted Qty"
 msgstr ""
 
-#: Inventory/view/inventory/stock/summary.phtml:53
+#: Inventory/view/inventory/stock/summary.phtml:103
+#: Inventory/view/inventory/stock/summary1.phtml:30
 msgid "On-hand Qty"
 msgstr ""
 
-#: Inventory/view/inventory/stock/summary.phtml:55
-#: Inventory/view/inventory/stock/summary.phtml:57
+#: Inventory/view/inventory/stock/summary.phtml:115
+#: Inventory/view/inventory/stock/summary.phtml:123
+#: Inventory/view/inventory/stock/summary1.phtml:32
+#: Inventory/view/inventory/stock/summary1.phtml:33
 msgid "Stock Value"
 msgstr ""
 
-#: Inventory/view/inventory/stock/summary.phtml:59
+#: Inventory/view/inventory/stock/summary.phtml:131
+#: Inventory/view/inventory/stock/summary1.phtml:34
 #, fuzzy
 #| msgid "Remarks"
 msgid "Remark"
@@ -5254,7 +6458,7 @@ msgid "Set Default"
 msgstr ""
 
 #: Inventory/view/layout/Copy of layout-fluid.phtml:197
-#: Inventory/view/layout/layout-fluid.phtml:193
+#: Inventory/view/layout/layout-fluid.phtml:167
 msgid "INVENTORY"
 msgstr "WAREN"
 
@@ -5302,14 +6506,14 @@ msgstr ""
 
 #: Procure/view/layout/Copy of layout-fluid.phtml:190
 #: Procure/view/layout/layout-blank.phtml:198
-#: Procure/view/layout/layout-fluid-1.phtml:180
-#: Procure/view/layout/layout-fluid.phtml:198
+#: Procure/view/layout/layout-fluid-1.phtml:191
+#: Procure/view/layout/layout-fluid.phtml:206
 msgid "PROCUREMENT"
 msgstr "EINKAUF"
 
-#: Procure/view/layout/layout-fluid-1.phtml:292
-#: Procure/view/layout/layout-fluid.phtml:318
-#: Procure/view/layout/layout-fullscreen.phtml:280
+#: Procure/view/layout/layout-fluid-1.phtml:311
+#: Procure/view/layout/layout-fluid.phtml:334
+#: Procure/view/layout/layout-fullscreen.phtml:236
 msgid "Processing........Please Wait!"
 msgstr "In Bearbeitu5.7ng........Bitte warten!"
 
@@ -5324,6 +6528,33 @@ msgstr "Monat"
 #: Procure/view/layout/layout.phtml:217
 msgid "All PR"
 msgstr "Alle Einkäufe"
+
+#: Procure/view/procure/ap-report/bk/dto_list.phtml:22
+#: Procure/view/procure/ap-report/dto_list_declare.phtml:20
+#: Procure/view/procure/ap/dto_list.phtml:20
+msgid "INVOICE LIST"
+msgstr ""
+
+#: Procure/view/procure/ap/crudRow.phtml:86
+#: Procure/view/procure/po/crudRow.phtml:53
+#: Procure/view/procure/pr/crudRow.phtml:109
+#: Procure/view/procure/qr/crudRow.phtml:54
+msgid "Remove"
+msgstr ""
+
+#: Procure/view/procure/ap/crudRow.phtml:588
+#: Procure/view/procure/po/crudRow.phtml:496
+#: Procure/view/procure/pr/crudRow.phtml:433
+#: Procure/view/procure/qr/crudRow.phtml:517
+msgid "Row will be removed!"
+msgstr ""
+
+#: Procure/view/procure/ap/list.phtml:199
+#: Procure/view/procure/po/copy/dto_list.phtml:198
+#: Procure/view/procure/po/list.phtml:283
+#: Procure/view/procure/qr/list.phtml:199
+msgid "Paid amount"
+msgstr ""
 
 #: Procure/view/procure/gr-row/add.phtml:11
 #, fuzzy
@@ -5344,10 +6575,11 @@ msgid "Download Excel File"
 msgstr ""
 
 #: Procure/view/procure/gr/add1.phtml:48
+#: Procure/view/procure/gr/review-v1.phtml:400
 #: Procure/view/procure/po/copy/add1.phtml:49
+#: Procure/view/procure/po/copy/review-v1.phtml:439
+#: Procure/view/procure/po/copy/review.phtml:166
 #: Procure/view/procure/po/copy/show.phtml:58
-#: Procure/view/procure/po/review-v1.phtml:308
-#: Procure/view/procure/po/review.phtml:166
 #: Procure/view/procure/po/view.phtml:153
 #: Procure/view/procure/price-comparison/copy/add1.phtml:49
 #: Procure/view/procure/price-comparison/copy/show.phtml:58
@@ -5355,11 +6587,13 @@ msgstr ""
 msgid "Create Good Receipt from this P/O"
 msgstr ""
 
-#: Procure/view/procure/gr/add1.phtml:53 Procure/view/procure/gr/show.phtml:60
+#: Procure/view/procure/gr/add1.phtml:53
+#: Procure/view/procure/gr/review-v1.phtml:410
+#: Procure/view/procure/gr/show.phtml:60
 #: Procure/view/procure/po/copy/add1.phtml:54
+#: Procure/view/procure/po/copy/review-v1.phtml:449
+#: Procure/view/procure/po/copy/review.phtml:172
 #: Procure/view/procure/po/copy/show.phtml:64
-#: Procure/view/procure/po/review-v1.phtml:313
-#: Procure/view/procure/po/review.phtml:172
 #: Procure/view/procure/po/view.phtml:159
 #: Procure/view/procure/price-comparison/copy/add1.phtml:54
 #: Procure/view/procure/price-comparison/copy/show.phtml:64
@@ -5375,6 +6609,72 @@ msgstr ""
 msgid "Edit goods receipt"
 msgstr ""
 
+#: Procure/view/procure/gr/dto_list.phtml:20
+msgid "GOODS RECEIPT LIST"
+msgstr ""
+
+#: Procure/view/procure/gr/review-v1.phtml:168
+#: Procure/view/procure/po/blank.phtml:141
+#: Procure/view/procure/po/copy/review-v1.phtml:129
+#: Procure/view/procure/po/copy/review.phtml:33
+#: Procure/view/procure/po/review-v1.phtml:148
+#: Procure/view/procure/po/view-v1.phtml:140
+#: Procure/view/procure/po/view.phtml:14
+#, fuzzy
+#| msgid "Project List"
+msgid "PO List"
+msgstr "Projektsliste"
+
+#: Procure/view/procure/gr/review-v1.phtml:332
+#: Procure/view/procure/gr/review-v1.phtml:373
+#: Procure/view/procure/po/copy/review-v1.phtml:371
+#: Procure/view/procure/po/copy/review-v1.phtml:412
+msgid "P/O Amendment"
+msgstr ""
+
+#: Procure/view/procure/gr/review-v1.phtml:355
+#: Procure/view/procure/po/copy/review-v1.phtml:394
+#: Procure/view/procure/po/copy/review.phtml:15
+#: Procure/view/procure/po/copy/review.phtml:154
+#: Procure/view/procure/po/copy/show.phtml:82
+#: Procure/view/procure/po/view.phtml:141
+#: Procure/view/procure/price-comparison/copy/show.phtml:82
+msgid "Review PO"
+msgstr ""
+
+#: Procure/view/procure/gr/review-v1.phtml:390
+#: Procure/view/procure/po/copy/review-v1.phtml:429
+#: Procure/view/procure/po/copy/review.phtml:161
+#: Procure/view/procure/po/view.phtml:148
+msgid "Pay P/O"
+msgstr ""
+
+#: Procure/view/procure/gr/review-v1.phtml:432
+#: Procure/view/procure/po/copy/review-v1.phtml:471
+msgid "Review PO Amendment"
+msgstr ""
+
+#: Procure/view/procure/gr/review-v1.phtml:436
+#: Procure/view/procure/po/copy/review-v1.phtml:475
+msgid "Review Amendment"
+msgstr ""
+
+#: Procure/view/procure/gr/review-v1.phtml:811
+#: Procure/view/procure/po/blank.phtml:758
+#: Procure/view/procure/po/copy/review-v1.phtml:863
+#: Procure/view/procure/po/review-v1.phtml:664
+#: Procure/view/procure/po/view-v1.phtml:707
+msgid "PO will be enabled for ammendment!"
+msgstr ""
+
+#: Procure/view/procure/gr/review-v1.phtml:844
+#: Procure/view/procure/po/blank.phtml:791
+#: Procure/view/procure/po/copy/review-v1.phtml:896
+#: Procure/view/procure/po/review-v1.phtml:697
+#: Procure/view/procure/po/view-v1.phtml:740
+msgid "PO amendment will be posted!"
+msgstr ""
+
 #: Procure/view/procure/gr/review.phtml:332
 msgid "GR will be posted!"
 msgstr ""
@@ -5387,12 +6687,12 @@ msgstr ""
 msgid "Edit PO Row:"
 msgstr ""
 
-#: Procure/view/procure/po-row/po-of-item.phtml:16
+#: Procure/view/procure/po-row/po-of-item.phtml:31
 #: Procure/view/procure/price-comparison/price-of-item.phtml:17
 msgid "Ref."
 msgstr ""
 
-#: Procure/view/procure/po-row/po-of-item.phtml:17
+#: Procure/view/procure/po-row/po-of-item.phtml:37
 msgid "Po Date"
 msgstr ""
 
@@ -5410,90 +6710,9 @@ msgstr "Neu Einkauf"
 msgid "Edit PO"
 msgstr "Editieren"
 
-#: Procure/view/procure/po/copy/show.phtml:82
-#: Procure/view/procure/po/review-v1.phtml:289
-#: Procure/view/procure/po/review.phtml:15
-#: Procure/view/procure/po/review.phtml:154
-#: Procure/view/procure/po/view.phtml:141
-#: Procure/view/procure/price-comparison/copy/show.phtml:82
-msgid "Review PO"
-msgstr ""
-
 #: Procure/view/procure/po/crud.phtml:23
 #: Procure/view/procure/return/crud.phtml:23
 msgid "Create PO from QO"
-msgstr ""
-
-#: Procure/view/procure/po/dto_list.phtml:198
-#: Procure/view/procure/po/list.phtml:199
-msgid "Paid amount"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:161
-#: Procure/view/procure/po/review.phtml:33
-#: Procure/view/procure/po/view.phtml:14
-#, fuzzy
-#| msgid "Project List"
-msgid "PO List"
-msgstr "Projektsliste"
-
-#: Procure/view/procure/po/review-v1.phtml:205
-#: Procure/view/procure/po/review.phtml:67
-#: Procure/view/procure/po/view.phtml:54
-msgid ""
-"Please post when PO /Contract is signed. Document can't be changed anymore "
-"when posted! <br> "
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:275
-#: Procure/view/procure/po/review-v1.phtml:296
-msgid "P/O Amendment"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:279
-msgid "Post Amendment"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:300
-#, fuzzy
-#| msgid "Amend"
-msgid "Amendment"
-msgstr "Ändern"
-
-#: Procure/view/procure/po/review-v1.phtml:305
-#: Procure/view/procure/po/review.phtml:161
-#: Procure/view/procure/po/view.phtml:148
-msgid "Pay P/O"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:324
-msgid "Review PO Amendment"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:325
-msgid "Review Amendment"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:457
-msgid "Update document hearder"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:565
-#: Procure/view/procure/po/review.phtml:459
-#: Procure/view/procure/po/view.phtml:428
-msgid "PO will be posted!"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:593
-msgid "PO will be enabled for ammendment!"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:621
-msgid "PO amendment will be posted!"
-msgstr ""
-
-#: Procure/view/procure/po/review-v1.phtml:646
-msgid "Document header amendment will be posted!"
 msgstr ""
 
 #: Procure/view/procure/pr-row-attachment/upload.phtml:21
@@ -5544,59 +6763,59 @@ msgstr ""
 msgid "Item Code"
 msgstr "Periode"
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:29
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:49
 msgid "PO Qty"
 msgstr ""
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:30
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:55
 msgid "Posted PO Qty"
 msgstr ""
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:31
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:61
 msgid "GR Qty"
 msgstr ""
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:32
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:67
 msgid "Stock GR QTy"
 msgstr ""
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:33
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:34
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:73
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:79
 msgid "Balance Qty"
 msgstr ""
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:35
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:85
 msgid "AP Qty"
 msgstr ""
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:36
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:91
 msgid "Posted AP Qty"
 msgstr ""
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:37
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:97
 #, fuzzy
 #| msgid "Status"
 msgid "GR Status"
 msgstr "Status"
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:112
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:265
 msgid "fullly received"
 msgstr ""
 
-#: Procure/view/procure/pr-row/pr-of-item1.phtml:117
+#: Procure/view/procure/pr-row/pr-of-item1.phtml:273
 msgid "partial"
 msgstr ""
 
-#: Procure/view/procure/pr/add.phtml:30 Procure/view/procure/pr/review.phtml:62
+#: Procure/view/procure/pr/add.phtml:30
+#: Procure/view/procure/pr/copy/review.phtml:59
 #, fuzzy
 #| msgid "New Purchase Request (PR)"
 msgid "New Purchase Request"
 msgstr "Erstelle neuer Einkauf"
 
-#: Procure/view/procure/pr/copy/review.phtml:87
-#: Procure/view/procure/pr/edit.phtml:38
-#: Procure/view/procure/pr/review.phtml:123
-#: Procure/view/procure/pr/show.phtml:59 Procure/view/procure/pr/view.phtml:59
+#: Procure/view/procure/pr/copy/review.phtml:203
+#: Procure/view/procure/pr/edit.phtml:38 Procure/view/procure/pr/show.phtml:59
+#: Procure/view/procure/pr/view.phtml:59
 msgid "PR#"
 msgstr ""
 
@@ -5612,6 +6831,10 @@ msgstr "Neu Einkauf"
 msgid "Edit PR"
 msgstr "Editieren"
 
+#: Procure/view/procure/pr/dto_list.phtml:21
+msgid "PR LIST"
+msgstr ""
+
 #: Procure/view/procure/price-comparison/price-of-item.phtml:14
 msgid "Doc Type"
 msgstr ""
@@ -5626,6 +6849,10 @@ msgstr ""
 
 #: Procure/view/procure/price-comparison/price-of-item.phtml:24
 msgid "Local Unit Price"
+msgstr ""
+
+#: Procure/view/procure/qr/dto_list.phtml:19
+msgid "QUOTATION LIST"
 msgstr ""
 
 #: Procure/view/procure/quote-row/add.phtml:12
@@ -5651,6 +6878,12 @@ msgstr ""
 #: Procure/view/procure/quote/show.phtml:16
 msgid "Review quotation"
 msgstr ""
+
+#: Procure/view/procure/report/index.phtml:6
+#, fuzzy
+#| msgid "Reporting"
+msgid "Procure Reporting"
+msgstr "Berichten"
 
 #: Production/view/layout/layout-fluid.phtml:186
 msgid "PRODUCTION"

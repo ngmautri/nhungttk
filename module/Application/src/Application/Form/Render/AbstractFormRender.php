@@ -15,26 +15,6 @@ use Zend\View\Renderer\PhpRenderer;
 abstract class AbstractFormRender implements FormRenderInterface
 {
 
-    const FORM_LABEL = "FORM_LABEL";
-
-    const FORM_ELEMENT = "FORM_ELEMENT";
-
-    const FORM_LABEL_1 = "FORM_LABEL_1";
-
-    const FORM_ELEMENT_1 = "FORM_ELEMENT_1";
-
-    const FORM_LABEL_2 = "FORM_LABEL_2";
-
-    const FORM_ELEMENT_2 = "FORM_ELEMENT_2";
-
-    const FORM_LABEL_3 = "FORM_LABEL_3";
-
-    const FORM_ELEMENT_3 = "FORM_ELEMENT_3";
-
-    const FORM_LABEL_4 = "FORM_LABEL_4";
-
-    const FORM_ELEMENT_4 = "FORM_ELEMENT_4";
-
     protected $output = '';
 
     public function append($htmlPart)
@@ -62,6 +42,23 @@ abstract class AbstractFormRender implements FormRenderInterface
         $output = $output . $this->formCloseTag($helper, $form, $viewRender);
 
         return $output;
+    }
+
+    protected function openFieldSetTag($id, $title, $collapse = 'in')
+    {
+        $fs = '<fieldset>
+<legend style="font-size: 9.5pt; color: gray;"><small>
+<span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+<a href="#%s" class="" data-toggle="collapse">%s</a>
+</legend>
+<div id="%s" class="collapse %s">';
+
+        return \sprintf($fs, $id, $title, $id, $collapse);
+    }
+
+    protected function closeFieldSetTag()
+    {
+        return '</div></fieldset>';
     }
 
     protected function drawElementOnly($e, $labelHelper, $viewRender, $cssClass = 'col-sm-3', $showLabel = true, $otherHtml = '')
@@ -138,9 +135,7 @@ abstract class AbstractFormRender implements FormRenderInterface
 
     protected function formCloseTag(\Zend\Form\View\Helper\Form $helper, GenericForm $form, PhpRenderer $viewRender)
     {
-        $form->prepare();
-        $helper = new \Zend\Form\View\Helper\Form();
-        return "\n" . $helper->openTag($form) . "\n";
+        return "\n" . $helper->closeTag($form) . "\n";
     }
 
     protected function ensureRendering(GenericForm $form, PhpRenderer $viewRender = null)

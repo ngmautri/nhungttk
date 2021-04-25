@@ -2,14 +2,14 @@
 namespace Application\Domain\Company\Collection;
 
 use Application\Domain\Company\AccountChart\BaseChart;
-use Doctrine\Common\Collections\ArrayCollection;
+use Application\Domain\Util\Collection\GenericCollection;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PeriodCollection extends ArrayCollection
+class PeriodCollection extends GenericCollection
 {
 
     public function isExits(BaseChart $otherElement)

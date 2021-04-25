@@ -27,24 +27,17 @@ class AccountFormRender extends AbstractFormRender
 
         $labelHelper = new FormLabel();
 
-        $e = $form->getDepartmentCode();
-        $e1 = $form->getIsActive();
-        $otherHtml = $this->drawElementOnly($e1, $labelHelper, $viewRender, 'col-sm-1', false, '<span>Is Acvice</span>');
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-1', true, $otherHtml);
+        $e = $form->getAccountNumber();
+        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
         $this->append($htmlPart);
 
-        $e = $form->getDepartmentName();
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3');
-
-        $this->append($htmlPart);
-
-        $e = $form->getParentName();
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3');
+        $e = $form->getAccountName();
+        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
         $this->append($htmlPart);
 
         $this->append($this->drawSeparator());
 
-        $e = $form->getRemarks();
+        $e = $form->getDescription();
         $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3');
         $this->append($htmlPart);
 

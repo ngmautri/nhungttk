@@ -114,7 +114,7 @@ return array(
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
             array(
-                'label' => 'Chart of Account',
+                'label' => 'Chart of Accounts',
                 'route' => 'application/default',
                 'controller' => 'account-chart',
                 'action' => 'list',

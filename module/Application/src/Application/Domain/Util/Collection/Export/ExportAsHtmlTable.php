@@ -1,11 +1,13 @@
 <?php
 namespace Application\Domain\Util\Collection\Export;
 
+use Application\Application\Helper\FormHelper;
 use Application\Domain\Util\Collection\GenericCollection;
 use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
 use Application\Domain\Util\Collection\Contracts\FilterInterface;
 use Application\Domain\Util\Collection\Filter\DefaultFilter;
 use Application\Domain\Util\Collection\Formatter\NullFormatter;
+use Application\Domain\Util\Pagination\Paginator;
 
 /**
  *
@@ -14,6 +16,14 @@ use Application\Domain\Util\Collection\Formatter\NullFormatter;
  */
 class ExportAsHtmlTable extends AbstractExport
 {
+
+    private $totalResults;
+
+    private $page;
+
+    private $resultsPerPage;
+
+    private $baseUrl;
 
     public function execute(GenericCollection $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null)
     {
@@ -39,6 +49,12 @@ class ExportAsHtmlTable extends AbstractExport
         $table = $result_msg;
         $table = $table . $this->getTableHeader();
         $table = $table . '<tbody>%s</tbody></table>';
+
+        $paginator = new Paginator($this->getTotalResults(), $this->getPage(), $this->getResultsPerPage());
+
+        $pagination = FormHelper::createPaginator($this->getBaseUrl(), $paginator, "&");
+        $table = $table . $pagination;
+
         return sprintf($table, $this->getTableBody());
     }
 
@@ -76,6 +92,78 @@ class ExportAsHtmlTable extends AbstractExport
     public function setTableBody($tableBody)
     {
         $this->tableBody = $tableBody;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalResults()
+    {
+        return $this->totalResults;
+    }
+
+    /**
+     *
+     * @param mixed $totalResults
+     */
+    public function setTotalResults($totalResults)
+    {
+        $this->totalResults = $totalResults;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     *
+     * @param mixed $page
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getResultsPerPage()
+    {
+        return $this->resultsPerPage;
+    }
+
+    /**
+     *
+     * @param mixed $resultsPerPage
+     */
+    public function setResultsPerPage($resultsPerPage)
+    {
+        $this->resultsPerPage = $resultsPerPage;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
+    }
+
+    /**
+     *
+     * @param mixed $baseUrl
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        $this->baseUrl = $baseUrl;
     }
 }
 

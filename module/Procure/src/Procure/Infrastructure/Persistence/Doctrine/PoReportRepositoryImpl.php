@@ -12,7 +12,7 @@ use Procure\Infrastructure\Persistence\Helper\PoReportHelper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrReportRepositoryInterface
 {
@@ -31,10 +31,10 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
         $results = PoReportHelper::getList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
         if (count($results) == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = [];
+        // $resultList = [];
         foreach ($results as $r) {
 
             /**@var \Application\Entity\NmtProcurePo $po ;*/
@@ -56,9 +56,9 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
             $dto->taxAmount = $r["tax_amount"];
             $dto->grossAmount = $r["gross_amount"];
             $dto->billedAmount = $r["billed_amount"];
-            $resultList[] = $dto;
+            yield $dto;
         }
-        return $resultList;
+        // return $resultList;
     }
 
     public function getOfItem($itemId, $itemToken)
@@ -78,10 +78,10 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
         $results = PoReportHelper::getList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
         if (count($results) == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = [];
+        // $resultList = [];
         $rootSnapshot = 0;
         $completedRows = 0;
 
@@ -112,10 +112,10 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
             $rootSnapshot->taxAmount = $r["tax_amount"];
             $rootSnapshot->grossAmount = $r["gross_amount"];
             $rootSnapshot->billedAmount = $r["billed_amount"];
-            $resultList[] = $rootSnapshot;
+            yield $rootSnapshot;
         }
 
-        return $resultList;
+        // return $resultList;
     }
 
     /**
@@ -158,10 +158,10 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
 
         $results = PoReportHelper::getAllRow($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
         if (count($results) == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = [];
+        // $resultList = [];
         foreach ($results as $r) {
 
             /**@var \Application\Entity\NmtProcurePoRow $doctrineRootEntity ;*/
@@ -182,10 +182,10 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
             $localSnapshot->billedAmount = $r["billed_amount"];
             $localSnapshot->openAPAmount = $localSnapshot->netAmount - $localSnapshot->billedAmount;
 
-            $resultList[] = $localSnapshot;
+            yield $localSnapshot;
         }
 
-        return $resultList;
+        // return $resultList;
     }
 
     public function getRawList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)

@@ -10,7 +10,7 @@ use Inventory\Infrastructure\Persistence\Helper\TrxReportHelper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxReportRepositoryInterface
 {
@@ -24,10 +24,10 @@ class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxR
     {
         $results = TrxReportHelper::getList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
         if ($results == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = [];
+        // $resultList = [];
         foreach ($results as $r) {
 
             /**@var \Application\Entity\NmtInventoryMv $doctrineRootEntity ;*/
@@ -40,10 +40,10 @@ class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxR
             }
 
             $rootSnapshot->totalRows = $r["total_row"];
-            $resultList[] = $rootSnapshot;
+            yield $rootSnapshot;
         }
 
-        return $resultList;
+        // return $resultList;
     }
 
     /**
@@ -66,14 +66,13 @@ class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxR
     {
         $results = TrxReportHelper::getAllRow($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
         if ($results == null) {
-            return null;
+            yield null;
         }
 
         if ($results == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = array();
         foreach ($results as $r) {
 
             /**@var \Application\Entity\FinVendorInvoiceRow $entity ;*/
@@ -84,10 +83,8 @@ class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxR
             if ($snapShot == null) {
                 continue;
             }
-            $resultList[] = $snapShot;
+            yield $snapShot;
         }
-
-        return $resultList;
     }
 
     public function getAllRowTotal(SqlFilterInterface $filter)

@@ -10,7 +10,7 @@ use Procure\Infrastructure\Persistence\Helper\ApReportHelper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApReportRepositoryImpl extends AbstractDoctrineRepository implements ApReportRepositoryInterface
 {
@@ -28,10 +28,10 @@ class ApReportRepositoryImpl extends AbstractDoctrineRepository implements ApRep
         $results = ApReportHelper::getList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
         if (count($results) == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = [];
+        // $resultList = [];
         foreach ($results as $r) {
 
             /**@var \Application\Entity\FinVendorInvoice $doctrineRootEntity ;*/
@@ -48,10 +48,10 @@ class ApReportRepositoryImpl extends AbstractDoctrineRepository implements ApRep
             $rootSnapshot->taxAmount = $r["tax_amount"];
             $rootSnapshot->grossAmount = $r["gross_amount"];
             $rootSnapshot->discountAmount = $r["gross_discount_amount"];
-            $resultList[] = $rootSnapshot;
+            yield $rootSnapshot;
         }
 
-        return $resultList;
+        // return $resultList;
     }
 
     /**
@@ -85,10 +85,10 @@ class ApReportRepositoryImpl extends AbstractDoctrineRepository implements ApRep
         $results = ApReportHelper::getAllRow($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
         if ($results == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = array();
+        // $resultList = array();
         foreach ($results as $r) {
 
             /**@var \Application\Entity\FinVendorInvoiceRow $entity ;*/
@@ -99,10 +99,10 @@ class ApReportRepositoryImpl extends AbstractDoctrineRepository implements ApRep
             if ($snapShot == null) {
                 continue;
             }
-            $resultList[] = $snapShot;
+            yield $snapShot;
         }
 
-        return $resultList;
+        // return $resultList;
     }
 
     /**

@@ -13,7 +13,7 @@ use Procure\Infrastructure\Persistence\Helper\PrReportHelper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PrReportRepositoryImpl extends AbstractDoctrineRepository implements PrReportRepositoryInterface
 {
@@ -32,10 +32,10 @@ class PrReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
         $results = PrReportHelper::getList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
         if (count($results) == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = [];
+        // $resultList = [];
         foreach ($results as $r) {
 
             /**@var \Application\Entity\NmtProcurePr $po ;*/
@@ -56,9 +56,9 @@ class PrReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
             $dto->apCompletedRows = $r["ap_completed"];
             $dto->grPartialCompletedRows = $r["gr_partial_completed"];
             $dto->apPartialCompletedRows = $r["ap_partial_completed"];
-            $resultList[] = $dto;
+            yield $dto;
         }
-        return $resultList;
+        // return $resultList;
     }
 
     public function getOfItem($itemId, $itemToken)
@@ -68,13 +68,13 @@ SELECT
     nmt_inventory_item.item_name as item_name,
 	nmt_procure_qo_row.*
 FROM nmt_procure_qo_row
-            
+
 LEFT JOIN nmt_procure_qo
 ON nmt_procure_qo.id = nmt_procure_qo_row.qo_id
-            
+
 LEFT JOIN nmt_inventory_item
 ON nmt_inventory_item.id = nmt_procure_qo_row.item_id
-WHERE 1            
+WHERE 1
 ";
 
         // $sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
@@ -109,10 +109,10 @@ WHERE 1
         $results = PrReportHelper::getList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
         if (count($results) == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = [];
+        // $resultList = [];
         foreach ($results as $r) {
 
             /**@var \Application\Entity\NmtProcurePr $po ;*/
@@ -125,10 +125,10 @@ WHERE 1
             }
 
             $rootSnapshot->totalRows = $r["total_row"];
-            $resultList[] = $rootSnapshot;
+            yield $rootSnapshot;
         }
 
-        return $resultList;
+        // return $resultList;
     }
 
     /**
@@ -166,10 +166,10 @@ WHERE 1
 
         $results = PrReportHelper::getAllRow($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
         if (count($results) == null) {
-            return null;
+            yield null;
         }
 
-        $resultList = [];
+        // $resultList = [];
         foreach ($results as $r) {
 
             /**@var \Application\Entity\NmtProcurePrRow $po ;*/
@@ -197,10 +197,10 @@ WHERE 1
             $localSnapshot->lastUnitPrice = $r["last_unit_price"];
             $localSnapshot->lastCurrency = $r["currency_iso3"];
 
-            $resultList[] = $localSnapshot;
+            yield $localSnapshot;
         }
 
-        return $resultList;
+        // return $resultList;
     }
 
     /**

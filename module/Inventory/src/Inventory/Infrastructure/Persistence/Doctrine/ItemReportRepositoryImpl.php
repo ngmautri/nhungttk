@@ -12,7 +12,7 @@ use Inventory\Infrastructure\Persistence\Helper\ItemReportHelper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements ItemReportRepositoryInterface
 {
@@ -27,16 +27,33 @@ class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements Ite
         $results = ItemReportHelper::getItemList1($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
         if ($results == null) {
+            yield ;
+        }
+
+        // $list = [];
+        foreach ($results as $r) {
+            $snapshot = ItemMapper::createSnapshot($r);
+            yield $snapshot;
+        }
+
+        // return $list;
+    }
+
+    public function getItemList1(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        $results = ItemReportHelper::getItemList1($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
+
+        if ($results == null) {
             return;
         }
 
-        $list = [];
+        // $list = [];
         foreach ($results as $r) {
             $snapshot = ItemMapper::createSnapshot($r);
             $list[] = $snapshot;
         }
 
-        return $list;
+        // return $list;
     }
 
     public function getMostValueItems($rate = 8100, $limit = 100, $offset = 0)

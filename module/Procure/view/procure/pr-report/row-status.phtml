@@ -17,7 +17,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
     $toogleFileType = SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
     $toggleViewTitle = "HTML View";
     $icon = 'fa fa-list';
-    
+
 endif;
 
 $link = "/procure/pr-report/row-status?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&file_type=%s";
@@ -232,8 +232,8 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                      &nbsp;
                      <i class="fa fa-refresh" aria-hidden="true"></i>
                      &nbsp;
-                  </a> 
-<?php 
+                  </a>
+<?php
 endif;
 
 ?>
@@ -273,7 +273,7 @@ endif;
 <?php
 if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) :
     echo $result;
-    echo FormHelper::createPaginator($base, $paginator, "&");    
+    echo FormHelper::createPaginator($base, $paginator, "&");
 endif;
 
 ?>
@@ -288,7 +288,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
 </div>
 <script>
 
-    var columns = [      
+    var columns = [
             { title: "SKU", dataType: "string", dataIndx: "itemSKU", align: 'left',minWidth: 50,editable: true},
             { title: "Item No.", dataType: "string", dataIndx: "itemSysNumber", width: 80,editable: false },
             { title: "Item Name", dataType: "string", dataIndx: "itemName", width: 200,editable: false },
@@ -307,9 +307,9 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
             { title: "Vendor", dataType: "string", dataIndx: "lastVendorName", align: 'left',minWidth: 150,editable: false},
             { title: "UP", dataType: "string", dataIndx: "lastUnitPrice", align: 'right',minWidth: 100,editable: false},
             { title: "Cur", dataType: "string", dataIndx: "lastCurrency", align: 'right',minWidth: 70,editable: false}
-     
+
    ];
-    
+
     var url = "<?php
     echo $girdUrl;
     ?>";
@@ -326,6 +326,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
 
 	var obj = { width: "auto", height: $(window).height()-250, showTitle : true,
 			resizable:true,
+			wrap:false,
 			//draggable:true,
 			sortable: true,
 			hoverMode: 'cell',
@@ -342,8 +343,8 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
             editor: {
                 select: true
             },
- 			change: function (evt, ui) {               
-                
+ 			change: function (evt, ui) {
+
                 if (ui.source == 'commit' || ui.source == 'rollback') {
                     return;
                 }
@@ -355,20 +356,20 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                     recIndx = grid.option('dataModel').recIndx,
                     deleteList = [],
                     updateList = [];
-                
+
                 for (var i = 0; i < rowList.length; i++) {
                     var obj = rowList[i],
                         rowIndx = obj.rowIndx,
                         newRow = obj.newRow,
                         type = obj.type,
                         rowData = obj.rowData;
-                     if (type == 'add') {                        
+                     if (type == 'add') {
                         var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
                         if (valid) {
                             addList.push(newRow);
                         }
                     }
-                    else if (type == 'update') {                        
+                    else if (type == 'update') {
                         var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
                         if (valid) {
                             if (rowData[recIndx] == null) {
@@ -378,7 +379,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                             else {
                                 updateList.push(rowData);
                           		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
-                                 
+
                             }
                         }
                     }
@@ -391,7 +392,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                         deleteList: deleteList
                     });
                     //alert(sent_list);
-                      
+
                       $.ajax({
                           url: '/procure/pr-row/update-row',
                           data: {
@@ -403,7 +404,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                           beforeSend: function (jqXHR, settings) {
                               //$(".saving", $grid).show();
 
-							  	
+
                               //$("#global-notice").text("Updating...").show();
                               //alert(updateList[0].item_name  +  updateList[0].row_id);
                           },
@@ -411,7 +412,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                               //commit the changes.
                               //alert(changes.updateList);
                                $("#global-notice").text("Updated...").show();
-                		      //alert('it is ok');                
+                		      //alert('it is ok');
                               /* grid.commit({ type: 'add', rows: changes.addList });
                               grid.commit({ type: 'update', rows: changes.updateList });
                               grid.commit({ type: 'delete', rows: changes.deleteList }); */
@@ -419,15 +420,15 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                           complete: function () {
                               //$(".saving", $grid).hide();
                               $("#global-notice").delay(2200).fadeOut(500);
-                              
+
                           }
                       });
                   }
                 //alert(updateList.length);
-               
-            },     
-	                
-       		
+
+            },
+
+
    	};
 
     var $grid = $("#gird_div").pqGrid(obj);
@@ -436,8 +437,8 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
 
     function refreshGird(){
     	$( "#gird_div" ).pqGrid( "refreshDataAndView" )
-	} 
-    
+	}
+
 </script>
 <?php
 endif;

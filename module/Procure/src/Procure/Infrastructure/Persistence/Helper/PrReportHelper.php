@@ -336,16 +336,19 @@ WHERE 1
         }
 
         $sql = sprintf($sql, $sql_tmp1);
-        $sql = $sql . ";";
 
-        // echo $sql;
+        $sql_final = \sprintf("Select count(*) as total from (%s) as t;", $sql);
+        $sql_final = $sql_final . ";";
+
+        // echo $sql_final;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-            $query = $doctrineEM->createNativeQuery($sql, $rsm);
-            $result = $query->getResult();
-            return count($result);
+            $query = $doctrineEM->createNativeQuery($sql_final, $rsm);
+            $rsm->addScalarResult("total", "total");
+
+            return $query->getSingleScalarResult();
         } catch (NoResultException $e) {
             return null;
         }

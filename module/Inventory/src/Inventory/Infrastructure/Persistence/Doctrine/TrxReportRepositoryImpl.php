@@ -53,8 +53,7 @@ class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxR
      */
     public function getListTotal(SqlFilterInterface $filter)
     {
-        $results = TrxReportHelper::getList($this->getDoctrineEM(), $filter, null, null, null, null);
-        return count($results);
+        return TrxReportHelper::getListTotal($this->getDoctrineEM(), $filter);
     }
 
     /**
@@ -89,8 +88,7 @@ class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxR
 
     public function getAllRowTotal(SqlFilterInterface $filter)
     {
-        $results = TrxReportHelper::getAllRow($this->getDoctrineEM(), $filter, null, null, null, null);
-        return count($results);
+        return TrxReportHelper::getAllRowTotal($this->getDoctrineEM(), $filter);
     }
 
     public function getOfItem($item_id, $item_token)

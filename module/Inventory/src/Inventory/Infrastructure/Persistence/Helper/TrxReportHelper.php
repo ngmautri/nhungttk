@@ -14,7 +14,7 @@ use Inventory\Infrastructure\Persistence\SQL\TrxReportSQL;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxReportHelper
 {
@@ -109,6 +109,67 @@ class TrxReportHelper
         }
     }
 
+    static public function getListTotal(EntityManager $doctrineEM, SqlFilterInterface $filter)
+    {
+        if (! $doctrineEM instanceof EntityManager) {
+            return null;
+        }
+
+        if (! $filter instanceof TrxReportSqlFilter) {
+            return null;
+        }
+
+        $sql_filtered = '';
+
+        if ($filter->getDocStatus() == "all") {
+            $filter->docStatus = null;
+        }
+
+        if ($filter->getDocYear() == "all") {
+            $filter->docYear = null;
+        }
+
+        if ($filter->getIsActive() == 1) {
+            $sql_filtered = $sql_filtered . " AND nmt_inventory_mv.is_active = 1";
+        } elseif ($filter->getIsActive() == - 1) {
+            $sql_filtered = $sql_filtered . " AND nmt_inventory_mv.is_active = 0";
+        }
+
+        if ($filter->getDocStatus() != null) {
+            $sql_filtered = $sql_filtered . \sprintf(' AND nmt_inventory_mv.doc_status ="%s"', $filter->getDocStatus());
+        }
+
+        if ($filter->getDocYear() != null) {
+            $sql_filtered = $sql_filtered . \sprintf(' AND year(nmt_inventory_mv.doc_date) = %s', $filter->getDocYear());
+        }
+
+        if ($filter->getDocMonth() != null) {
+            $sql_filtered = $sql_filtered . \sprintf(' AND month(nmt_inventory_mv.doc_date) = %s', $filter->getDocMonth());
+        }
+
+        if ($filter->getMovementType() != null) {
+            $sql_filtered = $sql_filtered . \sprintf(' AND nmt_inventory_mv.movement_type = "%s"', $filter->getMovementType());
+        }
+
+        // SQL;
+        $sql = TrxReportSQL::TRX_LIST_TOTAL;
+        $sql = $sql . \sprintf("%s GROUP BY nmt_inventory_mv.id", $sql_filtered);
+
+        $sql = $sql . ";";
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryMv', 'nmt_inventory_mv');
+            $rsm->addScalarResult("total", "total");
+
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            $result = $query->getSingleScalarResult();
+
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     /**
      *
      * @param EntityManager $doctrineEM
@@ -189,6 +250,60 @@ class TrxReportHelper
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
             $resulst = $query->getResult();
             return $resulst;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    static public function getAllRowTotal(EntityManager $doctrineEM, SqlFilterInterface $filter)
+    {
+        if (! $doctrineEM instanceof EntityManager) {
+            return null;
+        }
+
+        if (! $filter instanceof TrxRowReportSqlFilter) {
+            return null;
+        }
+
+        // echo $filter;
+
+        $sql = TrxReportSQL::TRX_ROWS_TOTAL;
+
+        $sql_tmp = '';
+
+        if ($filter->getDocStatus() != null) {
+            $sql = $sql . \sprintf(" AND nmt_inventory_trx.doc_status ='%s'", $filter->getDocStatus());
+        }
+
+        if ($filter->getItemId() > 0) {
+            $sql = $sql . " AND nmt_inventory_trx.item_id=" . $filter->getItemId();
+        }
+
+        if (! $filter->getFromDate() == null) {
+            $sql = $sql . \sprintf(" AND nmt_inventory_mv.posting_date >='%s'", $filter->getFromDate());
+        }
+
+        if (! $filter->getToDate() == null) {
+            $sql = $sql . \sprintf(" AND nmt_inventory_mv.posting_date <='%s'", $filter->getToDate());
+        }
+
+        if ($filter->getItem() != null) {
+            $sql = $sql . \sprintf(" AND nmt_inventory_trx.item_id =%s", $filter->getItem());
+        }
+
+        if ($filter->getWarehouseId() > 0) {
+            $sql = $sql . \sprintf(" AND nmt_inventory_trx.wh_id =%s", $filter->getWarehouseId());
+        }
+
+        // echo $sql;
+
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryTrx', 'nmt_inventory_trx');
+            $rsm->addScalarResult("total", "total");
+
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            return $query->getSingleScalarResult();
         } catch (NoResultException $e) {
             return null;
         }

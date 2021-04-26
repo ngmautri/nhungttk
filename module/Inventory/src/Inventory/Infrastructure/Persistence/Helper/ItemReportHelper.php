@@ -13,7 +13,7 @@ use Inventory\Infrastructure\Persistence\SQL\ItemReportSQL;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemReportHelper
 {
@@ -126,7 +126,7 @@ SELECT
 	nmt_procure_po_row.total_po_row,
 	nmt_procure_qo_row.total_qo_row,
 	fin_vendor_invoice_row.total_ap_row,
-            
+
 	nmt_inventory_item_picture.total_picture
 FROM nmt_inventory_item";
 
@@ -413,6 +413,59 @@ FROM nmt_inventory_item";
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
 
             return $query->getResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    static public function getItemListTotal(EntityManager $doctrineEM, SqlFilterInterface $filter)
+    {
+        if (! $doctrineEM instanceof EntityManager) {
+            return null;
+        }
+
+        if (! $filter instanceof ItemReportSqlFilter) {
+            return null;
+        }
+
+        $sql = "SELECT COUNT(*) as total FROM nmt_inventory_item WHERE 1";
+
+        if ($filter->getIsActive() == 1) {
+            $format = ' AND nmt_inventory_item.is_active= 1';
+            $sql = $sql . \sprintf($format, $filter->getIsActive());
+        } elseif ($filter->getIsActive() == 0) {
+            $format = ' AND nmt_inventory_item.is_active= 0';
+            $sql = $sql . \sprintf($format, $filter->getIsActive());
+        }
+
+        $format = ' AND nmt_inventory_item.item_type_id= %s';
+
+        switch ($filter->getItemType()) {
+            case ItemType::FIXED_ASSET_ITEM_TYPE:
+                $sql = $sql . \sprintf($format, ItemType::FIXED_ASSET_ITEM_TYPE);
+                break;
+
+            case ItemType::NONE_INVENTORY_ITEM_TYPE:
+                $sql = $sql . \sprintf($format, ItemType::NONE_INVENTORY_ITEM_TYPE);
+                break;
+
+            case ItemType::INVENTORY_ITEM_TYPE:
+                $sql = $sql . \sprintf($format, ItemType::INVENTORY_ITEM_TYPE);
+                break;
+
+            case ItemType::SERVICE_ITEM_TYPE:
+                $sql = $sql . \sprintf($format, ItemType::SERVICE_ITEM_TYPE);
+                break;
+        }
+
+        $sql = $sql . ";";
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            $rsm->addScalarResult("total", "total");
+            $result = $query->getSingleScalarResult();
+            return $result;
         } catch (NoResultException $e) {
             return null;
         }

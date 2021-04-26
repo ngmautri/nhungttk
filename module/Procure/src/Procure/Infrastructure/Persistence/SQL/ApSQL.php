@@ -4,7 +4,7 @@ namespace Procure\Infrastructure\Persistence\SQL;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApSQL
 {
@@ -73,35 +73,35 @@ ON nmt_procure_po_row.id = fin_vendor_invoice_row.po_row_id
 LEFT JOIN nmt_procure_po
 ON nmt_procure_po.id = nmt_procure_po_row.po_id
 
-WHERE 1  
+WHERE 1
 ";
 
     const AP_ROW_TOTAL_SQL = "
-        
+
 SELECT
 
-count(fin_vendor_invoice_row.id) as total_rows        
-        
+count(fin_vendor_invoice_row.id) as total_rows
+
 FROM fin_vendor_invoice_row
-        
+
 LEFT JOIN fin_vendor_invoice
 ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
-        
+
 LEFT JOIN nmt_inventory_item
 ON nmt_inventory_item.id = fin_vendor_invoice_row.item_id
-        
+
 LEFT JOIN nmt_procure_pr_row
 ON nmt_procure_pr_row.id = fin_vendor_invoice_row.pr_row_id
-        
+
 LEFT JOIN nmt_procure_pr
 ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
-        
+
 LEFT JOIN nmt_procure_po_row
 ON nmt_procure_po_row.id = fin_vendor_invoice_row.po_row_id
-        
+
 LEFT JOIN nmt_procure_po
 ON nmt_procure_po.id = nmt_procure_po_row.po_id
-        
+
 WHERE 1
 ";
 
@@ -112,38 +112,45 @@ SELECT
     SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.net_amount) ELSE 0 END) AS net_amount,
 	SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.tax_amount) ELSE 0 END) AS tax_amount,
 	SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.gross_amount) ELSE 0 END) AS gross_amount,
-	SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.discount_rate*fin_vendor_invoice_row.gross_amount) ELSE 0 END) AS gross_discount_amount   
-FROM fin_vendor_invoice        
+	SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.discount_rate*fin_vendor_invoice_row.gross_amount) ELSE 0 END) AS gross_discount_amount
+FROM fin_vendor_invoice
 LEFT JOIN fin_vendor_invoice_row
-ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id        
+ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+WHERE 1
+";
+
+    const AP_LIST_TOTAL = "
+SELECT
+	count(*) as total
+FROM fin_vendor_invoice
 WHERE 1
 ";
 
     const AP_LIST_DETAILS = "
 SELECT
 	fin_vendor_invoice.*,
-    pmt_outgoing.total_doc_amount as total_doc_amount_paid, 
+    pmt_outgoing.total_doc_amount as total_doc_amount_paid,
     pmt_outgoing.total_local_amount as total_local_amount_paid,
     pmt_outgoing.doc_currency_id as doc_currency_paid,
     pmt_outgoing.exchange_rate as exchange_rate_paid,
-    
+
 	COUNT(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.id) ELSE NULL END) AS active_row,
     ifnull(MAX(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.row_number) ELSE null END),0) AS max_row_number,
 	COUNT(fin_vendor_invoice_row.id) AS total_row,
 	SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.net_amount) ELSE 0 END) AS net_amount,
 	SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.tax_amount) ELSE 0 END) AS tax_amount,
 	SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.gross_amount) ELSE 0 END) AS gross_amount,
-    
+
     ifnull(nmt_application_attachment.total_attachment,0) as total_attachment,
     ifnull(nmt_application_attachment.total_picture,0) as total_picture
-  
+
 FROM fin_vendor_invoice
 
 LEFT JOIN fin_vendor_invoice_row
 ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
 
 LEFT JOIN
-(	
+(
 SELECT
 	fin_vendor_invoice.id as v_invoice_id,
 	COUNT(nmt_application_attachment.id) AS total_attachment,
@@ -164,7 +171,7 @@ LEFT JOIN
 
 		SUM(CASE WHEN (pmt_outgoing.posting_key = 'D' AND pmt_outgoing.is_active = 1) THEN (pmt_outgoing.doc_amount) ELSE 0 END) -
 		SUM(CASE WHEN (pmt_outgoing.posting_key = 'C' and pmt_outgoing.is_active = 1) THEN (pmt_outgoing.doc_amount) ELSE 0 END) AS total_doc_amount,
-        
+
 		SUM(CASE WHEN (pmt_outgoing.posting_key = 'D' AND pmt_outgoing.is_active = 1) THEN (pmt_outgoing.local_amount) ELSE 0 END) AS debit_local_amount,
 		SUM(CASE WHEN (pmt_outgoing.posting_key = 'C' and pmt_outgoing.is_active = 1) THEN (pmt_outgoing.local_amount) ELSE 0 END) AS credit_local_amount,
 
@@ -172,9 +179,9 @@ LEFT JOIN
 		SUM(CASE WHEN (pmt_outgoing.posting_key = 'C' and pmt_outgoing.is_active = 1) THEN (pmt_outgoing.local_amount) ELSE 0 END) AS total_local_amount,
 		pmt_outgoing.doc_currency_id,
 		pmt_outgoing.exchange_rate,
-		
+
 		fin_vendor_invoice.id as ap_id
-		
+
 	FROM fin_vendor_invoice
 
 
@@ -193,12 +200,25 @@ where 1
 SELECT
 
 fin_vendor_invoice_row.*
-        
+
 FROM fin_vendor_invoice_row
-        
+
 LEFT JOIN fin_vendor_invoice
 ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
-        
+
+WHERE 1
+";
+
+    const ALL_AP_ROW_TOTAL = "
+SELECT
+
+count(*) as total
+
+FROM fin_vendor_invoice_row
+
+LEFT JOIN fin_vendor_invoice
+ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+
 WHERE 1
 ";
 }

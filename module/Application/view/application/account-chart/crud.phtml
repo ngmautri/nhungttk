@@ -1,6 +1,7 @@
 
 <?php
 use Application\Application\Helper\ErrorMessage;
+use Application\Domain\Company\AccountChart\GenericChart;
 use Application\Form\AccountChart\ChartFormRender;
 use Application\Form\Contracts\GenericForm;
 
@@ -8,8 +9,14 @@ use Application\Form\Contracts\GenericForm;
  *
  * @var GenericForm $form ;
  *
+ * @var GenericChart $rootEntity ;
  */
 $error_msg = ErrorMessage::showErrorMessage($errors);
+$rootId = null;
+if ($rootEntity !== null) {
+    $rootId = $rootEntity->getId();
+}
+
 ?>
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
@@ -27,7 +34,16 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
 
 
+  <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('open_all');">Expand all </a>
+      &nbsp;|&nbsp;
+      <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('close_all');">Collapse all </a>
+
 <div style="font-size: 10pt" id="html1" class="demo">
+
+    <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('open_all');">Expand all </a>
+      &nbsp;|&nbsp;
+      <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('close_all');">Collapse all </a>
+
 <ul>
    <?php
 echo $jsTree?>;
@@ -36,6 +52,11 @@ echo $jsTree?>;
    </div>
 </div>
 <script>
+
+<?php
+echo sprintf("var rootId=%s;", $rootId);
+?>;
+
 $( "input[id='validFrom']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='validTo']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
@@ -53,23 +74,24 @@ $('#html1').jstree({
                var tree = $("#html1").jstree(true);
                return {
 
-             "Add New Deparment": {
+                      "Add Account": {
                           "separator_before": false,
                           "separator_after": false,
                           "label": "Add new account",
                           "action": function (obj) {
-                           var redirectUrl = "/application/account-chart/add-member?p="+$node.id;
+                           var redirectUrl = "/application/account-chart/add-member?rid=" +rootId+ "&pid="+ $node.id;
+                           //alert(redirectUrl);
                            window.location = redirectUrl;
                          }
                       },
 
 
-                      'Move Deparment': {
+                      'Move Account': {
                           "separator_before": false,
                           "separator_after": false,
-                          "label": "Move Deparment",
+                          "label": "Move Account",
                           "action": function (obj) {
-                           var redirectUrl = "/application/department/move?n="+$node.id;
+                           var redirectUrl = "/application/account-chart/move?n="+$node.id;
                            window.location = redirectUrl;
                          }
                       },
@@ -90,7 +112,7 @@ $('#html1').jstree({
                    "Rename": {
                        "separator_before": false,
                        "separator_after": false,
-                       "label": "Rename Deparment",
+                       "label": "Rename Account",
                        "action": function (obj) {
                            tree.edit($node);
                        }
@@ -98,7 +120,7 @@ $('#html1').jstree({
                    "Remove": {
                        "separator_before": false,
                        "separator_after": false,
-                       "label": "Remove Deparment",
+                       "label": "Remove Account",
                        "action": function (obj) {
                            tree.delete_node($node);
                        }

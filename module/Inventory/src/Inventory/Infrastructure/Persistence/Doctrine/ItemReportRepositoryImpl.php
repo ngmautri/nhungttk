@@ -32,8 +32,9 @@ class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements Ite
 
         // $list = [];
         foreach ($results as $r) {
-            $snapshot = ItemMapper::createSnapshot($r);
-            yield $snapshot;
+            // $snapshot = ItemMapper::createSnapshot($r);
+            // yield $snapshot;
+            yield $r;
         }
 
         // return $list;
@@ -118,7 +119,6 @@ class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements Ite
 
     public function getItemListTotal(SqlFilterInterface $filter)
     {
-        $results = ItemReportHelper::getItemList1($this->getDoctrineEM(), $filter, null, null, null, null);
-        return count($results);
+        return ItemReportHelper::getItemListTotal($this->getDoctrineEM(), $filter);
     }
 }

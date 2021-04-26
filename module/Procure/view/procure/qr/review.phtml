@@ -10,8 +10,8 @@ use Procure\Application\Helper\OptionList;
 use Procure\Application\Helper\Toolbar;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Contracts\ProcureDocStatus;
-use Procure\Domain\QuotationRequest\QRSnapshot;
 use Procure\Domain\QuotationRequest\QRRowSnapshot;
+use Procure\Domain\QuotationRequest\QRSnapshot;
 
 /**@var QRSnapshot $headerDTO ;*/
 /**@var QRRowSnapshot $rowDTO ;*/
@@ -1079,6 +1079,7 @@ $( "#vendor_name_1" ).autocomplete({
 
 	var obj = { width: "auto", height: $(window).height()-300, showTitle : false,
 			resizable:true,
+			 wrap:false,
 			//draggable:true,
 			sortable: true,
 			freezeCols:1,

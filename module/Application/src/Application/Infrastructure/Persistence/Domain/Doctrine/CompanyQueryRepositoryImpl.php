@@ -133,7 +133,7 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
                 $localSnapshot = ChartMapper::createChartSnapshot($localEnityDoctrine);
                 $chart = ChartFactory::contructFromDB($localSnapshot);
 
-                $chart->setAccountCollectionRef($this->_createAccountCollectionRef($chart->getId()));
+                // $chart->setAccountCollectionRef($this->_createAccountCollectionRef($chart->getId()));
                 $collection->add($chart);
             }
             return $collection;

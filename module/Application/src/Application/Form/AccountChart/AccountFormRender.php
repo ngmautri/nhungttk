@@ -35,6 +35,9 @@ class AccountFormRender extends AbstractFormRender
         $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
         $this->append($htmlPart);
 
+        $e = $form->getParentAccountNumber();
+        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3');
+        $this->append($htmlPart);
         $this->append($this->drawSeparator());
 
         $e = $form->getDescription();

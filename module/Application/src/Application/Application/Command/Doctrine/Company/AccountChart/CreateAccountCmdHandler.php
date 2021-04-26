@@ -5,10 +5,10 @@ use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Service\SharedServiceFactory;
+use Application\Domain\Company\AccountChart\AccountSnapshotAssembler;
+use Application\Domain\Company\AccountChart\BaseAccountSnapshot;
 use Application\Domain\Company\AccountChart\BaseChart;
-use Application\Domain\Company\AccountChart\BaseChartSnapshot;
 use Application\Domain\Company\AccountChart\ChartSnapshot;
-use Application\Domain\Company\AccountChart\ChartSnapshotAssembler;
 use Application\Domain\Company\AccountChart\Factory\ChartFactory;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
@@ -53,8 +53,8 @@ class CreateAccountCmdHandler extends AbstractCommandHandler
              * @var BaseChart $rootEntity ;
              */
 
-            $snapshot = new BaseChartSnapshot();
-            ChartSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            $snapshot = new BaseAccountSnapshot();
+            AccountSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
 
             $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
             $rootEntity = ChartFactory::createFrom($companyEntity, $snapshot, $options, $sharedService);

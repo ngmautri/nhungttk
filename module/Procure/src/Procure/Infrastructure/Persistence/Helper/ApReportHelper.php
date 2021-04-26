@@ -136,7 +136,7 @@ class ApReportHelper
             return null;
         }
 
-        $sql = ApSQL::AP_LIST;
+        $sql = ApSQL::AP_LIST_TOTAL;
 
         if ($filter->getDocStatus() == "all") {
             $filter->docStatus = null;
@@ -168,18 +168,16 @@ class ApReportHelper
             $sql = $sql . \sprintf(' AND fin_vendor_invoice.vendor_id = %s', $filter->getVendorId());
         }
 
-        $sql = $sql . " GROUP BY fin_vendor_invoice.id";
-
         $sql = $sql . ";";
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoice', 'fin_vendor_invoice');
+            $rsm->addScalarResult("total", "total");
 
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
 
-            $result = $query->getResult();
-            return count($result);
+            return $query->getSingleScalarResult();
         } catch (NoResultException $e) {
             return null;
         }
@@ -206,8 +204,6 @@ class ApReportHelper
         }
 
         $sql = ApSQL::ALL_AP_ROW;
-
-        $sql_tmp = '';
 
         if ($filter->getDocYear() > 0) {
             $sql = $sql . " AND YEAR(fin_vendor_invoice.posting_date)=" . $filter->getDocYear();
@@ -264,9 +260,7 @@ class ApReportHelper
             return null;
         }
 
-        $sql = ApSQL::ALL_AP_ROW;
-
-        $sql_tmp = '';
+        $sql = ApSQL::ALL_AP_ROW_TOTAL;
 
         if ($filter->getDocYear() > 0) {
             $sql = $sql . " AND YEAR(fin_vendor_invoice.posting_date)=" . $filter->getDocYear();
@@ -282,8 +276,9 @@ class ApReportHelper
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
-            $resulst = $query->getResult();
-            return count($resulst);
+            $rsm->addScalarResult("total", "total");
+
+            return $query->getSingleScalarResult();
         } catch (NoResultException $e) {
             return null;
         }

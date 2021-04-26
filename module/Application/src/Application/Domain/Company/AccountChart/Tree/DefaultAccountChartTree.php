@@ -62,7 +62,7 @@ class DefaultAccountChartTree extends AbstractTree
             $node->setContextObject($row);
 
             $node->setId($row->getId());
-            $node->setNodeName($row->getAccountNumber());
+            $node->setNodeName($row->getAccountName());
             $node->setNodeCode($row->getAccountNumber());
             $node->setNodeDescription($row->getRemarks());
 

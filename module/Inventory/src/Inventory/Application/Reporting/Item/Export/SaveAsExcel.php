@@ -5,6 +5,7 @@ use Application\Domain\Util\ExcelColumnMap;
 use Inventory\Application\Export\Item\AbstractSaveAsSpreadsheet;
 use Inventory\Application\Export\Item\Formatter\AbstractFormatter;
 use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Infrastructure\Mapper\ItemMapper;
 
 /**
  * Director in builder pattern.
@@ -67,6 +68,8 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
 
         foreach ($rows as $row) {
 
+            $row = ItemMapper::createSnapshot($row);
+
             $formatter->format($row);
 
             /**
@@ -92,7 +95,7 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
                 $row->hsCode,
                 $row->standardUom,
                 $row->stockUom,
-                $row->purchaseUom,
+                $row->purchaseUom
             );
 
             $n = 0;

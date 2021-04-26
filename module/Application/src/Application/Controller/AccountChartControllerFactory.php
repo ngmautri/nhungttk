@@ -30,6 +30,9 @@ class AccountChartControllerFactory implements FactoryInterface
         $sv = $container->get(AccountChartService::class);
         $controller->setEntityService($sv);
 
+        $sv = $container->get("AppLogger");
+        $controller->setLogger($sv);
+
         return $controller;
     }
 }

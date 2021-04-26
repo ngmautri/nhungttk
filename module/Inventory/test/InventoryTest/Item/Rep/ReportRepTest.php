@@ -25,15 +25,9 @@ class ReportRepTest extends PHPUnit_Framework_TestCase
             $rep = new ItemReportRepositoryImpl($doctrineEM);
 
             $filter = new ItemReportSqlFilter();
-            $filter->setIsActive(- 1);
-            $filter->setItemType(1);
-            $sort_by = null;
-            $sort = null;
-            $limit = 1;
-            $offset = 1;
 
-            $result = $rep->getItemList($filter, $sort_by, $sort, $limit, $offset);
-            var_dump($result[0]->itemSku);
+            $result = $rep->getItemListTotal($filter);
+            var_dump($result);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

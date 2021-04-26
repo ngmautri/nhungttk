@@ -343,11 +343,13 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
 
 
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+
 
 
 
@@ -999,6 +1001,7 @@ echo $upload_btn;
 
     	var obj = { width: "auto", height: $(window).height()-300, showTitle : false,
     			resizable:true,
+    			 wrap:false,
     			//draggable:true,
     			sortable: true,
     			freezeCols:1,

@@ -3,6 +3,8 @@ namespace Application\Form\AccountChart;
 
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
+use Application\Form\Helper\OptionsHelperFactory;
+use Zend\Form\Element\Select;
 
 /**
  *
@@ -11,6 +13,8 @@ use Application\Form\Contracts\GenericForm;
  */
 class AccountForm extends GenericForm
 {
+
+    private $accountOptions;
 
     public function __construct($id = null)
     {
@@ -85,25 +89,6 @@ class AccountForm extends GenericForm
             ],
             'options' => [
                 'label' => Translator::translate('Account Type'),
-                'label_attributes' => [
-                    'class' => "control-label col-sm-2"
-                ]
-            ]
-        ]);
-
-        // ======================================
-        // Form Element for {parentAccountNumber}
-        // ======================================
-        $this->add([
-            'type' => 'text',
-            'name' => 'parentAccountNumber',
-            'attributes' => [
-                'id' => 'parentAccountNumber',
-                'class' => "form-control input-sm",
-                'required' => FALSE
-            ],
-            'options' => [
-                'label' => Translator::translate('Parent Account Number'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]
@@ -300,6 +285,55 @@ class AccountForm extends GenericForm
                 ]
             ]
         ]);
+
+        // +++++++++++++++++++++++++++++++++++++++++++
+        // MANUAL ELEMENT
+        // +++++++++++++++++++++++++++++++++++++++++++
+
+        // ======================================
+        // Form Element for {parentAccountNumber}
+        // ======================================
+
+        /*
+         * $this->add([
+         * 'type' => 'text',
+         * 'name' => 'parentAccountNumber',
+         * 'attributes' => [
+         * 'id' => 'parentAccountNumber',
+         * 'class' => "form-control input-sm",
+         * 'required' => FALSE
+         * ],
+         * 'options' => [
+         * 'label' => Translator::translate('Parent Account Number'),
+         * 'label_attributes' => [
+         * 'class' => "control-label col-sm-2"
+         * ]
+         * ]
+         * ]);
+         */
+
+        // select
+        $select = new Select();
+        $select->setName("parentAccountNumber");
+        $select->setAttributes([
+            'id' => 'parentAccountNumber',
+            'class' => "form-control input-sm chosen-select",
+            'required' => true
+        ]);
+
+        $select->setOptions([
+            'label' => Translator::translate('Parent Account Number'),
+            'label_attributes' => [
+                'class' => "control-label col-sm-2"
+            ]
+        ]);
+
+        // $select->setEmptyOption(Translator::translate('Parent Account Number'));
+        $o = OptionsHelperFactory::createAccountOptions($this->getAccountOptions());
+
+        $select->setValueOptions($o);
+        // $select->setDisableInArrayValidator(false);
+        $this->add($select);
     }
 
     // ======================================
@@ -373,5 +407,23 @@ class AccountForm extends GenericForm
     public function getControlFor()
     {
         return $this->get("controlFor");
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountOptions()
+    {
+        return $this->accountOptions;
+    }
+
+    /**
+     *
+     * @param mixed $accountOptions
+     */
+    public function setAccountOptions($accountOptions)
+    {
+        $this->accountOptions = $accountOptions;
     }
 }

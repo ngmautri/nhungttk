@@ -6,8 +6,8 @@
  */
 use Application\Application\Helper\ErrorMessage;
 use Application\Application\Helper\OptionList;
-use Application\Domain\Shared\Constants;
 use Application\Controller\Plugin\SharedCollectionPlugin;
+use Application\Domain\Shared\Constants;
 
 /**
  *
@@ -498,7 +498,7 @@ echo $entityFormInput;
             echo $this->translate("Standard Unit");
             ?></label>
             <div class="col-sm-3">
-               <select name="standardUom" id="standardUom_id" class="form-control input-sm">
+               <select name="standardUom" id="standardUom_id" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
                 echo $this->translate("Select Standard unit");
@@ -515,7 +515,7 @@ echo $entityFormInput;
             echo $this->translate("Inventory Unit");
             ?>:</label>
             <div class="col-sm-3">
-               <select name="stockUom" id="stockUom_id" class="form-control input-sm">
+               <select name="stockUom" id="stockUom_id" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
                 echo $this->translate("Select inventory unit");
@@ -545,7 +545,7 @@ echo $entityFormInput;
             echo $this->translate("Purchase Unit");
             ?>:</label>
             <div class="col-sm-3">
-               <select name="purchaseUom" id="purchaseUom_id" class="form-control input-sm">
+               <select name="purchaseUom" id="purchaseUom_id" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
                 echo $this->translate("Select purchase unit");
@@ -576,7 +576,7 @@ echo $entityFormInput;
             echo $this->translate("Sales Unit");
             ?>:</label>
             <div class="col-sm-3">
-               <select name="salesUom" id="salesUom_id" class="form-control input-sm">
+               <select name="salesUom" id="salesUom_id" class="form-control input-sm chosen-select">
                   <option value="">
                    <?php
                 echo $sales_uom_option;
@@ -610,7 +610,7 @@ echo $entityFormInput;
             echo $this->translate("Uom Group");
             ?>:</label>
             <div class="col-sm-3">
-               <select name="uomGroup" class="form-control input-sm">
+               <select name="uomGroup" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
                 echo $this->translate("Select Uom Group");
@@ -631,7 +631,7 @@ echo $entityFormInput;
             echo $this->translate("Item Group");
             ?>:</label>
             <div class="col-sm-3">
-               <select name="itemGroup" class="form-control input-sm">
+               <select name="itemGroup" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
                 echo $this->translate("Select Group");
@@ -645,7 +645,7 @@ echo $entityFormInput;
          <div class="form-group margin-bottom required">
             <label class="control-label col-sm-2">Monitored by:</label>
             <div class="col-sm-3">
-               <select class="form-control input-sm" name="monitoredBy">
+               <select class="form-control input-sm chosen-select" name="monitoredBy">
                   <option value="">NONE</option>
                   <?php
                 echo $item_monitor_option;

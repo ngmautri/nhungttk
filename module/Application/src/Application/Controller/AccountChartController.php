@@ -4,12 +4,16 @@ namespace Application\Controller;
 use Application\Application\Command\TransactionalCommandHandler;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Command\Doctrine\Company\InsertDepartmentCmdHandler;
+use Application\Application\Command\Doctrine\Company\AccountChart\CreateAccountCmdHandler;
 use Application\Application\Command\Options\CmdOptions;
+use Application\Application\Service\AccountChart\Tree\Output\AccountJsTreeFormatter;
+use Application\Application\Service\AccountChart\Tree\Output\PureAccountWithRootForOptionFormatter;
 use Application\Controller\Contracts\EntityCRUDController;
 use Application\Domain\Company\AccountChart\AccountSnapshot;
 use Application\Domain\Company\AccountChart\GenericChart;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Contracts\FormActions;
+use Application\Domain\Util\Collection\Export\ExportAsArray;
 use Application\Form\AccountChart\AccountForm;
 use Application\Form\AccountChart\ChartForm;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
@@ -115,7 +119,8 @@ class AccountChartController extends EntityCRUDController
                 'form' => $form,
                 'jsTree' => $rootEntity->createChartTree()
                     ->getRoot()
-                    ->display()
+                    ->display(new AccountJsTreeFormatter()),
+                'rootEntity' => $rootEntity
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -288,7 +293,6 @@ class AccountChartController extends EntityCRUDController
         $form->setHydrator(new Reflection());
         $form->setRedirectUrl('/application/account-chart/list');
         $form->setFormAction($action);
-        $form->refresh();
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -297,16 +301,22 @@ class AccountChartController extends EntityCRUDController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
 
-            $parentName = $this->params()->fromQuery('p');
+            $parentCode = $this->params()->fromQuery('pid');
+            $rootId = $this->params()->fromQuery('rid');
+
+            $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+            $root = $rootEntity->createChartTree()->getRoot();
+            $opts = $root->display(new PureAccountWithRootForOptionFormatter());
+            $form->setAccountOptions($opts);
+            $form->refresh();
+
             $snapshot = new AccountSnapshot();
-            $snapshot->setParentAccountNumber($parentName);
+            $snapshot->setParentAccountNumber($parentCode);
             $form->bind($snapshot);
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
-                'departmentName' => null,
-                'departmentNode' => null,
-                'parentName' => $parentName,
+                'parentCode' => $parentCode,
                 'redirectUrl' => null,
                 'version' => null,
                 'nmtPlugin' => $nmtPlugin,
@@ -330,7 +340,7 @@ class AccountChartController extends EntityCRUDController
             $data = $prg;
 
             $options = new CmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
-            $cmdHandler = new InsertDepartmentCmdHandler();
+            $cmdHandler = new CreateAccountCmdHandler();
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->setLogger($this->getLogger());
@@ -348,10 +358,9 @@ class AccountChartController extends EntityCRUDController
 
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
-                'departmentName' => null,
-                'departmentNode' => null,
-                'parentName' => null,
+                'parentCode' => null,
                 'redirectUrl' => null,
+                'version' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -405,5 +414,36 @@ class AccountChartController extends EntityCRUDController
 
         $viewModel->setTemplate($viewTemplete);
         return $viewModel;
+    }
+
+    public function girdAction()
+    {
+        if (isset($_GET["pq_curpage"])) {
+            $pq_curPage = $_GET["pq_curpage"];
+        } else {
+            $pq_curPage = 1;
+        }
+
+        if (isset($_GET["pq_rpp"])) {
+            $pq_rPP = $_GET["pq_rpp"];
+        } else {
+            $pq_rPP = 100;
+        }
+        $rep = new CompanyQueryRepositoryImpl($this->getDoctrineEM());
+        $results = $rep->getById($this->getCompanyId());
+
+        $chart = $results->getLazyAccountChartCollection();
+
+        $exporter = new ExportAsArray();
+        $girdData = $exporter->execute($chart);
+
+        $a_json_final['data'] = $girdData;
+        $a_json_final['totalRecords'] = $chart->count();
+        $a_json_final['curPage'] = $pq_curPage;
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
     }
 }

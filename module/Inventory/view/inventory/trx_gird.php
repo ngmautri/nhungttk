@@ -3,8 +3,8 @@
     var toolbar = {
            cls: 'pq-toolbar-crud',
            items: [
-               { type: 'button', label: 'Add New Line', icon: 'ui-icon-plus', listeners: [{ "click": 
-    
+               { type: 'button', label: 'Add New Line', icon: 'ui-icon-plus', listeners: [{ "click":
+
                    function (evt, ui) {
                        var $grid = $(this).closest('.pq-grid');
                        redirectUrl="<?php
@@ -12,9 +12,9 @@
                     ?>";
                        window.location.href= redirectUrl;
                        }
-    
+
                    }] },
-               
+
                //{ type: 'button', label: 'Edit', icon: 'ui-icon-pencil', listeners: [{ click: edithandler}] },
                //{ type: 'button', label: 'Delete', icon: 'ui-icon-minus', listeners: [{ click: deletehandler}] }
            ]
@@ -22,6 +22,7 @@
 
     var obj = { width: "auto", height: $(window).height()-300, showTitle : false,
          resizable:true,
+         wrap:false,
          roundCorners:true,
          sortable: true,
          freezeCols:2,
@@ -37,7 +38,7 @@
        columnBorders: true,
        toolbar: toolbar,
        change: function (evt, ui) {
-    
+
             if (ui.source == 'commit' || ui.source == 'rollback') {
                 return;
             }
@@ -49,7 +50,7 @@
                 recIndx = grid.option('dataModel').recIndx,
                 deleteList = [],
                 updateList = [];
-    
+
             for (var i = 0; i < rowList.length; i++) {
                 var obj = rowList[i],
                     rowIndx = obj.rowIndx,
@@ -72,12 +73,12 @@
                         else {
                             updateList.push(rowData);
                            //alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
-    
+
                         }
                     }
                 }
               }
-    
+
               if (addList.length || updateList.length || deleteList.length) {
             var sent_list = JSON.stringify({
                     updateList: updateList,
@@ -85,7 +86,7 @@
                     deleteList: deleteList
                 });
                 //alert(sent_list);
-    
+
                   $.ajax({
                       url: '/procure/po/update-row',
                       data: {
@@ -97,7 +98,7 @@
                       beforeSend: function (jqXHR, settings) {
                       },
                       success: function (changes) {
-                          
+
                       },
                       complete: function () {
                           $("#global-notice").delay(2200).fadeOut(500);
@@ -106,9 +107,9 @@
                   });
               }
           },
-    
+
     };
-    
+
     obj.dataModel = {
         dataType: "JSON",
             location: "remote",
@@ -121,14 +122,14 @@
                 return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
            }
     };
-    
+
     obj.colModel = [
        { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
             return '<button type="button" class="edit_btn">Edit</button>';
            }
        },
-    
+
         { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
         { title: "GL", dataType: "string", dataIndx: "glAccountNumber", width:50,editable: false },
         { title: "CC", dataType: "string", dataIndx: "costCenterName", width:85,editable: false },
@@ -141,7 +142,7 @@
         { title: "Cogs", dataType: "string", dataIndx: "cogsLocal", width: 70,align: 'right',editable: false},
         { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
         { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
-        { title: "Onhand Qty", dataType: "decimal", dataIndx: "stockQty",align: 'right', width:80,editable: false },        
+        { title: "Onhand Qty", dataType: "decimal", dataIndx: "stockQty",align: 'right', width:80,editable: false },
         { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
         { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},
         { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
@@ -150,13 +151,13 @@
         { title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
      ];
-    
+
     var $grid = $("#pr_row_gird").pqGrid(obj);
-    
+
     $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         //debugger;
         var $grid = $(this);
-    
+
         $grid.find("button.edit_btn").button({})
         .unbind("click")
         .bind("click", function (evt) {
@@ -169,12 +170,12 @@
             ?>./update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
             window.location.href = redirectUrl;
         });
-    
+
      });
-    
+
     // important for datamodel: local.
     $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
-    
+
     function refreshGird(){
       $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
     }

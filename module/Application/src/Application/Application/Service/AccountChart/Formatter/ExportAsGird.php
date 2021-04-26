@@ -1,5 +1,5 @@
 <?php
-namespace Application\Application\Service\AccountChart\Formatter;
+namespace Application\Application\Service\AccountChart\Export;
 
 use Application\Domain\Company\AccountChart\ChartSnapshot;
 use Application\Domain\Util\Collection\GenericCollection;
@@ -14,7 +14,7 @@ use Application\Domain\Util\Collection\Formatter\NullFormatter;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class ExportAsHtmlTable extends AbstractExport
+class ExportAsGird extends AbstractExport
 {
 
     public function execute(GenericCollection $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null)
@@ -29,10 +29,6 @@ class ExportAsHtmlTable extends AbstractExport
 
         if ($filter == null) {
             $filter = new DefaultFilter();
-        }
-
-        foreach ($collection as $element) {
-            $element = $formatter->format($element);
         }
 
         $tmp = sprintf('Record %s to %s found!', $filter->getLimit() + 1, $filter->getLimit() + $collection->count());

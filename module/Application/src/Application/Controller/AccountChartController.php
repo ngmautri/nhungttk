@@ -6,6 +6,7 @@ use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Command\Doctrine\Company\InsertDepartmentCmdHandler;
 use Application\Application\Command\Doctrine\Company\AccountChart\CreateAccountCmdHandler;
 use Application\Application\Command\Options\CmdOptions;
+use Application\Application\Command\Options\CreateMemberCmdOptions;
 use Application\Application\Service\AccountChart\Tree\Output\AccountJsTreeFormatter;
 use Application\Application\Service\AccountChart\Tree\Output\PureAccountWithRootForOptionFormatter;
 use Application\Controller\Contracts\EntityCRUDController;
@@ -16,6 +17,7 @@ use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Collection\Export\ExportAsArray;
 use Application\Form\AccountChart\AccountForm;
 use Application\Form\AccountChart\ChartForm;
+use Application\Infrastructure\Persistence\Domain\Doctrine\ChartQueryRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Zend\Stdlib\Hydrator\Reflection;
 use Zend\View\Model\ViewModel;
@@ -306,12 +308,14 @@ class AccountChartController extends EntityCRUDController
 
             $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
             $root = $rootEntity->createChartTree()->getRoot();
+
             $opts = $root->display(new PureAccountWithRootForOptionFormatter());
             $form->setAccountOptions($opts);
             $form->refresh();
 
             $snapshot = new AccountSnapshot();
             $snapshot->setParentAccountNumber($parentCode);
+            $snapshot->setCoa($rootId);
             $form->bind($snapshot);
 
             $viewModel = new ViewModel(array(
@@ -334,31 +338,50 @@ class AccountChartController extends EntityCRUDController
             return $viewModel;
         }
 
+        // POSTING:
+        $data = $prg;
+
         $notification = null;
+        $rootEntityId = $data['coa'];
+        $parentCode = $data['parentAccountNumber'];
+
+        $rep = new ChartQueryRepositoryImpl($this->getDoctrineEM());
+        $rootEntity = $rep->getById($rootEntityId);
+
+        $rootEntity = $rootEntity;
+        $rootEntityToken = null;
+        $version = null;
+
+        $options = new CreateMemberCmdOptions($this->getCompanyVO(), $rootEntity, $rootEntityId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+        $cmdHandler = new CreateAccountCmdHandler();
+        $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+        $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
+        $cmd->setLogger($this->getLogger());
+
         try {
-
-            $data = $prg;
-
-            $options = new CmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
-            $cmdHandler = new CreateAccountCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
-            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
-            $cmd->setLogger($this->getLogger());
-
             $cmd->execute();
         } catch (\Exception $e) {
             $this->logInfo($e->getMessage());
         }
 
         $notification = $cmd->getNotification();
-
         $form->bind($cmd->getOutput());
 
         if ($notification->hasErrors()) {
 
+            $root = $rootEntity->createChartTree()->getRoot();
+            $opts = $root->display(new PureAccountWithRootForOptionFormatter());
+            $form->setAccountOptions($opts);
+            $form->refresh();
+
+            $snapshot = new AccountSnapshot();
+            $snapshot->setParentAccountNumber($parentCode);
+            $snapshot->setCoa($rootEntityId);
+            $form->bind($snapshot);
+
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
-                'parentCode' => null,
+                'parentCode' => $parentCode,
                 'redirectUrl' => null,
                 'version' => null,
                 'nmtPlugin' => $nmtPlugin,

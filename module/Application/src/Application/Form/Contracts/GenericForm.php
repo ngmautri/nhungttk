@@ -4,6 +4,7 @@ namespace Application\Form\Contracts;
 use Application\Form\Render\DefaultFormRender;
 use Application\Form\Render\FormRenderInterface;
 use Zend\Form\Form;
+use Zend\Form\Element\Hidden;
 use Zend\View\Renderer\PhpRenderer;
 
 /**
@@ -20,11 +21,40 @@ abstract class GenericForm extends Form
 
     protected $formAction;
 
+    protected $rootId;
+
+    protected $memberId;
+
     abstract protected function addElements();
 
     public function refresh()
     {
         $this->addElements();
+    }
+
+    protected function addHiddenElement($name, $value)
+    {
+        $this->add([
+            'type' => Hidden::class,
+            'name' => $name,
+            'value' => $value
+        ]);
+    }
+
+    protected function addRootElement()
+    {
+        $this->add([
+            'type' => Hidden::class,
+            'name' => 'rootId'
+        ]);
+    }
+
+    protected function addMemberElement()
+    {
+        $this->add([
+            'type' => Hidden::class,
+            'name' => 'memberId'
+        ]);
     }
 
     /**
@@ -107,5 +137,41 @@ abstract class GenericForm extends Form
     public function setFormAction($formAction)
     {
         $this->formAction = $formAction;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRootId()
+    {
+        return $this->get("rootId");
+    }
+
+    /**
+     *
+     * @param mixed $rootId
+     */
+    public function setRootId($rootId)
+    {
+        $this->rootId = $rootId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getMemberId()
+    {
+        return $this->get("memberId");
+    }
+
+    /**
+     *
+     * @param mixed $memberId
+     */
+    public function setMemberId($memberId)
+    {
+        $this->memberId = $memberId;
     }
 }

@@ -1,9 +1,13 @@
 <?php
 namespace Application\Domain\Company\AccountChart\Tree;
 
+use Application\Application\Command\Options\CmdOptions;
 use Application\Domain\Company\AccountChart\BaseAccount;
 use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Util\Tree\AbstractTree;
+use Application\Domain\Util\Tree\Node\AbstractBaseNode;
+use Webmozart\Assert\Assert;
+use Exception;
 
 /**
  *
@@ -22,6 +26,19 @@ class DefaultAccountChartTree extends AbstractTree
         }
 
         $this->chart = $chart;
+    }
+
+    public function insertAccount(AbstractBaseNode $node, AbstractBaseNode $parent, CmdOptions $options = null)
+    {
+        Assert::isInstanceOf($node, AbstractBaseNode::class);
+        Assert::isInstanceOf($parent, AbstractBaseNode::class);
+
+        try {
+            $parent->add($node);
+        } catch (Exception $e) {
+            $f = 'Account {#%s-%s} exits already! ';
+            throw new \InvalidArgumentException(\sprintf($f, $node->getNodeCode(), $node->getNodeName()));
+        }
     }
 
     /**

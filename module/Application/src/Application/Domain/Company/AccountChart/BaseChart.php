@@ -36,7 +36,7 @@ class BaseChart extends AbstractChart
 
         $validationService = ChartValidatorFactory::forCreatingChart($sharedService);
         $snapshot->init($options);
-        $snapshot->setCoa($this->getId());
+        $snapshot->setCoa($this->getId()); // important;
         $account = GenericAccount::createFromSnapshot($this, $snapshot);
 
         $this->validateAccount($account, $validationService);
@@ -69,8 +69,9 @@ class BaseChart extends AbstractChart
         // var_dump($root->isNodeDescendant($node));
 
         $node->setParentId($parent->getId());
-        $parent->add($node); // adding to tree. If ok, go further
 
+        // $parent->add($node); // adding to tree. If ok, go further
+        $chartTree->insertAccount($node, $parent, $options);
         $this->clearEvents();
         // $this->addRow($account);
 

@@ -27,7 +27,7 @@ class CreateMemberCmdOptions extends CmdOptions
     public function __construct(CompanyVO $companyVO, $rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         Assert::isInstanceOf($companyVO, CompanyVO::class, sprintf("Company VO not given! %s", ''));
-        Assert::notNull($rootEntity, sprintf("Root Entitynot given! %s", ""));
+        Assert::notNull($rootEntity, sprintf("Root Entity not given! %s", ""));
         Assert::notNull($rootEntityId, sprintf("Root Entity ID not given! %s", $rootEntityId));
         Assert::notNull($userId, sprintf("User ID not given!%s", $userId));
         Assert::notNull($triggeredBy, sprintf("Triggernot given! %s", $triggeredBy));

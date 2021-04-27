@@ -4,6 +4,7 @@ namespace Application\Form\AccountChart;
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
 use Application\Form\Helper\OptionsHelperFactory;
+use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Select;
 
 /**
@@ -23,6 +24,8 @@ class AccountForm extends GenericForm
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
         $this->setAction('/application/account-chart/add-member');
+        $this->addRootElement();
+        $this->addMemberElement();
     }
 
     public function setAction($url)
@@ -38,6 +41,16 @@ class AccountForm extends GenericForm
      */
     protected function addElements()
     {
+        $this->add([
+            'type' => Hidden::class,
+            'name' => 'coa'
+        ]);
+
+        $this->add([
+            'type' => Hidden::class,
+            'name' => 'id'
+        ]);
+
         // ======================================
         // Form Element for {accountNumber}
         // ======================================
@@ -339,6 +352,16 @@ class AccountForm extends GenericForm
     // ======================================
     // Function to get Form Elements
     // ======================================
+    public function getRootId()
+    {
+        return $this->get("coa");
+    }
+
+    public function getMemberId()
+    {
+        return $this->get("id");
+    }
+
     public function getAccountNumber()
     {
         return $this->get("accountNumber");

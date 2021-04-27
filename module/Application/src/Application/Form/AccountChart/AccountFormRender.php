@@ -27,6 +27,10 @@ class AccountFormRender extends AbstractFormRender
 
         $labelHelper = new FormLabel();
 
+        $e = $form->getRootId();
+        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
+        $this->append($htmlPart);
+
         $e = $form->getAccountNumber();
         $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
         $this->append($htmlPart);

@@ -3,15 +3,14 @@ namespace Application\Application\Command\Doctrine\Company\AccountChart;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
-use Application\Application\Command\Options\CmdOptions;
+use Application\Application\Command\Options\CreateMemberCmdOptions;
 use Application\Application\Service\SharedServiceFactory;
 use Application\Domain\Company\AccountChart\AccountSnapshotAssembler;
 use Application\Domain\Company\AccountChart\BaseAccountSnapshot;
 use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Company\AccountChart\ChartSnapshot;
-use Application\Domain\Company\AccountChart\Factory\ChartFactory;
 use Application\Domain\Shared\Command\CommandInterface;
-use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
+use Application\Infrastructure\Persistence\Domain\Doctrine\ChartQueryRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
@@ -31,20 +30,19 @@ class CreateAccountCmdHandler extends AbstractCommandHandler
     {
         /**
          *
-         * @var CmdOptions $options ;
+         * @var CreateMemberCmdOptions $options ;
          * @var AbstractCommand $cmd ;
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
-        Assert::isInstanceOf($cmd->getOptions(), CmdOptions::class);
+        Assert::isInstanceOf($cmd->getOptions(), CreateMemberCmdOptions::class);
         Assert::notNull($cmd->getData(), 'Input data in emty');
 
         $options = $cmd->getOptions();
 
         try {
 
-            $rep = new CompanyQueryRepositoryImpl($cmd->getDoctrineEM());
-            $companyEntity = $rep->getById($options->getCompanyVO()
-                ->getId());
+            $rep = new ChartQueryRepositoryImpl($cmd->getDoctrineEM());
+            $rootEntity = $rep->getById($options->getRootEntityId());
 
             /**
              *
@@ -55,15 +53,16 @@ class CreateAccountCmdHandler extends AbstractCommandHandler
 
             $snapshot = new BaseAccountSnapshot();
             AccountSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
-
-            $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
-            $rootEntity = ChartFactory::createFrom($companyEntity, $snapshot, $options, $sharedService);
-
-            $snapshot->id = $rootEntity->getId();
-            $snapshot->token = $rootEntity->getToken();
             $this->setOutput($snapshot); // important;
 
-            $m = sprintf("[OK] Account chart #%s created!", $snapshot->getId());
+            $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
+            $memberEntity = $rootEntity->createAccountFrom($snapshot, $options, $sharedService);
+
+            $snapshot->id = $memberEntity->getId();
+            $snapshot->token = $memberEntity->getToken();
+            $this->setOutput($snapshot); // important;
+
+            $m = sprintf("[OK] Account #%s created!", $snapshot->getId());
             $cmd->addSuccess($m);
 
             // event dispatch

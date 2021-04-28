@@ -67,6 +67,10 @@ class AccountSnapshot extends AbstractDTO
 
     public $lastChangeBy;
 
+    public $accountName1;
+
+    public $accountName2;
+
     /**
      *
      * @return mixed
@@ -569,5 +573,41 @@ class AccountSnapshot extends AbstractDTO
     public function setLastChangeBy($lastChangeBy)
     {
         $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountName1()
+    {
+        return $this->accountName1;
+    }
+
+    /**
+     *
+     * @param mixed $accountName1
+     */
+    public function setAccountName1($accountName1)
+    {
+        $this->accountName1 = $accountName1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountName2()
+    {
+        return $this->accountName2;
+    }
+
+    /**
+     *
+     * @param mixed $accountName2
+     */
+    public function setAccountName2($accountName2)
+    {
+        $this->accountName2 = $accountName2;
     }
 }

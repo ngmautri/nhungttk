@@ -67,6 +67,10 @@ class AbstractAccount extends AbstractEntity
 
     protected $lastChangeBy;
 
+    protected $accountName1;
+
+    protected $accountName2;
+
     /**
      *
      * @return mixed
@@ -569,5 +573,41 @@ class AbstractAccount extends AbstractEntity
     protected function setLastChangeBy($lastChangeBy)
     {
         $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountName1()
+    {
+        return $this->accountName1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAccountName2()
+    {
+        return $this->accountName2;
+    }
+
+    /**
+     *
+     * @param mixed $accountName1
+     */
+    protected function setAccountName1($accountName1)
+    {
+        $this->accountName1 = $accountName1;
+    }
+
+    /**
+     *
+     * @param mixed $accountName2
+     */
+    protected function setAccountName2($accountName2)
+    {
+        $this->accountName2 = $accountName2;
     }
 }

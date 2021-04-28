@@ -45,7 +45,7 @@ class AppCoaAccount
     /**
      * @var string
      *
-     * @ORM\Column(name="account_name", type="string", length=45, nullable=true)
+     * @ORM\Column(name="account_name", type="string", length=150, nullable=true)
      */
     private $accountName;
 
@@ -188,6 +188,20 @@ class AppCoaAccount
      * @ORM\Column(name="coa_uuid", type="string", length=38, nullable=true)
      */
     private $coaUuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="account_name_1", type="string", length=150, nullable=true)
+     */
+    private $accountName1;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="account_name_2", type="string", length=150, nullable=true)
+     */
+    private $accountName2;
 
     /**
      * @var \Application\Entity\AppCoa
@@ -805,6 +819,54 @@ class AppCoaAccount
     public function getCoaUuid()
     {
         return $this->coaUuid;
+    }
+
+    /**
+     * Set accountName1
+     *
+     * @param string $accountName1
+     *
+     * @return AppCoaAccount
+     */
+    public function setAccountName1($accountName1)
+    {
+        $this->accountName1 = $accountName1;
+
+        return $this;
+    }
+
+    /**
+     * Get accountName1
+     *
+     * @return string
+     */
+    public function getAccountName1()
+    {
+        return $this->accountName1;
+    }
+
+    /**
+     * Set accountName2
+     *
+     * @param string $accountName2
+     *
+     * @return AppCoaAccount
+     */
+    public function setAccountName2($accountName2)
+    {
+        $this->accountName2 = $accountName2;
+
+        return $this;
+    }
+
+    /**
+     * Get accountName2
+     *
+     * @return string
+     */
+    public function getAccountName2()
+    {
+        return $this->accountName2;
     }
 
     /**

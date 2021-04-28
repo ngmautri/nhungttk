@@ -28,6 +28,8 @@ use Application\Application\Eventbus\PsrHandlerResolverFactory;
 use Application\Application\Logger\LoggerFactory;
 use Application\Application\Service\AccountChart\AccountChartService;
 use Application\Application\Service\AccountChart\AccountChartServiceFactory;
+use Application\Application\Service\AccountChart\Upload\DefaultAccountChartUpload;
+use Application\Application\Service\AccountChart\Upload\DefaultAccountChartUploadFactory;
 use Application\Application\Service\Shared\CommonCollection;
 use Application\Application\Service\Shared\CommonCollectionFactory;
 use Application\Application\Service\Uom\UomGroupService;
@@ -359,6 +361,7 @@ return array(
             UomGroupService::class => UomGroupServiceFactory::class,
 
             AccountChartService::class => AccountChartServiceFactory::class,
+            DefaultAccountChartUpload::class => DefaultAccountChartUploadFactory::class,
 
             CommonCollection::class => CommonCollectionFactory::class,
 

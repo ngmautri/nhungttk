@@ -89,7 +89,6 @@ class PureAccountWithRootForOptionFormatter extends AbstractFormatter
         $space = "-";
         for ($i = 0; $i < $level - 1; $i ++) {
             $space = $space . $space;
-            $space = $space . $space;
         }
 
         return $space;

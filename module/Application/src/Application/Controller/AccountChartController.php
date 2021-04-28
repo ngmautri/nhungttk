@@ -1,10 +1,12 @@
 <?php
 namespace Application\Controller;
 
+use Application\Notification;
 use Application\Application\Command\TransactionalCommandHandler;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Command\Doctrine\Company\InsertDepartmentCmdHandler;
 use Application\Application\Command\Doctrine\Company\AccountChart\CreateAccountCmdHandler;
+use Application\Application\Command\Doctrine\Company\AccountChart\RemoveAccountCmdHandler;
 use Application\Application\Command\Doctrine\Company\AccountChart\UpdateAccountCmdHandler;
 use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Command\Options\CreateMemberCmdOptions;
@@ -20,6 +22,8 @@ use Application\Domain\Util\Collection\Export\ExportAsArray;
 use Application\Form\AccountChart\AccountForm;
 use Application\Form\AccountChart\ChartForm;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
+use Zend\Escaper\Escaper;
+use Zend\Http\Response;
 use Zend\Stdlib\Hydrator\Reflection;
 use Zend\View\Model\ViewModel;
 
@@ -565,6 +569,59 @@ class AccountChartController extends EntityCRUDController
         $redirectUrl = \sprintf("/application/account-chart/view?id=%s", $rootId);
 
         return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    public function removeMemberAction()
+    {
+        $response = $this->getResponse();
+        $escaper = new Escaper();
+
+        try {
+
+            $rootId = $escaper->escapeHtml($_POST['rid']);
+            $memberCode = $escaper->escapeHtml($_POST['mid']);
+
+            /**
+             *
+             * @var GenericChart $rootEntity
+             */
+            $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+            if ($rootEntity == null) {
+                throw new \InvalidArgumentException("Account chart [$rootId] not found!");
+            }
+
+            $memberEntity = $rootEntity->getAccountByNumber($memberCode);
+            if ($memberEntity == null) {
+                throw new \InvalidArgumentException("Account [$memberCode] not found!");
+            }
+
+            $entityToken = null;
+            $version = null;
+            $data = null;
+
+            $options = new UpdateMemberCmdOptions($this->getCompanyVO(), $rootEntity, $memberEntity, $rootId, $entityToken, $version, $this->getUserId(), __METHOD__);
+
+            $cmdHandler = new RemoveAccountCmdHandler();
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->execute();
+        } catch (\Exception $e) {
+
+            $notification = new Notification();
+            $notification->addError($e->getTraceAsString());
+            $this->logException($e);
+
+            $response->setStatusCode(Response::STATUS_CODE_400);
+            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+            $response->setContent(\json_encode("[Failed] Node name not removed.Please see log!"));
+            return $response;
+        }
+
+        $response->setStatusCode(Response::STATUS_CODE_200);
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(\json_encode("[OK] Node removed!"));
+        return $response;
     }
 
     public function listAction()

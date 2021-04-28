@@ -48,6 +48,42 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
         return $rootSnapshot;
     }
 
+    public function storeAll(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {
+        $rootSnapshot = $this->_getRootSnapshot($localEntity);
+
+        $isFlush = true;
+        $increaseVersion = true;
+        $entity = $this->_storeChart($rootSnapshot, $isPosting, $isFlush, $increaseVersion);
+
+        $accountCollection = $localEntity->getAccountCollection();
+        if ($accountCollection->isEmpty()) {
+            return $rootSnapshot;
+        }
+
+        $increaseVersion = false;
+        $isFlush = false;
+        $n = 0;
+
+        foreach ($accountCollection as $accountEntity) {
+            $n ++;
+
+            // flush every 500 line, if big doc.
+            if ($n % 500 == 0) {
+                $this->doctrineEM->flush();
+            }
+
+            $localSnapshot = $this->_getLocalSnapshot($accountEntity);
+            $this->_storeAccount($entity, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
+        }
+
+        $rootSnapshot->id = $entity->getId();
+        $rootSnapshot->revisionNo = $entity->getRevisionNo();
+        $rootSnapshot->version = $entity->getVersion();
+
+        return $rootSnapshot;
+    }
+
     public function remove(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
     {}
 

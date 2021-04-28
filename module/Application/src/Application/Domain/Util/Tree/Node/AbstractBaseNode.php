@@ -133,7 +133,8 @@ abstract class AbstractBaseNode extends AbstractNode
         $result = new ArrayCollection($this->display(new NodeArrayFormatter()));
 
         if ($result->isEmpty()) {
-            throw new \InvalidArgumentException("Node could not be found!");
+            // throw new \InvalidArgumentException("Node could not be found!");
+            return null;
         }
 
         foreach ($result as $r) {
@@ -148,7 +149,7 @@ abstract class AbstractBaseNode extends AbstractNode
             }
         }
 
-        throw new \InvalidArgumentException("Node could not be found!");
+        return null;
     }
 
     /**

@@ -35,17 +35,46 @@ if ($rootEntity !== null) {
   <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('open_all');">Expand all </a>
       &nbsp;|&nbsp;
       <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('close_all');">Collapse all </a>
-
-<div style="font-size: 10pt" id="html1" class="demo">
-
-    <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('open_all');">Expand all </a>
-      &nbsp;|&nbsp;
-      <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('close_all');">Collapse all </a>
-
-<ul>
+      <div style="font-size: 10pt" id="html1" class="demo">
+         <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('open_all');">Expand all </a>
+         &nbsp;|&nbsp;
+         <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('close_all');">Collapse all </a>
+         <ul>
    <?php
 echo $jsTree?>;
 </ul>
+      </div>
+   </div>
+</div>
+<div class="modal" id="confirm_remove_node" role="dialog">
+   <div class="modal-dialog modal-md">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+         </div>
+         <div class="modal-body" id="b_modal_sm_body">
+            <h5>#<?php
+
+            echo $this->translate('Account will be removed!');
+            ?></h5>
+            <div class="alert alert-warning">
+               <strong>[Info]</strong> <?php
+
+            echo $this->translate('Remove can not be recalled!');
+            ?>
+               <!-- Journal Entry will be created. <br>- Warehouse Journal will be
+               created.
+                -->
+            </div>
+            <p><?php
+
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+         </div>
+         <div class="modal-footer">
+            <button onclick="doRemovingNode();" type="button" class="btn btn-primary btn-sm">YES</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+         </div>
       </div>
    </div>
 </div>
@@ -53,10 +82,36 @@ echo $jsTree?>;
 
 <?php
 echo sprintf("var rootId=%s;", $rootId);
+echo sprintf("var redirectUrl = \"/application/account-chart/view?id=%s\"", $rootId);
 ?>;
 
 $( "input[id='validFrom']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='validTo']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+var node_to_remove = null;
+
+function confirmRemoveNode() {
+    $('#confirm_remove_node').modal();
+ }
+
+function doRemovingNode() {
+
+    $('#confirm_remove_node').hide();
+
+  //alert(data.node.parent +  data.node.id  +  data.node.text );
+    $('#b_modal_no_header').modal();
+
+    //alert(node_to_remove + rootId);
+
+     $.post("/application/account-chart/remove-member", {
+        rid : rootId,
+        mid: node_to_remove
+
+    }, function(data, status) {
+       //alert(data);
+       window.location = redirectUrl;
+    });
+}
 
 
 //html demo
@@ -159,36 +214,14 @@ $('#html1').jstree({
 
 });
 
-// When the jsTree is ready, add two more records.
-$('#html1').on('create_node.jstree', function (e, data) {
-   alert(data.node.parent +  data.node.id);
-});
-
-// RENAME
-$('#html1').on('rename_node.jstree', function (e, data) {
- //alert(data.node.parent +  data.node.id  +  data.node.text );
-   $('#b_modal_no_header').modal();
-
-   var redirectUrl = "/application/department/list2";
-
-   $.post("/application/department/rename", {
-       node_name : data.node.id,
-       new_name : data.node.text,
-   }, function(data, status) {
-      //alert(data);
-      window.location = redirectUrl;
-   });
-
-});
-// RENAME ===============
 
 
 // DELETE ===============
 $('#html1').on('delete_node.jstree', function (e, data) {
 
      $('#confirm_remove_node').modal();
-
-     node_name_to_remove = data.node.id;
+     //alert( data.node.id);
+     node_to_remove = data.node.id;
 
 
 });

@@ -33,6 +33,11 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     // ================================================================
     // Delegation
     // ================================================================
+    public function storeWholeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity)
+    {
+        $this->assertChartRepository();
+        return $this->getChartCmdRepository()->storeAll($rootEntity, $localEntity);
+    }
 
     /**
      *

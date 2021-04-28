@@ -2,12 +2,15 @@
 namespace Application\Domain\Company\AccountChart;
 
 use Application\Application\Event\DefaultParameter;
+use Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface;
 use Application\Domain\Company\AccountChart\Tree\AccountChartNode;
 use Application\Domain\Company\AccountChart\Tree\DefaultAccountChartTree;
 use Application\Domain\Company\AccountChart\Validator\ChartValidatorFactory;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Domain\Event\Company\AccountChart\AccountCreated;
+use Application\Domain\Event\Company\AccountChart\AccountRemoved;
 use Application\Domain\Event\Company\AccountChart\AccountUpdated;
+use Application\Domain\Service\SharedService;
 use Application\Domain\Service\Contracts\AccountChartValidationServiceInterface;
 use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
@@ -29,6 +32,66 @@ class BaseChart extends AbstractChart
     private $accountCollection;
 
     private $accountCollectionRef;
+
+    public function store(SharedService $sharedService)
+    {
+        Assert::notNull($sharedService, Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
+
+        /**
+         *
+         * @var CompanyCmdRepositoryInterface $rep
+         */
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+
+        $this->setLogger($sharedService->getLogger());
+        $validationService = ChartValidatorFactory::forCreatingChart($sharedService);
+
+        $this->validate($validationService);
+        if ($this->hasErrors()) {
+            throw new \RuntimeException($this->getErrorMessage());
+        }
+
+        $rep->storeWholeAccountChart($this);
+
+        $this->logInfo(\sprintf("Account chart saved %s", __METHOD__));
+        return $this;
+    }
+
+    /**
+     *
+     * @param BaseAccount $localEntity
+     * @param CommandOptions $options
+     * @param SharedServiceInterface $sharedService
+     * @return \Application\Domain\Company\AccountChart\BaseChart
+     */
+    public function removeAccount(BaseAccount $localEntity, CommandOptions $options, SharedServiceInterface $sharedService)
+    {
+        Assert::notNull($localEntity, "BaseAccount not found");
+        Assert::notNull($options, "Options not founds");
+        Assert::notNull($sharedService, "SharedService not found");
+
+        /**
+         *
+         * @var ChartCmdRepositoryInterface $rep ;
+         *
+         */
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rep->removeAccount($this, $localEntity);
+
+        $params = null;
+
+        $target = $localEntity->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($localEntity->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new AccountRemoved($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $this;
+    }
 
     public function getAccountById($id)
     {
@@ -92,10 +155,15 @@ class BaseChart extends AbstractChart
         $chartTree = $this->createChartTree();
         $root = $chartTree->getRoot();
 
-        if ($account->getParentAccountNumber() == null) {
+        if ($account->getParentAccountNumber() == null || $account->getParentAccountNumber() == "") {
             $parent = $root;
         } else {
-            $parent = $root->getNodeByCode($account->getParentAccountNumber());
+
+            if ($root->getNodeByCode($account->getParentAccountNumber()) != null) {
+                $parent = $root->getNodeByCode($account->getParentAccountNumber());
+            } else {
+                $parent = $root;
+            }
         }
 
         $node = new AccountChartNode();
@@ -115,7 +183,7 @@ class BaseChart extends AbstractChart
         // $parent->add($node); // adding to tree. If ok, go further
         $chartTree->insertAccount($node, $parent, $options);
         $this->clearEvents();
-        // $this->addRow($account);
+        $this->getAccountCollection()->add($account);
 
         if (! $storeNow) {
             return $this;
@@ -245,6 +313,9 @@ class BaseChart extends AbstractChart
 
     public function getAccountCollection()
     {
+        if ($this->accountCollection == null) {
+            return new ArrayCollection();
+        }
         return $this->accountCollection;
     }
 
@@ -274,11 +345,10 @@ class BaseChart extends AbstractChart
      */
     public function validate(AccountChartValidationServiceInterface $validatorService, $isPosting = false)
     {
-        $this->validateChart($validatorService->getChartValidators());
-    /**
-     *
-     * @todo: validate account.
-     */
+        $this->validateChart($validatorService);
+        foreach ($this->getAccountCollection() as $account) {
+            $this->validateAccount($account, $validatorService);
+        }
     }
 
     /**

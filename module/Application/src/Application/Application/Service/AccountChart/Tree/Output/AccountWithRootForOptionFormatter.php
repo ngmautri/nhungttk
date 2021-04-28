@@ -87,9 +87,8 @@ class AccountWithRootForOptionFormatter extends AbstractFormatter
             return "";
         }
 
-        $space = "--";
+        $space = "-";
         for ($i = 0; $i < $level - 1; $i ++) {
-            $space = $space . $space;
             $space = $space . $space;
         }
 

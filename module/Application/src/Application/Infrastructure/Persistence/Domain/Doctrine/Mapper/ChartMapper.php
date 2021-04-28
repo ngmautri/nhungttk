@@ -132,6 +132,8 @@ class ChartMapper
         $entity->setVersion($snapshot->version);
         $entity->setRevisionno($snapshot->revisionno);
         $entity->setCoaUuid($snapshot->coaUuid);
+        $entity->setAccountName1($snapshot->accountName1);
+        $entity->setAccountName2($snapshot->accountName2);
 
         // Mapping Date
         // =====================
@@ -294,6 +296,8 @@ class ChartMapper
         $snapshot->version = $entity->getVersion();
         $snapshot->revisionno = $entity->getRevisionno();
         $snapshot->coaUuid = $entity->getCoaUuid();
+        $snapshot->accountName1 = $entity->getAccountName1();
+        $snapshot->accountName2 = $entity->getAccountName2();
 
         // Mapping Date
         // =====================

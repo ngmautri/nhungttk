@@ -26,6 +26,8 @@ Interface CompanyCmdRepositoryInterface
 
     public function storeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity);
 
+    public function storeWholeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity);
+
     public function storeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false);
 
     public function removeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity);

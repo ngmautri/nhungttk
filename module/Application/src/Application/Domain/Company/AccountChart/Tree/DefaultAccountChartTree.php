@@ -41,17 +41,25 @@ class DefaultAccountChartTree extends AbstractTree
         }
     }
 
-    public function renameAccountCode(AbstractBaseNode $node, $newCode, CmdOptions $options = null)
+    public function changeAccountNumber(AbstractBaseNode $node, $newNumber, CmdOptions $options = null)
     {
         Assert::isInstanceOf($node, AbstractBaseNode::class);
 
-        try {
-            $oldCode = $node->getNodeCode();
-            $node->rename($newCode);
-        } catch (Exception $e) {
-            $f = 'Account nummber {#%s} exits already. Update imposible for {%s}! ';
-            throw new \InvalidArgumentException(\sprintf($f, $newCode, $oldCode));
+        $newNode = new AccountChartNode();
+        $newNode->setNodeCode($newNumber);
+
+        if ($newNode->equals($node)) {
+            return; // nothing to change.
         }
+
+        $oldNumber = $node->getNodeCode();
+
+        if ($node->getRoot()->isNodeDescendant($newNode)) {
+            $f = 'Account nummber {#%s} exits already. Update imposible for {%s}! ';
+            throw new \InvalidArgumentException(\sprintf($f, $newNumber, $oldNumber));
+        }
+
+        $node->changeCode($newNumber);
     }
 
     /**
@@ -93,7 +101,7 @@ class DefaultAccountChartTree extends AbstractTree
 
             $node->setId($row->getId());
             $node->setNodeName($row->getAccountName());
-            $node->setNodeCode($row->getAccountNumber());
+            $node->setNodeCode($row->getAccountNumber()); // important//
             $node->setNodeDescription($row->getRemarks());
 
             if ($parent_id == null) {

@@ -168,14 +168,16 @@ class BaseChart extends AbstractChart
         // create node
         $chartTree = $this->createChartTree();
         $root = $chartTree->getRoot();
+
         $node = $root->getNodeByCode($account->getAccountNumber());
 
         // try to change code. If ok, go further
-        $chartTree->renameAccountCode($node, $snapshot->getAccountNumber(), $options);
+        $chartTree->changeAccountNumber($node, $snapshot->getAccountNumber(), $options);
 
         $validationService = ChartValidatorFactory::forCreatingAccount($sharedService);
 
         AccountSnapshotAssembler::updateDefaultExcludedFieldsFrom($snapshot, $account);
+
         $this->validateAccount($account, $validationService);
 
         if ($this->hasErrors()) {

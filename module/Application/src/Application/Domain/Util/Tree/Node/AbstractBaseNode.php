@@ -43,14 +43,14 @@ abstract class AbstractBaseNode extends AbstractNode
      * @param AbstractFormatter $formatter
      * @return string
      */
-    public function display(AbstractFormatter $formatter = null)
+    public function display(AbstractFormatter $formatter = null, $level = 0)
     {
         // default formatter
         if ($formatter == null) {
             $formatter = new JsTreeFormatter();
         }
 
-        $results = $formatter->format($this);
+        $results = $formatter->format($this, $level);
         return $results;
     }
 
@@ -196,12 +196,25 @@ abstract class AbstractBaseNode extends AbstractNode
         $node = new GenericNode();
         $node->setNodeName($newName);
 
+        // temporay add into the tree
+        $node->setParent($this);
+        $node->setParentId($this->getId());
+
         if ($this->getRoot()->isNodeDescendant($node)) {
             $f = 'Node {%s} exits already! ';
             throw new \InvalidArgumentException(\sprintf($f, $node->getNodeName()));
         } else {
             $this->setNodeName($newName);
         }
+    }
+
+    public function changeCode($newCode)
+    {
+        if ($newCode == null) {
+            throw new \InvalidArgumentException("Null 'Node Name' argument.");
+        }
+
+        $this->setNodeCode($newCode);
     }
 
     /**

@@ -24,7 +24,7 @@ class AccountChartNode extends GenericNode
             return false;
         }
 
-        return \strtolower(trim($this->getNodeCode())) == \strtolower(trim($other->getNodeCode()));
+        return \strtolower(trim($this->getNodeCode())) === \strtolower(trim($other->getNodeCode()));
     }
 
     public function setNodeCode($nodeCode)

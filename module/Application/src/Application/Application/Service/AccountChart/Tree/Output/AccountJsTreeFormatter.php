@@ -31,29 +31,39 @@ class AccountJsTreeFormatter extends AbstractFormatter
             $f = '%s %s (%s)';
             $t = \sprintf($f, $node->getNodeCode(), $node->getNodeName(), $node->getChildCount() - 1);
 
-            if ($level == 0) {
+            if ($level <= 1) {
 
                 $data_jstree = 'data-jstree=\'{ "opened" : true, "disabled":false}\'';
-                $f = '<span style="color:navy; font-weight: bold;">%s %s (%s)</span>';
+                $f = '<span style="color:navy; font-weight: normal;">%s - %s (%s)</span>';
+                $t = \sprintf($f, $node->getNodeCode(), \strtoupper($node->getNodeName()), $node->getChildCount() - 1);
+            }
+
+            if ($level == 2) {
+
+                $data_jstree = 'data-jstree=\'{ "opened" : true, "disabled":false}\'';
+                $f = '<span style="color:navy; font-weight: normal;">%s - %s (%s)</span>';
                 $t = \sprintf($f, $node->getNodeCode(), $node->getNodeName(), $node->getChildCount() - 1);
             }
 
-            $results = $results . sprintf($format, $data_jstree, $node->getNodeName(), $t);
+            $results = $results . sprintf($format, $data_jstree, $node->getNodeCode(), $t);
 
             $results = $results . sprintf("<ul>\n");
 
             foreach ($node->getChildren() as $child) {
                 // recursive
-                $results = $results . $child->display($this);
+                $results = $results . $child->display($this, $level + 1);
             }
 
             $results = $results . sprintf("</ul>\n");
             $results = $results . sprintf("</li>\n");
         } else {
-            $format = '<li %s id="%s">%s - %s' . "\n";
+            $format = '<li %s id="%s">%s' . "\n";
             $data_jstree = 'data-jstree=\'{ "opened" : false, "type":"demo"}\'';
 
-            $results = $results . sprintf($format, $data_jstree, $node->getNodeCode(), $node->getNodeCode(), $node->getNodeName());
+            $f = '<span style="color:black; font-weight: normal; font-style: italic;">%s - %s</span>';
+            $t = \sprintf($f, $node->getNodeCode(), $node->getNodeName());
+
+            $results = $results . sprintf($format, $data_jstree, $node->getNodeCode(), $t);
         }
 
         return $results;

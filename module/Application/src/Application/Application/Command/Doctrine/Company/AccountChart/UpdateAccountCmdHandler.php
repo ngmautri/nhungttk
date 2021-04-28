@@ -7,7 +7,6 @@ use Application\Application\Command\Options\UpdateMemberCmdOptions;
 use Application\Application\Service\SharedServiceFactory;
 use Application\Domain\Company\AccountChart\AccountSnapshotAssembler;
 use Application\Domain\Company\AccountChart\BaseAccount;
-use Application\Domain\Company\AccountChart\BaseAccountSnapshot;
 use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Shared\Command\CommandInterface;
 use Webmozart\Assert\Assert;
@@ -48,10 +47,6 @@ class UpdateAccountCmdHandler extends AbstractCommandHandler
             $rootEntity = $options->getRootEntity();
             $localEntity = $options->getLocalEntity();
 
-            $snapshot = new BaseAccountSnapshot();
-            AccountSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
-            $this->setOutput($snapshot); // important;
-
             $snapshot = $localEntity->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
@@ -70,10 +65,11 @@ class UpdateAccountCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
-            $memberSnapshort = $rootEntity->updateAccountFrom($localEntity, $newSnapshot, $options, $sharedService);
+            $memberSnapshot = $rootEntity->updateAccountFrom($localEntity, $newSnapshot, $options, $sharedService);
 
-            $snapshot->id = $memberSnapshort->getId();
-            $snapshot->token = $memberSnapshort->getToken();
+            $newSnapshot->id = $memberSnapshot->getId();
+            $newSnapshot->token = $memberSnapshot->getToken();
+
             $this->setOutput($snapshot); // important;
 
             $m = sprintf("[OK] Account #%s updated!", $snapshot->getId());

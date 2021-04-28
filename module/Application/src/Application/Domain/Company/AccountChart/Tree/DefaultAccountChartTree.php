@@ -41,6 +41,19 @@ class DefaultAccountChartTree extends AbstractTree
         }
     }
 
+    public function renameAccountCode(AbstractBaseNode $node, $newCode, CmdOptions $options = null)
+    {
+        Assert::isInstanceOf($node, AbstractBaseNode::class);
+
+        try {
+            $oldCode = $node->getNodeCode();
+            $node->rename($newCode);
+        } catch (Exception $e) {
+            $f = 'Account nummber {#%s} exits already. Update imposible for {%s}! ';
+            throw new \InvalidArgumentException(\sprintf($f, $newCode, $oldCode));
+        }
+    }
+
     /**
      *
      * {@inheritdoc}

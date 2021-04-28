@@ -28,27 +28,26 @@ class AccountFormRender extends AbstractFormRender
         $labelHelper = new FormLabel();
 
         $e = $form->getRootId();
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
-        $this->append($htmlPart);
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
+
+        $e = $form->getMemberId();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
 
         $e = $form->getAccountNumber();
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
-        $this->append($htmlPart);
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
 
         $e = $form->getAccountName();
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
-        $this->append($htmlPart);
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
 
         $e = $form->getParentAccountNumber();
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3');
-        $this->append($htmlPart);
-        $this->append($this->drawSeparator());
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
+
+        $this->drawSeparator();
 
         $e = $form->getDescription();
-        $htmlPart = $this->drawElement($e, $labelHelper, $viewRender, 'col-sm-3');
-        $this->append($htmlPart);
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
 
-        $this->append($this->drawSeparator());
+        $this->drawSeparator();
 
         $this->append($this->addButtons($form, $viewRender));
 

@@ -25,9 +25,20 @@ class AccountJsTreeFormatter extends AbstractFormatter
 
         if (! $node->isLeaf()) {
 
-            $format = '<li id="%s" data-jstree="{}">%s - %s (%s)' . "\n";
+            $format = '<li %s id="%s">%s' . "\n";
+            $data_jstree = 'data-jstree=\'{ "opened" : false, "type":"demo"}\'';
 
-            $results = $results . sprintf($format, $node->getNodeCode(), $node->getNodeCode(), $node->getNodeName(), $node->getChildCount() - 1);
+            $f = '%s %s (%s)';
+            $t = \sprintf($f, $node->getNodeCode(), $node->getNodeName(), $node->getChildCount() - 1);
+
+            if ($level == 0) {
+
+                $data_jstree = 'data-jstree=\'{ "opened" : true, "disabled":false}\'';
+                $f = '<span style="color:navy; font-weight: bold;">%s %s (%s)</span>';
+                $t = \sprintf($f, $node->getNodeCode(), $node->getNodeName(), $node->getChildCount() - 1);
+            }
+
+            $results = $results . sprintf($format, $data_jstree, $node->getNodeName(), $t);
 
             $results = $results . sprintf("<ul>\n");
 
@@ -39,8 +50,10 @@ class AccountJsTreeFormatter extends AbstractFormatter
             $results = $results . sprintf("</ul>\n");
             $results = $results . sprintf("</li>\n");
         } else {
-            $format = '<li id="%s" data-jstree="{}">%s - %s</li>' . "\n";
-            $results = $results . sprintf($format, $node->getNodeCode(), $node->getNodeCode(), $node->getNodeName());
+            $format = '<li %s id="%s">%s - %s' . "\n";
+            $data_jstree = 'data-jstree=\'{ "opened" : false, "type":"demo"}\'';
+
+            $results = $results . sprintf($format, $data_jstree, $node->getNodeCode(), $node->getNodeCode(), $node->getNodeName());
         }
 
         return $results;

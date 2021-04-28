@@ -67,7 +67,14 @@ $('#html1').jstree({
           // so that create works
           "check_callback" : true
         },
-       "plugins" : [ "contextmenu" ],
+       "plugins" : [ "contextmenu","types"],
+
+       "types" : {
+
+	      "demo" : {
+	        "icon" : "fa fa-book"
+	      }
+	    },
 
        "contextmenu":{
            "items": function($node) {
@@ -78,6 +85,8 @@ $('#html1').jstree({
                           "separator_before": false,
                           "separator_after": false,
                           "label": "Add new account",
+                          "title": "Add new account",
+                          "icon": "fa fa-plus",
                           "action": function (obj) {
                            var redirectUrl = "/application/account-chart/add-member?rid=" +rootId+ "&pid="+ $node.id;
                            //alert(redirectUrl);
@@ -85,16 +94,31 @@ $('#html1').jstree({
                          }
                       },
 
+                      "Update Account": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Update Account",
+                          "title": "Update Account",
+                          "icon": "fa fa-edit",
+                          "separator_after": true,
+                          "action": function (obj) {
+                           var redirectUrl = "/application/account-chart/update-member?rid=" +rootId+ "&mid="+ $node.id
+                           //alert(redirectUrl);
+                           window.location = redirectUrl;
+                         }
+                      },
 
-                      'Move Account': {
+
+                     /*  'Move Account': {
                           "separator_before": false,
                           "separator_after": false,
                           "label": "Move Account",
+                          "icon": "fa fa-bars",
                           "action": function (obj) {
                            var redirectUrl = "/application/account-chart/move?n="+$node.id;
                            window.location = redirectUrl;
                          }
-                      },
+                      }, */
 
 
                    /* "Create": {
@@ -109,18 +133,21 @@ $('#html1').jstree({
                        }
                    }, */
 
-                   "Rename": {
+                   /* "Rename": {
                        "separator_before": false,
                        "separator_after": false,
                        "label": "Rename Account",
+                       "icon": "fa fa-edit",
+
                        "action": function (obj) {
                            tree.edit($node);
                        }
-                   },
+                   }, */
                    "Remove": {
                        "separator_before": false,
                        "separator_after": false,
-                       "label": "Remove Account",
+                       "label": "<span style=\"color:red\">Remove Account</span>",
+                       "icon": "fa fa-remove",
                        "action": function (obj) {
                            tree.delete_node($node);
                        }

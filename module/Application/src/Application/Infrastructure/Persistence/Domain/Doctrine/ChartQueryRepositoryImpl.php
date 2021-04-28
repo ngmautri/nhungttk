@@ -1,6 +1,7 @@
 <?php
 namespace Application\Infrastructure\Persistence\Domain\Doctrine;
 
+use Application\Domain\Company\AccountChart\GenericAccount;
 use Application\Domain\Company\AccountChart\Factory\ChartFactory;
 use Application\Domain\Company\AccountChart\Repository\ChartQueryRepositoryInterface;
 use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
@@ -18,6 +19,28 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
  */
 class ChartQueryRepositoryImpl extends AbstractDoctrineRepository implements ChartQueryRepositoryInterface
 {
+
+    const CHART_ENTITY_NAME = "\Application\Entity\AppCoa";
+
+    const ACCOUNT_ENTITY_NAME = "\Application\Entity\AppCoaAccount";
+
+    public function getRootByMemberId($memberId)
+    {
+        $criteria = array(
+            'id' => $memberId
+        );
+
+        $doctrineEntity = $this->doctrineEM->getRepository(self::CHART_ENTITY_NAME)->findOneBy($criteria);
+        if ($doctrineEntity == null) {
+            throw new \InvalidArgumentException("Not Found id" . $memberId);
+        }
+
+        if ($doctrineEntity->getPr() != null) {
+            return $doctrineEntity->getPr()->getId();
+        }
+
+        return null;
+    }
 
     /**
      *
@@ -86,8 +109,8 @@ class ChartQueryRepositoryImpl extends AbstractDoctrineRepository implements Cha
 
                 /**@var AppCoaAccount $localEnityDoctrine ;*/
                 $localEnityDoctrine = $r;
-                $localSnapshot = ChartMapper::createAccountSnapshot($localEnityDoctrine);
-                $collection->add($localSnapshot);
+                $snapshot = ChartMapper::createAccountSnapshot($localEnityDoctrine);
+                $collection->add(GenericAccount::constructFromDB($snapshot));
             }
             return $collection;
         };

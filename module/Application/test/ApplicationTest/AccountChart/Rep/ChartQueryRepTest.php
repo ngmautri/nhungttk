@@ -22,7 +22,7 @@ class ChartQueryRepTest extends PHPUnit_Framework_TestCase
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             $rep = new ChartQueryRepositoryImpl($doctrineEM);
             $result = $rep->getById(13);
-            var_dump($result->createChartTree()->getRoot());
+            var_dump($result->getAccountById(61));
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

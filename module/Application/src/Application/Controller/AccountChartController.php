@@ -5,8 +5,10 @@ use Application\Application\Command\TransactionalCommandHandler;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Command\Doctrine\Company\InsertDepartmentCmdHandler;
 use Application\Application\Command\Doctrine\Company\AccountChart\CreateAccountCmdHandler;
+use Application\Application\Command\Doctrine\Company\AccountChart\UpdateAccountCmdHandler;
 use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Command\Options\CreateMemberCmdOptions;
+use Application\Application\Command\Options\UpdateMemberCmdOptions;
 use Application\Application\Service\AccountChart\Tree\Output\AccountJsTreeFormatter;
 use Application\Application\Service\AccountChart\Tree\Output\PureAccountWithRootForOptionFormatter;
 use Application\Controller\Contracts\EntityCRUDController;
@@ -17,7 +19,6 @@ use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Collection\Export\ExportAsArray;
 use Application\Form\AccountChart\AccountForm;
 use Application\Form\AccountChart\ChartForm;
-use Application\Infrastructure\Persistence\Domain\Doctrine\ChartQueryRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Zend\Stdlib\Hydrator\Reflection;
 use Zend\View\Model\ViewModel;
@@ -100,6 +101,10 @@ class AccountChartController extends EntityCRUDController
              * @var GenericChart $rootEntity
              */
             $rootEntity = $this->getEntityService()->getRootEntityById($id);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
             $snapshot = $rootEntity->makeSnapshot();
             $form->bind($snapshot);
 
@@ -277,6 +282,11 @@ class AccountChartController extends EntityCRUDController
         return $this->redirect()->toUrl($redirectUrl);
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Controller\Contracts\EntityCRUDController::addMemberAction()
+     */
     public function addMemberAction()
     {
         $this->layout($this->getDefaultLayout());
@@ -284,16 +294,16 @@ class AccountChartController extends EntityCRUDController
         $form_action = $this->getBaseUrl() . "/add-member";
         $form_title = "Create Form";
         $action = FormActions::ADD;
-        $viewTemplete = $this->getBaseUrl() . "/add-member";
+        $viewTemplete = $this->getBaseUrl() . "/crud-member";
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
         $prg = $this->prg($form_action, true);
 
-        $form = new AccountForm("acount_create_form");
+        $form = new AccountForm("account_crud_form");
+        $form->setAction($form_action);
         $form->setHydrator(new Reflection());
-        $form->setRedirectUrl('/application/account-chart/list');
         $form->setFormAction($action);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
@@ -305,8 +315,13 @@ class AccountChartController extends EntityCRUDController
 
             $parentCode = $this->params()->fromQuery('pid');
             $rootId = $this->params()->fromQuery('rid');
+            $form->setRedirectUrl(\sprintf("/application/account-chart/view?id=%s", $rootId));
 
             $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
             $root = $rootEntity->createChartTree()->getRoot();
 
             $opts = $root->display(new PureAccountWithRootForOptionFormatter());
@@ -344,11 +359,14 @@ class AccountChartController extends EntityCRUDController
         $notification = null;
         $rootEntityId = $data['coa'];
         $parentCode = $data['parentAccountNumber'];
+        $form->setRedirectUrl(\sprintf("/application/account-chart/view?id=%s", $rootEntityId));
 
-        $rep = new ChartQueryRepositoryImpl($this->getDoctrineEM());
-        $rootEntity = $rep->getById($rootEntityId);
+        $rootEntity = $this->getEntityService()->getRootEntityById($rootEntityId);
 
-        $rootEntity = $rootEntity;
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
         $rootEntityToken = null;
         $version = null;
 
@@ -398,7 +416,153 @@ class AccountChartController extends EntityCRUDController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
 
-        $redirectUrl = $this->getBaseUrl() . "/list";
+        $redirectUrl = \sprintf("/application/account-chart/view?id=%s", $rootEntityId);
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    public function updateMemberAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/update-member";
+        $form_title = "Create Form";
+        $action = FormActions::EDIT;
+        $viewTemplete = $this->getBaseUrl() . "/crud-member";
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $prg = $this->prg($form_action, true);
+
+        $form = new AccountForm("account_crud_form");
+        $form->setAction($form_action);
+        $form->setHydrator(new Reflection());
+        $form->setFormAction($action);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $accountNumber = $this->params()->fromQuery('mid');
+            $rootId = $this->params()->fromQuery('rid');
+            $form->setRedirectUrl(\sprintf("/application/account-chart/view?id=%s", $rootId));
+
+            /**
+             *
+             * @var GenericChart $rootEntity
+             */
+            $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $memberEntity = $rootEntity->getAccountByNumber($accountNumber);
+            if ($memberEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $root = $rootEntity->createChartTree()->getRoot();
+
+            $opts = $root->display(new PureAccountWithRootForOptionFormatter());
+            $form->setAccountOptions($opts);
+            $form->refresh();
+
+            $snapshot = $memberEntity->makeSnapshot();
+            $form->bind($snapshot);
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'parentCode' => $snapshot->getParentAccountNumber(),
+                'redirectUrl' => null,
+                'version' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO(),
+                'form' => $form
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        // POSTING:
+        // ==========================
+        $data = $prg;
+
+        $notification = null;
+
+        $rootId = $data['coa'];
+        $memberId = $data['id'];
+        $form->setRedirectUrl(\sprintf("/application/account-chart/view?id=%s", $rootId));
+
+        $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $memberEntity = $rootEntity->getAccountById($memberId);
+
+        if ($memberEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $entityToken = null;
+        $version = null;
+
+        $options = new UpdateMemberCmdOptions($this->getCompanyVO(), $rootEntity, $memberEntity, $rootId, $entityToken, $version, $this->getUserId(), __METHOD__);
+        $cmdHandler = new UpdateAccountCmdHandler();
+        $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+        $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
+        $cmd->setLogger($this->getLogger());
+
+        try {
+            $cmd->execute();
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+        }
+
+        $notification = $cmd->getNotification();
+        $form->bind($cmd->getOutput());
+
+        if ($notification->hasErrors()) {
+
+            $root = $rootEntity->createChartTree()->getRoot();
+            $opts = $root->display(new PureAccountWithRootForOptionFormatter());
+            $form->setAccountOptions($opts);
+            $form->refresh();
+
+            $form->bind($cmd->getOutput());
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'parentCode' => null,
+                'redirectUrl' => null,
+                'version' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection(),
+                'companyVO' => $this->getCompanyVO(),
+                'form' => $form
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+
+        $redirectUrl = \sprintf("/application/account-chart/view?id=%s", $rootId);
 
         return $this->redirect()->toUrl($redirectUrl);
     }

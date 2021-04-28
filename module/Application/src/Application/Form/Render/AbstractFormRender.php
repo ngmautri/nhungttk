@@ -24,6 +24,11 @@ abstract class AbstractFormRender implements FormRenderInterface
         $this->output = $output;
     }
 
+    public function drawSeparator()
+    {
+        $this->append($this->_drawSeparator());
+    }
+
     abstract function doRendering(GenericForm $form, PhpRenderer $viewRender);
 
     /**
@@ -101,6 +106,28 @@ abstract class AbstractFormRender implements FormRenderInterface
         }
 
         return $div;
+    }
+
+    protected function drawAndAppendElement($e, $labelHelper, $viewRender, $cssClass = 'col-sm-3', $showLabel = true, $otherHtml = null)
+    {
+        $labelHtml = '';
+
+        if ($showLabel) {
+            $labelHtml = $labelHelper->openTag($e);
+            $labelHtml = $labelHtml . \ucwords($this->createLabel($e->getLabel(), $viewRender)) . ":";
+            $labelHtml = $labelHtml . $labelHelper->closeTag();
+        }
+
+        $elementHtml = FormHelperFactory::render($e);
+        $required = $e->getAttribute('required');
+
+        if ($required) {
+            $div = $this->createRequiredDiv($labelHtml, $elementHtml, $cssClass, $otherHtml);
+        } else {
+            $div = $this->createNormalDiv($labelHtml, $elementHtml, $cssClass, $otherHtml);
+        }
+
+        $this->append($div);
     }
 
     protected function createNormalDiv($labelHtml, $elementHtml, $cssClass, $otherHtml = null)
@@ -201,7 +228,7 @@ abstract class AbstractFormRender implements FormRenderInterface
         <i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', $cssClass, $form->getId(), $this->createLabel(Translator::translate("Save"), $viewRender));
     }
 
-    protected function drawSeparator()
+    protected function _drawSeparator()
     {
         return '<hr style="margin: 5pt 1pt 5pt 1pt;">';
     }

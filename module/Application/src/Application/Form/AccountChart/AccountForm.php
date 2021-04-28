@@ -23,7 +23,6 @@ class AccountForm extends GenericForm
         $this->id = $id;
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
-        $this->setAction('/application/account-chart/add-member');
         $this->addRootElement();
         $this->addMemberElement();
     }

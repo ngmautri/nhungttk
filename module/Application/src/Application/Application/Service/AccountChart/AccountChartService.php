@@ -16,8 +16,7 @@ class AccountChartService extends AbstractService implements AccountChartService
     public function getRootEntityById($id, $locale = 'en_EN')
     {
         $rep = new ChartQueryRepositoryImpl($this->getDoctrineEM());
-        $result = $rep->getById($id);
-        return $result;
+        return $rep->getById($id);
     }
 
     public function getRootEntityDetailByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN')

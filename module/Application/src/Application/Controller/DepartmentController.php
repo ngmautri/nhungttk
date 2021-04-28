@@ -82,7 +82,6 @@ class DepartmentController extends AbstractGenericController
                 'departmentName' => $departmentName,
                 'departmentNode' => $departmentNode,
                 'parentName' => null,
-
                 'version' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -169,7 +168,7 @@ class DepartmentController extends AbstractGenericController
 
             $node = $root->getNodeByName($nodeName);
 
-            $this->logInfo($node->getNodeName());
+            // $this->logInfo($node->getNodeName());
 
             $options = new CmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
 

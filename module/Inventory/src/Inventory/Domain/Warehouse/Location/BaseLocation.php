@@ -1,47 +1,33 @@
 <?php
 namespace Inventory\Domain\Warehouse\Location;
 
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class BaseLocation extends AbstractLocation
 {
 
-    public static function createSnapshotProps()
+    public function equals(BaseLocation $other)
     {
-        $baseClass = "Inventory\Domain\Warehouse\BaseLocation";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
+        if ($other == null) {
+            return false;
         }
+
+        return \strtolower(trim($this->getLocationCode())) == \strtolower(trim($other->getLocationCode()));
     }
 
-    public static function createSnapshotBaseProps()
+    /**
+     *
+     * @return \Inventory\Domain\Warehouse\Location\BaseLocationSnapshot
+     */
+    public function makeSnapshot()
     {
-        $baseClass = "Inventory\Domain\Warehouse\BaseLocation";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class != $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
+        $snapshot = new BaseLocationSnapshot();
+        GenericObjectAssembler::updateAllFieldsFrom($snapshot, $this);
+        return $snapshot;
     }
 }

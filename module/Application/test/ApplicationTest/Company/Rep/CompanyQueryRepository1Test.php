@@ -2,9 +2,9 @@
 namespace ApplicationTest\Company\Rep;
 
 use ApplicationTest\Bootstrap;
-use Application\Domain\Company\AccountChart\GenericChart;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Doctrine\ORM\EntityManager;
+use Inventory\Domain\Warehouse\BaseWarehouse;
 use PHPUnit_Framework_TestCase;
 
 class CompanyQueryRepository1Test extends PHPUnit_Framework_TestCase
@@ -30,11 +30,13 @@ class CompanyQueryRepository1Test extends PHPUnit_Framework_TestCase
 
         /**
          *
-         * @var GenericChart $chart
+         * @var BaseWarehouse $wh ;
          */
-        $chart = $results->getLazyAccountChartCollection()->first();
+        $wh = $results->getLazyWarehouseCollection()->first();
 
-        \var_dump($chart->getLazyAccountCollection()->count());
+        \var_dump($wh->createLocationTree()
+            ->getRoot()
+            ->display());
 
         // $root = $chart->createChartTree()->getRoot();
         // echo $root->display();

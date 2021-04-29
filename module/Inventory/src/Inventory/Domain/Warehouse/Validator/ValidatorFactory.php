@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse\Validator;
 
-use Inventory\Domain\Service\SharedService;
+use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Inventory\Domain\Service\WhValidationService;
 use Inventory\Domain\Warehouse\Validator\Contracts\LocationValidatorCollection;
 use Inventory\Domain\Warehouse\Validator\Contracts\WarehouseValidatorCollection;
@@ -10,7 +10,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ValidatorFactory
 {
@@ -23,7 +23,7 @@ class ValidatorFactory
 
     const EDIT_LOCATION = '4';
 
-    public static function create(SharedService $sharedService, $context)
+    public static function create(SharedServiceInterface $sharedService, $context)
     {
         if ($sharedService == null) {
             throw new InvalidArgumentException("SharedService service not found");

@@ -93,98 +93,44 @@ class AccountChartController extends EntityCRUDController
         $form->setFormAction($action);
         $form->refresh();
 
-        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
-            // returned a response to redirect us
-            return $prg;
-        } elseif ($prg === false) {
-            // this wasn't a POST request, but there were no params in the flash messenger
-            // probably this is the first time the form was loaded
+        $id = $this->params()->fromQuery('id');
 
-            $id = $this->params()->fromQuery('id');
-
-            /**
-             *
-             * @var GenericChart $rootEntity
-             */
-            $rootEntity = $this->getEntityService()->getRootEntityById($id);
-            if ($rootEntity == null) {
-                return $this->redirect()->toRoute('not_found');
-            }
-
-            $snapshot = $rootEntity->makeSnapshot();
-            $form->bind($snapshot);
-
-            $viewModel = new ViewModel(array(
-                'errors' => null,
-                'departmentName' => null,
-                'departmentNode' => null,
-                'coaCode' => $id,
-                'redirectUrl' => null,
-                'version' => null,
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'action' => $action,
-                'sharedCollection' => $this->getSharedCollection(),
-                'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId(),
-                'companyVO' => $this->getCompanyVO(),
-                'form' => $form,
-                'jsTree' => $rootEntity->createChartTree()
-                    ->getRoot()
-                    ->display(new AccountJsTreeFormatter()),
-                'rootEntity' => $rootEntity
-            ));
-
-            $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
+        /**
+         *
+         * @var GenericChart $rootEntity
+         */
+        $rootEntity = $this->getEntityService()->getRootEntityById($id);
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
         }
 
-        $notification = null;
-        try {
+        $snapshot = $rootEntity->makeSnapshot();
+        $form->bind($snapshot);
 
-            $data = $prg;
+        $viewModel = new ViewModel(array(
+            'errors' => null,
+            'departmentName' => null,
+            'departmentNode' => null,
+            'coaCode' => $id,
+            'redirectUrl' => null,
+            'version' => null,
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'action' => $action,
+            'sharedCollection' => $this->getSharedCollection(),
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId(),
+            'companyVO' => $this->getCompanyVO(),
+            'form' => $form,
+            'jsTree' => $rootEntity->createChartTree()
+                ->getRoot()
+                ->display(new AccountJsTreeFormatter()),
+            'rootEntity' => $rootEntity
+        ));
 
-            $options = new CmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
-            $cmdHandler = new InsertDepartmentCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
-            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
-            $cmd->setLogger($this->getLogger());
-
-            $cmd->execute();
-        } catch (\Exception $e) {
-            $this->logInfo($e->getMessage());
-        }
-
-        $notification = $cmd->getNotification();
-
-        $form->bind($cmd->getOutput());
-
-        if ($notification->hasErrors()) {
-
-            $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
-                'departmentName' => null,
-                'departmentNode' => null,
-                'parentName' => null,
-                'redirectUrl' => null,
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'action' => $action,
-                'sharedCollection' => $this->getSharedCollection(),
-                'companyVO' => $this->getCompanyVO(),
-                'form' => $form
-            ));
-            $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
-        }
-
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
-
-        $redirectUrl = $this->getBaseUrl() . "/list2";
-
-        return $this->redirect()->toUrl($redirectUrl);
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
     }
 
     public function createAction()
@@ -234,7 +180,9 @@ class AccountChartController extends EntityCRUDController
                 'localCurrencyId' => $this->getLocalCurrencyId(),
                 'defaultWarehouseId' => $this->getDefautWarehouseId(),
                 'companyVO' => $this->getCompanyVO(),
-                'form' => $form
+                'form' => $form,
+                'jsTree' => null,
+                'rootEntity' => null
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -275,7 +223,9 @@ class AccountChartController extends EntityCRUDController
                 'action' => $action,
                 'sharedCollection' => $this->getSharedCollection(),
                 'companyVO' => $this->getCompanyVO(),
-                'form' => $form
+                'form' => $form,
+                'jsTree' => null,
+                'rootEntity' => null
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;

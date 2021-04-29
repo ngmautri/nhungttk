@@ -10,7 +10,7 @@ use Inventory\Domain\Warehouse\Location\LocationSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class WhMapper
 {
@@ -172,6 +172,7 @@ class WhMapper
         $entity->setHasMember($snapshot->hasMember);
         $entity->setUuid($snapshot->uuid);
         $entity->setParentUuid($snapshot->parentUuid);
+        $entity->setParentCode($snapshot->parentCode);
 
         // ============================
         // DATE MAPPING
@@ -241,7 +242,7 @@ class WhMapper
         // Mapping None-Object Field
         // =================================
 
-        $snapshot->locationList = $entity->getLocationList();
+        // $snapshot->locationList = $entity->getLocationList();
 
         $snapshot->id = $entity->getId();
         $snapshot->whCode = $entity->getWhCode();
@@ -351,6 +352,7 @@ class WhMapper
         $snapshot->hasMember = $entity->getHasMember();
         $snapshot->uuid = $entity->getUuid();
         $snapshot->parentUuid = $entity->getParentUuid();
+        $snapshot->parentCode = $entity->getParentCode();
 
         // ============================
         // DATE MAPPING

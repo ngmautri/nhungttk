@@ -7,6 +7,7 @@ use Application\Domain\Service\SharedService;
 use Application\Infrastructure\Persistence\Domain\Doctrine\ChartCmdRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyCmdRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\DepartmentCmdRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\WhCmdRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
@@ -30,6 +31,7 @@ class SharedServiceFactory
         $companyCmdRepository = new CompanyCmdRepositoryImpl($doctrineEM);
         $companyCmdRepository->setChartCmdRepository(new ChartCmdRepositoryImpl($doctrineEM));
         $companyCmdRepository->setDepartmentCmdRepository(new DepartmentCmdRepositoryImpl($doctrineEM));
+        $companyCmdRepository->setWhCmdRepository(new WhCmdRepositoryImpl($doctrineEM));
 
         $postingService = new CompanyPostingService($companyCmdRepository);
         $sharedService = new SharedService($sharedSpecsFactory, $postingService);

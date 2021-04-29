@@ -310,4 +310,13 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
 
         return $rowEntityDoctrine;
     }
+
+    public function removeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {}
+
+    public function storeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {}
+
+    public function storeWholeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {}
 }

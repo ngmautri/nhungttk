@@ -15,7 +15,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRepositoryInterface
 {
@@ -23,6 +23,9 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
     const ROOT_ENTITY_NAME = "\Application\Entity\NmtInventoryWarehouse";
 
     const LOCATION_ENTITY_NAME = "\Application\Entity\NmtInventoryWarehouseLocation";
+
+    public function removeLocation(GenericWarehouse $rootEntity, GenericLocation $localEntity, $isPosting = false)
+    {}
 
     /**
      *
@@ -143,7 +146,7 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
         /**
          *
          * @var \Application\Entity\NmtInventoryWarehouse $entity ;
-         *     
+         *
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(WhCmdRepositoryImpl::ROOT_ENTITY_NAME, $rootSnapshot->getId());

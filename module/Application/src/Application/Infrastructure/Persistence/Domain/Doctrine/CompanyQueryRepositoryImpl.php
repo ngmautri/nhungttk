@@ -4,12 +4,15 @@ namespace Application\Infrastructure\Persistence\Domain\Doctrine;
 use Application\Domain\Company\CompanyQueryRepositoryInterface;
 use Application\Domain\Company\AccountChart\Factory\ChartFactory;
 use Application\Domain\Company\Collection\AccountChartCollection;
+use Application\Domain\Company\Collection\WarehouseCollection;
 use Application\Domain\Company\Factory\CompanyFactory;
 use Application\Domain\Contracts\Repository\SqlFilterInterface;
 use Application\Entity\AppCoa;
 use Application\Entity\AppCoaAccount;
 use Application\Entity\NmtApplicationDepartment;
 use Application\Entity\NmtFinPostingPeriod;
+use Application\Entity\NmtInventoryWarehouse;
+use Application\Entity\NmtInventoryWarehouseLocation;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Application\Infrastructure\Mapper\CompanyMapper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
@@ -17,6 +20,8 @@ use Application\Infrastructure\Persistence\Domain\Doctrine\Helper\CompanyHelper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\ChartMapper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\DepartmentMapper;
 use Doctrine\Common\Collections\ArrayCollection;
+use Inventory\Domain\Warehouse\Factory\WarehouseFactory;
+use Inventory\Infrastructure\Mapper\WhMapper;
 use Webmozart\Assert\Assert;
 
 /**
@@ -55,6 +60,7 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
         $entityRoot->setDepartmentCollectionRef($this->_createDepartmentCollectionRef($id));
         $entityRoot->setAccountChartCollectionRef($this->_createAccountChartCollectionRef($id));
         $entityRoot->setPostingPeriodCollectionRef($this->_createPostingPeriodCollectionRef($id));
+        $entityRoot->setWarehouseCollectionRef($this->_createWarehouseCollectionRef($id));
         return $entityRoot;
     }
 
@@ -135,6 +141,64 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
 
                 // $chart->setAccountCollectionRef($this->_createAccountCollectionRef($chart->getId()));
                 $collection->add($chart);
+            }
+            return $collection;
+        };
+    }
+
+    private function _createWarehouseCollectionRef($id)
+    {
+        return function () use ($id) {
+
+            $criteria = [
+                'company' => $id
+            ];
+            $results = $this->getDoctrineEM()
+                ->getRepository('\Application\Entity\NmtInventoryWarehouse')
+                ->findBy($criteria);
+
+            $collection = new WarehouseCollection();
+
+            if (count($results) == 0) {
+                return $collection;
+            }
+
+            foreach ($results as $r) {
+
+                /**@var NmtInventoryWarehouse $localEnityDoctrine ;*/
+                $localEnityDoctrine = $r;
+                $localSnapshot = WhMapper::createSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+                $wh = WarehouseFactory::contructFromDB($localSnapshot);
+                $wh->setLocationCollectionRef($this->_createLocationCollectionRef($wh->getId()));
+                $collection->add($wh);
+            }
+            return $collection;
+        };
+    }
+
+    private function _createLocationCollectionRef($id)
+    {
+        return function () use ($id) {
+
+            $criteria = [
+                'warehouse' => $id
+            ];
+            $results = $this->getDoctrineEM()
+                ->getRepository('\Application\Entity\NmtInventoryWarehouseLocation')
+                ->findBy($criteria);
+
+            $collection = new ArrayCollection();
+
+            if (count($results) == 0) {
+                return $collection;
+            }
+
+            foreach ($results as $r) {
+
+                /**@var NmtInventoryWarehouseLocation $localEnityDoctrine ;*/
+                $localEnityDoctrine = $r;
+                $localSnapshot = WhMapper::createLocationSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+                $collection->add($localSnapshot);
             }
             return $collection;
         };

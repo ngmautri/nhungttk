@@ -11,6 +11,9 @@ use Application\Domain\Company\Department\Repository\DepartmentCmdRepositoryInte
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Entity\NmtApplicationCompany;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Inventory\Domain\Warehouse\GenericWarehouse;
+use Inventory\Domain\Warehouse\Location\GenericLocation;
+use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
 use InvalidArgumentException;
 
 /**
@@ -25,14 +28,47 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
 
     private $departmentCmdRepository;
 
+    private $whCmdRepository;
+
     const COMPANY_ENTITY_NAME = "\Application\Entity\NmtApplicationCompany";
 
-    public function store(GenericCompany $company)
+    public function storeCompany(GenericCompany $company)
+    {}
+
+    public function store(GenericWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
     {}
 
     // ================================================================
     // Delegation
     // ================================================================
+
+    // Warehouse
+    // +++++++++++++++++++++
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::storeLocation()
+     */
+    public function storeLocation(GenericWarehouse $rootEntity, GenericLocation $localEntity, $isPosting = false)
+    {
+        $this->assertWHRepository();
+        return $this->getWhCmdRepository()->storeLocation($rootEntity, $localEntity);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::removeLocation()
+     */
+    public function removeLocation(GenericWarehouse $rootEntity, GenericLocation $localEntity, $isPosting = false)
+    {
+        $this->assertWHRepository();
+        return $this->getWhCmdRepository()->removeLocation($rootEntity, $localEntity);
+    }
+
+    // Account Chart
+    // +++++++++++++++++++++
     public function storeWholeAccountChart(BaseCompany $rootEntity, BaseChart $localEntity)
     {
         $this->assertChartRepository();
@@ -105,15 +141,18 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
         return $this->getDepartmentCmdRepository()->storeDepartment($rootEntity, $localSnapshot, $isPosting);
     }
 
-    public function storeWarehouse(GenericCompany $company, $warehouse)
-    {}
-
     public function storePostingPeriod(GenericCompany $company)
     {}
 
     // ==============================================
     // SETTER AND GETTER
     // ==============================================
+    private function assertWHRepository()
+    {
+        if ($this->getWhCmdRepository() == null) {
+            throw new InvalidArgumentException("WH repository is not found!");
+        }
+    }
 
     /**
      *
@@ -189,4 +228,40 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     {
         $this->departmentCmdRepository = $departmentCmdRepository;
     }
+
+    /**
+     *
+     * @return \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface
+     */
+    public function getWhCmdRepository()
+    {
+        return $this->whCmdRepository;
+    }
+
+    /**
+     *
+     * @param WhCmdRepositoryInterface $whCmdRepository
+     */
+    public function setWhCmdRepository(WhCmdRepositoryInterface $whCmdRepository)
+    {
+        $this->whCmdRepository = $whCmdRepository;
+    }
+
+    public function storeAll(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {}
+
+    public function remove(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {}
+
+    public function storeWarehouse(GenericWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
+    {}
+
+    public function removeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {}
+
+    public function storeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {}
+
+    public function storeWholeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
+    {}
 }

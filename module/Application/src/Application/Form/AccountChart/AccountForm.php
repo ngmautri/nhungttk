@@ -297,7 +297,15 @@ class AccountForm extends GenericForm
                 ]
             ]
         ]);
+    }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Form\Contracts\GenericForm::addManualElements()
+     */
+    protected function addManualElements()
+    {
         // +++++++++++++++++++++++++++++++++++++++++++
         // MANUAL ELEMENT
         // +++++++++++++++++++++++++++++++++++++++++++

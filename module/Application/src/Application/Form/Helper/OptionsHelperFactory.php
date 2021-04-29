@@ -2,6 +2,7 @@
 namespace Application\Form\Helper;
 
 use Application\Application\DTO\Company\AccountChart\AccountForOptionDTO;
+use Application\Application\DTO\Company\TreeNode\TreeNodeForOptionDTO;
 
 /**
  *
@@ -70,6 +71,29 @@ class OptionsHelperFactory
             $tmp[] = $tmp1;
         }
         // var_dump($tmp);
+        return $tmp;
+    }
+
+    public static function createTreeNodeForOption($list)
+    {
+        if ($list == null) {
+            return null;
+        }
+
+        $tmp = [];
+        foreach ($list as $l) {
+
+            /**
+             *
+             * @var TreeNodeForOptionDTO $l
+             */
+            $tmp1 = [
+                'value' => $l->getNodeCode(),
+                'label' => $l->getNodeShowName()
+            ];
+
+            $tmp[] = $tmp1;
+        }
         return $tmp;
     }
 }

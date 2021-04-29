@@ -96,10 +96,10 @@ class DepartmentForm extends GenericForm
                 ]
             ]
         ]);
+    }
 
-        // MANUAL ELEMENT
-        // +++++++++++++++++++++++++++++++
-
+    protected function addManualElements()
+    {
         $this->add([
             'type' => Checkbox::class,
             'name' => 'isActive',
@@ -164,6 +164,7 @@ class DepartmentForm extends GenericForm
         $this->departmentOptions = $departmentOptions;
     }
 
+    // ========================================================
     // Auto Generated
     // ========================================================
     public function getRemarks()

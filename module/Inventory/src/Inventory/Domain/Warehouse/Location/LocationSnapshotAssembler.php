@@ -1,122 +1,139 @@
 <?php
 namespace Inventory\Domain\Warehouse\Location;
 
-use Inventory\Application\DTO\Warehouse\WarehouseDTO;
-use Inventory\Application\DTO\Warehouse\Location\LocationDTOAssembler;
-use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Application\Application\Contracts\GenericDTOAssembler;
+use Application\Domain\Shared\AbstractDTO;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class LocationSnapshotAssembler
 {
 
-    public static function findMissingPropsInEntity()
+    private static $fields = [
+        "id",
+        "createdOn",
+        "sysNumber",
+        "token",
+        "lastChangeOn",
+        "revisionNo",
+        "remarks",
+        "isSystemLocation",
+        "isReturnLocation",
+        "isScrapLocation",
+        "isRootLocation",
+        "locationName",
+        "locationCode",
+        "parentId",
+        "locationType",
+        "isActive",
+        "isLocked",
+        "path",
+        "pathDepth",
+        "hasMember",
+        "uuid",
+        "createdBy",
+        "lastChangeBy",
+        "warehouse",
+        "parentUuid",
+        "parentCode"
+    ];
+
+    private static $defaultExcludedFields = [
+        "id",
+        "createdOn",
+        "sysNumber",
+        "token",
+        "lastChangeOn",
+        "revisionNo",
+        "isSystemLocation",
+        "isReturnLocation",
+        "isScrapLocation",
+        "isRootLocation",
+        "locationName",
+        "locationCode",
+        "parentId",
+        "locationType",
+        "uuid",
+        "createdBy",
+        "lastChangeBy",
+        "warehouse"
+    ];
+
+    private static $defaultIncludedFields = [
+        "remarks",
+        "locationName",
+        "locationCode",
+        "locationType",
+        "isActive",
+        "isLocked",
+        "parentCode"
+    ];
+
+    // =============================
+    // Update Snapshot from Array
+    // =============================
+    public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $target, $source)
     {
-        $missingProperties = array();
-        $baseObj = new BaseLocation();
-
-        $reflectionClass = new \ReflectionClass($baseObj);
-        $baseProps = $reflectionClass->getProperties();
-
-        $entity = LocationDTOAssembler::getEntity();
-
-        foreach ($baseProps as $property) {
-            $propertyName = $property->getName();
-            if (! property_exists($entity, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, self::$defaultIncludedFields);
     }
 
-    public static function findMissingDBPropsInBase()
+    public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $target, $source)
     {
-        $missingProperties = array();
-
-        $entityProps = LocationDTOAssembler::createDTOProperities();
-        $dto = new BaseLocation();
-
-        foreach ($entityProps as $property) {
-            $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, self::$defaultExcludedFields);
     }
 
-    public static function createProperities()
+    // =============================
+    // Update Object from Snapshot
+    // =============================
+    public static function updateDefaultFieldsFrom($target, AbstractDTO $source)
     {
-        $entity = new LocationSnapshot();
-        $reflectionClass = new \ReflectionClass($entity);
-        $props = $reflectionClass->getProperties();
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "protected $" . $propertyName . ";";
-        }
+        return GenericObjectAssembler::updateIncludedFieldsFrom($target, $source, self::$defaultIncludedFields);
     }
 
-    public static function updateSnapshotFromDTO($snapShot, $dto)
+    public static function updateDefaultExcludedFieldsFrom($target, AbstractDTO $source)
     {
-        if (! $dto instanceof WarehouseDTO || ! $snapShot instanceof WarehouseSnapshot)
-            return null;
+        return GenericObjectAssembler::updateExcludedFieldsFrom($target, $source, self::$defaultExcludedFields);
+    }
 
-        $reflectionClass = new \ReflectionClass($dto);
-        $itemProperites = $reflectionClass->getProperties();
-
-        $excludedProperties = array(
-            "id",
-            "uuid",
-            "token",
-            "checksum",
-            "createdBy",
-            "createdOn",
-            "lastChangeOn",
-            "lastChangeBy",
-            "sysNumber",
-            "company",
-            "location",
-            "revisionNo"
-        );
-
-        $changeableProperties = array(
-            "movementType",
-            "movementDate",
-            "warehouse",
-            "remarks"
-        );
-
-        // $dto->isSparepart;
-
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
-
-                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($dto);
-                }
-            }
-
-            /*
-             * if (property_exists($snapShot, $propertyName) && in_array($propertyName, $changeableProperties)) {
-             *
-             * if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-             * $snapShot->$propertyName = null;
-             * } else {
-             * $snapShot->$propertyName = $property->getValue($dto);
-             * }
-             * }
-             */
+    // ==================================
+    // ===== FOR FORM ELEMENTS
+    // ==================================
+    public static function createFormElementsExclude($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultExcludedFields;
         }
-        return $snapShot;
+        return GenericDTOAssembler::createFormElementsExclude($className, $properties);
+    }
+
+    public static function createFormElementsFor($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFor($className, $properties);
+    }
+
+    // ==================================
+    // ===== FOR FORM GET FUNCION
+    // ==================================
+    public static function createFormElementsFunctionExclude($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultExcludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionExclude($className, $properties);
+    }
+
+    public static function createFormElementsFunctionFor($className, $properties = null)
+    {
+        if ($properties == null) {
+            $properties = self::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionFor($className, $properties);
     }
 }

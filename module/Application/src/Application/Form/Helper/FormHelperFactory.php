@@ -115,8 +115,9 @@ class FormHelperFactory
                 if ($o['value'] == $value) {
                     $o['select'] = true;
                     $options1[] = $o;
+                } else {
+                    $options1[] = $o;
                 }
-                $options1[] = $o;
             }
         }
 

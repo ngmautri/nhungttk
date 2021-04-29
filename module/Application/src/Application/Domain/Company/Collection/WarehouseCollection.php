@@ -1,8 +1,8 @@
 <?php
 namespace Application\Domain\Company\Collection;
 
-use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Util\Collection\GenericCollection;
+use Inventory\Domain\Warehouse\BaseWarehouse;
 
 /**
  *
@@ -12,10 +12,10 @@ use Application\Domain\Util\Collection\GenericCollection;
 class WarehouseCollection extends GenericCollection
 {
 
-    public function isExits(BaseChart $otherElement)
+    public function isExits(BaseWarehouse $otherElement)
     {
         $found = $this->exists(function ($key, $element) use ($otherElement) {
-            return $otherElement->getCoaCode() == $element->getCoaCode();
+            return $otherElement->getWhCode() == $element->getWhCode();
         });
         return $found == false;
     }

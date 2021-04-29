@@ -7,7 +7,7 @@ use Application\Domain\Shared\AggregateRootInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractLocation extends AbstractEntity implements AggregateRootInterface
 {
@@ -62,6 +62,8 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
 
     protected $parentUuid;
 
+    protected $parentCode;
+
     /**
      *
      * @return mixed
@@ -69,24 +71,6 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getParentUuid()
-    {
-        return $this->parentUuid;
-    }
-
-    /**
-     *
-     * @param mixed $parentUuid
-     */
-    public function setParentUuid($parentUuid)
-    {
-        $this->parentUuid = $parentUuid;
     }
 
     /**
@@ -298,9 +282,36 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
 
     /**
      *
+     * @return mixed
+     */
+    public function getParentUuid()
+    {
+        return $this->parentUuid;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getParentCode()
+    {
+        return $this->parentCode;
+    }
+
+    /**
+     *
+     * @param mixed $id
+     */
+    protected function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     *
      * @param mixed $createdOn
      */
-    public function setCreatedOn($createdOn)
+    protected function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
     }
@@ -309,7 +320,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $sysNumber
      */
-    public function setSysNumber($sysNumber)
+    protected function setSysNumber($sysNumber)
     {
         $this->sysNumber = $sysNumber;
     }
@@ -318,7 +329,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $token
      */
-    public function setToken($token)
+    protected function setToken($token)
     {
         $this->token = $token;
     }
@@ -327,7 +338,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $lastChangeOn
      */
-    public function setLastChangeOn($lastChangeOn)
+    protected function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
     }
@@ -336,7 +347,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $revisionNo
      */
-    public function setRevisionNo($revisionNo)
+    protected function setRevisionNo($revisionNo)
     {
         $this->revisionNo = $revisionNo;
     }
@@ -345,7 +356,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $remarks
      */
-    public function setRemarks($remarks)
+    protected function setRemarks($remarks)
     {
         $this->remarks = $remarks;
     }
@@ -354,7 +365,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $isSystemLocation
      */
-    public function setIsSystemLocation($isSystemLocation)
+    protected function setIsSystemLocation($isSystemLocation)
     {
         $this->isSystemLocation = $isSystemLocation;
     }
@@ -363,7 +374,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $isReturnLocation
      */
-    public function setIsReturnLocation($isReturnLocation)
+    protected function setIsReturnLocation($isReturnLocation)
     {
         $this->isReturnLocation = $isReturnLocation;
     }
@@ -372,7 +383,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $isScrapLocation
      */
-    public function setIsScrapLocation($isScrapLocation)
+    protected function setIsScrapLocation($isScrapLocation)
     {
         $this->isScrapLocation = $isScrapLocation;
     }
@@ -381,7 +392,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $isRootLocation
      */
-    public function setIsRootLocation($isRootLocation)
+    protected function setIsRootLocation($isRootLocation)
     {
         $this->isRootLocation = $isRootLocation;
     }
@@ -390,7 +401,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $locationName
      */
-    public function setLocationName($locationName)
+    protected function setLocationName($locationName)
     {
         $this->locationName = $locationName;
     }
@@ -399,7 +410,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $locationCode
      */
-    public function setLocationCode($locationCode)
+    protected function setLocationCode($locationCode)
     {
         $this->locationCode = $locationCode;
     }
@@ -408,7 +419,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $parentId
      */
-    public function setParentId($parentId)
+    protected function setParentId($parentId)
     {
         $this->parentId = $parentId;
     }
@@ -417,7 +428,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $locationType
      */
-    public function setLocationType($locationType)
+    protected function setLocationType($locationType)
     {
         $this->locationType = $locationType;
     }
@@ -426,7 +437,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $isActive
      */
-    public function setIsActive($isActive)
+    protected function setIsActive($isActive)
     {
         $this->isActive = $isActive;
     }
@@ -435,7 +446,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $isLocked
      */
-    public function setIsLocked($isLocked)
+    protected function setIsLocked($isLocked)
     {
         $this->isLocked = $isLocked;
     }
@@ -444,7 +455,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $path
      */
-    public function setPath($path)
+    protected function setPath($path)
     {
         $this->path = $path;
     }
@@ -453,7 +464,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $pathDepth
      */
-    public function setPathDepth($pathDepth)
+    protected function setPathDepth($pathDepth)
     {
         $this->pathDepth = $pathDepth;
     }
@@ -462,7 +473,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $hasMember
      */
-    public function setHasMember($hasMember)
+    protected function setHasMember($hasMember)
     {
         $this->hasMember = $hasMember;
     }
@@ -471,7 +482,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $uuid
      */
-    public function setUuid($uuid)
+    protected function setUuid($uuid)
     {
         $this->uuid = $uuid;
     }
@@ -480,7 +491,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $createdBy
      */
-    public function setCreatedBy($createdBy)
+    protected function setCreatedBy($createdBy)
     {
         $this->createdBy = $createdBy;
     }
@@ -489,7 +500,7 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $lastChangeBy
      */
-    public function setLastChangeBy($lastChangeBy)
+    protected function setLastChangeBy($lastChangeBy)
     {
         $this->lastChangeBy = $lastChangeBy;
     }
@@ -498,8 +509,26 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @param mixed $warehouse
      */
-    public function setWarehouse($warehouse)
+    protected function setWarehouse($warehouse)
     {
         $this->warehouse = $warehouse;
+    }
+
+    /**
+     *
+     * @param mixed $parentUuid
+     */
+    protected function setParentUuid($parentUuid)
+    {
+        $this->parentUuid = $parentUuid;
+    }
+
+    /**
+     *
+     * @param mixed $parentCode
+     */
+    protected function setParentCode($parentCode)
+    {
+        $this->parentCode = $parentCode;
     }
 }

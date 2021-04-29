@@ -94,14 +94,14 @@ class NmtInventoryWarehouseLocation
     /**
      * @var string
      *
-     * @ORM\Column(name="location_name", type="string", length=45, nullable=true)
+     * @ORM\Column(name="location_name", type="string", length=100, nullable=true)
      */
     private $locationName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="location_code", type="string", length=45, nullable=true)
+     * @ORM\Column(name="location_code", type="string", length=60, nullable=true)
      */
     private $locationCode;
 
@@ -167,6 +167,13 @@ class NmtInventoryWarehouseLocation
      * @ORM\Column(name="parent_uuid", type="string", length=36, nullable=true)
      */
     private $parentUuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="parent_code", type="string", length=60, nullable=true)
+     */
+    private $parentCode;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -712,6 +719,30 @@ class NmtInventoryWarehouseLocation
     public function getParentUuid()
     {
         return $this->parentUuid;
+    }
+
+    /**
+     * Set parentCode
+     *
+     * @param string $parentCode
+     *
+     * @return NmtInventoryWarehouseLocation
+     */
+    public function setParentCode($parentCode)
+    {
+        $this->parentCode = $parentCode;
+
+        return $this;
+    }
+
+    /**
+     * Get parentCode
+     *
+     * @return string
+     */
+    public function getParentCode()
+    {
+        return $this->parentCode;
     }
 
     /**

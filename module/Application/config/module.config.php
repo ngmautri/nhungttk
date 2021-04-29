@@ -36,6 +36,8 @@ use Application\Application\Service\Uom\UomGroupService;
 use Application\Application\Service\Uom\UomGroupServiceFactory;
 use Application\Application\Service\Uom\UomService;
 use Application\Application\Service\Uom\UomServiceFactory;
+use Application\Application\Service\Warehouse\WarehouseService;
+use Application\Application\Service\Warehouse\WarehouseServiceFactory;
 use Application\Infrastructure\Doctrine\MessageStoreRepository;
 use Application\Infrastructure\Doctrine\Factory\MessageStoreRepositoryFactory;
 
@@ -119,6 +121,13 @@ return array(
                 'label' => 'Chart of Accounts',
                 'route' => 'application/default',
                 'controller' => 'account-chart',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
+            array(
+                'label' => 'Warehouses',
+                'route' => 'application/default',
+                'controller' => 'warehouse',
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
@@ -361,6 +370,7 @@ return array(
             UomGroupService::class => UomGroupServiceFactory::class,
 
             AccountChartService::class => AccountChartServiceFactory::class,
+            WarehouseService::class => WarehouseServiceFactory::class,
             DefaultAccountChartUpload::class => DefaultAccountChartUploadFactory::class,
 
             CommonCollection::class => CommonCollectionFactory::class,
@@ -431,6 +441,7 @@ return array(
 
             'Application\Controller\Country' => 'Application\Controller\CountryControllerFactory',
             'Application\Controller\AccountChart' => 'Application\Controller\AccountChartControllerFactory',
+            'Application\Controller\Warehouse' => 'Application\Controller\WarehouseControllerFactory',
 
             'Application\Controller\Currency' => 'Application\Controller\CurrencyControllerFactory',
             'Application\Controller\Uom' => 'Application\Controller\UomControllerFactory',

@@ -27,9 +27,12 @@ abstract class GenericForm extends Form
 
     abstract protected function addElements();
 
+    abstract protected function addManualElements();
+
     public function refresh()
     {
         $this->addElements();
+        $this->addManualElements();
     }
 
     protected function addHiddenElement($name, $value)

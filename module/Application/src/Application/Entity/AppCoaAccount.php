@@ -45,7 +45,7 @@ class AppCoaAccount
     /**
      * @var string
      *
-     * @ORM\Column(name="account_name", type="string", length=150, nullable=true)
+     * @ORM\Column(name="account_name", type="string", length=200, nullable=true)
      */
     private $accountName;
 
@@ -192,14 +192,14 @@ class AppCoaAccount
     /**
      * @var string
      *
-     * @ORM\Column(name="account_name_1", type="string", length=150, nullable=true)
+     * @ORM\Column(name="account_name_1", type="string", length=255, nullable=true)
      */
     private $accountName1;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="account_name_2", type="string", length=150, nullable=true)
+     * @ORM\Column(name="account_name_2", type="string", length=200, nullable=true)
      */
     private $accountName2;
 

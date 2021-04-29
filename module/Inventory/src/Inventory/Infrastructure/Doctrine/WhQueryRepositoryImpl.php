@@ -1,7 +1,9 @@
 <?php
 namespace Inventory\Infrastructure\Doctrine;
 
+use Application\Entity\NmtInventoryWarehouseLocation;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Inventory\Domain\Warehouse\Factory\WarehouseFactory;
 use Inventory\Domain\Warehouse\Location\GenericLocation;
 use Inventory\Domain\Warehouse\Repository\WhQueryRepositoryInterface;
@@ -10,7 +12,7 @@ use Inventory\Infrastructure\Mapper\WhMapper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class WhQueryRepositoryImpl extends AbstractDoctrineRepository implements WhQueryRepositoryInterface
 {
@@ -64,12 +66,8 @@ class WhQueryRepositoryImpl extends AbstractDoctrineRepository implements WhQuer
         }
 
         $wh = WarehouseFactory::contructFromDB($snapshot);
+        $wh->setLocationCollectionRef($this->_createLocationCollectionRef($id));
 
-        foreach ($snapshot->getLocationList() as $locationEntity) {
-            $locationSnapshot = WhMapper::createLocationSnapshot($this->doctrineEM, $locationEntity);
-            $location = GenericLocation::makeFromSnapshot($locationSnapshot);
-            $wh->addLocation($location);
-        }
         return $wh;
     }
 
@@ -106,12 +104,37 @@ class WhQueryRepositoryImpl extends AbstractDoctrineRepository implements WhQuer
         }
 
         $wh = WarehouseFactory::contructFromDB($snapshot);
+        $wh->setLocationCollectionRef($this->_createLocationCollectionRef($id));
 
-        foreach ($snapshot->getLocationList() as $locationEntity) {
-            $locationSnapshot = WhMapper::createLocationSnapshot($this->doctrineEM, $locationEntity);
-            $location = GenericLocation::makeFromSnapshot($locationSnapshot);
-            $wh->addLocation($location);
-        }
         return $wh;
+    }
+
+    private function _createLocationCollectionRef($id)
+    {
+        return function () use ($id) {
+
+            $criteria = [
+                'warehouse' => $id
+            ];
+            $results = $this->getDoctrineEM()
+                ->getRepository('\Application\Entity\NmtInventoryWarehouseLocation')
+                ->findBy($criteria);
+
+            $collection = new ArrayCollection();
+
+            if (count($results) == 0) {
+                return $collection;
+            }
+
+            foreach ($results as $r) {
+
+                /**@var NmtInventoryWarehouseLocation $localEnityDoctrine ;*/
+                $localEnityDoctrine = $r;
+                $localSnapshot = WhMapper::createLocationSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+
+                $collection->add(GenericLocation::constructFromDB($localSnapshot));
+            }
+            return $collection;
+        };
     }
 }

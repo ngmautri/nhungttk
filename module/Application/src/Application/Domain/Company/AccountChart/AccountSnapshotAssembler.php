@@ -73,22 +73,22 @@ class AccountSnapshotAssembler
     // =============================
     public static function updateAllFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateAllFieldsFrom($snapShot, $data);
+        return GenericObjectAssembler::updateAllFieldsFrom($data, $snapShot);
     }
 
     public static function updateIncludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($data, $snapShot, $fields);
     }
 
     public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($data, $snapShot, self::$defaultIncludedFields);
     }
 
     public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
     {
-        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
+        return GenericObjectAssembler::updateExcludedFieldsFromArray($data, $snapShot, $fields);
     }
 
     public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)

@@ -130,10 +130,16 @@ class ChartForm extends GenericForm
                 ]
             ]
         ]);
+    }
 
-        // MANUAL ELEMENT
-        // +++++++++++++++++++++++++++++++
-
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Form\Contracts\GenericForm::addManualElements()
+     */
+    protected function addManualElements()
+    { // MANUAL ELEMENT
+      // +++++++++++++++++++++++++++++++
         $this->add([
             'type' => Checkbox::class,
             'name' => 'isActive',

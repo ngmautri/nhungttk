@@ -29,6 +29,24 @@ class AbstractGenericController extends AbstractActionController
 
     protected $company;
 
+    protected function getGETparam($name, $default = null)
+    {
+        if (isset($_GET["$name"])) {
+            return $_GET["$name"];
+        }
+
+        return $default;
+    }
+
+    protected function getPOSTparam($name, $default = null)
+    {
+        if (isset($_POST["$name"])) {
+            return $_POST["$name"];
+        }
+
+        return $default;
+    }
+
     protected function getLocale()
     {
         $session = new Container('locale');

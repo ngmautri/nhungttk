@@ -40,7 +40,7 @@ class AccountJsTreeFormatter extends AbstractFormatter
 
             if ($level == 2) {
 
-                $data_jstree = 'data-jstree=\'{ "opened" : true, "disabled":false}\'';
+                $data_jstree = 'data-jstree=\'{ "opened" : false, "disabled":false}\'';
                 $f = '<span style="color:navy; font-weight: normal;">%s - %s (%s)</span>';
                 $t = \sprintf($f, $node->getNodeCode(), $node->getNodeName(), $node->getChildCount() - 1);
             }

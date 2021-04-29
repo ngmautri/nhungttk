@@ -1,7 +1,7 @@
 <?php
 namespace Application\Domain\Util\Collection\Contracts;
 
-use Application\Domain\Util\Collection\GenericCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -11,6 +11,6 @@ use Application\Domain\Util\Collection\GenericCollection;
 interface ExportInterface
 {
 
-    public function execute(GenericCollection $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null);
+    public function execute(ArrayCollection $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null);
 }
 

@@ -35,10 +35,10 @@ class AccountChartUploadTest extends PHPUnit_Framework_TestCase
             $companyVO = $company->createValueObject();
 
             $rep = new ChartQueryRepositoryImpl($doctrineEM);
-            $chart = $rep->getById(13);
+            $chart = $rep->getById(15);
 
             $rootEntity = $chart;
-            $rootEntityId = 13;
+            $rootEntityId = 15;
             $rootEntityToken = null;
             $version = null;
             $userId = 39;

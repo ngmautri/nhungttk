@@ -2,12 +2,12 @@
 namespace Application\Application\Service\AccountChart\Export;
 
 use Application\Domain\Company\AccountChart\ChartSnapshot;
-use Application\Domain\Util\Collection\GenericCollection;
 use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
 use Application\Domain\Util\Collection\Contracts\FilterInterface;
 use Application\Domain\Util\Collection\Export\AbstractExport;
 use Application\Domain\Util\Collection\Filter\DefaultFilter;
 use Application\Domain\Util\Collection\Formatter\NullFormatter;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -17,7 +17,7 @@ use Application\Domain\Util\Collection\Formatter\NullFormatter;
 class ExportAsGird extends AbstractExport
 {
 
-    public function execute(GenericCollection $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null)
+    public function execute(ArrayCollection $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null)
     {
         if ($collection->isEmpty()) {
             return "Nothing found!";

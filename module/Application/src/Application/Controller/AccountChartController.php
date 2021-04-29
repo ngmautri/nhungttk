@@ -19,9 +19,11 @@ use Application\Domain\Company\AccountChart\GenericChart;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Collection\Export\ExportAsArray;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Form\AccountChart\AccountForm;
 use Application\Form\AccountChart\ChartForm;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
+use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Escaper\Escaper;
 use Zend\Http\Response;
 use Zend\Stdlib\Hydrator\Reflection;
@@ -683,6 +685,52 @@ class AccountChartController extends EntityCRUDController
 
         $a_json_final['data'] = $girdData;
         $a_json_final['totalRecords'] = $chart->count();
+        $a_json_final['curPage'] = $pq_curPage;
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
+
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function accountGirdAction()
+    {
+        $rootId = $this->getGETparam('rid');
+        $pq_curPage = $this->getGETparam('pq_curpage', 1);
+        $pq_rPP = $this->getGETparam('pq_rpp', 100);
+
+        /**
+         *
+         * @var GenericChart $chart ;
+         */
+        $chart = $this->getEntityService()->getRootEntityById($rootId);
+        $accountCollection = $chart->getLazyAccountCollection();
+
+        $total_records = $accountCollection->count();
+        $data = $accountCollection;
+
+        $limit = null;
+        $offset = null;
+
+        if ($total_records > 0) {
+            if ($total_records > $pq_rPP) {
+                $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
+                $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+                $offset = $paginator->getMinInPage() - 1;
+            }
+        }
+
+        $data = new ArrayCollection($accountCollection->slice($offset, $limit));
+
+        $exporter = new ExportAsArray();
+        $girdData = $exporter->execute($data);
+
+        $a_json_final['data'] = $girdData;
+        $a_json_final['totalRecords'] = $total_records;
         $a_json_final['curPage'] = $pq_curPage;
 
         $response = $this->getResponse();

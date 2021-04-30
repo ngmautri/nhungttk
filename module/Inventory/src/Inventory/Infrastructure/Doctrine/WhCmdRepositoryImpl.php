@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Infrastructure\Doctrine;
 
+use Application\Domain\Company\BaseCompany;
 use Application\Entity\NmtInventoryWarehouse;
 use Application\Entity\NmtInventoryWarehouseLocation;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
@@ -26,6 +27,142 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
     const ROOT_ENTITY_NAME = "\Application\Entity\NmtInventoryWarehouse";
 
     const LOCATION_ENTITY_NAME = "\Application\Entity\NmtInventoryWarehouseLocation";
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::storeWholeWarehouse()
+     */
+    public function storeWholeWarehouse(BaseCompany $companyEntity, BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
+    {
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+
+        $isPosting = true;
+        $isFlush = true;
+        $increaseVersion = true;
+        /**
+         *
+         * @var \Application\Entity\NmtInventoryWarehouse $entity
+         */
+        $rootEntityDoctrine = $this->_storeWarehouse($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Something wrong. Doctrine root entity not created");
+        }
+
+        $rootSnapshot->id = $rootEntityDoctrine->getId();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
+
+        $collection = $rootEntity->getLocationCollection();
+        if ($collection->isEmpty()) {
+            return $rootSnapshot;
+        }
+
+        $increaseVersion = false;
+        $isFlush = false;
+        $n = 0;
+
+        foreach ($collection as $localEntity) {
+            $n ++;
+
+            // flush every 500 line, if big doc.
+            if ($n % 500 == 0) {
+                $this->doctrineEM->flush();
+            }
+
+            $localSnapshot = $this->_getLocationSnapshot($localEntity);
+            $this->_storeLocation($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
+        }
+
+        // it is time to flush.
+        $this->doctrineEM->flush();
+
+        return $rootSnapshot;
+    }
+
+    /**
+     *
+     * @de  precated
+     * @param BaseWarehouse $rootEntity
+     * @param boolean $generateSysNumber
+     * @param boolean $isPosting
+     * @throws InvalidArgumentException
+     * @return \Inventory\Domain\Warehouse\WarehouseSnapshot
+     */
+    public function store(BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("Root entity not given.");
+        }
+
+        $locations = $rootEntity->getLocations();
+
+        if (count($locations) == null) {
+            throw new InvalidArgumentException("Document is empty." . __FUNCTION__);
+        }
+
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+
+        $isPosting = true;
+        $isFlush = false;
+        $increaseVersion = true;
+
+        $rootEntityDoctrine = $this->_storeWarehouse($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Root doctrine entity not found.");
+        }
+
+        $increaseVersion = false;
+        $isFlush = false;
+        $n = 0;
+
+        foreach ($locations as $localEntity) {
+            $localSnapshot = $this->_getLocationSnapshot($localEntity);
+            $n ++;
+
+            $this->_storeLocation($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n);
+        }
+
+        // it is time to flush.
+        $this->doctrineEM->flush();
+
+        $rootSnapshot->id = $rootEntityDoctrine->getId();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
+        return $rootSnapshot;
+    }
+
+    /**
+     * store only WH
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::storeWarehouse()
+     */
+    public function storeWarehouse(BaseCompany $companyEntity, BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
+    {
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+
+        $isFlush = true;
+        $increaseVersion = true;
+
+        /**
+         *
+         * @var \Application\Entity\NmtInventoryWarehouse $entity
+         */
+        $entity = $this->_storeWarehouse($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($entity == null) {
+            throw new InvalidArgumentException("Something wrong. Doctrine root entity not created");
+        }
+
+        $rootSnapshot->id = $entity->getId();
+        return $rootSnapshot;
+    }
+
+    public function RemoveWarehouse(BaseCompany $companyEntity, BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
+    {}
 
     /**
      *
@@ -86,81 +223,6 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
         return $localSnapshot;
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::storeWarehouse()
-     */
-    public function storeWarehouse(BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
-    {
-        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
-
-        $isFlush = true;
-        $increaseVersion = true;
-
-        /**
-         *
-         * @var \Application\Entity\NmtInventoryWarehouse $entity
-         */
-        $entity = $this->_storeWarehouse($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
-
-        if ($entity == null) {
-            throw new InvalidArgumentException("Something wrong. Doctrine root entity not created");
-        }
-
-        $rootSnapshot->id = $entity->getId();
-        return $rootSnapshot;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::store()
-     */
-    public function store(BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
-    {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("Root entity not given.");
-        }
-
-        $locations = $rootEntity->getLocations();
-
-        if (count($locations) == null) {
-            throw new InvalidArgumentException("Document is empty." . __FUNCTION__);
-        }
-
-        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
-
-        $isPosting = true;
-        $isFlush = false;
-        $increaseVersion = true;
-
-        $rootEntityDoctrine = $this->_storeWarehouse($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
-
-        if ($rootEntityDoctrine == null) {
-            throw new InvalidArgumentException("Root doctrine entity not found.");
-        }
-
-        $increaseVersion = false;
-        $isFlush = false;
-        $n = 0;
-
-        foreach ($locations as $localEntity) {
-            $localSnapshot = $this->_getLocationSnapshot($localEntity);
-            $n ++;
-
-            $this->_storeLocation($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n);
-        }
-
-        // it is time to flush.
-        $this->doctrineEM->flush();
-
-        $rootSnapshot->id = $rootEntityDoctrine->getId();
-        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
-        $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
-        return $rootSnapshot;
-    }
-
     // ===============================
     private function _storeWarehouse(WarehouseSnapshot $rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion)
     {
@@ -184,7 +246,7 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
                 $entity->setToken($entity->getUuid());
             }
         } else {
-            $rootClassName = WhCmdRepositoryImpl::ROOT_ENTITY_NAME;
+            $rootClassName = self::ROOT_ENTITY_NAME;
             $entity = new $rootClassName();
         }
 
@@ -348,7 +410,6 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
 
             // to update
             $rowEntityDoctrine->setWarehouse($rootEntityDoctrine);
-            $rowEntityDoctrine = new $localClassName();
         }
 
         if ($rowEntityDoctrine == null) {

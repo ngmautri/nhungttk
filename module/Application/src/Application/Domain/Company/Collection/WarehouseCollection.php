@@ -14,9 +14,18 @@ class WarehouseCollection extends GenericCollection
 
     public function isExits(BaseWarehouse $otherElement)
     {
+        if ($this->isEmpty()) {
+            return FALSE;
+        }
+
+        $found = false;
+
         $found = $this->exists(function ($key, $element) use ($otherElement) {
-            return $otherElement->getWhCode() == $element->getWhCode();
+
+            // var_dump($otherElement->equals($element));
+            return $otherElement->equals($element);
         });
-        return $found == false;
+
+        return $found;
     }
 }

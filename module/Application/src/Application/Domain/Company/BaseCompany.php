@@ -4,6 +4,7 @@ namespace Application\Domain\Company;
 use Application\Domain\Company\AccountChart\ChartSnapshot;
 use Application\Domain\Company\AccountChart\Factory\ChartFactory;
 use Application\Domain\Company\Collection\AccountChartCollection;
+use Application\Domain\Company\Collection\WarehouseCollection;
 use Application\Domain\Company\Department\BaseDepartmentSnapshot;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Company\Department\Factory\DepartmentFactory;
@@ -49,11 +50,15 @@ class BaseCompany extends AbstractCompany
         return $vo;
     }
 
+    /**
+     *
+     * @return \Application\Domain\Company\Collection\WarehouseCollection|mixed
+     */
     public function getLazyWarehouseCollection()
     {
         $ref = $this->getWarehouseCollectionRef();
         if (! $ref instanceof Closure) {
-            return new ArrayCollection();
+            return new WarehouseCollection();
         }
 
         $this->warehouseCollection = $ref();

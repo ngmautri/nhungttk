@@ -35,6 +35,12 @@ class WarehouseFormRender extends AbstractFormRender
         $fs_title = \sprintf("<strong>Warehouse: %s</strong>", \strtoupper($e->getValue()));
         $this->append($this->openFieldSetTag("chart_header", $fs_title)); //
 
+        $e = $form->getRootId();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
+
+        $e = $form->getWhCode();
+        $htmlPart = $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
+
         $e = $form->getWhName();
         $htmlPart = $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
 

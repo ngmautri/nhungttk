@@ -4,12 +4,14 @@ namespace Application\Controller;
 use Application\Notification;
 use Application\Application\Command\TransactionalCommandHandler;
 use Application\Application\Command\Doctrine\GenericCommand;
-use Application\Application\Command\Doctrine\Company\InsertDepartmentCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\CreateLocationCmdHandler;
+use Application\Application\Command\Doctrine\Company\Warehouse\CreateWarehouseCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\RemoveLocationCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\UpdateLocationCmdHandler;
+use Application\Application\Command\Doctrine\Company\Warehouse\UpdateWarehouseCmdHandler;
 use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Command\Options\CreateMemberCmdOptions;
+use Application\Application\Command\Options\UpdateEntityCmdOptions;
 use Application\Application\Command\Options\UpdateMemberCmdOptions;
 use Application\Application\Service\Warehouse\Tree\Output\PureWhLocationWithRootForOptionFormatter;
 use Application\Application\Service\Warehouse\Tree\Output\WhLocationJsTreeFormatter;
@@ -186,8 +188,8 @@ class WarehouseController extends EntityCRUDController
 
             $parentName = $this->params()->fromQuery('p');
             $snapshot = new WarehouseSnapshot();
-            $snapshot->setWhCountry($this->getCompanyVO()
-                ->getCountry());
+            $countryId = $this->getCompanyVO()->getCountry();
+            $snapshot->setWhCountry($countryId);
             $form->bind($snapshot);
 
             $viewModel = new ViewModel(array(
@@ -218,7 +220,7 @@ class WarehouseController extends EntityCRUDController
             $data = $prg;
 
             $options = new CmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
-            $cmdHandler = new InsertDepartmentCmdHandler();
+            $cmdHandler = new CreateWarehouseCmdHandler();
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->setLogger($this->getLogger());
@@ -256,7 +258,136 @@ class WarehouseController extends EntityCRUDController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
 
-        $redirectUrl = $this->getBaseUrl() . "/list2";
+        $redirectUrl = $this->getBaseUrl() . "/list";
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    public function updateAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/update";
+        $form_title = "Create Form";
+        $action = FormActions::EDIT;
+        $viewTemplete = $this->getBaseUrl() . "/crud";
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $prg = $this->prg($form_action, true);
+
+        $form = $this->_createRootForm($form_action, $action);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $rootId = $this->params()->fromQuery('id');
+            $form->setRedirectUrl(\sprintf("/application/warehouse/view?id=%s", $rootId));
+
+            /**
+             *
+             * @var GenericWarehouse $rootEntity
+             */
+            $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $snapshot = $rootEntity->makeSnapshot();
+            $form->bind($snapshot);
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+
+                'redirectUrl' => null,
+                'version' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO(),
+                'form' => $form,
+                'jsTree' => $rootEntity->createLocationTree()
+                    ->getRoot()
+                    ->display(new WhLocationJsTreeFormatter()),
+                'rootEntity' => $rootEntity
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        // POSTING:
+        // ==========================
+        $data = $prg;
+
+        $notification = null;
+
+        $rootId = $data['id']; // to update
+        $form->setRedirectUrl(\sprintf("/application/warehouse/view?id=%s", $rootId));
+
+        /**
+         *
+         * @var BaseWarehouse $rootEntity ;
+         */
+        $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $rootEntityToken = null;
+        $version = null;
+
+        $options = new UpdateEntityCmdOptions($this->getCompanyVO(), $rootEntity, $rootId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+        $cmdHandler = new UpdateWarehouseCmdHandler();
+        $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+        $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
+        $cmd->setLogger($this->getLogger());
+
+        try {
+            $cmd->execute();
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+        }
+
+        $notification = $cmd->getNotification();
+        $form->bind($cmd->getOutput());
+
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'parentCode' => null,
+                'redirectUrl' => null,
+                'version' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection(),
+                'companyVO' => $this->getCompanyVO(),
+                'form' => $form,
+                'jsTree' => $rootEntity->createLocationTree()
+                    ->getRoot()
+                    ->display(new WhLocationJsTreeFormatter()),
+                'rootEntity' => $rootEntity
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+
+        $redirectUrl = \sprintf("/application/warehouse/view?id=%s", $rootId);
 
         return $this->redirect()->toUrl($redirectUrl);
     }

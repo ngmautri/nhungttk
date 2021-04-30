@@ -22,7 +22,7 @@ class AccountChartCollection extends GenericCollection
 
         $found = $this->exists(function ($key, $element) use ($otherElement) {
 
-            var_dump($otherElement->equals($element));
+            // var_dump($otherElement->equals($element));
             return $otherElement->equals($element);
         });
 

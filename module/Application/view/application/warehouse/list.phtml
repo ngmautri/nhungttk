@@ -50,9 +50,9 @@ var columns= [
     { title: "Wh Code", dataType: "string", dataIndx: "whCode", align: 'left',minWidth: 100,editable: false},
     { title: "Wh Name", dataType: "string", dataIndx: "whName", align: 'left',minWidth: 150,editable: false},
     { title: "Wh Name", dataType: "string", dataIndx: "whAddress", align: 'left',minWidth: 500,editable: false},
-    { title: "", editable: false, minWidth: 60, sortable: false,
+    { title: "Action", editable: false, minWidth: 150, sortable: false,
         render: function (ui) {
-         return '<button type="button" class="edit_btn">Show </button>';
+         return '<button type="button" class="show_btn">Show </button> <button type="button" class="edit_btn">Edit </button>';
         }
     },
 
@@ -97,7 +97,7 @@ $grid.on('pqgridrefresh pqgridrefreshrow', function () {
     //debugger;
     var $grid = $(this);
 
-    $grid.find("button.edit_btn").button({})
+    $grid.find("button.show_btn").button({})
     .unbind("click")
     .bind("click", function (evt) {
         var $tr = $(this).closest("tr"),
@@ -105,6 +105,17 @@ $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
         recIndx = $grid.pqGrid("option", "dataModel.recIndx");
         redirectUrl="/application/warehouse/view?id="+rowData['id'],
+        window.location.href = redirectUrl;
+    });
+
+    $grid.find("button.edit_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+        var $tr = $(this).closest("tr"),
+        rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+        rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+        recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+        redirectUrl="/application/warehouse/update?id="+rowData['id'],
         window.location.href = redirectUrl;
     });
 

@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse\Repository;
 
+use Application\Domain\Company\BaseCompany;
 use Inventory\Domain\Warehouse\BaseWarehouse;
 use Inventory\Domain\Warehouse\Location\BaseLocation;
 
@@ -12,7 +13,11 @@ use Inventory\Domain\Warehouse\Location\BaseLocation;
 Interface WhCmdRepositoryInterface
 {
 
-    public function storeWarehouse(BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false);
+    public function storeWholeWarehouse(BaseCompany $companyEntity, BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false);
+
+    public function storeWarehouse(BaseCompany $companyEntity, BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false);
+
+    public function RemoveWarehouse(BaseCompany $companyEntity, BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false);
 
     public function storeLocation(BaseWarehouse $rootEntity, BaseLocation $localEntity, $isPosting = false);
 

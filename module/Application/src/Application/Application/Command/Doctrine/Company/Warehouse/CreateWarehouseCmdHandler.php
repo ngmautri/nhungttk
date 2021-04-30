@@ -1,17 +1,15 @@
 <?php
-namespace Application\Application\Command\Doctrine\Company\AccountChart;
+namespace Application\Application\Command\Doctrine\Company\Warehouse;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Service\SharedServiceFactory;
-use Application\Domain\Company\AccountChart\BaseChart;
-use Application\Domain\Company\AccountChart\BaseChartSnapshot;
-use Application\Domain\Company\AccountChart\ChartSnapshot;
-use Application\Domain\Company\AccountChart\ChartSnapshotAssembler;
-use Application\Domain\Company\AccountChart\Factory\ChartFactory;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
+use Inventory\Domain\Warehouse\BaseWarehouseSnapshot;
+use Inventory\Domain\Warehouse\Factory\WarehouseFactory;
 use Webmozart\Assert\Assert;
 
 /**
@@ -19,7 +17,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class CreateChartCmdHandler extends AbstractCommandHandler
+class CreateWarehouseCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -46,24 +44,18 @@ class CreateChartCmdHandler extends AbstractCommandHandler
             $companyEntity = $rep->getById($options->getCompanyVO()
                 ->getId());
 
-            /**
-             *
-             * @var ChartSnapshot $snapshot ;
-             * @var ChartSnapshot $rootSnapshot ;
-             * @var BaseChart $rootEntity ;
-             */
-
-            $snapshot = new BaseChartSnapshot();
-            ChartSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            $snapshot = new BaseWarehouseSnapshot();
+            GenericObjectAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            $this->setOutput($snapshot); // important;
 
             $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
-            $rootEntity = ChartFactory::createFrom($companyEntity, $snapshot, $options, $sharedService);
+            $rootEntity = WarehouseFactory::createFrom($companyEntity, $snapshot, $options, $sharedService);
 
             $snapshot->id = $rootEntity->getId();
             $snapshot->token = $rootEntity->getToken();
             $this->setOutput($snapshot); // important;
 
-            $m = sprintf("[OK] Account chart #%s created!", $snapshot->getId());
+            $m = sprintf("[OK] Warehouse #%s created!", $snapshot->getId());
             $cmd->addSuccess($m);
 
             // event dispatch

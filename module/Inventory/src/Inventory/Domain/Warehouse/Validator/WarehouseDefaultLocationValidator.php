@@ -9,7 +9,7 @@ use Exception;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class WarehouseDefaultLocationValidator extends AbstractValidator implements WarehouseValidatorInterface
 {
@@ -32,10 +32,6 @@ class WarehouseDefaultLocationValidator extends AbstractValidator implements War
             }
 
             if ($rootEntity->getRecycleLocation() == null) {
-                $rootEntity->addError("Can not find recycle location");
-            }
-
-            if ($rootEntity->getReturnLocation() == null) {
                 $rootEntity->addError("Can not find recycle location");
             }
 

@@ -56,6 +56,10 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
         $increaseVersion = true;
         $entity = $this->_storeChart($rootSnapshot, $isPosting, $isFlush, $increaseVersion);
 
+        $rootSnapshot->id = $entity->getId();
+        $rootSnapshot->revisionNo = $entity->getRevisionNo();
+        $rootSnapshot->version = $entity->getVersion();
+
         $accountCollection = $localEntity->getAccountCollection();
         if ($accountCollection->isEmpty()) {
             return $rootSnapshot;
@@ -77,9 +81,7 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
             $this->_storeAccount($entity, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
         }
 
-        $rootSnapshot->id = $entity->getId();
-        $rootSnapshot->revisionNo = $entity->getRevisionNo();
-        $rootSnapshot->version = $entity->getVersion();
+        $this->doctrineEM->flush();
 
         return $rootSnapshot;
     }

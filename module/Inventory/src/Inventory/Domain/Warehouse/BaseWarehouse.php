@@ -13,6 +13,7 @@ use Inventory\Domain\Event\Warehouse\WhLocationCreated;
 use Inventory\Domain\Event\Warehouse\WhLocationRemoved;
 use Inventory\Domain\Event\Warehouse\WhLocationUpdated;
 use Inventory\Domain\Service\Contracts\WhValidationServiceInterface;
+use Inventory\Domain\Warehouse\Contracts\DefaultLocation;
 use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Inventory\Domain\Warehouse\Location\BaseLocationSnapshot;
 use Inventory\Domain\Warehouse\Location\GenericLocation;
@@ -53,6 +54,20 @@ class BaseWarehouse extends AbstractWarehouse
     protected $scrapLocation;
 
     protected $recycleLocation;
+
+    /**
+     *
+     * @param BaseWarehouse $other
+     * @return boolean
+     */
+    public function equals(BaseWarehouse $other)
+    {
+        if ($other == null) {
+            return false;
+        }
+
+        return \strtolower(trim($this->getWhCode())) == \strtolower(trim($other->getWhCode()));
+    }
 
     /**
      *
@@ -251,12 +266,12 @@ class BaseWarehouse extends AbstractWarehouse
             return $this;
         }
 
-        if (count($this->getLocations()) == 0) {
-            $this->addError("Warehouse has no default location");
+        if ($this->getLocationCollection()->isEmpty()) {
+            $this->addError("Warehouse must have no default locations!");
             return $this;
         }
 
-        foreach ($this->getLocations() as $location) {
+        foreach ($this->getLocationCollection() as $location) {
             $this->validateLocation($location, $validationService->getLocationValidators(), $isPosting);
         }
 
@@ -419,15 +434,6 @@ class BaseWarehouse extends AbstractWarehouse
         return null;
     }
 
-    public function equals(BaseWarehouse $other)
-    {
-        if ($other == null) {
-            return false;
-        }
-
-        return \strtolower(trim($this->getCoaCode())) == \strtolower(trim($other->getCoaCode()));
-    }
-
     /**
      *
      * @return \Doctrine\Common\Collections\ArrayCollection
@@ -443,19 +449,14 @@ class BaseWarehouse extends AbstractWarehouse
         return $this->locationCollection;
     }
 
-    /**
-     *
-     * @param GenericLocation $location
-     * @throws InvalidArgumentException
-     */
-    public function addLocation(GenericLocation $location)
+    public function addLocation(BaseLocation $location)
     {
         if (! $location instanceof GenericLocation) {
             throw new InvalidArgumentException("Input not invalid! GenericLocation");
         }
-        $locations = $this->getLocations();
-        $locations[] = $location;
-        $this->locations = $locations;
+        $locations = $this->getLocationCollection();
+        $locations->add($location);
+        $this->locationCollection = $locations;
     }
 
     /**
@@ -473,16 +474,16 @@ class BaseWarehouse extends AbstractWarehouse
      */
     public function getRootLocation()
     {
-        if ($this->getLocations() == null) {
+        if ($this->getLocationCollection()->isEmpty()) {
             return null;
         }
 
-        foreach ($this->getLocations() as $location) {
+        foreach ($this->getLocationCollection() as $location) {
             /**
              *
              * @var BaseLocation $location ;
              */
-            if ($location->getIsRootLocation()) {
+            if ($location->getLocationCode() == DefaultLocation::ROOT_LOCATION) {
                 return $location;
             }
         }
@@ -496,16 +497,16 @@ class BaseWarehouse extends AbstractWarehouse
      */
     public function getReturnLocation()
     {
-        if ($this->getLocations() == null) {
+        if ($this->getLocationCollection()->isEmpty()) {
             return null;
         }
 
-        foreach ($this->getLocations() as $location) {
+        foreach ($this->getLocationCollection() as $location) {
             /**
              *
              * @var BaseLocation $location ;
              */
-            if ($location->getIsReturnLocation()) {
+            if ($location->getLocationCode() == DefaultLocation::RETURN_LOCATION) {
                 return $location;
             }
         }
@@ -519,16 +520,16 @@ class BaseWarehouse extends AbstractWarehouse
      */
     public function getScrapLocation()
     {
-        if ($this->getLocations() == null) {
+        if ($this->getLocationCollection()->isEmpty()) {
             return null;
         }
 
-        foreach ($this->getLocations() as $location) {
+        foreach ($this->getLocationCollection() as $location) {
             /**
              *
              * @var BaseLocation $location ;
              */
-            if ($location->getIsScrapLocation()) {
+            if ($location->getLocationCode() == DefaultLocation::SCRAP_LOCATION) {
                 return $location;
             }
         }
@@ -542,16 +543,16 @@ class BaseWarehouse extends AbstractWarehouse
      */
     public function getRecycleLocation()
     {
-        if ($this->getLocations() == null) {
+        if ($this->getLocationCollection()->isEmpty()) {
             return null;
         }
 
-        foreach ($this->getLocations() as $location) {
+        foreach ($this->getLocationCollection() as $location) {
             /**
              *
              * @var BaseLocation $location ;
              */
-            if ($location->getIsReturnLocation()) {
+            if ($location->getLocationCode() == DefaultLocation::RECYCLE_LOCATION) {
                 return $location;
             }
         }
@@ -578,6 +579,9 @@ class BaseWarehouse extends AbstractWarehouse
      */
     public function getLocationCollection()
     {
+        if ($this->locationCollection == null) {
+            return new ArrayCollection();
+        }
         return $this->locationCollection;
     }
 

@@ -360,11 +360,6 @@ class WarehouseForm extends GenericForm
     // ======================================
     public function getRootId()
     {
-        return $this->get("coa");
-    }
-
-    public function getMemberId()
-    {
         return $this->get("id");
     }
 

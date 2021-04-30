@@ -1,6 +1,7 @@
 <?php
 namespace Application\Controller\Contracts;
 
+use Application\Application\Service\Contracts\FormOptionCollectionInterface;
 use Application\Domain\Company\Factory\CompanyFactory;
 use Application\Domain\EventBus\EventBusServiceInterface;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\CompanyMapper;
@@ -28,6 +29,8 @@ class AbstractGenericController extends AbstractActionController
     protected $cache;
 
     protected $company;
+
+    protected $formOptionCollection;
 
     protected function getGETparam($name, $default = null)
     {
@@ -239,5 +242,32 @@ class AbstractGenericController extends AbstractActionController
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     *
+     * @return \Application\Application\Service\Contracts\FormOptionCollectionInterface
+     */
+    public function getFormOptionCollection()
+    {
+        return $this->formOptionCollection;
+    }
+
+    /**
+     *
+     * @param FormOptionCollectionInterface $formOptionCollection
+     */
+    public function setFormOptionCollection(FormOptionCollectionInterface $formOptionCollection)
+    {
+        $this->formOptionCollection = $formOptionCollection;
+    }
+
+    /**
+     *
+     * @param mixed $company
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
     }
 }

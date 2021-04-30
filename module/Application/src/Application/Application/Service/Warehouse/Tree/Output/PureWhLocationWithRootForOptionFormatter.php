@@ -23,8 +23,8 @@ class PureWhLocationWithRootForOptionFormatter extends AbstractFormatter
         $results = [];
         $txt = '';
         $n = new TreeNodeForOptionDTO();
-        $n->setNodeCode($node->getNodeName());
-        $n->setNodetName($node->getNodeCode());
+        $n->setNodeCode($node->getNodeCode());
+        $n->setNodetName($node->getNodeName());
 
         if (! $node->isLeaf()) {
 

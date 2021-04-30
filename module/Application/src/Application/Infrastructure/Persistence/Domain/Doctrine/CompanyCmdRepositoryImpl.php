@@ -11,8 +11,9 @@ use Application\Domain\Company\Department\Repository\DepartmentCmdRepositoryInte
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Entity\NmtApplicationCompany;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Inventory\Domain\Warehouse\BaseWarehouse;
 use Inventory\Domain\Warehouse\GenericWarehouse;
-use Inventory\Domain\Warehouse\Location\GenericLocation;
+use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
 use InvalidArgumentException;
 
@@ -50,7 +51,7 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::storeLocation()
      */
-    public function storeLocation(GenericWarehouse $rootEntity, GenericLocation $localEntity, $isPosting = false)
+    public function storeLocation(BaseWarehouse $rootEntity, BaseLocation $localEntity, $isPosting = false)
     {
         $this->assertWHRepository();
         return $this->getWhCmdRepository()->storeLocation($rootEntity, $localEntity);
@@ -61,7 +62,7 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::removeLocation()
      */
-    public function removeLocation(GenericWarehouse $rootEntity, GenericLocation $localEntity, $isPosting = false)
+    public function removeLocation(BaseWarehouse $rootEntity, BaseLocation $localEntity, $isPosting = false)
     {
         $this->assertWHRepository();
         return $this->getWhCmdRepository()->removeLocation($rootEntity, $localEntity);
@@ -253,7 +254,7 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     public function remove(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)
     {}
 
-    public function storeWarehouse(GenericWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
+    public function storeWarehouse(BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
     {}
 
     public function removeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false)

@@ -38,14 +38,13 @@ echo $form->renderForView($this, new WarehouseFormRender());
             <div class="col-md-6">
                <div id="gird_div" style="margin: 1px; font-size: 9pt"></div>
             </div>
-
             <div class="col-md-6">
                <div>
                   <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('open_all');">Expand all </a>
                   &nbsp;|&nbsp;
                   <a style="color: #0080ff;" href="javascript:;" onclick="$('#html1').jstree('close_all');">Collapse all </a>
                   <div style="font-size: 10pt" id="html1" class="demo">
-                             <ul>
+                     <ul>
    <?php
 echo $jsTree?>
 </ul>
@@ -64,14 +63,13 @@ echo $jsTree?>
                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id="b_modal_sm_body">
-               <h5>#<?php
-
-            echo $this->translate('Location will be removed!');
+               <h5><?php
+            echo $this->translate("Location  will be removed...");
             ?></h5>
                <div class="alert alert-warning">
                   <strong>[Info]</strong> <?php
 
-                echo $this->translate('Remove can not be recalled!');
+                echo $this->translate('This can not be recalled!');
                 ?>
                <!-- Journal Entry will be created. <br>- Warehouse Journal will be
                created.
@@ -110,16 +108,33 @@ function doRemovingNode() {
   //alert(data.node.parent +  data.node.id  +  data.node.text );
     $('#b_modal_no_header').modal();
 
-    //alert(node_to_remove + rootId);
+  //alert(node_to_remove + rootId);
 
-     $.post("/application/warehouse/remove-member", {
-        rid : rootId,
-        mid: node_to_remove
 
-    }, function(data, status) {
-       //alert(data);
-       window.location = redirectUrl;
-    });
+  $.ajax({
+      type: 'POST',
+      url: '/application/warehouse/remove-member',
+      data: {rid : rootId, mid: node_to_remove},
+      success: function(data){
+	     window.location = redirectUrl;
+      },
+      error: function(xhr, textStatus, error){
+
+
+	     $('#confirm_remove_node').hide();
+	     $('#b_modal_no_header').modal().hide();
+	     //
+         //$("#b_modal_no_header").text(xhr.responseText).show();
+    	 //$("#b_modal_no_header").delay(5000).fadeOut(500);
+
+         //alert(xhr.responseText);
+          console.log(xhr.statusText);
+          console.log(textStatus);
+          console.log(error);
+          window.location = redirectUrl;
+      }
+   });
+
 }
 
 
@@ -133,9 +148,23 @@ $('#html1').jstree({
 
        "types" : {
 
-	      "demo" : {
-	        "icon" : "fa fa-book"
-	      }
+
+	      "default" : {
+	        "icon" : "fa fa-list"
+	      },
+
+	      "root" : {
+	        "icon" : "fa fa-cube fa-lg"
+	      },
+
+
+	      "recycle" : {
+		        "icon" : "fa fa-recycle fa-lg"
+		      },
+
+		  "trash" : {
+			   "icon" : "fa fa-trash fa-lg"
+		  }
 	    },
 
        "contextmenu":{
@@ -263,8 +292,8 @@ $("#html1").on("click", ".jstree-anchor", function(e) {
 //================
 
 var columns= [
-    { title: "Location Code", dataType: "string", dataIndx: "locationCode", align: 'left',minWidth: 150,editable: false},
-    { title: "Location Name", dataType: "string", dataIndx: "locationName", align: 'left',minWidth: 400,editable: false},
+    { title: "Location Code", dataType: "string", dataIndx: "locationCode", align: 'left',minWidth: 100,editable: false},
+    { title: "Location Name", dataType: "string", dataIndx: "locationName", align: 'left',minWidth: 300,editable: false},
 
      { title: "", editable: false, minWidth: 60, sortable: false,
         render: function (ui) {
@@ -292,8 +321,8 @@ var obj = {
    resizable: true,
    dataModel: dataModel,
    colModel: columns,
-   height: $(window).height()-400,
-   width: '95%',
+   height: $(window).height()-450,
+   width: 600,
    hoverMode: 'row',
    selectionModel: { type: 'row' },
    showTop: true,

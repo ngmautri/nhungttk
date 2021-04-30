@@ -1,8 +1,8 @@
 <?php
 namespace Inventory\Domain\Warehouse\Repository;
 
-use Inventory\Domain\Warehouse\GenericWarehouse;
-use Inventory\Domain\Warehouse\Location\GenericLocation;
+use Inventory\Domain\Warehouse\BaseWarehouse;
+use Inventory\Domain\Warehouse\Location\BaseLocation;
 
 /**
  *
@@ -12,9 +12,9 @@ use Inventory\Domain\Warehouse\Location\GenericLocation;
 Interface WhCmdRepositoryInterface
 {
 
-    public function storeWarehouse(GenericWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false);
+    public function storeWarehouse(BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false);
 
-    public function storeLocation(GenericWarehouse $rootEntity, GenericLocation $localEntity, $isPosting = false);
+    public function storeLocation(BaseWarehouse $rootEntity, BaseLocation $localEntity, $isPosting = false);
 
-    public function removeLocation(GenericWarehouse $rootEntity, GenericLocation $localEntity, $isPosting = false);
+    public function removeLocation(BaseWarehouse $rootEntity, BaseLocation $localEntity, $isPosting = false);
 }

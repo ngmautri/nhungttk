@@ -1,13 +1,13 @@
 <?php
-namespace Application\Application\Command\Doctrine\Company\AccountChart;
+namespace Application\Application\Command\Doctrine\Company\Warehouse;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Application\Command\Options\UpdateMemberCmdOptions;
 use Application\Application\Service\SharedServiceFactory;
-use Application\Domain\Company\AccountChart\BaseAccount;
-use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Shared\Command\CommandInterface;
+use Inventory\Domain\Warehouse\BaseWarehouse;
+use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Webmozart\Assert\Assert;
 
 /**
@@ -15,7 +15,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class RemoveAccountCmdHandler extends AbstractCommandHandler
+class RemoveLocationCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -39,20 +39,24 @@ class RemoveAccountCmdHandler extends AbstractCommandHandler
 
             /**
              *
-             * @var BaseChart $rootEntity ;
-             * @var BaseAccount $localEntity ;
+             * @var BaseWarehouse $rootEntity ;
+             * @var BaseLocation $localEntity ;
              */
             $rootEntity = $options->getRootEntity();
             $localEntity = $options->getLocalEntity();
 
             $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
-            $rootEntity->removeAccount($localEntity, $options, $sharedService);
+            $rootEntity->removeLocation($localEntity, $options, $sharedService);
 
             // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+
+            $m = sprintf("[OK] WH Location #%s removed!", $localEntity->getId());
+            $cmd->addSuccess($m);
+
             // ================
         } catch (\Exception $e) {
 

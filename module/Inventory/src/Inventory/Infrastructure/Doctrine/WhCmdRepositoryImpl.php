@@ -2,9 +2,12 @@
 namespace Inventory\Infrastructure\Doctrine;
 
 use Application\Entity\NmtInventoryWarehouse;
+use Application\Entity\NmtInventoryWarehouseLocation;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Inventory\Domain\Warehouse\BaseWarehouse;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Inventory\Domain\Warehouse\Location\BaseLocationSnapshot;
 use Inventory\Domain\Warehouse\Location\GenericLocation;
 use Inventory\Domain\Warehouse\Location\LocationSnapshot;
@@ -24,15 +27,36 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
 
     const LOCATION_ENTITY_NAME = "\Application\Entity\NmtInventoryWarehouseLocation";
 
-    public function removeLocation(GenericWarehouse $rootEntity, GenericLocation $localEntity, $isPosting = false)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::removeLocation()
+     */
+    public function removeLocation(BaseWarehouse $rootEntity, BaseLocation $localEntity, $isPosting = false)
+    {
+        $rootEntityDoctrine = $this->assertAndReturnWarehouse($rootEntity);
+
+        $localSnapshot = $this->_getLocationSnapshot($localEntity);
+        $rowEntityDoctrine = $this->assertAndReturnLocation($rootEntityDoctrine, $localSnapshot);
+
+        $isFlush = true;
+
+        // remove row.
+        $this->getDoctrineEM()->remove($rowEntityDoctrine);
+
+        if ($isFlush) {
+            $this->doctrineEM->flush();
+        }
+
+        return true;
+    }
 
     /**
      *
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::storeLocation()
      */
-    public function storeLocation(GenericWarehouse $rootEntity, GenericLocation $localEntity, $isPosting = false)
+    public function storeLocation(BaseWarehouse $rootEntity, BaseLocation $localEntity, $isPosting = false)
     {
         if (! $rootEntity instanceof GenericWarehouse) {
             throw new InvalidArgumentException("Root entity GenericWarehouse not given.");
@@ -67,7 +91,7 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::storeWarehouse()
      */
-    public function storeWarehouse(GenericWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
+    public function storeWarehouse(BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
         $rootSnapshot = $this->_getRootSnapshot($rootEntity);
 
@@ -93,7 +117,7 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface::store()
      */
-    public function store(GenericWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
+    public function store(BaseWarehouse $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
         if ($rootEntity == null) {
             throw new InvalidArgumentException("Root entity not given.");
@@ -137,6 +161,7 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
         return $rootSnapshot;
     }
 
+    // ===============================
     private function _storeWarehouse(WarehouseSnapshot $rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion)
     {
         if ($rootSnapshot == null) {
@@ -186,48 +211,19 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
         return $entity;
     }
 
-    private function _storeLocation($rootEntityDoctrine, BaseLocationSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
+    /**
+     *
+     * @param NmtInventoryWarehouse $rootEntityDoctrine
+     * @param BaseLocationSnapshot $localSnapshot
+     * @param boolean $isPosting
+     * @param boolean $isFlush
+     * @param boolean $increaseVersion
+     * @param int $n
+     * @return NULL|\Application\Entity\NmtInventoryWarehouseLocation
+     */
+    private function _storeLocation(NmtInventoryWarehouse $rootEntityDoctrine, BaseLocationSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
     {
-        if (! $rootEntityDoctrine instanceof NmtInventoryWarehouse) {
-            throw new InvalidArgumentException("Doctrine root (NmtInventoryWarehouse) not given!");
-        }
-
-        if ($localSnapshot == null) {
-            throw new InvalidArgumentException("Row snapshot is not given!");
-        }
-
-        /**
-         *
-         * @var \Application\Entity\NmtInventoryWarehouseLocation $rowEntityDoctrine ;
-         */
-
-        if ($localSnapshot->getId() > 0) {
-
-            $rowEntityDoctrine = $this->doctrineEM->find(WhCmdRepositoryImpl::LOCATION_ENTITY_NAME, $localSnapshot->getId());
-
-            if ($rowEntityDoctrine == null) {
-                throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localSnapshot->getId()));
-            }
-
-            // update
-            if ($rowEntityDoctrine->getWarehouse() == null) {
-                throw new InvalidArgumentException("Doctrine row entity is not valid");
-            }
-            // update
-            if (! $rowEntityDoctrine->getWarehouse()->getId() == $rootEntityDoctrine->getId()) {
-                throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getQo()->getId(), $rootEntityDoctrine->getId()));
-            }
-        } else {
-            $localClassName = WhCmdRepositoryImpl::LOCATION_ENTITY_NAME;
-            $rowEntityDoctrine = new $localClassName();
-
-            /**
-             *
-             * @todo: To update.
-             */
-            $rowEntityDoctrine->setWarehouse($rootEntityDoctrine);
-        }
-
+        $rowEntityDoctrine = $this->assertAndReturnLocation($rootEntityDoctrine, $localSnapshot);
         $rowEntityDoctrine = WhMapper::mapLocationSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
 
         $this->doctrineEM->persist($rowEntityDoctrine);
@@ -275,22 +271,90 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
      * @throws InvalidArgumentException
      * @return \Inventory\Domain\Warehouse\Location\LocationSnapshot
      */
-    private function _getLocationSnapshot(GenericLocation $localEntity)
+    private function _getLocationSnapshot(BaseLocation $localEntity)
     {
-        if (! $localEntity instanceof GenericLocation) {
+        if (! $localEntity instanceof BaseLocation) {
             throw new InvalidArgumentException("Local entity not given!");
         }
 
-        /**
-         *
-         * @todo
-         * @var LocationSnapshot $localSnapshot ;
-         */
         $localSnapshot = $localEntity->makeSnapshot();
         if ($localSnapshot == null) {
             throw new InvalidArgumentException("Root snapshot not created!");
         }
 
         return $localSnapshot;
+    }
+
+    private function assertAndReturnWarehouse(BaseWarehouse $rootEntity)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("BaseWarehouse not given.");
+        }
+
+        /**
+         *
+         * @var NmtInventoryWarehouse $rootEntityDoctrine ;
+         */
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
+        if (! $rootEntityDoctrine instanceof NmtInventoryWarehouse) {
+            throw new InvalidArgumentException("Warehouse entity not found!");
+        }
+
+        return $rootEntityDoctrine;
+    }
+
+    /**
+     *
+     * @param NmtInventoryWarehouse $rootEntityDoctrine
+     * @param BaseLocationSnapshot $localSnapshot
+     * @throws InvalidArgumentException
+     * @return \Application\Entity\NmtInventoryWarehouseLocation
+     */
+    private function assertAndReturnLocation(NmtInventoryWarehouse $rootEntityDoctrine, BaseLocationSnapshot $localSnapshot)
+    {
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException(sprintf("NmtInventoryWarehouse not found! #%s", ""));
+        }
+        if ($localSnapshot == null) {
+            throw new InvalidArgumentException(sprintf("LocationSnapshot snapshot not found! #%s", ""));
+        }
+
+        $rowEntityDoctrine = null;
+
+        if ($localSnapshot->getId() > 0) {
+
+            /**
+             *
+             * @var NmtInventoryWarehouseLocation $rowEntityDoctrine ;
+             */
+            $rowEntityDoctrine = $this->doctrineEM->find(self::LOCATION_ENTITY_NAME, $localSnapshot->getId());
+
+            if ($rowEntityDoctrine == null) {
+                throw new InvalidArgumentException(sprintf("Location entity not found! #%s", $localSnapshot->getId()));
+            }
+
+            // to update
+            if ($rowEntityDoctrine->getWarehouse() == null) {
+                throw new InvalidArgumentException("Location entity is not valid");
+            }
+
+            // to update
+            if (! $rowEntityDoctrine->getWarehouse()->getId() == $rootEntityDoctrine->getId()) {
+                throw new InvalidArgumentException(sprintf("Location entity is corrupted! %s <> %s ", $rowEntityDoctrine->getGr()->getId(), $rootEntityDoctrine->getId()));
+            }
+        } else {
+            $localClassName = self::LOCATION_ENTITY_NAME;
+            $rowEntityDoctrine = new $localClassName();
+
+            // to update
+            $rowEntityDoctrine->setWarehouse($rootEntityDoctrine);
+            $rowEntityDoctrine = new $localClassName();
+        }
+
+        if ($rowEntityDoctrine == null) {
+            throw new InvalidArgumentException("Can not create Location  entity!");
+        }
+
+        return $rowEntityDoctrine;
     }
 }

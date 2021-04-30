@@ -1,14 +1,14 @@
 <?php
-namespace Application\Application\Command\Doctrine\Company\AccountChart;
+namespace Application\Application\Command\Doctrine\Company\Warehouse;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Application\Command\Options\UpdateMemberCmdOptions;
 use Application\Application\Service\SharedServiceFactory;
-use Application\Domain\Company\AccountChart\AccountSnapshotAssembler;
-use Application\Domain\Company\AccountChart\BaseAccount;
-use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Shared\Command\CommandInterface;
+use Inventory\Domain\Warehouse\BaseWarehouse;
+use Inventory\Domain\Warehouse\Location\BaseLocation;
+use Inventory\Domain\Warehouse\Location\LocationSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
@@ -16,7 +16,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UpdateAccountCmdHandler extends AbstractCommandHandler
+class UpdateLocationCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -41,8 +41,8 @@ class UpdateAccountCmdHandler extends AbstractCommandHandler
 
             /**
              *
-             * @var BaseChart $rootEntity ;
-             * @var BaseAccount $localEntity ;
+             * @var BaseWarehouse $rootEntity ;
+             * @var BaseLocation $localEntity ;
              */
             $rootEntity = $options->getRootEntity();
             $localEntity = $options->getLocalEntity();
@@ -50,7 +50,7 @@ class UpdateAccountCmdHandler extends AbstractCommandHandler
             $snapshot = $localEntity->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $newSnapshot = AccountSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
+            $newSnapshot = LocationSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
 
             $changeLog = $snapshot->compare($newSnapshot);
@@ -65,14 +65,14 @@ class UpdateAccountCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
-            $memberSnapshot = $rootEntity->updateAccountFrom($localEntity, $newSnapshot, $options, $sharedService);
+            $memberSnapshot = $rootEntity->updateLocationFrom($localEntity, $newSnapshot, $options, $params, $sharedService);
 
             $newSnapshot->id = $memberSnapshot->getId();
             $newSnapshot->token = $memberSnapshot->getToken();
 
             $this->setOutput($snapshot); // important;
 
-            $m = sprintf("[OK] Account #%s updated!", $snapshot->getId());
+            $m = sprintf("[OK] WH Location #%s updated!", $snapshot->getId());
             $cmd->addSuccess($m);
 
             // event dispatch

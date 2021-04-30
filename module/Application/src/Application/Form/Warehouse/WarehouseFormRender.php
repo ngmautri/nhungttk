@@ -38,6 +38,15 @@ class WarehouseFormRender extends AbstractFormRender
         $e = $form->getWhName();
         $htmlPart = $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
 
+        $e = $form->getWhAddress();
+        $htmlPart = $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-6');
+
+        $e = $form->getWhCountry();
+        $htmlPart = $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
+
+        $e = $form->getWhController();
+        $htmlPart = $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
+
         $e = $form->getRemarks();
         $htmlPart = $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
 

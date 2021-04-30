@@ -155,15 +155,9 @@ class BaseChart extends AbstractChart
         $chartTree = $this->createChartTree();
         $root = $chartTree->getRoot();
 
-        if ($account->getParentAccountNumber() == null || $account->getParentAccountNumber() == "") {
-            $parent = $root;
-        } else {
-
-            if ($root->getNodeByCode($account->getParentAccountNumber()) != null) {
-                $parent = $root->getNodeByCode($account->getParentAccountNumber());
-            } else {
-                $parent = $root;
-            }
+        $parent = $root;
+        if ($root->getNodeByCode($account->getParentAccountNumber()) != null) {
+            $parent = $root->getNodeByCode($account->getParentAccountNumber());
         }
 
         $node = new AccountChartNode();
@@ -182,6 +176,7 @@ class BaseChart extends AbstractChart
 
         // $parent->add($node); // adding to tree. If ok, go further
         $chartTree->insertAccount($node, $parent, $options);
+
         $this->clearEvents();
         $this->getAccountCollection()->add($account);
 

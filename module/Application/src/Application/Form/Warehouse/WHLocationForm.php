@@ -69,7 +69,7 @@ class WHLocationForm extends GenericForm
             'attributes' => [
                 'id' => 'locationName',
                 'class' => "form-control input-sm",
-                'required' => FALSE
+                'required' => TRUE
             ],
             'options' => [
                 'label' => Translator::translate('locationName'),
@@ -88,7 +88,7 @@ class WHLocationForm extends GenericForm
             'attributes' => [
                 'id' => 'locationCode',
                 'class' => "form-control input-sm",
-                'required' => FALSE
+                'required' => TRUE
             ],
             'options' => [
                 'label' => Translator::translate('locationCode'),

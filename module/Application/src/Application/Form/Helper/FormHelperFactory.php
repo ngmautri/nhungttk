@@ -112,6 +112,7 @@ class FormHelperFactory
         if (count($options) > 0) {
             foreach ($options as $o) {
 
+                // echo $o['value'] . "= $value ";
                 if ($o['value'] == $value) {
                     $o['select'] = true;
                     $options1[] = $o;

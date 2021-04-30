@@ -5,27 +5,26 @@ use Application\Notification;
 use Application\Application\Command\TransactionalCommandHandler;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Command\Doctrine\Company\InsertDepartmentCmdHandler;
-use Application\Application\Command\Doctrine\Company\AccountChart\RemoveAccountCmdHandler;
-use Application\Application\Command\Doctrine\Company\AccountChart\UpdateAccountCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\CreateLocationCmdHandler;
+use Application\Application\Command\Doctrine\Company\Warehouse\RemoveLocationCmdHandler;
+use Application\Application\Command\Doctrine\Company\Warehouse\UpdateLocationCmdHandler;
 use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Command\Options\CreateMemberCmdOptions;
 use Application\Application\Command\Options\UpdateMemberCmdOptions;
-use Application\Application\Service\AccountChart\Tree\Output\PureAccountWithRootForOptionFormatter;
 use Application\Application\Service\Warehouse\Tree\Output\PureWhLocationWithRootForOptionFormatter;
 use Application\Application\Service\Warehouse\Tree\Output\WhLocationJsTreeFormatter;
 use Application\Controller\Contracts\EntityCRUDController;
-use Application\Domain\Company\AccountChart\GenericChart;
-use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Collection\Export\ExportAsArray;
 use Application\Domain\Util\Pagination\Paginator;
-use Application\Form\AccountChart\ChartForm;
 use Application\Form\Warehouse\WHLocationForm;
 use Application\Form\Warehouse\WarehouseForm;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
+use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
 use Doctrine\Common\Collections\ArrayCollection;
+use Inventory\Domain\Warehouse\BaseWarehouse;
 use Inventory\Domain\Warehouse\GenericWarehouse;
+use Inventory\Domain\Warehouse\WarehouseSnapshot;
 use Inventory\Domain\Warehouse\Location\LocationSnapshot;
 use Zend\Escaper\Escaper;
 use Zend\Http\Response;
@@ -88,13 +87,9 @@ class WarehouseController extends EntityCRUDController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
-        $prg = $this->prg($form_action, true);
+        // $prg = $this->prg($form_action, true);
 
-        $form = new WarehouseForm("wh_create_form");
-        $form->setHydrator(new Reflection());
-        $form->setRedirectUrl('/application/warehouse/list');
-        $form->setFormAction($action);
-        $form->refresh();
+        $form = $this->_createRootForm($form_action, $action);
 
         $id = $this->params()->fromQuery('id');
 
@@ -109,6 +104,7 @@ class WarehouseController extends EntityCRUDController
 
         $snapshot = $rootEntity->makeSnapshot();
         $form->bind($snapshot);
+        $form->disableForm();
 
         $viewModel = new ViewModel(array(
             'errors' => null,
@@ -122,8 +118,6 @@ class WarehouseController extends EntityCRUDController
             'form_title' => $form_title,
             'action' => $action,
             'sharedCollection' => $this->getSharedCollection(),
-            'localCurrencyId' => $this->getLocalCurrencyId(),
-            'defaultWarehouseId' => $this->getDefautWarehouseId(),
             'companyVO' => $this->getCompanyVO(),
             'form' => $form,
             'jsTree' => $rootEntity->createLocationTree()
@@ -134,6 +128,37 @@ class WarehouseController extends EntityCRUDController
 
         $viewModel->setTemplate($viewTemplete);
         return $viewModel;
+    }
+
+    /**
+     *
+     * @param string $action
+     * @return \Application\Form\Warehouse\WarehouseForm
+     */
+    private function _createRootForm($form_action, $action)
+    {
+        $form = new WarehouseForm("wh_create_form");
+        $form->setAction($form_action);
+        $form->setHydrator(new Reflection());
+        $form->setRedirectUrl('/application/warehouse/list');
+        $form->setFormAction($action);
+
+        $filter = new CompanyQuerySqlFilter();
+        $filter->setCompanyId($this->getCompanyId());
+        $collection = $this->getFormOptionCollection();
+        $form->setCountryOptions($collection->getCountryCollection($filter));
+        $form->setUserOptions($collection->getUserCollection($filter));
+        $form->refresh();
+        return $form;
+    }
+
+    private function _createMemberForm($form_action, $action)
+    {
+        $form = new WHLocationForm("wh_location_crud_form");
+        $form->setAction($form_action);
+        $form->setHydrator(new Reflection());
+        $form->setFormAction($action);
+        return $form;
     }
 
     public function createAction()
@@ -150,11 +175,7 @@ class WarehouseController extends EntityCRUDController
 
         $prg = $this->prg($form_action, true);
 
-        $form = new ChartForm("coa_create_form");
-        $form->setHydrator(new Reflection());
-        $form->setRedirectUrl('/application/warehouse/list');
-        $form->setFormAction($action);
-        $form->refresh();
+        $form = $this->_createRootForm($form_action, $action);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -164,8 +185,9 @@ class WarehouseController extends EntityCRUDController
             // probably this is the first time the form was loaded
 
             $parentName = $this->params()->fromQuery('p');
-            $snapshot = new DepartmentSnapshot();
-            $snapshot->setParentName($parentName);
+            $snapshot = new WarehouseSnapshot();
+            $snapshot->setWhCountry($this->getCompanyVO()
+                ->getCountry());
             $form->bind($snapshot);
 
             $viewModel = new ViewModel(array(
@@ -180,8 +202,6 @@ class WarehouseController extends EntityCRUDController
                 'form_title' => $form_title,
                 'action' => $action,
                 'sharedCollection' => $this->getSharedCollection(),
-                'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId(),
                 'companyVO' => $this->getCompanyVO(),
                 'form' => $form,
                 'jsTree' => null,
@@ -260,10 +280,8 @@ class WarehouseController extends EntityCRUDController
 
         $prg = $this->prg($form_action, true);
 
-        $form = new WHLocationForm("wh_location_crud_form");
-        $form->setAction($form_action);
-        $form->setHydrator(new Reflection());
-        $form->setFormAction($action);
+        // FORM
+        $form = $this->_createMemberForm($form_action, $action);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -354,7 +372,7 @@ class WarehouseController extends EntityCRUDController
 
             $root = $rootEntity->createLocationTree()->getRoot();
             $opts = $root->display(new PureWhLocationWithRootForOptionFormatter());
-            $form->setAccountOptions($opts);
+            $form->setLocationOptions($opts);
             $form->refresh();
 
             $snapshot = new LocationSnapshot();
@@ -400,10 +418,7 @@ class WarehouseController extends EntityCRUDController
 
         $prg = $this->prg($form_action, true);
 
-        $form = new WHLocationForm("location_crud_form");
-        $form->setAction($form_action);
-        $form->setHydrator(new Reflection());
-        $form->setFormAction($action);
+        $form = $this->_createMemberForm($form_action, $action);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -465,17 +480,21 @@ class WarehouseController extends EntityCRUDController
 
         $notification = null;
 
-        $rootId = $data['coa'];
+        $rootId = $data['warehouse']; // to update
         $memberId = $data['id'];
-        $form->setRedirectUrl(\sprintf("/application/account-chart/view?id=%s", $rootId));
+        $form->setRedirectUrl(\sprintf("/application/warehouse/view?id=%s", $rootId));
 
+        /**
+         *
+         * @var BaseWarehouse $rootEntity ;
+         */
         $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
 
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
 
-        $memberEntity = $rootEntity->getAccountById($memberId);
+        $memberEntity = $rootEntity->getLocationById($memberId);
 
         if ($memberEntity == null) {
             return $this->redirect()->toRoute('not_found');
@@ -485,7 +504,7 @@ class WarehouseController extends EntityCRUDController
         $version = null;
 
         $options = new UpdateMemberCmdOptions($this->getCompanyVO(), $rootEntity, $memberEntity, $rootId, $entityToken, $version, $this->getUserId(), __METHOD__);
-        $cmdHandler = new UpdateAccountCmdHandler();
+        $cmdHandler = new UpdateLocationCmdHandler();
         $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
         $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
         $cmd->setLogger($this->getLogger());
@@ -501,9 +520,9 @@ class WarehouseController extends EntityCRUDController
 
         if ($notification->hasErrors()) {
 
-            $root = $rootEntity->createChartTree()->getRoot();
-            $opts = $root->display(new PureAccountWithRootForOptionFormatter());
-            $form->setAccountOptions($opts);
+            $root = $rootEntity->createLocationTree()->getRoot();
+            $opts = $root->display(new PureWhLocationWithRootForOptionFormatter());
+            $form->setLocationOptions($opts);
             $form->refresh();
 
             $form->bind($cmd->getOutput());
@@ -527,15 +546,22 @@ class WarehouseController extends EntityCRUDController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
 
-        $redirectUrl = \sprintf("/application/account-chart/view?id=%s", $rootId);
+        $redirectUrl = \sprintf("/application/warehouse/view?id=%s", $rootId);
 
         return $this->redirect()->toUrl($redirectUrl);
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Controller\Contracts\EntityCRUDController::removeMemberAction()
+     */
     public function removeMemberAction()
     {
         $response = $this->getResponse();
         $escaper = new Escaper();
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
 
         try {
 
@@ -544,16 +570,16 @@ class WarehouseController extends EntityCRUDController
 
             /**
              *
-             * @var GenericChart $rootEntity
+             * @var GenericWarehouse $rootEntity
              */
             $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
             if ($rootEntity == null) {
-                throw new \InvalidArgumentException("Account chart [$rootId] not found!");
+                throw new \InvalidArgumentException("WH Location [$rootId] not found!");
             }
 
-            $memberEntity = $rootEntity->getAccountByNumber($memberCode);
+            $memberEntity = $rootEntity->getLocationByCode($memberCode);
             if ($memberEntity == null) {
-                throw new \InvalidArgumentException("Account [$memberCode] not found!");
+                throw new \InvalidArgumentException("WH Location [$memberCode] not found!");
             }
 
             $entityToken = null;
@@ -562,29 +588,43 @@ class WarehouseController extends EntityCRUDController
 
             $options = new UpdateMemberCmdOptions($this->getCompanyVO(), $rootEntity, $memberEntity, $rootId, $entityToken, $version, $this->getUserId(), __METHOD__);
 
-            $cmdHandler = new RemoveAccountCmdHandler();
+            $cmdHandler = new RemoveLocationCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
 
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
             $cmd->execute();
+
+            $this->logInfo($cmd->getNotification()
+                ->successMessage(false));
         } catch (\Exception $e) {
 
+            $this->logInfo($e->getMessage());
             $notification = new Notification();
             $notification->addError($e->getTraceAsString());
+
             $this->logException($e);
 
             $response->setStatusCode(Response::STATUS_CODE_400);
             $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-            $response->setContent(\json_encode("[Failed] Node name not removed.Please see log!"));
+
+            $m = $nmtPlugin->translate($e->getMessage());
+            $response->setContent(\json_encode("[Bad request] " . $m));
+            $this->flashMessenger()->addMessage('[Bad request] ' . $m);
+
             return $response;
         }
 
         $response->setStatusCode(Response::STATUS_CODE_200);
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(\json_encode("[OK] Node removed!"));
+        $response->setContent(\json_encode("[OK] Location Node removed!"));
+        $this->flashMessenger()->addMessage("[OK] Location Node removed!");
         return $response;
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function listAction()
     {
         $this->layout($this->getDefaultLayout());

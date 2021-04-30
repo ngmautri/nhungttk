@@ -73,6 +73,18 @@ class AccountChartController extends EntityCRUDController
     protected function setViewTemplate()
     {}
 
+    private function _createRootForm($form_action, $action)
+    {
+        $form = new ChartForm("coa_create_form");
+        $form->setAction($form_action);
+        $form->setHydrator(new Reflection());
+        $form->setRedirectUrl('/application/warehouse/list');
+        $form->setFormAction($action);
+        $form->refresh();
+
+        return $form;
+    }
+
     public function viewAction()
     {
         $this->layout($this->getDefaultLayout());
@@ -87,11 +99,9 @@ class AccountChartController extends EntityCRUDController
 
         $prg = $this->prg($form_action, true);
 
-        $form = new ChartForm("coa_create_form");
-        $form->setHydrator(new Reflection());
-        $form->setRedirectUrl('/application/account-chart/list');
-        $form->setFormAction($action);
+        $form = $this->_createRootForm($form_action, $action);
         $form->refresh();
+        $form->disableForm();
 
         $id = $this->params()->fromQuery('id');
 
@@ -147,11 +157,7 @@ class AccountChartController extends EntityCRUDController
 
         $prg = $this->prg($form_action, true);
 
-        $form = new ChartForm("coa_create_form");
-        $form->setHydrator(new Reflection());
-        $form->setRedirectUrl('/application/account-chart/list');
-        $form->setFormAction($action);
-        $form->refresh();
+        $form = $this->_createRootForm($form_action, $action);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us

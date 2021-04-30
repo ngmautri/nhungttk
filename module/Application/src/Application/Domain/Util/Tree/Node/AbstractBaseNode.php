@@ -130,6 +130,10 @@ abstract class AbstractBaseNode extends AbstractNode
 
     public function getNodeByCode($code)
     {
+        if ($code == null) {
+            return null;
+        }
+
         $result = new ArrayCollection($this->display(new NodeArrayFormatter()));
 
         if ($result->isEmpty()) {

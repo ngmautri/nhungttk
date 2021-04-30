@@ -1,6 +1,7 @@
 <?php
 namespace Application\Form\Helper;
 
+use Application\Application\DTO\Common\FormOptionDTO;
 use Application\Application\DTO\Company\AccountChart\AccountForOptionDTO;
 use Application\Application\DTO\Company\TreeNode\TreeNodeForOptionDTO;
 
@@ -90,6 +91,29 @@ class OptionsHelperFactory
             $tmp1 = [
                 'value' => $l->getNodeCode(),
                 'label' => $l->getNodeShowName()
+            ];
+
+            $tmp[] = $tmp1;
+        }
+        return $tmp;
+    }
+
+    public static function createValueOptions($list)
+    {
+        if ($list == null) {
+            return null;
+        }
+
+        $tmp = [];
+        foreach ($list as $l) {
+
+            /**
+             *
+             * @var FormOptionDTO $l
+             */
+            $tmp1 = [
+                'value' => $l->getValue(),
+                'label' => $l->getName()
             ];
 
             $tmp[] = $tmp1;

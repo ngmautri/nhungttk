@@ -25,6 +25,32 @@ abstract class GenericForm extends Form
 
     protected $memberId;
 
+    public function disableForm()
+    {
+        $elements = $this->getElements();
+
+        if ($elements == null) {
+            return;
+        }
+
+        foreach ($elements as $e) {
+            $e->setAttribute('disabled', 'disabled');
+        }
+    }
+
+    public function markFormAsReadOnly()
+    {
+        $elements = $this->getElements();
+
+        if ($elements == null) {
+            return;
+        }
+
+        foreach ($elements as $e) {
+            $e->setAttribute('readonly', 'readonly');
+        }
+    }
+
     abstract protected function addElements();
 
     abstract protected function addManualElements();

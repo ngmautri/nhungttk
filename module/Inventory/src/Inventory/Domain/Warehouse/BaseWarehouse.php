@@ -12,7 +12,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Inventory\Domain\Event\Warehouse\WhLocationCreated;
 use Inventory\Domain\Event\Warehouse\WhLocationRemoved;
 use Inventory\Domain\Event\Warehouse\WhLocationUpdated;
-use Inventory\Domain\Service\Contracts\SharedServiceInterface;
 use Inventory\Domain\Service\Contracts\WhValidationServiceInterface;
 use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Inventory\Domain\Warehouse\Location\BaseLocationSnapshot;
@@ -21,6 +20,7 @@ use Inventory\Domain\Warehouse\Location\LocationSnapshot;
 use Inventory\Domain\Warehouse\Location\LocationSnapshotAssembler;
 use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
 use Inventory\Domain\Warehouse\Tree\DefaultLocationTree;
+use Inventory\Domain\Warehouse\Tree\LocationNode;
 use Inventory\Domain\Warehouse\Validator\ValidatorFactory;
 use Inventory\Domain\Warehouse\Validator\Contracts\LocationValidatorCollection;
 use Inventory\Domain\Warehouse\Validator\Contracts\WarehouseValidatorCollection;
@@ -86,6 +86,30 @@ class BaseWarehouse extends AbstractWarehouse
 
         $location = GenericLocation::createFromSnapshot($this, $snapshot);
 
+        // Add to tree, in order to check.
+        // create node
+        $tree = $this->createLocationTree();
+        $root = $tree->getRoot();
+
+        $parent = $root;
+        if ($root->getNodeByCode($location->getParentCode()) != null) {
+            $parent = $root->getNodeByCode($location->getParentCode());
+        }
+
+        $node = new LocationNode();
+
+        $node->setParentCode($snapshot->getParentCode());
+        $node->setParentId($parent->getId());
+
+        $node->setContextObject($snapshot);
+        $node->setId($snapshot->getLocationCode());
+        $node->setNodeCode($snapshot->getLocationCode());
+        $node->setNodeName($snapshot->getLocationName());
+        $node->setParentId($parent->getId());
+
+        // Adding to tree. If ok, go further
+        $tree->insertLocation($node, $parent, $options);
+
         $this->validateLocation($location, $validationService->getLocationValidators());
 
         if ($this->hasErrors()) {
@@ -123,7 +147,18 @@ class BaseWarehouse extends AbstractWarehouse
         return $localSnapshot;
     }
 
-    public function updateLocationFrom(BaseLocation $location, BaseLocationSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
+    /**
+     *
+     * @param BaseLocation $location
+     * @param BaseLocationSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService
+     * @throws InvalidArgumentException
+     * @throws \RuntimeException
+     * @return \Inventory\Domain\Warehouse\Location\LocationSnapshot
+     */
+    public function updateLocationFrom(BaseLocation $location, BaseLocationSnapshot $snapshot, CommandOptions $options, $params, \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService)
     {
         if ($location == null) {
             throw new InvalidArgumentException("BaseLocation not found");
@@ -146,6 +181,13 @@ class BaseWarehouse extends AbstractWarehouse
         $createdBy = $options->getUserId();
         $snapshot->updateSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
+        // try to change code. If ok, go further
+        $tree = $this->createLocationTree();
+        $root = $tree->getRoot();
+
+        $node = $root->getNodeByCode($location->getLocationCode());
+        $tree->changeLocationCode($node, $snapshot->getLocationCode(), $options);
+
         LocationSnapshotAssembler::updateDefaultFieldsFrom($location, $snapshot);
 
         $this->validateLocation($location, $validationService->getLocationValidators());
@@ -159,7 +201,7 @@ class BaseWarehouse extends AbstractWarehouse
         /**
          *
          * @var LocationSnapshot $localSnapshot ;
-         * @var WhCmdRepositoryInterface $rep ;
+         * @var CompanyCmdRepositoryInterface $rep ;
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
@@ -169,7 +211,7 @@ class BaseWarehouse extends AbstractWarehouse
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($this->getId());
         $defaultParams->setTargetToken($this->getToken());
-        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        // $defaultParams->setTargetDocVersion($this->getDocVersion());
         $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
@@ -287,15 +329,26 @@ class BaseWarehouse extends AbstractWarehouse
         return $this;
     }
 
-    public function removeLocation(BaseLocation $localEntity, CommandOptions $options, SharedServiceInterface $sharedService)
+    /**
+     *
+     * @param BaseLocation $localEntity
+     * @param CommandOptions $options
+     * @param \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService
+     * @return \Inventory\Domain\Warehouse\BaseWarehouse
+     */
+    public function removeLocation(BaseLocation $localEntity, CommandOptions $options, \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService)
     {
         Assert::notNull($localEntity, "BaseLocation not found");
         Assert::notNull($options, "Options not founds");
         Assert::notNull($sharedService, "SharedService not found");
 
+        if (\in_array($localEntity->getLocationCode(), \Inventory\Domain\Warehouse\Contracts\DefaultLocation::get())) {
+            throw new \InvalidArgumentException(Translator::translate("Default location can not be changed or removed!"));
+        }
+
         /**
          *
-         * @var WhCmdRepositoryInterface $rep ;
+         * @var CompanyCmdRepositoryInterface $rep ;
          *
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
@@ -318,6 +371,9 @@ class BaseWarehouse extends AbstractWarehouse
 
     public function getLocationById($id)
     {
+        if ($id == null) {
+            return null;
+        }
         $collection = $this->getLazyLocationCollection();
         if ($collection->isEmpty()) {
             return null;
@@ -338,7 +394,12 @@ class BaseWarehouse extends AbstractWarehouse
 
     public function getLocationByCode($number)
     {
+        if ($number == null) {
+            return null;
+        }
+
         $collection = $this->getLazyLocationCollection();
+
         if ($collection->isEmpty()) {
             // throw new \InvalidArgumentException("Location number [$number] not found!");
             return null;

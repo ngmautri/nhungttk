@@ -300,6 +300,10 @@ class WhMapper
             $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
         }
 
+        if ($entity->getWhCountry() !== null) {
+            $snapshot->whCountry = $entity->getWhCountry()->getId();
+        }
+
         if ($entity->getStockkeeper() !== null) {
             $snapshot->stockkeeper = $entity->getStockkeeper()->getId();
         }

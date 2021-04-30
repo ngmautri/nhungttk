@@ -37,6 +37,7 @@ use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImplFactory;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImpl;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImplFactory;
 use Procure\Application\Service\Search\ZendSearch\QR\QrSearchIndexImpl;
+use Procure\Application\Service\Search\ZendSearch\QR\QrSearchIndexImplFactory;
 use Procure\Application\Service\Search\ZendSearch\QR\QrSearchQueryImpl;
 use Procure\Application\Service\Search\ZendSearch\QR\QrSearchQueryImplFactory;
 use Procure\Application\Service\Shared\SharedCmdServiceImpl;
@@ -62,7 +63,6 @@ use Procure\Infrastructure\Persistence\Doctrine\Factory\PoReporterRepositoryImpl
 use Procure\Infrastructure\Persistence\Doctrine\Factory\PrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
-use Procure\Application\Service\Search\ZendSearch\QR\QrSearchIndexImplFactory;
 
 return array(
     'navigation' => array(
@@ -281,6 +281,7 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+
             'procure_navi' => 'Procure\Service\ProcureNavigationFactory', // <-- add this
 
             'Procure\Service\GrListener' => 'Procure\Service\GrListenereFactory',

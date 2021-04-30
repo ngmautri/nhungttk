@@ -2,7 +2,6 @@
 namespace Inventory\Domain\Warehouse\Tree;
 
 use Application\Application\Command\Options\CmdOptions;
-use Application\Domain\Company\AccountChart\Tree\AccountChartNode;
 use Application\Domain\Util\Tree\AbstractTree;
 use Application\Domain\Util\Tree\Node\AbstractBaseNode;
 use Inventory\Domain\Warehouse\BaseWarehouse;
@@ -46,7 +45,7 @@ class DefaultLocationTree extends AbstractTree
     {
         Assert::isInstanceOf($node, AbstractBaseNode::class);
 
-        $newNode = new AccountChartNode();
+        $newNode = new LocationNode();
         $newNode->setNodeCode($newNumber);
 
         if ($newNode->equals($node)) {

@@ -1,8 +1,6 @@
 <?php
 namespace Application\Infrastructure\Persistence\Filter;
 
-use Application\Infrastructure\Persistence\Contracts\SqlFilterInterface;
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com

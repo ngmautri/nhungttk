@@ -32,6 +32,8 @@ use Application\Application\Service\AccountChart\Upload\DefaultAccountChartUploa
 use Application\Application\Service\AccountChart\Upload\DefaultAccountChartUploadFactory;
 use Application\Application\Service\Shared\CommonCollection;
 use Application\Application\Service\Shared\CommonCollectionFactory;
+use Application\Application\Service\Shared\DefaultFormOptionCollection;
+use Application\Application\Service\Shared\DefaultFormOptionCollectionFactory;
 use Application\Application\Service\Uom\UomGroupService;
 use Application\Application\Service\Uom\UomGroupServiceFactory;
 use Application\Application\Service\Uom\UomService;
@@ -40,6 +42,8 @@ use Application\Application\Service\Warehouse\WarehouseService;
 use Application\Application\Service\Warehouse\WarehouseServiceFactory;
 use Application\Infrastructure\Doctrine\MessageStoreRepository;
 use Application\Infrastructure\Doctrine\Factory\MessageStoreRepositoryFactory;
+use Application\Infrastructure\Persistence\Application\Doctrine\AppCollectionRepositoryImpl;
+use Application\Infrastructure\Persistence\Application\Doctrine\Factory\AppCollectionRepositoryImplFactory;
 
 /**
  *
@@ -374,6 +378,9 @@ return array(
             DefaultAccountChartUpload::class => DefaultAccountChartUploadFactory::class,
 
             CommonCollection::class => CommonCollectionFactory::class,
+            DefaultFormOptionCollection::class => DefaultFormOptionCollectionFactory::class,
+
+            AppCollectionRepositoryImpl::class => AppCollectionRepositoryImplFactory::class,
 
             // =============================================================
             // Event Bus Service
@@ -421,7 +428,8 @@ return array(
         'factories' => array(
             'AttachmentPlugin' => 'Application\Controller\Plugin\AttachmentPluginFactory',
             'Nmtplugin' => 'Application\Controller\Plugin\NmtPluginFactory',
-            'sharedCollection' => 'Application\Controller\Plugin\SharedCollectionPluginFactory'
+            'sharedCollection' => 'Application\Controller\Plugin\SharedCollectionPluginFactory',
+            'translate' => 'Application\Controller\Plugin\Translate'
         )
     ),
 

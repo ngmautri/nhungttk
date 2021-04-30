@@ -1,6 +1,7 @@
 <?php
 namespace Application\Controller;
 
+use Application\Application\Service\Shared\DefaultFormOptionCollection;
 use Application\Application\Service\Warehouse\WarehouseService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -29,6 +30,9 @@ class WarehouseControllerFactory implements FactoryInterface
 
         $sv = $container->get(WarehouseService::class);
         $controller->setEntityService($sv);
+
+        $sv = $container->get(DefaultFormOptionCollection::class);
+        $controller->setFormOptionCollection($sv);
 
         $sv = $container->get("AppLogger");
         $controller->setLogger($sv);

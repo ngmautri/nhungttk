@@ -3,7 +3,9 @@ namespace Application\Form\Warehouse;
 
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
+use Application\Form\Helper\OptionsHelperFactory;
 use Zend\Form\Element\Hidden;
+use Zend\Form\Element\Select;
 
 /**
  *
@@ -13,7 +15,9 @@ use Zend\Form\Element\Hidden;
 class WarehouseForm extends GenericForm
 {
 
-    private $accountOptions;
+    private $countryOptions;
+
+    private $userOptions;
 
     public function __construct($id = null)
     {
@@ -174,12 +178,13 @@ class WarehouseForm extends GenericForm
         // Form Element for {remarks}
         // ======================================
         $this->add([
-            'type' => 'text',
+            'type' => 'textarea',
             'name' => 'remarks',
             'attributes' => [
                 'id' => 'remarks',
                 'class' => "form-control input-sm",
-                'required' => FALSE
+                'required' => FALSE,
+                'rows' => 2
             ],
             'options' => [
                 'label' => Translator::translate('remarks'),
@@ -202,25 +207,6 @@ class WarehouseForm extends GenericForm
             ],
             'options' => [
                 'label' => Translator::translate('Stock keeper'),
-                'label_attributes' => [
-                    'class' => "control-label col-sm-2"
-                ]
-            ]
-        ]);
-
-        // ======================================
-        // Form Element for {whController}
-        // ======================================
-        $this->add([
-            'type' => 'text',
-            'name' => 'whController',
-            'attributes' => [
-                'id' => 'whController',
-                'class' => "form-control input-sm",
-                'required' => FALSE
-            ],
-            'options' => [
-                'label' => Translator::translate('Controller'),
                 'label_attributes' => [
                     'class' => "control-label col-sm-2"
                 ]
@@ -282,25 +268,6 @@ class WarehouseForm extends GenericForm
         ]);
 
         // ======================================
-        // Form Element for {whCountry}
-        // ======================================
-        $this->add([
-            'type' => 'text',
-            'name' => 'whCountry',
-            'attributes' => [
-                'id' => 'whCountry',
-                'class' => "form-control input-sm",
-                'required' => FALSE
-            ],
-            'options' => [
-                'label' => Translator::translate('whCountry'),
-                'label_attributes' => [
-                    'class' => "control-label col-sm-2"
-                ]
-            ]
-        ]);
-
-        // ======================================
         // Form Element for {isDefault}
         // ======================================
         $this->add([
@@ -318,6 +285,74 @@ class WarehouseForm extends GenericForm
                 ]
             ]
         ]);
+
+        $this->add([
+            'type' => 'text',
+            'name' => 'whCountry',
+            'attributes' => [
+                'id' => 'whCountry',
+                'class' => "form-control input-sm",
+                'required' => FALSE
+            ],
+            'options' => [
+                'label' => Translator::translate('whCountry'),
+                'label_attributes' => [
+                    'class' => "control-label col-sm-2"
+                ]
+            ]
+        ]);
+
+        // ======================================
+        // Form Element for {whCountry}
+        // ======================================
+
+        // SELECT
+        $select = new Select();
+        $select->setName("whCountry");
+        $select->setAttributes([
+            'id' => 'whCountry',
+            'class' => "form-control input-sm chosen-select",
+            'required' => true
+        ]);
+
+        $select->setOptions([
+            'label' => Translator::translate('Warehouse Country'),
+            'label_attributes' => [
+                'class' => "control-label col-sm-2"
+            ]
+        ]);
+
+        // $select->setEmptyOption(Translator::translate('Parent Account Number'));
+        $o = OptionsHelperFactory::createValueOptions($this->getCountryOptions());
+        $select->setValueOptions($o);
+        // $select->setDisableInArrayValidator(false);
+        $this->add($select);
+
+        // ======================================
+        // Form Element for {whController}
+        // ======================================
+
+        // SELECT
+        $select = new Select();
+        $select->setName("whController");
+        $select->setAttributes([
+            'id' => 'whController',
+            'class' => "form-control input-sm chosen-select",
+            'required' => true
+        ]);
+
+        $select->setOptions([
+            'label' => Translator::translate('Warehouse Controller'),
+            'label_attributes' => [
+                'class' => "control-label col-sm-2"
+            ]
+        ]);
+
+        // $select->setEmptyOption(Translator::translate('Parent Account Number'));
+        $o = OptionsHelperFactory::createValueOptions($this->getUserOptions());
+        $select->setValueOptions($o);
+        // $select->setDisableInArrayValidator(false);
+        $this->add($select);
     }
 
     // ======================================
@@ -401,5 +436,41 @@ class WarehouseForm extends GenericForm
     public function getLocation()
     {
         return $this->get("location");
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCountryOptions()
+    {
+        return $this->countryOptions;
+    }
+
+    /**
+     *
+     * @param mixed $countryOptions
+     */
+    public function setCountryOptions($countryOptions)
+    {
+        $this->countryOptions = $countryOptions;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUserOptions()
+    {
+        return $this->userOptions;
+    }
+
+    /**
+     *
+     * @param mixed $userOptions
+     */
+    public function setUserOptions($userOptions)
+    {
+        $this->userOptions = $userOptions;
     }
 }

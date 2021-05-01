@@ -24,6 +24,9 @@ class DepartmentFormTest extends PHPUnit_Framework_TestCase
         $form = new DepartmentForm();
         $form->setHydrator(new Reflection());
         $form->bind($data);
+
+        var_dump($form->getObject());
+
         // \var_dump($form->getElements());
         echo $form->render();
 

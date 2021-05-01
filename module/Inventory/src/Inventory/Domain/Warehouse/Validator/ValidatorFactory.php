@@ -37,10 +37,7 @@ class ValidatorFactory
 
         // Default Warehouse Validator:
         $defaultWarehouseValidators = new WarehouseValidatorCollection();
-
         $validator = new WarehouseDefaultValidator($sharedSpecsFactory);
-        $defaultWarehouseValidators->add($validator);
-        $validator = new WarehouseDefaultLocationValidator($sharedSpecsFactory);
         $defaultWarehouseValidators->add($validator);
 
         // Default Location Validator:
@@ -53,6 +50,10 @@ class ValidatorFactory
 
         switch ($context) {
             case self::CREATE_NEW_WH:
+
+                $validator = new WarehouseDefaultLocationValidator($sharedSpecsFactory);
+                $defaultWarehouseValidators->add($validator);
+
                 $validator = new WarehouseCodeValidator($sharedSpecsFactory);
                 $warehouseValidators->add($validator);
                 break;

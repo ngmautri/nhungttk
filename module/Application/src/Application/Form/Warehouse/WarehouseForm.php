@@ -4,6 +4,7 @@ namespace Application\Form\Warehouse;
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
 use Application\Form\Helper\OptionsHelperFactory;
+use Zend\Form\Element\Checkbox;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Select;
 
@@ -251,19 +252,41 @@ class WarehouseForm extends GenericForm
         // ======================================
         // Form Element for {isLocked}
         // ======================================
+        /*
+         * $this->add([
+         * 'type' => 'text',
+         * 'name' => 'isLocked',
+         * 'attributes' => [
+         * 'id' => 'isLocked',
+         * 'class' => "form-control input-sm",
+         * 'required' => FALSE
+         * ],
+         * 'options' => [
+         * 'label' => Translator::translate('isLocked'),
+         * 'label_attributes' => [
+         * 'class' => "control-label col-sm-2"
+         * ]
+         * ]
+         * ]);
+         */
         $this->add([
-            'type' => 'text',
+            'type' => Checkbox::class,
             'name' => 'isLocked',
             'attributes' => [
                 'id' => 'isLocked',
-                'class' => "form-control input-sm",
-                'required' => FALSE
+                'class' => "form-control input-sm"
             ],
             'options' => [
-                'label' => Translator::translate('isLocked'),
+                'label' => 'Is Locked',
                 'label_attributes' => [
-                    'class' => "control-label col-sm-2"
-                ]
+                    'class' => "control-label col-sm-1"
+                ],
+                'use_hidden_element' => true,
+                'checked_value' => '1',
+                'unchecked_value' => '0'
+            ],
+            'attributes' => [
+                'value' => '1'
             ]
         ]);
 
@@ -286,21 +309,23 @@ class WarehouseForm extends GenericForm
             ]
         ]);
 
-        $this->add([
-            'type' => 'text',
-            'name' => 'whCountry',
-            'attributes' => [
-                'id' => 'whCountry',
-                'class' => "form-control input-sm",
-                'required' => FALSE
-            ],
-            'options' => [
-                'label' => Translator::translate('whCountry'),
-                'label_attributes' => [
-                    'class' => "control-label col-sm-2"
-                ]
-            ]
-        ]);
+        /*
+         * $this->add([
+         * 'type' => 'text',
+         * 'name' => 'whCountry',
+         * 'attributes' => [
+         * 'id' => 'whCountry',
+         * 'class' => "form-control input-sm",
+         * 'required' => FALSE
+         * ],
+         * 'options' => [
+         * 'label' => Translator::translate('whCountry'),
+         * 'label_attributes' => [
+         * 'class' => "control-label col-sm-2"
+         * ]
+         * ]
+         * ]);
+         */
 
         // ======================================
         // Form Element for {whCountry}

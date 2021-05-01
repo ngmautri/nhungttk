@@ -9,8 +9,6 @@ use Application\Application\Service\SharedServiceFactory;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Inventory\Domain\Warehouse\BaseWarehouse;
-use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
-use Inventory\Domain\Warehouse\Factory\WarehouseFactory;
 use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Webmozart\Assert\Assert;
 
@@ -19,7 +17,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UpdateWarehouseCmdHandler extends AbstractCommandHandler
+class LockWarehouseCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -36,7 +34,6 @@ class UpdateWarehouseCmdHandler extends AbstractCommandHandler
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
         Assert::isInstanceOf($cmd->getOptions(), UpdateEntityCmdOptions::class);
-        Assert::notNull($cmd->getData(), 'Input data in emty');
 
         $options = $cmd->getOptions();
 
@@ -51,30 +48,13 @@ class UpdateWarehouseCmdHandler extends AbstractCommandHandler
              * @var BaseLocation $localEntity ;
              */
             $rootEntity = $options->getRootEntity();
-
             $snapshot = $rootEntity->makeSnapshot();
-            $newSnapshot = clone ($snapshot);
-
-            $newSnapshot = WarehouseSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
-            $this->setOutput($newSnapshot);
-
-            $changeLog = $snapshot->compare($newSnapshot);
-
-            if ($changeLog == null) {
-                $cmd->addError("Nothing change on #" . $rootEntity->getId());
-                return;
-            }
-
-            $params = [
-                "changeLog" => $changeLog
-            ];
 
             $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
-            WarehouseFactory::updateFrom($companyEntity, $rootEntity, $newSnapshot, $options, $params, $sharedService);
-
+            $rootEntity->lockWarehouse($companyEntity, $options, $sharedService);
             $this->setOutput($snapshot); // important;
 
-            $m = sprintf("[OK] WH #%s updated!", $snapshot->getId());
+            $m = sprintf("[OK] WH #%s locked!", $snapshot->getId());
             $cmd->addSuccess($m);
 
             // event dispatch

@@ -184,7 +184,7 @@ abstract class AbstractFormRender implements FormRenderInterface
      * @param PhpRenderer $viewRender
      * @return string|NULL
      */
-    protected function addButtons(GenericForm $form, PhpRenderer $viewRender, $cssClass = null)
+    protected function addButtons(GenericForm $form, PhpRenderer $viewRender, $cssClass = null, $otherButtons = null)
     {
         if ($form == null) {
             return null;
@@ -196,12 +196,14 @@ abstract class AbstractFormRender implements FormRenderInterface
               </div>\n";
 
         switch ($form->getFormAction()) {
+            case FormActions::SHOW:
+                return \sprintf($html, "<label class=\"control-label col-sm-2\" for=\"inputTag\"></label>", $otherButtons);
 
             case FormActions::ADD:
-                return \sprintf($html, "<label class=\"control-label col-sm-2\" for=\"inputTag\"></label>", $this->submitButton($form, $viewRender, $cssClass) . $this->cancelButton($form, $viewRender, $cssClass));
+                return \sprintf($html, "<label class=\"control-label col-sm-2\" for=\"inputTag\"></label>", $this->submitButton($form, $viewRender, $cssClass) . $this->cancelButton($form, $viewRender, $cssClass) . $otherButtons);
 
             case FormActions::EDIT:
-                return \sprintf($html, "<label class=\"control-label col-sm-2\" for=\"inputTag\"></label>", $this->submitButton($form, $viewRender, $cssClass) . $this->cancelButton($form, $viewRender, $cssClass));
+                return \sprintf($html, "<label class=\"control-label col-sm-2\" for=\"inputTag\"></label>", $this->submitButton($form, $viewRender, $cssClass) . $this->cancelButton($form, $viewRender, $cssClass) . $otherButtons);
         }
 
         return null;
@@ -223,9 +225,17 @@ abstract class AbstractFormRender implements FormRenderInterface
 
     protected function updateButton(GenericForm $form, PhpRenderer $viewRender, $cssClass = null)
     {
-        $cssClass = 'btn btn-primary btn-sm';
-        return sprintf(' <a class="%s" style="color: white" onclick="submitForm(\'%s\');" href="javascript:;">
-        <i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', $cssClass, $form->getId(), $this->createLabel(Translator::translate("Save"), $viewRender));
+        $cssClass = 'btn btn-default btn-sm';
+        return sprintf(' <a class="%s" style="color: navy" onclick="submitForm(\'%s\');" href="javascript:;">
+        <i class="fa fa-edit" aria-hidden="true"></i> &nbsp;%s</a>', $cssClass, $form->getId(), $this->createLabel(Translator::translate("Edit"), $viewRender));
+    }
+
+    protected function createCustomButton(GenericForm $form, PhpRenderer $viewRender, $href, $cssClass, $style, $icon, $label, $title)
+    {
+        $cssClass = 'btn btn-default btn-sm';
+
+        return sprintf(' <a title="%s" class="%s" style="%s" href="%s">
+        <i class="%s" aria-hidden="true"></i> &nbsp;%s</a>', $title, $cssClass, $style, $href, $icon, $label);
     }
 
     protected function _drawSeparator()

@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Warehouse;
 
 use Application\Application\Event\DefaultParameter;
+use Application\Domain\Company\BaseCompany;
 use Application\Domain\Company\AccountChart\Validator\ChartValidatorFactory;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Domain\Service\SharedService;
@@ -12,6 +13,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Inventory\Domain\Event\Warehouse\WhLocationCreated;
 use Inventory\Domain\Event\Warehouse\WhLocationRemoved;
 use Inventory\Domain\Event\Warehouse\WhLocationUpdated;
+use Inventory\Domain\Event\Warehouse\WhLocked;
+use Inventory\Domain\Event\Warehouse\WhUnLocked;
 use Inventory\Domain\Service\Contracts\WhValidationServiceInterface;
 use Inventory\Domain\Warehouse\Contracts\DefaultLocation;
 use Inventory\Domain\Warehouse\Location\BaseLocation;
@@ -57,6 +60,112 @@ class BaseWarehouse extends AbstractWarehouse
 
     /**
      *
+     * @param BaseCompany $companyEntity
+     * @param BaseWarehouse $baseWarehouse
+     * @throws \InvalidArgumentException
+     */
+    protected function _ensureWarehouseOfCompany(BaseCompany $companyEntity, BaseWarehouse $baseWarehouse)
+    {
+        Assert::notNull($companyEntity, "BaseCompany not founds");
+        Assert::notNull($baseWarehouse, "BaseWarehouse not found");
+
+        if ($baseWarehouse->getCompany() != $companyEntity->getId()) {
+            throw new \InvalidArgumentException(Translator::translate("Warehouse does not belong to this company!"));
+        }
+    }
+
+    /**
+     *
+     * @param BaseCompany $companyEntity
+     * @param CommandOptions $options
+     * @param \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService
+     * @throws \InvalidArgumentException
+     * @return \Inventory\Domain\Warehouse\BaseWarehouse
+     */
+    public function lockWarehouse(BaseCompany $companyEntity, CommandOptions $options, \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        Assert::notNull($options, "Options not founds");
+        Assert::notNull($sharedService, "SharedService not found");
+        $this->_ensureWarehouseOfCompany($companyEntity, $this);
+
+        if ($this->isDefault) {
+            throw new \InvalidArgumentException(Translator::translate("Default Warehouse can not be changed!"));
+        }
+
+        if ($this->isLocked) {
+            throw new \InvalidArgumentException(Translator::translate("Warehouse is already locked"));
+        }
+
+        $this->setIsLocked(TRUE);
+
+        /**
+         *
+         * @var CompanyCmdRepositoryInterface $rep ;
+         *
+         */
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rep->storeWarehouse($companyEntity, $this);
+
+        $params = null;
+
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new WhLocked($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param BaseCompany $companyEntity
+     * @param CommandOptions $options
+     * @param \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService
+     * @throws \InvalidArgumentException
+     * @return \Inventory\Domain\Warehouse\BaseWarehouse
+     */
+    public function unlockWarehouse(BaseCompany $companyEntity, CommandOptions $options, \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        Assert::notNull($options, "Options not founds");
+        Assert::notNull($sharedService, "SharedService not found");
+        $this->_ensureWarehouseOfCompany($companyEntity, $this);
+
+        if (! $this->isLocked) {
+            throw new \InvalidArgumentException(Translator::translate("Warehouse is already unlocked"));
+        }
+
+        $this->setIsLocked(FALSE);
+
+        /**
+         *
+         * @var CompanyCmdRepositoryInterface $rep ;
+         *
+         */
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rep->storeWarehouse($companyEntity, $this);
+
+        $params = null;
+
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new WhUnLocked($target, $defaultParams, $params);
+        $this->addEvent($event);
+
+        return $this;
+    }
+
+    /**
+     *
      * @param BaseWarehouse $other
      * @return boolean
      */
@@ -81,13 +190,9 @@ class BaseWarehouse extends AbstractWarehouse
      */
     public function createLocationFrom(LocationSnapshot $snapshot, CommandOptions $options, \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService)
     {
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("Row Snapshot not found");
-        }
-
-        if ($options == null) {
-            throw new InvalidArgumentException("Options not found");
-        }
+        Assert::notNull($snapshot, "LocationSnapshot not founds");
+        Assert::notNull($options, "Options not founds");
+        Assert::notNull($sharedService, "SharedService not found");
 
         $validationService = ValidatorFactory::create($sharedService, ValidatorFactory::CREATE_NEW_LOCATION);
 
@@ -100,6 +205,8 @@ class BaseWarehouse extends AbstractWarehouse
         $snapshot->init($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
         $location = GenericLocation::createFromSnapshot($this, $snapshot);
+
+        $this->_ensureNotDefaultLocation($location);
 
         // Add to tree, in order to check.
         // create node
@@ -175,16 +282,11 @@ class BaseWarehouse extends AbstractWarehouse
      */
     public function updateLocationFrom(BaseLocation $location, BaseLocationSnapshot $snapshot, CommandOptions $options, $params, \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService)
     {
-        if ($location == null) {
-            throw new InvalidArgumentException("BaseLocation not found");
-        }
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("LocationSnapshot not found");
-        }
+        $this->_ensureNotDefaultLocation($location);
 
-        if ($options == null) {
-            throw new InvalidArgumentException("Options not found");
-        }
+        Assert::notNull($snapshot, "LocationSnapshot not founds");
+        Assert::notNull($options, "Options not founds");
+        Assert::notNull($sharedService, "SharedService not found");
 
         $validationService = ValidatorFactory::create($sharedService, ValidatorFactory::EDIT_LOCATION);
 
@@ -267,7 +369,7 @@ class BaseWarehouse extends AbstractWarehouse
         }
 
         if ($this->getLocationCollection()->isEmpty()) {
-            $this->addError("Warehouse must have no default locations!");
+            $this->addError("Warehouse must have default locations!");
             return $this;
         }
 
@@ -283,7 +385,7 @@ class BaseWarehouse extends AbstractWarehouse
      * @param WarehouseValidatorCollection $validators
      * @param boolean $isPosting
      */
-    protected function validateWarehouse(WarehouseValidatorCollection $validators, $isPosting = false)
+    public function validateWarehouse(WarehouseValidatorCollection $validators, $isPosting = false)
     {
         $validators->validate($this);
     }
@@ -294,7 +396,7 @@ class BaseWarehouse extends AbstractWarehouse
      * @param LocationValidatorCollection $validators
      * @param boolean $isPosting
      */
-    protected function validateLocation(BaseLocation $location, LocationValidatorCollection $validators, $isPosting = false)
+    public function validateLocation(BaseLocation $location, LocationValidatorCollection $validators, $isPosting = false)
     {
         $validators->validate($this, $location);
     }
@@ -305,7 +407,7 @@ class BaseWarehouse extends AbstractWarehouse
      */
     public function makeSnapshot()
     {
-        return GenericObjectAssembler::updateAllFieldsFrom(new WarehouseSnapshot(), $this);
+        return GenericObjectAssembler::updateAllFieldsFrom(new BaseWarehouseSnapshot(), $this);
     }
 
     /**
@@ -344,6 +446,15 @@ class BaseWarehouse extends AbstractWarehouse
         return $this;
     }
 
+    private function _ensureNotDefaultLocation($localEntity)
+    {
+        Assert::notNull($localEntity, "BaseLocation not found");
+
+        if (\in_array($localEntity->getLocationCode(), \Inventory\Domain\Warehouse\Contracts\DefaultLocation::get())) {
+            throw new \InvalidArgumentException(Translator::translate("Default location can not be changed or removed!"));
+        }
+    }
+
     /**
      *
      * @param BaseLocation $localEntity
@@ -353,13 +464,9 @@ class BaseWarehouse extends AbstractWarehouse
      */
     public function removeLocation(BaseLocation $localEntity, CommandOptions $options, \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService)
     {
-        Assert::notNull($localEntity, "BaseLocation not found");
+        $this->_ensureNotDefaultLocation($localEntity);
         Assert::notNull($options, "Options not founds");
         Assert::notNull($sharedService, "SharedService not found");
-
-        if (\in_array($localEntity->getLocationCode(), \Inventory\Domain\Warehouse\Contracts\DefaultLocation::get())) {
-            throw new \InvalidArgumentException(Translator::translate("Default location can not be changed or removed!"));
-        }
 
         /**
          *

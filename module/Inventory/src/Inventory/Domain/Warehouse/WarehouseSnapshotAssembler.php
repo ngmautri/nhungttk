@@ -2,7 +2,6 @@
 namespace Inventory\Domain\Warehouse;
 
 use Application\Application\Contracts\GenericDTOAssembler;
-use Application\Domain\Company\AccountChart\ChartSnapshotAssembler;
 use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
@@ -51,7 +50,8 @@ class WarehouseSnapshotAssembler
         "uuid",
         "createdBy",
         "company",
-        "lastChangeBy"
+        "lastChangeBy",
+        "isLocked"
     ];
 
     private static $defaultIncludedFields = [
@@ -61,7 +61,7 @@ class WarehouseSnapshotAssembler
         "whContactPerson",
         "whTelephone",
         "whEmail",
-        "isLocked",
+        // "isLocked",
         "whStatus",
         "remarks",
         "isDefault",
@@ -76,12 +76,12 @@ class WarehouseSnapshotAssembler
     // =============================
     public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $target, $source)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, ChartSnapshotAssembler::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, self::$defaultIncludedFields);
     }
 
     public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $target, $source)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, ChartSnapshotAssembler::$defaultExcludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, self::$defaultExcludedFields);
     }
 
     // =============================
@@ -89,12 +89,12 @@ class WarehouseSnapshotAssembler
     // =============================
     public static function updateDefaultFieldsFrom($target, AbstractDTO $source)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFrom($target, $source, ChartSnapshotAssembler::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($target, $source, self::$defaultIncludedFields);
     }
 
     public static function updateDefaultExcludedFieldsFrom($target, AbstractDTO $source)
     {
-        return GenericObjectAssembler::updateExcludedFieldsFrom($target, $source, ChartSnapshotAssembler::$defaultExcludedFields);
+        return GenericObjectAssembler::updateExcludedFieldsFrom($target, $source, self::$defaultExcludedFields);
     }
 
     // ==================================

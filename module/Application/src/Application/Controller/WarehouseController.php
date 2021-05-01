@@ -6,7 +6,9 @@ use Application\Application\Command\TransactionalCommandHandler;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Command\Doctrine\Company\Warehouse\CreateLocationCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\CreateWarehouseCmdHandler;
+use Application\Application\Command\Doctrine\Company\Warehouse\LockWarehouseCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\RemoveLocationCmdHandler;
+use Application\Application\Command\Doctrine\Company\Warehouse\UnLockWarehouseCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\UpdateLocationCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\UpdateWarehouseCmdHandler;
 use Application\Application\Command\Options\CmdOptions;
@@ -296,6 +298,12 @@ class WarehouseController extends EntityCRUDController
             $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
+            }
+
+            if ($rootEntity->getIsDefault()) {
+                $this->flashMessenger()->addMessage("Default Warehouse can not be changed!");
+                $redirectUrl = \sprintf("/application/warehouse/view?id=%s", $rootId);
+                return $this->redirect()->toUrl($redirectUrl);
             }
 
             $snapshot = $rootEntity->makeSnapshot();
@@ -749,6 +757,120 @@ class WarehouseController extends EntityCRUDController
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setContent(\json_encode("[OK] Location Node removed!"));
         $this->flashMessenger()->addMessage("[OK] Location Node removed!");
+        return $response;
+    }
+
+    public function lockAction()
+    {
+        $response = $this->getResponse();
+        $escaper = new Escaper();
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        try {
+
+            $rootId = $escaper->escapeHtml($_POST['rid']);
+
+            /**
+             *
+             * @var GenericWarehouse $rootEntity
+             */
+            $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+            if ($rootEntity == null) {
+                throw new \InvalidArgumentException("WH  [$rootId] not found!");
+            }
+
+            $rootEntityToken = null;
+            $version = null;
+            $data = null;
+            $options = new UpdateEntityCmdOptions($this->getCompanyVO(), $rootEntity, $rootId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+            $cmdHandler = new LockWarehouseCmdHandler();
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->execute();
+
+            $this->logInfo($cmd->getNotification()
+                ->successMessage(false));
+        } catch (\Exception $e) {
+
+            $this->logInfo($e->getMessage());
+            $notification = new Notification();
+            $notification->addError($e->getTraceAsString());
+
+            $this->logException($e);
+
+            $response->setStatusCode(Response::STATUS_CODE_400);
+            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+
+            $m = $nmtPlugin->translate($e->getMessage());
+            $response->setContent(\json_encode("[Bad request] " . $m));
+            $this->flashMessenger()->addMessage('[Bad request] ' . $m);
+
+            return $response;
+        }
+
+        $response->setStatusCode(Response::STATUS_CODE_200);
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(\json_encode("[OK] Warehouse Locked!"));
+        $this->flashMessenger()->addMessage("[OK] Warehouse Locked!");
+        return $response;
+    }
+
+    public function unlockAction()
+    {
+        $response = $this->getResponse();
+        $escaper = new Escaper();
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        try {
+
+            $rootId = $escaper->escapeHtml($_POST['rid']);
+
+            /**
+             *
+             * @var GenericWarehouse $rootEntity
+             */
+            $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+            if ($rootEntity == null) {
+                throw new \InvalidArgumentException("WH  [$rootId] not found!");
+            }
+
+            $rootEntityToken = null;
+            $version = null;
+            $data = null;
+            $options = new UpdateEntityCmdOptions($this->getCompanyVO(), $rootEntity, $rootId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+            $cmdHandler = new UnLockWarehouseCmdHandler();
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->execute();
+
+            $this->logInfo($cmd->getNotification()
+                ->successMessage(false));
+        } catch (\Exception $e) {
+
+            $this->logInfo($e->getMessage());
+            $notification = new Notification();
+            $notification->addError($e->getTraceAsString());
+
+            $this->logException($e);
+
+            $response->setStatusCode(Response::STATUS_CODE_400);
+            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+
+            $m = $nmtPlugin->translate($e->getMessage());
+            $response->setContent(\json_encode("[Bad request] " . $m));
+            $this->flashMessenger()->addMessage('[Bad request] ' . $m);
+
+            return $response;
+        }
+
+        $response->setStatusCode(Response::STATUS_CODE_200);
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(\json_encode("[OK] Warehouse UnLocked!"));
+        $this->flashMessenger()->addMessage("[OK] Warehouse UnLocked!");
         return $response;
     }
 

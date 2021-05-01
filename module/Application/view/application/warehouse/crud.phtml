@@ -55,6 +55,7 @@ echo $jsTree?>
       </div>
       <!-- General -->
    </div>
+
    <!-- Tab -->
    <div class="modal" id="confirm_remove_node" role="dialog">
       <div class="modal-dialog modal-md">
@@ -81,29 +82,149 @@ echo $jsTree?>
             ?></p>
             </div>
             <div class="modal-footer">
-               <button onclick="doRemovingNode();" type="button" class="btn btn-primary btn-sm">YES</button>
+               <button onclick="doRemovingNode('confirm_remove_node');" type="button" class="btn btn-primary btn-sm">YES</button>
                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
             </div>
          </div>
       </div>
    </div>
-   <script>
+
+   <div class="modal" id="confirm_wh_lock" role="dialog">
+      <div class="modal-dialog modal-md">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="b_modal_sm_body">
+               <h5>#<?php
+
+            echo $this->translate('Warehouse will be locked!');
+            ?></h5>
+
+               <p><?php
+
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+            </div>
+            <div class="modal-footer">
+               <button onclick="doWhLock('confirm_wh_lock');" type="button" class="btn btn-primary btn-sm">YES</button>
+               <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+
+   <div class="modal" id="confirm_wh_unlock" role="dialog">
+      <div class="modal-dialog modal-md">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="b_modal_sm_body">
+               <h5>#<?php
+
+            echo $this->translate('Warehouse will be unlocked!');
+            ?></h5>
+
+               <p><?php
+
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+            </div>
+            <div class="modal-footer">
+               <button onclick="doWhUnLock('confirm_wh_unlock');" type="button" class="btn btn-primary btn-sm">YES</button>
+               <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+
+
+<script type="text/javascript">
 
 <?php
 echo sprintf("var rootId=%s;", $rootId);
 echo sprintf("var redirectUrl = \"/application/warehouse/view?id=%s\"", $rootId);
 ?>;
 
+function confirmModal(id) {
+    var id = '#'+ id;
+    $(id).modal();
+}
+
+function doWhLock(id) {
+
+    var id = '#'+ id;
+    $(id).modal().hide();
+
+
+  //alert(data.node.parent +  data.node.id  +  data.node.text );
+    $('#b_modal_no_header').modal();
+
+  //alert(node_to_remove + rootId);
+
+
+  $.ajax({
+      type: 'POST',
+      url: '/application/warehouse/lock',
+      data: {rid : rootId},
+      success: function(data){
+        window.location = redirectUrl;
+      },
+      error: function(xhr, textStatus, error){
+        $('#confirm_remove_node').hide();
+        $('#b_modal_no_header').modal().hide();
+         //alert(xhr.responseText);
+          console.log(xhr.statusText);
+          console.log(textStatus);
+          console.log(error);
+          window.location = redirectUrl;
+      }
+   });
+}
+
+function doWhUnLock(id) {
+
+    var id = '#'+ id;
+    $(id).modal().hide();
+
+  //alert(data.node.parent +  data.node.id  +  data.node.text );
+    $('#b_modal_no_header').modal();
+
+  //alert(node_to_remove + rootId);
+
+
+  $.ajax({
+      type: 'POST',
+      url: '/application/warehouse/unlock',
+      data: {rid : rootId},
+      success: function(data){
+        window.location = redirectUrl;
+      },
+      error: function(xhr, textStatus, error){
+        $('#confirm_remove_node').hide();
+        $('#b_modal_no_header').modal().hide();
+         //alert(xhr.responseText);
+          console.log(xhr.statusText);
+          console.log(textStatus);
+          console.log(error);
+          window.location = redirectUrl;
+      }
+   });
+}
+
+
+
+
 
 var node_to_remove = null;
 
-function confirmRemoveNode() {
-    $('#confirm_remove_node').modal();
- }
+function doRemovingNode(id) {
 
-function doRemovingNode() {
-
-    $('#confirm_remove_node').hide();
+    var id = '#'+ id;
+    $(id).modal().hide();
 
   //alert(data.node.parent +  data.node.id  +  data.node.text );
     $('#b_modal_no_header').modal();
@@ -258,7 +379,7 @@ $('#html1').jstree({
 // DELETE ===============
 $('#html1').on('delete_node.jstree', function (e, data) {
 
-     $('#confirm_remove_node').modal();
+    confirmModal('confirm_remove_node');
      //alert( data.node.id);
      node_to_remove = data.node.id;
 
@@ -321,7 +442,7 @@ var obj = {
    resizable: true,
    dataModel: dataModel,
    colModel: columns,
-   height: $(window).height()-450,
+   height: $(window).height()-550,
    width: 600,
    hoverMode: 'row',
    selectionModel: { type: 'row' },

@@ -21,4 +21,10 @@ class BaseWarehouseSnapshot extends WarehouseSnapshot
         $this->setUuid(Uuid::uuid4()->toString());
         $this->setToken($this->getUuid());
     }
+
+    public function markAsUpdate($createdBy, $createdDate)
+    {
+        $this->setLastChangeOn($createdDate);
+        $this->setLastChangeBy($createdBy);
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Reporting\PO\Output\Spreadsheet;
+namespace Procure\Application\Reporting\PO\Export\Spreadsheet;
 
 use Application\Application\Service\Document\Spreadsheet\AbstractBuilder;
 

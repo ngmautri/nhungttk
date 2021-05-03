@@ -23,6 +23,7 @@ SELECT
     fin_vendor_invoice.sys_number AS doc_sys_number,
     fin_vendor_invoice.doc_status AS doc_status,
     fin_vendor_invoice.is_active AS doc_is_active,
+   fin_vendor_invoice.currency_iso3 AS doc_currency,
 
     fin_vendor_invoice_row.id AS row_id,
      fin_vendor_invoice_row.row_identifer AS row_identifer,
@@ -53,7 +54,7 @@ WHERE 1 %s
 UNION
 
 SELECT
-     nmt_procure_po.company_id as company_id,
+    nmt_procure_po.company_id as company_id,
 	'PROCURE-PO' AS type,
     nmt_procure_po.doc_type,
     nmt_procure_po.vendor_id AS vendor_id,
@@ -65,6 +66,7 @@ SELECT
     nmt_procure_po.sys_number AS doc_sys_number,
     nmt_procure_po.doc_status AS doc_status,
 	nmt_procure_po.is_active AS doc_is_active,
+    nmt_procure_po.currency_iso3 AS doc_currency,
 
     nmt_procure_po_row.id AS row_id,
     nmt_procure_po_row.row_identifer AS row_identifer,
@@ -78,8 +80,8 @@ SELECT
     nmt_procure_po_row.doc_unit AS row_doc_unit,
     nmt_procure_po_row.doc_unit_price AS row_doc_unit_price,
     nmt_procure_po_row.is_active AS row_is_active,
-    nmt_procure_po_row.converted_standard_quantity AS converted_standard_quantity,
-    nmt_procure_po_row.converted_standard_unit_price AS converted_standard_unit_price,
+    nmt_procure_po_row.converted_standard_quantity*-1 AS converted_standard_quantity,
+    nmt_procure_po_row.converted_standard_unit_price*-1 AS converted_standard_unit_price,
 
 
     nmt_procure_po_row.pr_row_id AS pr_row_id,

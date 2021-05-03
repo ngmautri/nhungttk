@@ -24,7 +24,7 @@ class PoReportController extends AbstractGenericController
     public function poApReportAction()
     {
         // $this->layout("layout/fluid");
-        $file_type = (int) $this->params()->fromQuery('file_type');
+        $file_type = $this->params()->fromQuery('file_type');
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -42,16 +42,15 @@ class PoReportController extends AbstractGenericController
 
         $totalRecords = $this->getReporter()->getPoApReportTotal($filter);
 
-        if ($file_type == null) :
-            $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
-        endif;
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            return $result = $this->getReporter()->getPoApReport($filter, $file_type, $totalRecords);
+        }
 
         $paginator = null;
         $result = null;
 
         $limit = null;
         $offset = null;
-        $totalRecords = null;
 
         if ($totalRecords > $resultsPerPage) {
             $paginator = new Paginator($totalRecords, $page, $resultsPerPage);
@@ -63,6 +62,7 @@ class PoReportController extends AbstractGenericController
         // $filter->setCompanyId($this->getCompanyId());
         $filter->setLimit($limit);
         $filter->setOffset($offset);
+
         if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
             $result = $this->getReporter()->getPoApReport($filter, $file_type, $totalRecords);
         } else {
@@ -102,6 +102,7 @@ class PoReportController extends AbstractGenericController
         $filter->setVendorId($vendorId);
         $filter->setSort($sort);
         $filter->setSortBy($sortBy);
+        $filter->setDocStatus(\Procure\Domain\Contracts\ProcureDocStatus::POSTED);
 
         return $filter;
     }
@@ -122,6 +123,7 @@ class PoReportController extends AbstractGenericController
         $filter->setVendorId($vendorId);
         $filter->setSort($sort);
         $filter->setSortBy($sortBy);
+        $filter->setDocStatus(\Procure\Domain\Contracts\ProcureDocStatus::POSTED);
 
         // \var_dump($filter->getSort());
 

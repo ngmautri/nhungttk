@@ -19,5 +19,5 @@ class SupportedExportType
 
     const PDF = "5";
 
-    const OTHER = "5";
+    const OTHER = "6";
 }

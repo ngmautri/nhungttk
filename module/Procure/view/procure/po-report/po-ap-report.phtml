@@ -279,9 +279,7 @@ endif;
 
 <div id="gird_div" style="margin: 1px; font-size: 9pt"></div>
 
-<?php
-if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
-    ?>
+
 
 
    </div>
@@ -289,8 +287,8 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
 <script>
 
 <?php
-    echo sprintf('var gridUrl="%s";', $gridUrl);
-    ?>
+echo sprintf('var gridUrl="%s";', $gridUrl);
+?>
 
 var columns= [
     { title: "CoaName", dataType: "string", dataIndx: "vendorName", align: 'left',minWidth: 150,editable: false},
@@ -369,8 +367,4 @@ function refreshGird(){
 }
 
 </script>
-<?php
-endif;
-
-?>
 

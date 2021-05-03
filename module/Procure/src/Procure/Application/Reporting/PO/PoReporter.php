@@ -2,6 +2,9 @@
 namespace Procure\Application\Reporting\PO;
 
 use Application\Service\AbstractService;
+use Doctrine\Common\Collections\ArrayCollection;
+use Procure\Application\Reporting\PO\Export\ExportAsExcel;
+use Procure\Application\Reporting\PO\Export\ExportAsOpenOffice;
 use Procure\Application\Reporting\PO\Output\PoRowFormatter;
 use Procure\Application\Reporting\PO\Output\SaveAsExcel;
 use Procure\Application\Reporting\PO\Output\SaveAsHTML;
@@ -184,8 +187,27 @@ class PoReporter extends AbstractService
     {
         $rep = new PoApReportImpl($this->getDoctrineEM());
         $result = $rep->getList($filter);
+        $factory = null;
 
-        return $result;
+        switch ($file_type) {
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new \Procure\Application\Reporting\PO\Export\Spreadsheet\ExcelBuilder();
+                $factory = new ExportAsExcel($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new \Procure\Application\Reporting\PO\Export\Spreadsheet\OpenOfficeBuilder();
+                $factory = new ExportAsOpenOffice($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                return $result;
+
+            default:
+                return $result;
+        }
+
+        return $factory->execute(new ArrayCollection($result));
     }
 
     /**

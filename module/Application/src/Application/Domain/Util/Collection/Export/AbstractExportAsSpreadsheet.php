@@ -1,8 +1,7 @@
 <?php
-namespace Application\Domain\Util\Collection\Contracts;
+namespace Application\Domain\Util\Collection\Export;
 
 use Application\Application\Service\Document\Spreadsheet\AbstractBuilder;
-use Application\Domain\Util\Collection\Export\AbstractExport;
 
 /**
  * Director in Builder Pattern.

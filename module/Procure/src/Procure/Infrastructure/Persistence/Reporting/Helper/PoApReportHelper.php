@@ -61,7 +61,7 @@ class PoApReportHelper
 
         if ($filter->getDocStatus() != null) {
             $sql1 = $sql1 . \sprintf(' AND fin_vendor_invoice.doc_status ="%s"', $filter->getDocStatus());
-            $sql1 = $sql1 . \sprintf(' AND nmt_procure_po.doc_status ="%s"', $filter->getDocStatus());
+            $sql2 = $sql2 . \sprintf(' AND nmt_procure_po.doc_status ="%s"', $filter->getDocStatus());
         }
 
         if (! $filter->getFromDate() == null) {
@@ -80,73 +80,6 @@ class PoApReportHelper
         $sql = \sprintf($sql, $sql1, $sql2);
 
         return $sql;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @param ProcureAppSqlFilterInterface $filter
-     * @return NULL|array|mixed|\Doctrine\DBAL\Driver\Statement|NULL
-     */
-    static public function getList1(EntityManager $doctrineEM, ProcureAppSqlFilterInterface $filter)
-    {
-        if (! $doctrineEM instanceof EntityManager) {
-            return null;
-        }
-
-        $sql = self::_getListSql($filter);
-
-        switch ($filter->getSortBy()) {
-            case "vendorName":
-                $sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $filter->getSort();
-                break;
-        }
-        if ($filter->getLimit() > 0) {
-            $sql = $sql . " LIMIT " . $filter->getLimit();
-        }
-
-        if ($filter->getOffset() > 0) {
-            $sql = $sql . " OFFSET " . $filter->getOffset();
-        }
-
-        echo $sql;
-        try {
-            $rsm = new ResultSetMappingBuilder($doctrineEM);
-            // $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryMv', 'nmt_inventory_mv');
-            $rsm->addScalarResult("company_id", "companyId");
-            $rsm->addScalarResult("doc_type_name", "docTypeName");
-            $rsm->addScalarResult("doc_type", "docType");
-            $rsm->addScalarResult("vendor_name", "vendorName");
-            $rsm->addScalarResult("doc_id", "docId");
-            $rsm->addScalarResult("doc_number", "docNumber");
-            $rsm->addScalarResult("doc_sys_number", "docSysNumber");
-            $rsm->addScalarResult("doc_status", "docStatus");
-            $rsm->addScalarResult("doc_is_active", "docIsActive");
-
-            $rsm->addScalarResult("row_id", "rowId");
-            $rsm->addScalarResult("row_identifer", "rowIdentifer");
-            $rsm->addScalarResult("item_id", "itemId");
-            $rsm->addScalarResult("item_name", "itemName");
-            $rsm->addScalarResult("item_sku", "itemSku");
-            $rsm->addScalarResult("item_sys_number", "itemSysNumber");
-
-            $rsm->addScalarResult("row_doc_quantity", "rowDocQuantity");
-            $rsm->addScalarResult("row_standard_convert_factor", "rowStandardConvertFactor");
-            $rsm->addScalarResult("row_doc_unit", "rowDocUnit");
-            $rsm->addScalarResult("row_doc_unit_price", "rowDocUnitPrice");
-            $rsm->addScalarResult("row_is_active", "rowIsActive");
-            $rsm->addScalarResult("converted_standard_quantity", "convertedStandardQuantity");
-            $rsm->addScalarResult("converted_standard_unit_price", "convertedStandardUnitPrice");
-
-            $rsm->addScalarResult("pr_row_id", "prRowId");
-            $rsm->addScalarResult("po_row_id", "poRowId");
-            $query = $doctrineEM->createNativeQuery($sql, $rsm);
-
-            $result = $query->getResult();
-            return $result;
-        } catch (NoResultException $e) {
-            return null;
-        }
     }
 
     static public function getList(EntityManager $doctrineEM, ProcureAppSqlFilterInterface $filter)
@@ -190,12 +123,14 @@ class PoApReportHelper
             $rsm->addScalarResult("company_id", "companyId");
             $rsm->addScalarResult("doc_type_name", "docTypeName");
             $rsm->addScalarResult("doc_type", "docType");
+            $rsm->addScalarResult("vendor_id", "vendorId");
             $rsm->addScalarResult("vendor_name", "vendorName");
             $rsm->addScalarResult("doc_id", "docId");
             $rsm->addScalarResult("doc_number", "docNumber");
             $rsm->addScalarResult("doc_sys_number", "docSysNumber");
             $rsm->addScalarResult("doc_status", "docStatus");
             $rsm->addScalarResult("doc_is_active", "docIsActive");
+            $rsm->addScalarResult("doc_currency", "docCurrency");
 
             $rsm->addScalarResult("row_id", "rowId");
             $rsm->addScalarResult("row_identifer", "rowIdentifer");

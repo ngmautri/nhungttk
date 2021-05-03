@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Reporting\PO\Output\Spreadsheet;
+namespace Procure\Application\Reporting\PO\Export\Spreadsheet;
 
 use Application\Application\Service\Document\Spreadsheet\AbstractBuilder;
 
@@ -8,7 +8,7 @@ use Application\Application\Service\Document\Spreadsheet\AbstractBuilder;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class ExcelBuilder extends AbstractBuilder
+class OpenOfficeBuilder extends AbstractBuilder
 {
 
     /**
@@ -48,7 +48,7 @@ class ExcelBuilder extends AbstractBuilder
 
         // Redirect output to a client's web browser (Excel2007)
 
-        $filename_tmp = sprintf("report_%s.xlsx", $docNumber);
+        $filename_tmp = sprintf("report_%s.ods", $docNumber);
         $filename = sprintf('Content-Disposition: attachment;filename="%s"', $filename_tmp);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header($filename);
@@ -63,7 +63,7 @@ class ExcelBuilder extends AbstractBuilder
         header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
         header('Pragma: public'); // HTTP/1.0
 
-        $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->getPhpSpreadsheet(), 'Xlsx');
+        $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->getPhpSpreadsheet(), 'Ods');
         $objWriter->save('php://output');
         exit();
     }

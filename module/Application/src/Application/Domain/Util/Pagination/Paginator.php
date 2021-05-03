@@ -43,6 +43,16 @@ class Paginator
         $this->_init();
     }
 
+    public function getLimit()
+    {
+        return ($this->getMaxInPage() - $this->getMinInPage()) + 1;
+    }
+
+    public function getOffset()
+    {
+        return $this->getMinInPage() - 1;
+    }
+
     // ~ Methods ===========================================================================
 
     /**

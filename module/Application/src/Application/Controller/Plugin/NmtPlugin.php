@@ -285,7 +285,9 @@ class NmtPlugin extends AbstractPlugin
      */
     public function warehouseList()
     {
-        $criteria = array();
+        $criteria = array(
+            'isLocked' => null
+        );
         $sort_criteria = array(
             'whCode' => 'ASC'
         );

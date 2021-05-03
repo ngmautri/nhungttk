@@ -68,10 +68,6 @@ class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxR
             yield null;
         }
 
-        if ($results == null) {
-            yield null;
-        }
-
         foreach ($results as $r) {
 
             /**@var \Application\Entity\FinVendorInvoiceRow $entity ;*/

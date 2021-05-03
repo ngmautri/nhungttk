@@ -19,12 +19,15 @@ use Procure\Application\Service\PO\Output\Spreadsheet\PoReportExcelBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoReportOpenOfficeBuilder;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl;
+use Procure\Infrastructure\Persistence\Reporting\Contracts\PoApReportInterface;
+use Procure\Infrastructure\Persistence\Reporting\Contracts\ProcureAppSqlFilterInterface;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\PoApReportImpl;
 
 /**
  * PO Row Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoReporter extends AbstractService
 {
@@ -34,6 +37,8 @@ class PoReporter extends AbstractService
      * @var PoReportRepositoryImpl $reportRespository;
      */
     private $reportRespository;
+
+    private $poApReportRepository;
 
     public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $file_type)
     {
@@ -171,6 +176,42 @@ class PoReporter extends AbstractService
 
     /**
      *
+     * @param SqlFilterInterface $filter
+     * @param string $file_type
+     * @param int $totalRecords
+     */
+    public function getPoApReport(ProcureAppSqlFilterInterface $filter, $file_type, $totalRecords)
+    {
+        $rep = new PoApReportImpl($this->getDoctrineEM());
+        $result = $rep->getList($filter);
+
+        return $result;
+    }
+
+    /**
+     *
+     * @param SqlFilterInterface $filter
+     * @return mixed
+     */
+    public function getPoApReportTotal(ProcureAppSqlFilterInterface $filter)
+    {
+        $key = \sprintf("total_list_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getPoApReportRepository()->getListTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+        return $total;
+    }
+
+    /**
+     *
      * @return \Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl
      */
     public function getReportRespository()
@@ -185,5 +226,23 @@ class PoReporter extends AbstractService
     public function setReportRespository(PoReportRepositoryImpl $reportRespository)
     {
         $this->reportRespository = $reportRespository;
+    }
+
+    /**
+     *
+     * @return \Procure\Infrastructure\Persistence\Reporting\Contracts\PoApReportInterface
+     */
+    public function getPoApReportRepository()
+    {
+        return $this->poApReportRepository;
+    }
+
+    /**
+     *
+     * @param PoApReportInterface $poApReportRepository
+     */
+    public function setPoApReportRepository(PoApReportInterface $poApReportRepository)
+    {
+        $this->poApReportRepository = $poApReportRepository;
     }
 }

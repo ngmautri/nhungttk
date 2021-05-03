@@ -8,4 +8,8 @@ namespace Procure\Infrastructure\Persistence\Reporting\Contracts;
  */
 Interface PoApReportInterface
 {
+
+    public function getList(ProcureAppSqlFilterInterface $filter);
+
+    public function getListTotal(ProcureAppSqlFilterInterface $filter);
 }

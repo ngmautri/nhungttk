@@ -1,16 +1,15 @@
 <?php
 namespace Procure\Controller;
 
-use MLA\Paginator;
-use Monolog\Logger;
+use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Util\Pagination\Paginator;
+use Application\Infrastructure\Persistence\Contracts\SqlKeyWords;
 use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Infrastructure\Persistence\Filter\PoReportSqlFilter;
-use Symfony\Component\Cache\Adapter\AbstractAdapter;
-use Zend\Mvc\Controller\AbstractActionController;
+use Procure\Infrastructure\Persistence\Reporting\Filter\PoApReportSqlFilter;
 use Zend\View\Model\ViewModel;
-use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  *
@@ -21,6 +20,147 @@ class PoReportController extends AbstractGenericController
 {
 
     protected $reporter;
+
+    public function poApReportAction()
+    {
+        // $this->layout("layout/fluid");
+        $file_type = (int) $this->params()->fromQuery('file_type');
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+
+        $filter = $this->_createPoApFilter();
+
+        $totalRecords = $this->getReporter()->getPoApReportTotal($filter);
+
+        if ($file_type == null) :
+            $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+        endif;
+
+        $paginator = null;
+        $result = null;
+
+        $limit = null;
+        $offset = null;
+        $totalRecords = null;
+
+        if ($totalRecords > $resultsPerPage) {
+            $paginator = new Paginator($totalRecords, $page, $resultsPerPage);
+
+            $limit = ($paginator->getMaxInPage() - $paginator->getMaxInPage()) + 1;
+            $offset = $paginator->getMaxInPage() - 1;
+        }
+
+        // $filter->setCompanyId($this->getCompanyId());
+        $filter->setLimit($limit);
+        $filter->setOffset($offset);
+        if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
+            $result = $this->getReporter()->getPoApReport($filter, $file_type, $totalRecords);
+        } else {
+            $result = null;
+        }
+
+        return new ViewModel(array(
+            'per_pape' => $resultsPerPage,
+            'file_type' => $file_type,
+            'result' => $result,
+            'paginator' => $paginator,
+            'filter' => $filter
+        ));
+    }
+
+    private function _createPoApFilter()
+    {
+        $isActive = (int) $this->params()->fromQuery('is_active');
+        $sortBy = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $vendorId = $this->params()->fromQuery('vendor_id');
+        $fromDate = $this->params()->fromQuery('fromDate');
+        $toDate = $this->params()->fromQuery('toDate');
+
+        if ($sortBy == null) :
+            $sortBy = "vendorName";
+        endif;
+
+        if ($sort == null) :
+            $sort = SqlKeyWords::ASC;
+        endif;
+
+        $filter = new PoApReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setFromDate($fromDate);
+        $filter->setToDate($toDate);
+        $filter->setVendorId($vendorId);
+        $filter->setSort($sort);
+        $filter->setSortBy($sortBy);
+
+        return $filter;
+    }
+
+    public function poApReportGridAction()
+    {
+        $isActive = (int) $this->getGETparam('is_active');
+        $sortBy = $this->getGETparam('sort_by', "vendorName");
+        $sort = $this->getGETparam('sort', SqlKeyWords::ASC);
+        $vendorId = (int) $this->getGETparam('vendor_id');
+        $fromDate = $this->getGETparam('fromDate');
+        $toDate = $this->getGETparam('toDate');
+
+        $filter = new PoApReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setFromDate($fromDate);
+        $filter->setToDate($toDate);
+        $filter->setVendorId($vendorId);
+        $filter->setSort($sort);
+        $filter->setSortBy($sortBy);
+
+        // \var_dump($filter->getSort());
+
+        $page = $this->getGETparam("pq_curpage", 1);
+        $resultsPerPage = $this->getGETparam("pq_rpp", 100);
+
+        $limit = null;
+        $offset = null;
+
+        $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+
+        $a_json_final = [];
+
+        $total_records = $this->getReporter()->getPoApReportTotal($filter);
+
+        if ($total_records > 0) {
+            if ($total_records > $resultsPerPage) {
+                $paginator = new Paginator($total_records, $page, $resultsPerPage);
+
+                $limit = $paginator->getLimit();
+                $offset = $paginator->getOffset();
+            }
+        }
+        $filter->setLimit($limit);
+        $filter->setOffset($offset);
+
+        $result = $this->getReporter()->getPoApReport($filter, $file_type, $total_records);
+
+        // var_dump($result);
+
+        $a_json_final['data'] = $result;
+        $a_json_final['totalRecords'] = $total_records;
+        $a_json_final['curPage'] = $page;
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
 
     public function headerStatusAction()
     {
@@ -85,8 +225,8 @@ class PoReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $paginator->getLimit();
+            $offset = $paginator->getOffset();
         }
 
         $list = $this->getReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -292,8 +432,8 @@ class PoReportController extends AbstractGenericController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $paginator->getLimit();
+            $offset = $paginator->getOffset();
         }
 
         if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
@@ -382,8 +522,8 @@ class PoReportController extends AbstractGenericController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $paginator->getLimit();
+            $offset = $paginator->getOffset();
         }
         $result = $this->getReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
 
@@ -489,8 +629,9 @@ class PoReportController extends AbstractGenericController
         if ($total_records > 0) {
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-                $offset = $paginator->minInPage - 1;
+
+                $limit = $paginator->getLimit();
+                $offset = $paginator->getOffset();
             }
         }
 

@@ -61,22 +61,6 @@ class BaseWarehouse extends AbstractWarehouse
     /**
      *
      * @param BaseCompany $companyEntity
-     * @param BaseWarehouse $baseWarehouse
-     * @throws \InvalidArgumentException
-     */
-    protected function _ensureWarehouseOfCompany(BaseCompany $companyEntity, BaseWarehouse $baseWarehouse)
-    {
-        Assert::notNull($companyEntity, "BaseCompany not founds");
-        Assert::notNull($baseWarehouse, "BaseWarehouse not found");
-
-        if ($baseWarehouse->getCompany() != $companyEntity->getId()) {
-            throw new \InvalidArgumentException(Translator::translate("Warehouse does not belong to this company!"));
-        }
-    }
-
-    /**
-     *
-     * @param BaseCompany $companyEntity
      * @param CommandOptions $options
      * @param \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService
      * @throws \InvalidArgumentException
@@ -446,15 +430,6 @@ class BaseWarehouse extends AbstractWarehouse
         return $this;
     }
 
-    private function _ensureNotDefaultLocation($localEntity)
-    {
-        Assert::notNull($localEntity, "BaseLocation not found");
-
-        if (\in_array($localEntity->getLocationCode(), \Inventory\Domain\Warehouse\Contracts\DefaultLocation::get())) {
-            throw new \InvalidArgumentException(Translator::translate("Default location can not be changed or removed!"));
-        }
-    }
-
     /**
      *
      * @param BaseLocation $localEntity
@@ -491,6 +466,11 @@ class BaseWarehouse extends AbstractWarehouse
         return $this;
     }
 
+    /**
+     *
+     * @param int $id
+     * @return NULL|\Inventory\Domain\Warehouse\Location\BaseLocation
+     */
     public function getLocationById($id)
     {
         if ($id == null) {
@@ -514,6 +494,11 @@ class BaseWarehouse extends AbstractWarehouse
         return null;
     }
 
+    /**
+     *
+     * @param int $number
+     * @return NULL|\Inventory\Domain\Warehouse\Location\BaseLocation
+     */
     public function getLocationByCode($number)
     {
         if ($number == null) {
@@ -556,6 +541,11 @@ class BaseWarehouse extends AbstractWarehouse
         return $this->locationCollection;
     }
 
+    /**
+     *
+     * @param BaseLocation $location
+     * @throws InvalidArgumentException
+     */
     public function addLocation(BaseLocation $location)
     {
         if (! $location instanceof GenericLocation) {
@@ -665,6 +655,34 @@ class BaseWarehouse extends AbstractWarehouse
         }
 
         return null;
+    }
+
+    // ==========================================
+    // ========== PRIVATE ============
+    // ==========================================
+    private function _ensureNotDefaultLocation($localEntity)
+    {
+        Assert::notNull($localEntity, "BaseLocation not found");
+
+        if (\in_array($localEntity->getLocationCode(), \Inventory\Domain\Warehouse\Contracts\DefaultLocation::get())) {
+            throw new \InvalidArgumentException(Translator::translate("Default location can not be changed or removed!"));
+        }
+    }
+
+    /**
+     *
+     * @param BaseCompany $companyEntity
+     * @param BaseWarehouse $baseWarehouse
+     * @throws \InvalidArgumentException
+     */
+    private function _ensureWarehouseOfCompany(BaseCompany $companyEntity, BaseWarehouse $baseWarehouse)
+    {
+        Assert::notNull($companyEntity, "BaseCompany not founds");
+        Assert::notNull($baseWarehouse, "BaseWarehouse not found");
+
+        if ($baseWarehouse->getCompany() != $companyEntity->getId()) {
+            throw new \InvalidArgumentException(Translator::translate("Warehouse does not belong to this company!"));
+        }
     }
 
     // ==========================================

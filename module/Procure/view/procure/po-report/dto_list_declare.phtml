@@ -1,4 +1,5 @@
     <?php
+    use Application\Domain\Util\Pagination\Paginator;
     use Procure\Application\Helper\FormHelper;
     use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
     use Procure\Domain\PurchaseRequest\PRSnapshot;
@@ -9,8 +10,13 @@
      *         ===================================
      */
 
-    /**@var PRSnapshot $rootSnapshot ;*/
-    /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+    /**
+     *
+     * @var PRSnapshot $rootSnapshot ;
+     * @var Paginator $paginator ;
+     *
+     *      /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+     */
 
     // echo $total_records;
     $table_body = "";
@@ -35,7 +41,7 @@
         $result_msg = sprintf("%s records found!", $total_records);
 
         if ($paginator !== null) {
-            $tmp = sprintf('Recored %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+            $tmp = sprintf('Recored %s to %s of %s found!', $paginator->getMinInPage(), $paginator->getMaxInPage(), $total_records);
             $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
         }
 
@@ -44,7 +50,7 @@
             $n ++;
 
             if ($paginator !== null) {
-                $count = $paginator->minInPage - 1 + $n;
+                $count = $paginator->getMinInPage() - 1 + $n;
             } else {
                 $count = $n;
             }

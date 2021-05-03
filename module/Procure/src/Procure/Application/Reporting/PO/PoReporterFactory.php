@@ -2,13 +2,14 @@
 namespace Procure\Application\Reporting\PO;
 
 use Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\PoApReportImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoReporterFactory implements FactoryInterface
 {
@@ -32,6 +33,9 @@ class PoReporterFactory implements FactoryInterface
 
         $sv = $container->get(PoReportRepositoryImpl::class);
         $service->setReportRespository($sv);
+
+        $sv = $container->get(PoApReportImpl::class);
+        $service->setPoApReportRepository($sv);
 
         $sv = $container->get("AppCache");
         $service->setCache($sv);

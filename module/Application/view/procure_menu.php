@@ -11,12 +11,6 @@
          &nbsp;&nbsp;&nbsp;PR list
       </a>
    </li>
-   <li>
-      <a href="/procure/pr-report/row-status">
-         <i class="fa fa-caret-right" aria-hidden="true"></i>
-         &nbsp;&nbsp;&nbsp;PR Row Status
-      </a>
-   </li>
    <li class="divider"></li>
    <li>
       <a href="/procure/qr/create">
@@ -88,6 +82,13 @@
         ?></a>
    </li>
    <li class="divider"></li>
+     <li>
+      <a href="/procure/report/index">
+         <i class="fa fa-book" aria-hidden="true"></i>&nbsp;<?php
+
+        echo $this->translate('Reporting');
+        ?></a>
+   </li>
    <li>
       <a href="/procure/activity-log/list">
          <i class="fa fa-caret-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;<?php

@@ -2,6 +2,7 @@
 namespace Application\Domain\Shared\Assembler;
 
 use Webmozart\Assert\Assert;
+use stdClass;
 
 /**
  *
@@ -260,6 +261,18 @@ class GenericObjectAssembler
     {
         Assert::notNull($className);
         $reflectionClass = new \ReflectionClass($className);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "$modifiers $" . $propertyName . ";";
+        }
+    }
+
+    public static function printAllFieldsOf(stdClass $object, $modifiers = 'public')
+    {
+        Assert::notNull($object);
+        $reflectionClass = new \ReflectionObject($object);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);

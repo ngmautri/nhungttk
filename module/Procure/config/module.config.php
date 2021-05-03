@@ -63,6 +63,8 @@ use Procure\Infrastructure\Persistence\Doctrine\Factory\PoReporterRepositoryImpl
 use Procure\Infrastructure\Persistence\Doctrine\Factory\PrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\PoApReportImpl;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\Factory\PoApReportImplFactory;
 
 return array(
     'navigation' => array(
@@ -144,29 +146,7 @@ return array(
                 'action' => 'index',
                 'icon' => 'fa fa-bar-chart'
             ),
-            array(
-                'label' => 'PR Row Report',
-                'route' => 'procure/default',
-                'controller' => 'pr-report',
-                'action' => 'row-status',
-                'icon' => 'glyphicon glyphicon-list'
-            ),
 
-            array(
-                'label' => 'PO Row Report',
-                'route' => 'procure/default',
-                'controller' => 'po-report',
-                'action' => 'row-status',
-                'icon' => 'glyphicon glyphicon-list'
-            ),
-
-            array(
-                'label' => 'AP Row Report',
-                'route' => 'procure/default',
-                'controller' => 'ap-report',
-                'action' => 'row-status',
-                'icon' => 'glyphicon glyphicon-list'
-            ),
             array(
                 'label' => 'Log',
                 'route' => 'procure/default',
@@ -315,6 +295,7 @@ return array(
             PrReportRepositoryImpl::class => PrReporterRepositoryImplFactory::class,
             PoReportRepositoryImpl::class => PoReporterRepositoryImplFactory::class,
             ProcureReportRepositoryImpl::class => ProcureReporterRepositoryImplFactory::class,
+            PoApReportImpl::class => PoApReportImplFactory::class,
 
             // Shared Service
             SharedQueryServiceImpl::class => SharedQueryServiceImplFactory::class,

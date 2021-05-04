@@ -64,7 +64,9 @@ use Procure\Infrastructure\Persistence\Doctrine\Factory\PrReporterRepositoryImpl
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Reporting\Doctrine\PoApReportImpl;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\PrGrReportImpl;
 use Procure\Infrastructure\Persistence\Reporting\Doctrine\Factory\PoApReportImplFactory;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\Factory\PrGrReportImplFactory;
 
 return array(
     'navigation' => array(
@@ -296,6 +298,7 @@ return array(
             PoReportRepositoryImpl::class => PoReporterRepositoryImplFactory::class,
             ProcureReportRepositoryImpl::class => ProcureReporterRepositoryImplFactory::class,
             PoApReportImpl::class => PoApReportImplFactory::class,
+            PrGrReportImpl::class => PrGrReportImplFactory::class,
 
             // Shared Service
             SharedQueryServiceImpl::class => SharedQueryServiceImplFactory::class,

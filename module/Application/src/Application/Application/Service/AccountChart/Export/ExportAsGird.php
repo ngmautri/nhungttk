@@ -7,7 +7,6 @@ use Application\Domain\Util\Collection\Contracts\FilterInterface;
 use Application\Domain\Util\Collection\Export\AbstractExport;
 use Application\Domain\Util\Collection\Filter\DefaultFilter;
 use Application\Domain\Util\Collection\Formatter\NullFormatter;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -17,7 +16,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 class ExportAsGird extends AbstractExport
 {
 
-    public function execute(ArrayCollection $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Util\Collection\Contracts\ExportInterface::execute()
+     */
+    public function execute(\Traversable $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null)
     {
         if ($collection->isEmpty()) {
             return "Nothing found!";

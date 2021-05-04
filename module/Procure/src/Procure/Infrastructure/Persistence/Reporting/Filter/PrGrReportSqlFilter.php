@@ -1,141 +1,33 @@
 <?php
 namespace Procure\Infrastructure\Persistence\Reporting\Filter;
 
-use Procure\Infrastructure\Persistence\Reporting\Contracts\SqlFilterInterface;
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PrGrReportSqlFilter implements SqlFilterInterface
+class PrGrReportSqlFilter extends AbstractProcureAppSqlFilter
 {
-
-    public $isActive;
-
-    public $docYear;
-
-    public $docMonth;
-
-    public $currentState;
-
-    public $docStatus;
-
-    public $balance;
 
     public $vendorId;
 
+    public $warehouseId;
+
+    public $isActive;
+
+    public $isRowActive;
+
+    public $fromDate;
+
+    public $toDate;
+
+    public $docStatus;
+
     public function __toString()
     {
-        return \sprintf("ApReportSqlFilter_%s_%s_%s_%s_%s_%s", $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance, $this->vendorId);
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDocYear()
-    {
-        return $this->docYear;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDocMonth()
-    {
-        return $this->docMonth;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCurrentState()
-    {
-        return $this->currentState;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDocStatus()
-    {
-        return $this->docStatus;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getBalance()
-    {
-        return $this->balance;
-    }
-
-    /**
-     *
-     * @param mixed $isActive
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    }
-
-    /**
-     *
-     * @param mixed $docYear
-     */
-    public function setDocYear($docYear)
-    {
-        $this->docYear = $docYear;
-    }
-
-    /**
-     *
-     * @param mixed $docMonth
-     */
-    public function setDocMonth($docMonth)
-    {
-        $this->docMonth = $docMonth;
-    }
-
-    /**
-     *
-     * @param mixed $currentState
-     */
-    public function setCurrentState($currentState)
-    {
-        $this->currentState = $currentState;
-    }
-
-    /**
-     *
-     * @param mixed $docStatus
-     */
-    public function setDocStatus($docStatus)
-    {
-        $this->docStatus = $docStatus;
-    }
-
-    /**
-     *
-     * @param mixed $balance
-     */
-    public function setBalance($balance)
-    {
-        $this->balance = $balance;
+        $f = ("PrGrReportFilter_%s_%s_%s_%s_%s_%s_%s_%s");
+        $t = \sprintf($f, $this->getCompanyId(), $this->getVendorId(), $this->getIsActive(), $this->getIsRowActive(), $this->getDocStatus(), $this->getFromDate(), $this->getToDate(), $this->getWarehouseId());
+        return $t;
     }
 
     /**
@@ -154,5 +46,113 @@ class PrGrReportSqlFilter implements SqlFilterInterface
     public function setVendorId($vendorId)
     {
         $this->vendorId = $vendorId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     *
+     * @param mixed $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getFromDate()
+    {
+        return $this->fromDate;
+    }
+
+    /**
+     *
+     * @param mixed $fromDate
+     */
+    public function setFromDate($fromDate)
+    {
+        $this->fromDate = $fromDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getToDate()
+    {
+        return $this->toDate;
+    }
+
+    /**
+     *
+     * @param mixed $toDate
+     */
+    public function setToDate($toDate)
+    {
+        $this->toDate = $toDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
+    }
+
+    /**
+     *
+     * @param mixed $docStatus
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsRowActive()
+    {
+        return $this->isRowActive;
+    }
+
+    /**
+     *
+     * @param mixed $isRowActive
+     */
+    public function setIsRowActive($isRowActive)
+    {
+        $this->isRowActive = $isRowActive;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getWarehouseId()
+    {
+        return $this->warehouseId;
+    }
+
+    /**
+     *
+     * @param mixed $warehouseId
+     */
+    public function setWarehouseId($warehouseId)
+    {
+        $this->warehouseId = $warehouseId;
     }
 }

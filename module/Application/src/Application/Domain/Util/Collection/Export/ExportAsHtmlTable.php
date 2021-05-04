@@ -2,12 +2,12 @@
 namespace Application\Domain\Util\Collection\Export;
 
 use Application\Application\Helper\FormHelper;
-use Application\Domain\Util\Collection\GenericCollection;
 use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
 use Application\Domain\Util\Collection\Contracts\FilterInterface;
 use Application\Domain\Util\Collection\Filter\DefaultFilter;
 use Application\Domain\Util\Collection\Formatter\NullFormatter;
 use Application\Domain\Util\Pagination\Paginator;
+use Traversable;
 
 /**
  *
@@ -25,7 +25,7 @@ class ExportAsHtmlTable extends AbstractExport
 
     private $baseUrl;
 
-    public function execute(GenericCollection $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null)
+    public function execute(Traversable $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null)
     {
         if ($collection->isEmpty()) {
             return "Nothing found!";

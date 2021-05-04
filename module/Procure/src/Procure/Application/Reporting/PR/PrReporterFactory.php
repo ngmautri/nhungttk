@@ -2,13 +2,14 @@
 namespace Procure\Application\Reporting\PR;
 
 use Procure\Infrastructure\Persistence\Doctrine\PrReportRepositoryImpl;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\PrGrReportImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PrReporterFactory implements FactoryInterface
 {
@@ -36,6 +37,9 @@ class PrReporterFactory implements FactoryInterface
 
         $sv = $container->get(PrReportRepositoryImpl::class);
         $service->setReporterRespository($sv);
+
+        $sv = $container->get(PrGrReportImpl::class);
+        $service->setPrGrReportRepository($sv);
 
         return $service;
     }

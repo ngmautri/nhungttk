@@ -1,7 +1,12 @@
 <?php
 namespace Procure\Application\Reporting\PR;
 
+use Application\Application\Service\Document\Spreadsheet\DefaultExcelBuilder;
+use Application\Application\Service\Document\Spreadsheet\DefaultOpenOfficeBuilder;
 use Application\Service\AbstractService;
+use Doctrine\Common\Collections\ArrayCollection;
+use Procure\Application\Reporting\PR\Export\ExportAsExcel;
+use Procure\Application\Reporting\PR\Export\ExportAsOpenOffice;
 use Procure\Application\Reporting\PR\Output\SaveAsExcel;
 use Procure\Application\Reporting\PR\Output\SaveAsHTML;
 use Procure\Application\Reporting\PR\Output\SaveAsOpenOffice;
@@ -17,12 +22,14 @@ use Procure\Application\Service\Output\Formatter\Header\DefaultHeaderFormatter;
 use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Persistence\PrReportRepositoryInterface;
+use Procure\Infrastructure\Persistence\Reporting\Contracts\PrGrReportInterface;
+use Procure\Infrastructure\Persistence\Reporting\Contracts\ProcureAppSqlFilterInterface;
 
 /**
  * PR Reporter
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PrReporter extends AbstractService
 {
@@ -32,6 +39,72 @@ class PrReporter extends AbstractService
      * @var PrReportRepositoryInterface $reporterRespository;
      */
     protected $reporterRespository;
+
+    private $prGrReportRepository;
+
+    /**
+     *
+     * @param ProcureAppSqlFilterInterface $filter
+     * @param string $file_type
+     * @param int $totalRecords
+     * @return NULL|array|\Doctrine\Common\Collections\ArrayCollection|NULL|string
+     */
+    public function getPrGrReport(ProcureAppSqlFilterInterface $filter, $file_type, $totalRecords)
+    {
+
+        /**
+         *
+         * @var ArrayCollection $result
+         */
+        $result = $this->getPrGrReportRepository()->getList($filter);
+        if ($result->isEmpty()) {
+            return null;
+        }
+
+        $factory = null;
+
+        switch ($file_type) {
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new DefaultExcelBuilder();
+                $factory = new ExportAsExcel($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new DefaultOpenOfficeBuilder();
+                $factory = new ExportAsOpenOffice($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                return $result->toArray();
+
+            default:
+                return $result;
+        }
+
+        return $factory->execute($result);
+    }
+
+    /**
+     *
+     * @param SqlFilterInterface $filter
+     * @return mixed
+     */
+    public function getPrGrReportTotal(ProcureAppSqlFilterInterface $filter)
+    {
+        $key = \sprintf("total_list_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getPrGrReportRepository()->getListTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+        return $total;
+    }
 
     public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $outputStrategy = null)
     {
@@ -242,5 +315,23 @@ class PrReporter extends AbstractService
     public function getReporterRespository()
     {
         return $this->reporterRespository;
+    }
+
+    /**
+     *
+     * @return \Procure\Infrastructure\Persistence\Reporting\Contracts\PrGrReportInterface
+     */
+    public function getPrGrReportRepository()
+    {
+        return $this->prGrReportRepository;
+    }
+
+    /**
+     *
+     * @param PrGrReportInterface $prGrReportRepository
+     */
+    public function setPrGrReportRepository(PrGrReportInterface $prGrReportRepository)
+    {
+        $this->prGrReportRepository = $prGrReportRepository;
     }
 }

@@ -330,8 +330,8 @@ class PoReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $paginator->getLimit();
+            $offset = $paginator->getOffset();
         }
 
         $list = $this->getReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);

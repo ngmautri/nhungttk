@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Reporting\PO\Export;
+namespace Procure\Application\Reporting\PR\Export;
 
 use Application\Domain\Util\ExcelColumnMap;
 use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
@@ -58,15 +58,16 @@ class ExportAsExcel extends AbstractExportAsSpreadsheet
             "Vendor",
             "DocNo",
             "DocSys",
-            "Curr",
-            "ItemId",
+            "WH",
+            "Item",
             "Item",
             "RowiD",
             "Row#",
-            "Qty",
+            "DocQty",
+            "CF",
+            "Standard Qty",
             "UP",
-            "PrId",
-            "PoId"
+            "PrId"
         ];
 
         $n = 0;
@@ -96,15 +97,16 @@ class ExportAsExcel extends AbstractExportAsSpreadsheet
                 $row['vendorName'],
                 $row['docNumber'],
                 $row['docSysNumber'],
-                $row['docCurrency'],
-                $row['itemSysNumber'],
+                $row['warehouseName'],
                 $row['itemName'],
+                $row['itemSysNumber'],
                 $row['rowId'],
                 $row['rowIdentifer'],
+                $row['rowDocQuantity'],
+                $row['rowStandardConvertFactor'],
                 $row['convertedStandardQuantity'],
                 $row['convertedStandardUnitPrice'],
-                $row['prRowId'],
-                $row['poRowId']
+                $row['prRowId']
             ];
 
             $n = 0;

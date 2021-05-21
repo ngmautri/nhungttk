@@ -1,25 +1,34 @@
 <?php
 namespace Application;
 
-use Zend\Mvc\ModuleRouteListener;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Mvc\MvcEvent;
-use Zend\Session\Container;
-use Application\Model\AclRoleTable;
 use Application\Model\AclRole;
-use Zend\Db\Adapter\Adapter;
+use Application\Model\AclRoleTable;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter as DbTableAuthAdapter;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\TableGateway\TableGateway;
+use Zend\Mvc\ModuleRouteListener;
+use Zend\Mvc\MvcEvent;
+use Zend\Session\Container;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class Module
 {
 
+    /*
+     * |--------------------------------------------------------------------------
+     * | Password Reminder Language Lines
+     * |--------------------------------------------------------------------------
+     * |
+     * | The following language lines are the default lines which match reasons
+     * | that are given by the password broker for a password update attempt
+     * | has failed, such as for an invalid token or invalid new password.
+     * |
+     */
     public function onBootstrap(MvcEvent $e)
     {
         $eventManager = $e->getApplication()->getEventManager();

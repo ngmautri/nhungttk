@@ -16,7 +16,7 @@ class DTOCodeGenerateTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = DepartmentSnapshotAssembler::createFormElementsFor(DepartmentSnapshot::class);
+            $result = DepartmentSnapshotAssembler::createFormElementsExclude(DepartmentSnapshot::class);
             // \var_dump(($result));
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

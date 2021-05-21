@@ -1,4 +1,5 @@
 <?php
+use Application\Domain\Util\Pagination\Paginator;
 use Procure\Application\DTO\Pr\PrHeaderDetailDTO;
 use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
@@ -13,8 +14,11 @@ use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 
 /**@var PrHeaderDetailDTO $rootSnapshot ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-/**@var PrReportSqlFilter $filter ;*/
-
+/**
+ *
+ * @var PrReportSqlFilter $filter ;
+ * @var Paginator $paginator ;
+ */
 // echo $total_records;
 $table_body = "";
 $count = 0;
@@ -39,7 +43,7 @@ if (count($list) > 0) {
     $result_msg = sprintf("%s records found!", $total_records);
 
     if ($paginator !== null) {
-        $tmp = sprintf('Records %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $tmp = sprintf('Records %s to %s of %s found!', $paginator->getMinInPage(), $paginator->getMaxInPage(), $total_records);
         $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
     }
 
@@ -48,7 +52,7 @@ if (count($list) > 0) {
         $n ++;
 
         if ($paginator !== null) {
-            $count = $paginator->minInPage - 1 + $n;
+            $count = $paginator->getMinInPage() - 1 + $n;
         } else {
             $count = $n;
         }
@@ -365,7 +369,7 @@ echo $table_body;
 
 <?php
 // ===============================
-echo FormHelper::createPaginator($base, $paginator, "&");
+echo FormHelper::createNewPaginator($base, $paginator, "&");
 // ===============================
 ?>
 

@@ -23,14 +23,13 @@ use Procure\Infrastructure\Persistence\ApReportRepositoryInterface;
  * AP Row Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApReporter extends AbstractService
 {
 
     private $reporterRespository;
 
-    // Header
     public function getList($filter, $sort_by, $sort, $limit, $offset, $file_type)
     {
         if (! $filter instanceof SqlFilterInterface) {
@@ -135,9 +134,16 @@ class ApReporter extends AbstractService
                 break;
         }
 
+        // take long time
+        set_time_limit(1500);
         return $factory->saveAs($results, $formatter);
     }
 
+    /**
+     *
+     * @param SqlFilterInterface $filter
+     * @return mixed
+     */
     public function getAllRowTotal(SqlFilterInterface $filter)
     {
         $key = \sprintf("total_rows_%s", $filter->__toString());

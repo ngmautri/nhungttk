@@ -53,7 +53,7 @@ $transactionStatus = "";
 $alert = "info";
 
 $upload_btn = "";
-$rows_upload_url = "/procure/po /upload-rows";
+$rows_upload_url = "/procure/po/upload-rows";
 
 if (! $headerDTO == null) {
 
@@ -344,11 +344,13 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
 
 
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+
 
 
 

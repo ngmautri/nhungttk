@@ -17,7 +17,7 @@ class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
             // $result = GenericSnapshotAssembler::findMissingProps(NmtInventoryItem::class, GenericItem::class);
             // $result = GenericSnapshotAssembler::findMissingProps(GenericItem::class, GenericItemSnapshot::class);
 
-            // $result = GenericSnapshotAssembler::findMissingProps(AppCoa::class, AbstractChart::class);
+            // $result = GenericSnapshotAssembler::(AppCoa::class, AbstractChart::class);
             // $result = GenericSnapshotAssembler::findMissingProps(AppCoaAccount::class, AbstractAccount::class);
 
             // $result = GenericSnapshotAssembler::findMissingProps(AbstractAccount::class, AccountSnapshot::class);

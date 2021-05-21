@@ -4,10 +4,13 @@ namespace Application\Domain\Company;
 use Application\Domain\Company\AccountChart\ChartSnapshot;
 use Application\Domain\Company\AccountChart\Factory\ChartFactory;
 use Application\Domain\Company\Collection\AccountChartCollection;
+use Application\Domain\Company\Collection\ItemAttributeGroupCollection;
 use Application\Domain\Company\Collection\WarehouseCollection;
 use Application\Domain\Company\Department\BaseDepartmentSnapshot;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Company\Department\Factory\DepartmentFactory;
+use Application\Domain\Company\ItemAttribute\AttributeGroupSnapshot;
+use Application\Domain\Company\ItemAttribute\Factory\ItemAttributeFactory;
 use Application\Domain\Service\SharedService;
 use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
@@ -39,6 +42,10 @@ class BaseCompany extends AbstractCompany
 
     protected $postingPeriodCollectionRef;
 
+    protected $itemAttributeCollection;
+
+    protected $itemAttributeCollectionRef;
+
     /**
      *
      * @return \Application\Domain\Company\CompanyVO
@@ -48,6 +55,21 @@ class BaseCompany extends AbstractCompany
         $vo = new CompanyVO();
         GenericObjectAssembler::updateAllFieldsFrom($vo, $this);
         return $vo;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Company\Collection\ItemAttributeGroupCollection|mixed
+     */
+    public function getLazyItemAttributeGroupCollection()
+    {
+        $ref = $this->get();
+        if (! $ref instanceof Closure) {
+            return new ItemAttributeGroupCollection();
+        }
+
+        $this->itemAttributeCollection = $ref();
+        return $this->itemAttributeCollection;
     }
 
     /**
@@ -102,9 +124,20 @@ class BaseCompany extends AbstractCompany
         return $this->postingPeriodCollection;
     }
 
-    // ==========================================
-    // ===========Facade ========================
-    // ==========================================
+    /*
+     * |=================================
+     * |Facade Pattern
+     * |
+     * | delegating to
+     * | AccountChart, Warehouse, Department, PostingPeriode, ItemAttribute;
+     * |
+     * |==================================
+     */
+    public function createItemAttributeGroupFrom(AttributeGroupSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService, $storeNow = true)
+    {
+        return ItemAttributeFactory::createFrom($this, $snapshot, $options, $sharedService);
+    }
+
     /**
      *
      * @param ChartSnapshot $snapshot
@@ -312,5 +345,41 @@ class BaseCompany extends AbstractCompany
     public function setPostingPeriodCollectionRef(Closure $postingPeriodCollectionRef)
     {
         $this->postingPeriodCollectionRef = $postingPeriodCollectionRef;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemAttributeCollection()
+    {
+        return $this->itemAttributeCollection;
+    }
+
+    /**
+     *
+     * @param mixed $itemAttributeCollection
+     */
+    public function setItemAttributeCollection($itemAttributeCollection)
+    {
+        $this->itemAttributeCollection = $itemAttributeCollection;
+    }
+
+    /**
+     *
+     * @return Closure
+     */
+    public function getItemAttributeCollectionRef()
+    {
+        return $this->itemAttributeCollectionRef;
+    }
+
+    /**
+     *
+     * @param Closure $itemAttributeCollectionRef
+     */
+    public function setItemAttributeCollectionRef(Closure $itemAttributeCollectionRef)
+    {
+        $this->itemAttributeCollectionRef = $itemAttributeCollectionRef;
     }
 }

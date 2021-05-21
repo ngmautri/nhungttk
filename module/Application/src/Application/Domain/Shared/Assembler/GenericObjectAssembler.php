@@ -2,7 +2,10 @@
 namespace Application\Domain\Shared\Assembler;
 
 use Webmozart\Assert\Assert;
+use Zend\Server\Reflection\ReflectionClass;
 use stdClass;
+use mindplay\annotations\AnnotationCache;
+use mindplay\annotations\Annotations;
 
 /**
  *
@@ -296,6 +299,117 @@ class GenericObjectAssembler
                 $propertyName = $property->getName();
                 print "\n" . "$modifiers $" . $propertyName . ";";
             }
+        }
+    }
+
+    public static function getMethodsComments($className)
+    {
+        $cachePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'runtime';
+
+        Annotations::$config = array(
+            'cache' => new AnnotationCache($cachePath)
+        );
+
+        Assert::notNull($className);
+
+        $reflectionClass = new \ReflectionClass($className);
+
+        $methods = $reflectionClass->getMethods();
+
+        $manager = Annotations::getManager();
+        $manager->autoload = null;
+
+        foreach ($methods as $m) {
+
+            /**
+             *
+             * @var \ReflectionMethod $m ;
+             */
+            $comments = $m->getDocComment();
+            // \var_dump($manager->getMethodAnnotations($m));
+
+            $comments = $m->getDocComment();
+
+            $comments = \trim(\preg_replace('/^[\/\*\# \t]+/m', '', $comments)) . "\n";
+            $comments = \str_replace("\r\n", "", $comments);
+            $comments = \str_replace("\n", "", $comments);
+            $a = \explode('@', $comments);
+
+            var_dump($a);
+
+            // echo $m->getName();
+            // var_dump(strpos($comments, '@param'));
+            // echo $comments . "\n";
+        }
+    }
+
+    public static function getMethodsCommentsWithZendReflection($className)
+    {
+        $cachePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'runtime';
+
+        Annotations::$config = array(
+            'cache' => new AnnotationCache($cachePath)
+        );
+
+        Assert::notNull($className);
+
+        $reflectionClass = new \ReflectionClass($className);
+
+        $refClass = new ReflectionClass($reflectionClass);
+
+        $methods = $reflectionClass->getMethods();
+
+        $manager = Annotations::getManager();
+
+        foreach ($methods as $m) {
+
+            /**
+             *
+             * @var \ReflectionMethod $m ;
+             */
+            $comments = $m->getDocComment();
+
+            $str = \trim(\preg_replace('/^[\/\*\# \t]+/m', '', $comments)) . "\n";
+            $str = \str_replace("\r\n", "\n", $str);
+
+            // \var_dump($manager->getMethodAnnotations($m));
+
+            // $refMethod = new ReflectionMethod($refClass, $m);
+
+            echo $m->getName();
+            // var_dump($refMethod->getDescription());
+            \var_dump($comments);
+        }
+    }
+
+    public static function getPropsComments($className)
+    {
+        $cachePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'runtime';
+
+        Annotations::$config = array(
+            'cache' => new AnnotationCache($cachePath)
+        );
+
+        Assert::notNull($className);
+
+        $reflectionClass = new \ReflectionClass($className);
+
+        $props = $reflectionClass->getProperties();
+
+        $manager = Annotations::getManager();
+
+        foreach ($props as $p) {
+
+            /**
+             *
+             * @var \ReflectionProperty $p ;
+             */
+            $comments = $p->getDocComment();
+            // \var_dump($manager->getMethodAnnotations($m));
+
+            echo $p->getName();
+            var_dump(strpos($comments, '@param'));
+            // \var_dump($comments);
         }
     }
 }

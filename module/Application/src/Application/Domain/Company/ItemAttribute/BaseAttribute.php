@@ -1,8 +1,6 @@
 <?php
 namespace Application\Domain\Company\ItemAttribute;
 
-use Application\Domain\Company\AccountChart\BaseAccount;
-use Application\Domain\Company\AccountChart\BaseAccountSnapshot;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
@@ -13,22 +11,27 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 class BaseAttribute extends AbstractAttribute
 {
 
-    public function equals(BaseAccount $other)
+    /**
+     *
+     * @param BaseAttribute $other
+     * @return boolean
+     */
+    public function equals(BaseAttribute $other)
     {
         if ($other == null) {
             return false;
         }
 
-        return \strtolower(trim($this->getAccountNumer())) == \strtolower(trim($other->getAccountNumer()));
+        return \strtolower(trim($this->getAttributeName())) == \strtolower(trim($other->getAttributeName()));
     }
 
     /**
      *
-     * @return \Application\Domain\Company\AccountChart\BaseAccountSnapshot
+     * @return \Application\Domain\Company\ItemAttribute\BaseAttributeSnapshot
      */
     public function makeSnapshot()
     {
-        $snapshot = new BaseAccountSnapshot();
+        $snapshot = new BaseAttributeSnapshot();
         GenericObjectAssembler::updateAllFieldsFrom($snapshot, $this);
         return $snapshot;
     }

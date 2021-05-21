@@ -5,6 +5,7 @@ use Application\Domain\Company\BaseCompany;
 use Application\Domain\Company\GenericCompany;
 use Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface;
 use Application\Domain\Company\Department\DepartmentSnapshot;
+use Application\Domain\Company\ItemAttribute\Repository\ItemAttributeCmdRepositoryInterface;
 use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
 
 /**
@@ -12,7 +13,7 @@ use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-Interface CompanyCmdRepositoryInterface extends WhCmdRepositoryInterface, ChartCmdRepositoryInterface
+Interface CompanyCmdRepositoryInterface extends WhCmdRepositoryInterface, ChartCmdRepositoryInterface, ItemAttributeCmdRepositoryInterface
 {
 
     public function storeCompany(GenericCompany $company);

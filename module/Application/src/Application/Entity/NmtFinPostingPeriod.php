@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -9,10 +8,13 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_fin_posting_period", uniqueConstraints={@ORM\UniqueConstraint(name="posting_from_date_UNIQUE", columns={"posting_from_date"}), @ORM\UniqueConstraint(name="posting_to_date_UNIQUE", columns={"posting_to_date"})}, indexes={@ORM\Index(name="nmt_fin_posting_period_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_fin_posting_period_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_fin_posting_period_IDX1", columns={"posting_from_date"}), @ORM\Index(name="nmt_fin_posting_period_IDX2", columns={"posting_to_date"}), @ORM\Index(name="nmt_fin_posting_period_FK3_idx", columns={"company_id"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtFinPostingPeriodRepository")
  */
 class NmtFinPostingPeriod
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +24,7 @@ class NmtFinPostingPeriod
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +32,7 @@ class NmtFinPostingPeriod
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="period_code", type="string", length=20, nullable=false)
@@ -36,6 +40,7 @@ class NmtFinPostingPeriod
     private $periodCode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="period_name", type="string", length=20, nullable=false)
@@ -43,6 +48,7 @@ class NmtFinPostingPeriod
     private $periodName;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_from_date", type="datetime", nullable=true)
@@ -50,6 +56,7 @@ class NmtFinPostingPeriod
     private $postingFromDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_to_date", type="datetime", nullable=true)
@@ -57,6 +64,7 @@ class NmtFinPostingPeriod
     private $postingToDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="period_status", type="string", nullable=false)
@@ -64,6 +72,7 @@ class NmtFinPostingPeriod
     private $periodStatus;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -71,6 +80,7 @@ class NmtFinPostingPeriod
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -78,6 +88,7 @@ class NmtFinPostingPeriod
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="plan_working_days", type="integer", nullable=true)
@@ -85,6 +96,7 @@ class NmtFinPostingPeriod
     private $planWorkingDays;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="actual_workding_days", type="integer", nullable=true)
@@ -92,6 +104,7 @@ class NmtFinPostingPeriod
     private $actualWorkdingDays;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="cooperate_leave", type="integer", nullable=true)
@@ -99,6 +112,7 @@ class NmtFinPostingPeriod
     private $cooperateLeave;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="national_holidays", type="integer", nullable=true)
@@ -106,6 +120,7 @@ class NmtFinPostingPeriod
     private $nationalHolidays;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
@@ -113,6 +128,7 @@ class NmtFinPostingPeriod
     private $remarks;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -123,6 +139,7 @@ class NmtFinPostingPeriod
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -133,6 +150,7 @@ class NmtFinPostingPeriod
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -141,8 +159,6 @@ class NmtFinPostingPeriod
      * })
      */
     private $company;
-
-
 
     /**
      * Get id

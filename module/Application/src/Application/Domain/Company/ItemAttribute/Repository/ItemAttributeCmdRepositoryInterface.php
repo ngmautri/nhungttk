@@ -2,8 +2,8 @@
 namespace Application\Domain\Company\ItemAttribute\Repository;
 
 use Application\Domain\Company\BaseCompany;
-use Application\Domain\Company\AccountChart\BaseAccount;
-use Application\Domain\Company\AccountChart\BaseChart;
+use Application\Domain\Company\ItemAttribute\BaseAttribute;
+use Application\Domain\Company\ItemAttribute\BaseAttributeGroup;
 
 /**
  *
@@ -13,13 +13,13 @@ use Application\Domain\Company\AccountChart\BaseChart;
 Interface ItemAttributeCmdRepositoryInterface
 {
 
-    public function storeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false);
+    public function storeAttributeGroup(BaseCompany $rootEntity, BaseAttributeGroup $localEntity, $isPosting = false);
 
-    public function storeWholeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false);
+    public function storeWholeAttributeGroup(BaseCompany $rootEntity, BaseAttributeGroup $localEntity, $isPosting = false);
 
-    public function removeChart(BaseCompany $rootEntity, BaseChart $localEntity, $isPosting = false);
+    public function removeAttributeGroup(BaseCompany $rootEntity, BaseAttributeGroup $localEntity, $isPosting = false);
 
-    public function storeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false);
+    public function storeAttribute(BaseAttributeGroup $rootEntity, BaseAttribute $localEntity, $isPosting = false);
 
-    public function removeAccount(BaseChart $rootEntity, BaseAccount $localEntity, $isPosting = false);
+    public function removeAttribute(BaseAttributeGroup $rootEntity, BaseAttribute $localEntity, $isPosting = false);
 }

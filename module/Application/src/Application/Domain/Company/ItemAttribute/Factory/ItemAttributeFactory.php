@@ -3,17 +3,15 @@ namespace Application\Domain\Company\ItemAttribute\Factory;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Company\BaseCompany;
-use Application\Domain\Company\CompanySnapshot;
-use Application\Domain\Company\AccountChart\BaseChart;
-use Application\Domain\Company\AccountChart\ChartSnapshot;
-use Application\Domain\Company\AccountChart\ChartSnapshotAssembler;
-use Application\Domain\Company\AccountChart\Validator\ChartValidatorFactory;
 use Application\Domain\Company\ItemAttribute\AttributeGroupSnapshot;
+use Application\Domain\Company\ItemAttribute\AttributeGroupSnapshotAssembler;
+use Application\Domain\Company\ItemAttribute\BaseAttributeGroup;
 use Application\Domain\Company\ItemAttribute\BaseAttributeGroupSnapshot;
 use Application\Domain\Company\ItemAttribute\GenericAttributeGroup;
+use Application\Domain\Company\ItemAttribute\Validator\ItemAttributeValidatorFactory;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
-use Application\Domain\Event\Company\CompanyUpdated;
-use Application\Domain\Event\Company\AccountChart\ChartCreated;
+use Application\Domain\Event\Company\ItemAttribute\AttributeGroupCreated;
+use Application\Domain\Event\Company\ItemAttribute\AttributeGroupUpdated;
 use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
@@ -52,7 +50,7 @@ class ItemAttributeFactory
      * @param CommandOptions $options
      * @param SharedServiceInterface $sharedService
      * @throws \InvalidArgumentException
-     * @return \Application\Domain\Company\AccountChart\GenericChart
+     * @return \Application\Domain\Company\ItemAttribute\GenericAttributeGroup
      */
     public static function createFrom(BaseCompany $companyEntity, BaseAttributeGroupSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService)
     {
@@ -64,16 +62,16 @@ class ItemAttributeFactory
         $snapshot->init($options);
         GenericObjectAssembler::updateAllFieldsFrom($localEntity, $snapshot);
 
-        $chartCollection = $companyEntity->getLazyAccountChartCollection();
+        $attributeCollection = $companyEntity->getLazyItemAttributeGroupCollection();
 
-        if ($chartCollection->isExits($localEntity)) {
+        if ($attributeCollection->isExits($localEntity)) {
             throw new \InvalidArgumentException(\sprintf("Attribute Group (%s) exits already!", $localEntity->getGroupName()));
         }
 
-        $validationService = ChartValidatorFactory::forCreatingChart($sharedService);
+        $validationService = ItemAttributeValidatorFactory::forCreatingAttributeGroup($sharedService);
 
         // create default location.
-        $localEntity->validateChart($validationService);
+        $localEntity->validateAttributeGroup($validationService);
 
         if ($localEntity->hasErrors()) {
             throw new \InvalidArgumentException($localEntity->getNotification()->errorMessage());
@@ -83,11 +81,11 @@ class ItemAttributeFactory
 
         /**
          *
-         * @var ChartSnapshot $localSnapshot ;
+         * @var AttributeGroupSnapshot $localSnapshot ;
          * @var CompanyCmdRepositoryInterface $rep ;
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $localSnapshot = $rep->storeAccountChart($companyEntity, $localEntity, true);
+        $localSnapshot = $rep->storeAttributeGroup($companyEntity, $localEntity, true);
 
         $target = $localSnapshot;
         $defaultParams = new DefaultParameter();
@@ -98,36 +96,47 @@ class ItemAttributeFactory
         $defaultParams->setUserId($options->getUserId());
         $params = null;
 
-        $event = new ChartCreated($target, $defaultParams, $params);
+        $event = new AttributeGroupCreated($target, $defaultParams, $params);
         $localEntity->addEvent($event);
         return $localEntity;
     }
 
-    public static function updateFrom(BaseChart $companyEntity, ChartSnapshot $snapshot, CommandOptions $options, $params, SharedServiceInterface $sharedService)
+    /**
+     *
+     * @param BaseAttributeGroup $entity
+     * @param BaseAttributeGroupSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param SharedServiceInterface $sharedService
+     * @throws \RuntimeException
+     * @return \Application\Domain\Company\ItemAttribute\BaseAttributeGroup
+     */
+    public static function updateFrom(BaseAttributeGroup $entity, BaseAttributeGroupSnapshot $snapshot, CommandOptions $options, $params, SharedServiceInterface $sharedService)
     {
-        Assert::notNull($companyEntity, "BaseChart not found.");
-        Assert::notNull($snapshot, "ChartSnapshot not found!");
+        Assert::notNull($entity, "BaseAttributeGroupSnapshot not found.");
+        Assert::notNull($snapshot, "BaseAttributeGroupSnapshot not found!");
         Assert::notNull($options, "Cmd options not found!");
         Assert::notNull($options, "SharedService service not found!");
 
-        ChartSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($companyEntity, $snapshot);
+        AttributeGroupSnapshotAssembler::updateDefaultExcludedFieldsFrom($entity, $snapshot);
 
         $snapshot->update($options);
-        $validationService = ChartValidatorFactory::create($sharedService);
-        $companyEntity->validate($validationService);
+        $validationService = ItemAttributeValidatorFactory::forCreatingAttributeGroup($sharedService);
 
-        if ($companyEntity->hasErrors()) {
-            throw new \RuntimeException($companyEntity->getNotification()->errorMessage());
+        $entity->validateAttributeGroup($validationService);
+
+        if ($entity->hasErrors()) {
+            throw new \RuntimeException($entity->getNotification()->errorMessage());
         }
 
-        $companyEntity->clearEvents();
+        $entity->clearEvents();
         /**
          *
-         * @var CompanySnapshot $rootSnapshot ;
+         * @var AttributeGroupSnapshot $rootSnapshot ;
          * @var CompanyCmdRepositoryInterface $rep ;
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->store($companyEntity, true);
+        $rootSnapshot = $rep->store($entity, true);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -137,9 +146,9 @@ class ItemAttributeFactory
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
 
-        $event = new CompanyUpdated($target, $defaultParams, $params);
-        $companyEntity->addEvent($event);
+        $event = new AttributeGroupUpdated($target, $defaultParams, $params);
+        $entity->addEvent($event);
 
-        return $companyEntity;
+        return $entity;
     }
 }

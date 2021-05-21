@@ -18,7 +18,7 @@ use Exception;
 class DefaultItemAttributeGroupTree extends AbstractTree
 {
 
-    private $chart;
+    private $attributeGroup;
 
     public function __construct(BaseChart $chart)
     {

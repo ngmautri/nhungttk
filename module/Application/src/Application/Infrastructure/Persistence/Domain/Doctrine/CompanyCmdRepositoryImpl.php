@@ -8,6 +8,9 @@ use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Company\Department\Repository\DepartmentCmdRepositoryInterface;
+use Application\Domain\Company\ItemAttribute\BaseAttribute;
+use Application\Domain\Company\ItemAttribute\BaseAttributeGroup;
+use Application\Domain\Company\ItemAttribute\Repository\ItemAttributeCmdRepositoryInterface;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Entity\NmtApplicationCompany;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
@@ -30,14 +33,61 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
 
     private $whCmdRepository;
 
+    private $itemAttributeCmdRepository;
+
     const COMPANY_ENTITY_NAME = "\Application\Entity\NmtApplicationCompany";
 
     public function storeCompany(GenericCompany $company)
     {}
 
-    // ================================================================
-    // Delegation
-    // ================================================================
+    /*
+     * |=================================
+     * | Facade Pattern
+     * |
+     * | delegating to underlying repository.
+     * | AccountChart, Warehouse, Department, PostingPeriode, ItemAttribute...;
+     * |
+     * |==================================
+     */
+
+    // +++++++++++++++++++++
+    // Item Attribute
+    // +++++++++++++++++++++
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\ItemAttribute\Repository\ItemAttributeCmdRepositoryInterface::removeAttributeGroup()
+     */
+    public function removeAttributeGroup(BaseCompany $rootEntity, BaseAttributeGroup $localEntity, $isPosting = false)
+    {
+        $this->assertItemAttributeRepository();
+        return $this->getItemAttributeCmdRepository()->removeAttributeGroup($rootEntity, $localEntity);
+    }
+
+    public function storeWholeAttributeGroup(BaseCompany $rootEntity, BaseAttributeGroup $localEntity, $isPosting = false)
+    {
+        $this->assertItemAttributeRepository();
+        return $this->getItemAttributeCmdRepository()->storeWholeAttributeGroup($rootEntity, $localEntity);
+    }
+
+    public function storeAttribute(BaseAttributeGroup $rootEntity, BaseAttribute $localEntity, $isPosting = false)
+    {
+        $this->assertItemAttributeRepository();
+        return $this->getItemAttributeCmdRepository()->storeAttribute($rootEntity, $localEntity);
+    }
+
+    public function storeAttributeGroup(BaseCompany $rootEntity, BaseAttributeGroup $localEntity, $isPosting = false)
+    {
+        $this->assertItemAttributeRepository();
+        return $this->getItemAttributeCmdRepository()->storeAttributeGroup($rootEntity, $localEntity);
+    }
+
+    public function removeAttribute(BaseAttributeGroup $rootEntity, BaseAttribute $localEntity, $isPosting = false)
+    {
+        $this->assertItemAttributeRepository();
+        return $this->getItemAttributeCmdRepository()->removeAttribute($rootEntity, $localEntity);
+    }
 
     // +++++++++++++++++++++
     // Warehouse
@@ -144,10 +194,21 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     public function storePostingPeriod(GenericCompany $company)
     {}
 
-    // ==============================================
-    // SETTER AND GETTER
-    // ==============================================
+    /*
+     * |=================================
+     * | Assert underlying repository
+     * |
+     * |==================================
+     */
+    private function assertItemAttributeRepository()
+    {
+        if ($this->getItemAttributeCmdRepository() == null) {
+            throw new InvalidArgumentException("Item Attribute repository is not found!");
+        }
+    }
+
     private function assertWHRepository()
+
     {
         if ($this->getWhCmdRepository() == null) {
             throw new InvalidArgumentException("WH repository is not found!");
@@ -193,6 +254,13 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
 
         return $rootEntityDoctrine;
     }
+
+    /*
+     * |=================================
+     * | GETTER AND SETTER
+     * |
+     * |==================================
+     */
 
     /**
      *
@@ -245,5 +313,23 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     public function setWhCmdRepository(WhCmdRepositoryInterface $whCmdRepository)
     {
         $this->whCmdRepository = $whCmdRepository;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Company\ItemAttribute\Repository\ItemAttributeCmdRepositoryInterface
+     */
+    public function getItemAttributeCmdRepository()
+    {
+        return $this->itemAttributeCmdRepository;
+    }
+
+    /**
+     *
+     * @param ItemAttributeCmdRepositoryInterface $itemAttributeCmdRepository
+     */
+    public function setItemAttributeCmdRepository(ItemAttributeCmdRepositoryInterface $itemAttributeCmdRepository)
+    {
+        $this->itemAttributeCmdRepository = $itemAttributeCmdRepository;
     }
 }

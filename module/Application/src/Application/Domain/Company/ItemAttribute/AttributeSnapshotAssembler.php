@@ -38,12 +38,12 @@ class AttributeSnapshotAssembler
      */
     public static function updateDefaultFieldsFrom($target, AbstractDTO $source)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFrom($target, $source, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($target, $source, AttributeDefinition::$defaultIncludedFields);
     }
 
     public static function updateDefaultExcludedFieldsFrom($target, AbstractDTO $source)
     {
-        return GenericObjectAssembler::updateExcludedFieldsFrom($target, $source, self::$defaultExcludedFields);
+        return GenericObjectAssembler::updateExcludedFieldsFrom($target, $source, AttributeDefinition::$defaultExcludedFields);
     }
 
     /*

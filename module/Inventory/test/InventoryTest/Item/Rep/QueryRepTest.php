@@ -63,7 +63,7 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
             $token = "74058b2a-1142-4259-8910-3178e4e998a5";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            \var_dump($rootEntity->getStandardUnitName());
+            \var_dump($rootEntity);
         } catch (InvalidArgumentException $e) {
             // var_dump($e->getMessage());
         }

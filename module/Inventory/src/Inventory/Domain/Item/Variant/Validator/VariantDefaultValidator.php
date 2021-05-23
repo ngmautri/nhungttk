@@ -1,0 +1,33 @@
+<?php
+namespace Inventory\Domain\Item\Variant\Validator;
+
+use Application\Domain\Company\Validator\Contracts\AbstractValidator;
+use Inventory\Domain\Item\Variant\BaseVariant;
+use Inventory\Domain\Item\Variant\Validator\Contracts\VariantAttributeValidatorInterface;
+use Exception;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
+class VariantDefaultValidator extends AbstractValidator implements VariantAttributeValidatorInterface
+{
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\Variant\Validator\Contracts\VariantValidatorInterface::validate()
+     */
+    public function validate(BaseVariant $rootEntity)
+    {
+        if (! $rootEntity instanceof BaseVariant) {
+            $rootEntity->addError("BaseAttributeGroup object not found");
+            return;
+        }
+
+        try {} catch (Exception $e) {
+            $rootEntity->addError($e->getMessage());
+        }
+    }
+}

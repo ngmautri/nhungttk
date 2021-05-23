@@ -93,7 +93,12 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
         return $tmp;
     }
 
-    // ===================================================
+    /*
+     * |=============================
+     * | For Lazy Loading
+     * |
+     * |=============================
+     */
     private function _createDepartmentCollectionRef($id)
     {
         return function () use ($id) {

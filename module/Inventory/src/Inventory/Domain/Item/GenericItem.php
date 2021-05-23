@@ -7,7 +7,9 @@ use Application\Domain\Shared\Uom\Uom;
 use Application\Domain\Util\Math\Combinition;
 use Doctrine\Common\Collections\ArrayCollection;
 use Inventory\Application\DTO\Item\ItemDTO;
+use Inventory\Domain\Item\Collection\ItemVariantCollection;
 use Inventory\Domain\Validator\Item\ItemValidatorCollection;
+use Closure;
 use InvalidArgumentException;
 
 /**
@@ -18,8 +20,40 @@ use InvalidArgumentException;
 abstract class GenericItem extends BaseItem
 {
 
+    private $variantCollection;
+
+    private $variantCollectionRef;
+
     abstract public function specifyItem();
 
+    /*
+     * |=============================
+     * | Update Snapshot from Array
+     * |
+     * |=============================
+     */
+
+    /**
+     *
+     * @return \Application\Domain\Company\Collection\ItemAttributeGroupCollection|mixed
+     */
+    public function getLazyVariantCollection()
+    {
+        $ref = $this->getItemAttributeCollectionRef();
+        if (! $ref instanceof Closure) {
+            return new ItemVariantCollection();
+        }
+
+        $this->variantCollection = $ref();
+        return $this->variantCollection;
+    }
+
+    /**
+     *
+     * @param ArrayCollection $input
+     * @throws \InvalidArgumentException
+     * @return mixed
+     */
     public function generateVariants(ArrayCollection $input)
     {
         if ($input->isEmpty()) {
@@ -38,22 +72,9 @@ abstract class GenericItem extends BaseItem
         }
 
         $helper = new Combinition();
-        $combinations = $helper->getPossibleCombinitions($data);
+        $result1 = $helper->getPossibleCombinitionArray($data);
+
         $result['ItemId'] = $this->getId();
-
-        $result1 = [];
-        foreach ($combinations as $c) {
-            $attributeArray = \explode(';', $c);
-
-            $tmp = [];
-            foreach ($attributeArray as $a) {
-                if ($a == null) {
-                    continue;
-                }
-                $tmp[] = $a;
-            }
-            $result1[] = $tmp;
-        }
         $result['Variants'] = $result1;
         return $result;
     }
@@ -103,5 +124,51 @@ abstract class GenericItem extends BaseItem
     {
         $notification = $this->validate();
         return ! $notification->hasErrors();
+    }
+
+    /*
+     * |=============================
+     * |Getter and Setter
+     * |
+     * |=============================
+     */
+
+    /**
+     *
+     * @return \Inventory\Domain\Item\Collection\ItemVariantCollection|\Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getVariantCollection()
+    {
+        if ($this->variantCollection == null) {
+            return new ItemVariantCollection();
+        }
+        return $this->variantCollection;
+    }
+
+    /**
+     *
+     * @param ArrayCollection $variantCollection
+     */
+    public function setVariantCollection(ItemVariantCollection $variantCollection)
+    {
+        $this->variantCollection = $variantCollection;
+    }
+
+    /**
+     *
+     * @return Closure
+     */
+    public function getVariantCollectionRef()
+    {
+        return $this->variantCollectionRef;
+    }
+
+    /**
+     *
+     * @param Closure $variantCollectionRef
+     */
+    public function setVariantCollectionRef(Closure $variantCollectionRef)
+    {
+        $this->variantCollectionRef = $variantCollectionRef;
     }
 }

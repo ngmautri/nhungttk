@@ -533,6 +533,13 @@ class NmtInventoryItem
     private $uomGroup;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="has_variant", type="boolean", nullable=true)
+     */
+    private $hasVariant;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

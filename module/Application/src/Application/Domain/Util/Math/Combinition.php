@@ -27,13 +27,13 @@ class Combinition
         }
     }
 
-    public function getPossibleCombinitions($groups, $prefix = '')
+    public function getPossibleCombinitions($groups, $prefix = '', $seperator = ';')
     {
         $result = array();
         $group = array_shift($groups);
         foreach ($group as $selected) {
             if ($groups) {
-                $result = array_merge($result, $this->getPossibleCombinitions($groups, $prefix . $selected . ';'));
+                $result = array_merge($result, $this->getPossibleCombinitions($groups, $prefix . $selected . $seperator, $seperator));
             } else {
                 $result[] = $prefix . $selected;
             }
@@ -41,6 +41,35 @@ class Combinition
 
         if ($result == null) {
             throw new \InvalidArgumentException('Can not create combination!');
+        }
+
+        return $result;
+    }
+
+    /**
+     *
+     * @param array $groups
+     * @param string $prefix
+     * @throws \InvalidArgumentException
+     * @return [][]
+     */
+    public function getPossibleCombinitionArray($groups, $prefix = '')
+    {
+        $separator = '[;;]';
+        $combinitions = $this->getPossibleCombinitions($groups, $prefix, $separator);
+
+        $result = [];
+        foreach ($combinitions as $c) {
+            $attributeArray = \explode($separator, $c);
+
+            $tmp = [];
+            foreach ($attributeArray as $a) {
+                if ($a == null) {
+                    continue;
+                }
+                $tmp[] = $a;
+            }
+            $result[] = $tmp;
         }
         return $result;
     }

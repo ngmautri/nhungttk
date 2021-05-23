@@ -33,8 +33,8 @@ class ItemVariantsTest extends PHPUnit_Framework_TestCase
             $data = array(
                 'red',
                 'yellow',
-                'black'
-            );
+                'black',
+             );
             $input->add($data);
 
             $data = array(
@@ -46,13 +46,14 @@ class ItemVariantsTest extends PHPUnit_Framework_TestCase
                 '2xl',
                 '3xl',
                 '4xl',
+                '5xl',
                 'spe'
             );
             $input->add($data);
 
             $data = array(
                 'cotton 100%',
-                'cotton 62%, polyster 40%'
+                'cotton 60%; polyster 40%',
             );
             $input->add($data);
 

@@ -15,29 +15,17 @@ class AbstractAttribute extends AbstractEntity
 
     protected $uuid;
 
-    protected $attributeCode;
-
-    protected $attributeName;
-
-    protected $attributeName1;
-
-    protected $attributeName2;
-
-    protected $combinedName;
-
     protected $createdOn;
 
     protected $lastChangeOn;
 
-    protected $sysNumber;
-
-    protected $version;
+    protected $remarks;
 
     protected $revisionNo;
 
-    protected $remarks;
+    protected $attribute;
 
-    protected $group;
+    protected $variant;
 
     protected $createdBy;
 
@@ -63,51 +51,6 @@ class AbstractAttribute extends AbstractEntity
 
     /**
      *
-     * @param mixed $attributeCode
-     */
-    protected function setAttributeCode($attributeCode)
-    {
-        $this->attributeCode = $attributeCode;
-    }
-
-    /**
-     *
-     * @param mixed $attributeName
-     */
-    protected function setAttributeName($attributeName)
-    {
-        $this->attributeName = $attributeName;
-    }
-
-    /**
-     *
-     * @param mixed $attributeName1
-     */
-    protected function setAttributeName1($attributeName1)
-    {
-        $this->attributeName1 = $attributeName1;
-    }
-
-    /**
-     *
-     * @param mixed $attributeName2
-     */
-    protected function setAttributeName2($attributeName2)
-    {
-        $this->attributeName2 = $attributeName2;
-    }
-
-    /**
-     *
-     * @param mixed $combinedName
-     */
-    protected function setCombinedName($combinedName)
-    {
-        $this->combinedName = $combinedName;
-    }
-
-    /**
-     *
      * @param mixed $createdOn
      */
     protected function setCreatedOn($createdOn)
@@ -126,20 +69,11 @@ class AbstractAttribute extends AbstractEntity
 
     /**
      *
-     * @param mixed $sysNumber
+     * @param mixed $remarks
      */
-    protected function setSysNumber($sysNumber)
+    protected function setRemarks($remarks)
     {
-        $this->sysNumber = $sysNumber;
-    }
-
-    /**
-     *
-     * @param mixed $version
-     */
-    protected function setVersion($version)
-    {
-        $this->version = $version;
+        $this->remarks = $remarks;
     }
 
     /**
@@ -153,20 +87,20 @@ class AbstractAttribute extends AbstractEntity
 
     /**
      *
-     * @param mixed $remarks
+     * @param mixed $attribute
      */
-    protected function setRemarks($remarks)
+    protected function setAttribute($attribute)
     {
-        $this->remarks = $remarks;
+        $this->attribute = $attribute;
     }
 
     /**
      *
-     * @param mixed $group
+     * @param mixed $variant
      */
-    protected function setGroup($group)
+    protected function setVariant($variant)
     {
-        $this->group = $group;
+        $this->variant = $variant;
     }
 
     /**
@@ -209,51 +143,6 @@ class AbstractAttribute extends AbstractEntity
      *
      * @return mixed
      */
-    public function getAttributeCode()
-    {
-        return $this->attributeCode;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getAttributeName()
-    {
-        return $this->attributeName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getAttributeName1()
-    {
-        return $this->attributeName1;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getAttributeName2()
-    {
-        return $this->attributeName2;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCombinedName()
-    {
-        return $this->combinedName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
     public function getCreatedOn()
     {
         return $this->createdOn;
@@ -272,18 +161,9 @@ class AbstractAttribute extends AbstractEntity
      *
      * @return mixed
      */
-    public function getSysNumber()
+    public function getRemarks()
     {
-        return $this->sysNumber;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getVersion()
-    {
-        return $this->version;
+        return $this->remarks;
     }
 
     /**
@@ -299,18 +179,18 @@ class AbstractAttribute extends AbstractEntity
      *
      * @return mixed
      */
-    public function getRemarks()
+    public function getAttribute()
     {
-        return $this->remarks;
+        return $this->attribute;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getGroup()
+    public function getVariant()
     {
-        return $this->group;
+        return $this->variant;
     }
 
     /**

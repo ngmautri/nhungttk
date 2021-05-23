@@ -63,7 +63,7 @@ class BaseCompany extends AbstractCompany
      */
     public function getLazyItemAttributeGroupCollection()
     {
-        $ref = $this->get();
+        $ref = $this->getItemAttributeCollectionRef();
         if (! $ref instanceof Closure) {
             return new ItemAttributeGroupCollection();
         }

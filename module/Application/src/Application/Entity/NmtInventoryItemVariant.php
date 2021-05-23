@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemVariant
  *
- * @ORM\Table(name="nmt_inventory_item_variant", indexes={@ORM\Index(name="nmt_inventory_item_variant_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_variant_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_variant_FK3_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_inventory_item_variant", indexes={@ORM\Index(name="nmt_inventory_item_variant_FK02_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_variant_FK03_idx", columns={"last_change_by"}), @ORM\Index(name="item_id", columns={"item_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemVariant
@@ -24,9 +24,16 @@ class NmtInventoryItemVariant
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     * @ORM\Column(name="uuid", type="string", length=45, nullable=true)
      */
-    private $token;
+    private $uuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="combined_name", type="string", length=200, nullable=true)
+     */
+    private $combinedName;
 
     /**
      * @var \DateTime
@@ -45,79 +52,100 @@ class NmtInventoryItemVariant
     /**
      * @var string
      *
-     * @ORM\Column(name="variant_name", type="string", length=100, nullable=true)
+     * @ORM\Column(name="price", type="decimal", precision=20, scale=6, nullable=true)
+     */
+    private $price;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="upc", type="string", length=45, nullable=true)
+     */
+    private $upc;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ean13", type="string", length=45, nullable=true)
+     */
+    private $ean13;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="barcode", type="string", length=45, nullable=true)
+     */
+    private $barcode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="weight", type="decimal", precision=20, scale=5, nullable=true)
+     */
+    private $weight;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="version", type="integer", nullable=true)
+     */
+    private $version;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cbm", type="decimal", precision=20, scale=5, nullable=true)
+     */
+    private $cbm;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="variant_code", type="string", length=45, nullable=true)
+     */
+    private $variantCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="variant_name", type="string", length=200, nullable=true)
      */
     private $variantName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="varriant_description", type="string", length=255, nullable=true)
+     * @ORM\Column(name="variant_alias", type="string", length=45, nullable=true)
      */
-    private $varriantDescription;
+    private $variantAlias;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="variant_text", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
      */
-    private $variantText;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="variant_colour", type="string", length=45, nullable=true)
-     */
-    private $variantColour;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="variant_size", type="string", length=45, nullable=true)
-     */
-    private $variantSize;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="variant_origin", type="string", length=45, nullable=true)
-     */
-    private $variantOrigin;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="attribute1", type="string", length=45, nullable=true)
-     */
-    private $attribute1;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="attribute2", type="string", length=45, nullable=true)
-     */
-    private $attribute2;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="attribute3", type="string", length=45, nullable=true)
-     */
-    private $attribute3;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="attribute4", type="string", length=45, nullable=true)
-     */
-    private $attribute4;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="attribute5", type="string", length=45, nullable=true)
-     */
-    private $attribute5;
+    private $sysNumber;
 
     /**
      * @var \Application\Entity\NmtInventoryItem
@@ -162,27 +190,51 @@ class NmtInventoryItemVariant
     }
 
     /**
-     * Set token
+     * Set uuid
      *
-     * @param string $token
+     * @param string $uuid
      *
      * @return NmtInventoryItemVariant
      */
-    public function setToken($token)
+    public function setUuid($uuid)
     {
-        $this->token = $token;
+        $this->uuid = $uuid;
 
         return $this;
     }
 
     /**
-     * Get token
+     * Get uuid
      *
      * @return string
      */
-    public function getToken()
+    public function getUuid()
     {
-        return $this->token;
+        return $this->uuid;
+    }
+
+    /**
+     * Set combinedName
+     *
+     * @param string $combinedName
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setCombinedName($combinedName)
+    {
+        $this->combinedName = $combinedName;
+
+        return $this;
+    }
+
+    /**
+     * Get combinedName
+     *
+     * @return string
+     */
+    public function getCombinedName()
+    {
+        return $this->combinedName;
     }
 
     /**
@@ -234,6 +286,270 @@ class NmtInventoryItemVariant
     }
 
     /**
+     * Set price
+     *
+     * @param string $price
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return string
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set upc
+     *
+     * @param string $upc
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setUpc($upc)
+    {
+        $this->upc = $upc;
+
+        return $this;
+    }
+
+    /**
+     * Get upc
+     *
+     * @return string
+     */
+    public function getUpc()
+    {
+        return $this->upc;
+    }
+
+    /**
+     * Set ean13
+     *
+     * @param string $ean13
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setEan13($ean13)
+    {
+        $this->ean13 = $ean13;
+
+        return $this;
+    }
+
+    /**
+     * Get ean13
+     *
+     * @return string
+     */
+    public function getEan13()
+    {
+        return $this->ean13;
+    }
+
+    /**
+     * Set barcode
+     *
+     * @param string $barcode
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setBarcode($barcode)
+    {
+        $this->barcode = $barcode;
+
+        return $this;
+    }
+
+    /**
+     * Get barcode
+     *
+     * @return string
+     */
+    public function getBarcode()
+    {
+        return $this->barcode;
+    }
+
+    /**
+     * Set weight
+     *
+     * @param string $weight
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+
+        return $this;
+    }
+
+    /**
+     * Get weight
+     *
+     * @return string
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * Set version
+     *
+     * @param integer $version
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return integer
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * Set cbm
+     *
+     * @param string $cbm
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setCbm($cbm)
+    {
+        $this->cbm = $cbm;
+
+        return $this;
+    }
+
+    /**
+     * Get cbm
+     *
+     * @return string
+     */
+    public function getCbm()
+    {
+        return $this->cbm;
+    }
+
+    /**
+     * Set variantCode
+     *
+     * @param string $variantCode
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setVariantCode($variantCode)
+    {
+        $this->variantCode = $variantCode;
+
+        return $this;
+    }
+
+    /**
+     * Get variantCode
+     *
+     * @return string
+     */
+    public function getVariantCode()
+    {
+        return $this->variantCode;
+    }
+
+    /**
      * Set variantName
      *
      * @param string $variantName
@@ -258,243 +574,51 @@ class NmtInventoryItemVariant
     }
 
     /**
-     * Set varriantDescription
+     * Set variantAlias
      *
-     * @param string $varriantDescription
+     * @param string $variantAlias
      *
      * @return NmtInventoryItemVariant
      */
-    public function setVarriantDescription($varriantDescription)
+    public function setVariantAlias($variantAlias)
     {
-        $this->varriantDescription = $varriantDescription;
+        $this->variantAlias = $variantAlias;
 
         return $this;
     }
 
     /**
-     * Get varriantDescription
+     * Get variantAlias
      *
      * @return string
      */
-    public function getVarriantDescription()
+    public function getVariantAlias()
     {
-        return $this->varriantDescription;
+        return $this->variantAlias;
     }
 
     /**
-     * Set variantText
+     * Set sysNumber
      *
-     * @param string $variantText
+     * @param string $sysNumber
      *
      * @return NmtInventoryItemVariant
      */
-    public function setVariantText($variantText)
+    public function setSysNumber($sysNumber)
     {
-        $this->variantText = $variantText;
+        $this->sysNumber = $sysNumber;
 
         return $this;
     }
 
     /**
-     * Get variantText
+     * Get sysNumber
      *
      * @return string
      */
-    public function getVariantText()
+    public function getSysNumber()
     {
-        return $this->variantText;
-    }
-
-    /**
-     * Set variantColour
-     *
-     * @param string $variantColour
-     *
-     * @return NmtInventoryItemVariant
-     */
-    public function setVariantColour($variantColour)
-    {
-        $this->variantColour = $variantColour;
-
-        return $this;
-    }
-
-    /**
-     * Get variantColour
-     *
-     * @return string
-     */
-    public function getVariantColour()
-    {
-        return $this->variantColour;
-    }
-
-    /**
-     * Set variantSize
-     *
-     * @param string $variantSize
-     *
-     * @return NmtInventoryItemVariant
-     */
-    public function setVariantSize($variantSize)
-    {
-        $this->variantSize = $variantSize;
-
-        return $this;
-    }
-
-    /**
-     * Get variantSize
-     *
-     * @return string
-     */
-    public function getVariantSize()
-    {
-        return $this->variantSize;
-    }
-
-    /**
-     * Set variantOrigin
-     *
-     * @param string $variantOrigin
-     *
-     * @return NmtInventoryItemVariant
-     */
-    public function setVariantOrigin($variantOrigin)
-    {
-        $this->variantOrigin = $variantOrigin;
-
-        return $this;
-    }
-
-    /**
-     * Get variantOrigin
-     *
-     * @return string
-     */
-    public function getVariantOrigin()
-    {
-        return $this->variantOrigin;
-    }
-
-    /**
-     * Set attribute1
-     *
-     * @param string $attribute1
-     *
-     * @return NmtInventoryItemVariant
-     */
-    public function setAttribute1($attribute1)
-    {
-        $this->attribute1 = $attribute1;
-
-        return $this;
-    }
-
-    /**
-     * Get attribute1
-     *
-     * @return string
-     */
-    public function getAttribute1()
-    {
-        return $this->attribute1;
-    }
-
-    /**
-     * Set attribute2
-     *
-     * @param string $attribute2
-     *
-     * @return NmtInventoryItemVariant
-     */
-    public function setAttribute2($attribute2)
-    {
-        $this->attribute2 = $attribute2;
-
-        return $this;
-    }
-
-    /**
-     * Get attribute2
-     *
-     * @return string
-     */
-    public function getAttribute2()
-    {
-        return $this->attribute2;
-    }
-
-    /**
-     * Set attribute3
-     *
-     * @param string $attribute3
-     *
-     * @return NmtInventoryItemVariant
-     */
-    public function setAttribute3($attribute3)
-    {
-        $this->attribute3 = $attribute3;
-
-        return $this;
-    }
-
-    /**
-     * Get attribute3
-     *
-     * @return string
-     */
-    public function getAttribute3()
-    {
-        return $this->attribute3;
-    }
-
-    /**
-     * Set attribute4
-     *
-     * @param string $attribute4
-     *
-     * @return NmtInventoryItemVariant
-     */
-    public function setAttribute4($attribute4)
-    {
-        $this->attribute4 = $attribute4;
-
-        return $this;
-    }
-
-    /**
-     * Get attribute4
-     *
-     * @return string
-     */
-    public function getAttribute4()
-    {
-        return $this->attribute4;
-    }
-
-    /**
-     * Set attribute5
-     *
-     * @param string $attribute5
-     *
-     * @return NmtInventoryItemVariant
-     */
-    public function setAttribute5($attribute5)
-    {
-        $this->attribute5 = $attribute5;
-
-        return $this;
-    }
-
-    /**
-     * Get attribute5
-     *
-     * @return string
-     */
-    public function getAttribute5()
-    {
-        return $this->attribute5;
+        return $this->sysNumber;
     }
 
     /**

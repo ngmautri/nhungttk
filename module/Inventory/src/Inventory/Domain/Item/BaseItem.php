@@ -176,42 +176,6 @@ class BaseItem extends AbstractItem
         $this->assetLabel1 = $assetLabel1;
     }
 
-    public static function createSnapshotProps()
-    {
-        $baseClass = "Inventory\Domain\Item\BaseItem";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createSnapshotBaseProps()
-    {
-        $baseClass = "Inventory\Domain\Item\BaseItem";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class != $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
     /**
      *
      * @return mixed

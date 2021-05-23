@@ -4,12 +4,14 @@ namespace Inventory\Infrastructure\Doctrine;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Inventory\Domain\Item\Factory\ItemFactory;
 use Inventory\Domain\Item\Repository\ItemQueryRepositoryInterface;
+use Inventory\Infrastructure\Doctrine\Helper\ItemCollectionHelper;
 use Inventory\Infrastructure\Mapper\ItemMapper;
+use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements ItemQueryRepositoryInterface
 {
@@ -64,6 +66,11 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
         return null;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\Repository\ItemQueryRepositoryInterface::getRootEntityByTokenId()
+     */
     public function getRootEntityByTokenId($id, $token)
     {
         if ($id == null || $token == null) {
@@ -75,20 +82,18 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
             'token' => $token
         );
 
-        $rootEntityDoctrine = $this->getDoctrineEM()
-            ->getRepository('\Application\Entity\NmtInventoryItem')
-            ->findOneBy($criteria);
-
+        $doctrineEM = $this->getDoctrineEM();
+        $rootEntityDoctrine = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->findOneBy($criteria);
         if ($rootEntityDoctrine == null) {
             return null;
         }
 
         $rootSnapshot = ItemMapper::createSnapshot($rootEntityDoctrine, null, true);
-        if ($rootSnapshot == null) {
-            return null;
-        }
-
         $rootEntity = ItemFactory::contructFromDB($rootSnapshot);
+
+        Assert::notNull($rootEntity);
+        $rootEntity->setVariantCollectionRef(ItemCollectionHelper::createVariantCollectionRef($doctrineEM, $id));
+
         return $rootEntity;
     }
 
@@ -143,9 +148,8 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
          *
          * @var \Application\Entity\NmtInventoryItem $doctrineEntity ;
          */
-        $doctrineEntity = $this->getDoctrineEM()
-            ->getRepository('\Application\Entity\NmtInventoryItem')
-            ->findOneBy($criteria);
+        $doctrineEM = $this->getDoctrineEM();
+        $doctrineEntity = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->findOneBy($criteria);
 
         return $doctrineEntity->getItemTypeId();
     }
@@ -175,4 +179,11 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
 
         return ItemMapper::createSnapshot($rootEntityDoctrine, null, $needDetails);
     }
+
+    /*
+     * |=============================
+     * | For Lazy Loading
+     * |
+     * |=============================
+     */
 }

@@ -296,11 +296,10 @@ class ItemAttributeCmdRepositoryImpl extends AbstractDoctrineRepository implemen
             }
         } else {
             $localClassName = self::ATTRIBUTE_ENTITY_NAME;
-            $rowEntityDoctrine = new $localClassName();
 
-            // to update
-            $rowEntityDoctrine->setGroup($rootEntityDoctrine);
             $rowEntityDoctrine = new $localClassName();
+            // to update
+            $rowEntityDoctrine->setGroup($rootEntityDoctrine); // important
         }
 
         if ($rowEntityDoctrine == null) {

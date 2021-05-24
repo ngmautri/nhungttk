@@ -162,8 +162,6 @@ class DepartmentCmdRepositoryImpl extends AbstractDoctrineRepository implements 
             // to update
             $rowEntityDoctrine->setCompany($rootEntityDoctrine);
             $rowEntityDoctrine->setNodeParentId($localSnapshot->getNodeParentId());
-
-            $rowEntityDoctrine = new $localClassName();
         }
 
         if ($rowEntityDoctrine == null) {

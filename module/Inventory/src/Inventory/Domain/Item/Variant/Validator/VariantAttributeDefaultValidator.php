@@ -30,7 +30,12 @@ class VariantAttributeDefaultValidator extends AbstractValidator implements Vari
             return;
         }
 
-        try {} catch (Exception $e) {
+        try {
+        /**
+         *
+         * @todo
+         */
+        } catch (Exception $e) {
             $rootEntity->addError($e->getMessage());
         }
     }

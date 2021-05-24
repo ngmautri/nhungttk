@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Item\Variant;
+namespace Inventory\Domain\Item\Variant\Factory;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Company\ItemAttribute\AttributeGroupSnapshot;
@@ -16,7 +16,11 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface;
+use Inventory\Domain\Item\Variant\GenericVariant;
+use Inventory\Domain\Item\Variant\VariantAttributeSnapshot;
+use Inventory\Domain\Item\Variant\VariantSnapshot;
 use Inventory\Domain\Item\Variant\Validator\VariantValidatorFactory;
+use Inventory\Domain\Service\SharedService;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 
@@ -39,10 +43,10 @@ class ItemVariantFactory
         return $instance;
     }
 
-    public static function generateFrom(GenericItem $entity, $attributes, CommandOptions $options, SharedServiceInterface $sharedService)
+    public static function generateVariantFrom(GenericItem $entity, $attributes, CommandOptions $options, SharedService $sharedService)
     {
         Assert::notNull($entity, "Item not found");
-        Assert::notNull($attributes, "Attribute not found");
+        Assert::notNull($attributes, "Attributes not given");
         Assert::notNull($sharedService, "SharedService service not found");
 
         $variantSnapshot = new VariantSnapshot();
@@ -51,16 +55,16 @@ class ItemVariantFactory
         // create variant
         $variant = new GenericVariant();
         GenericObjectAssembler::updateAllFieldsFrom($variant, $variantSnapshot);
-
-        $variant->createVO($entity->getId(), $attributes);
+        $variant->createVariantCodeVO($entity->getId(), $attributes);
 
         // create attribute
         foreach ($attributes as $a) {
             $snapshot = new VariantAttributeSnapshot();
             $snapshot->setAttribute($a);
-            $snapshot->setVariant($snapshot->getId());
+            $snapshot->setVariant($variant->getId()); // might be no needed
             $variant->createAttributeFrom($snapshot, $options, $sharedService, FALSE);
         }
+
         return $variant;
     }
 

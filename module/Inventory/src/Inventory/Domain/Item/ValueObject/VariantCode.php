@@ -13,19 +13,22 @@ class VariantCode extends ValueObject
 {
 
     private $code;
+
     private $itemId;
+
     private $itemIdVO;
+
     private $attributes;
 
     public function __construct($itemId, $attributes, $context = null)
     {
-        $this->itemIdVO = new ItemId($itemId,'Item ID');
+        $this->itemIdVO = new ItemId($itemId, 'Item ID');
         Assert::notEmpty($attributes, sprintf('Item attribute [%s]is empty!', ''));
 
         $this->itemId = $itemId;
-        $this->attributes = sort($attributes);
-        $this->code=\sprintf("i%s_a_%s", $itemId, \implode("_", $attributes));
-
+        sort($attributes);
+        $this->attributes = $attributes;
+        $this->code = \sprintf("i%s_a_%s", $itemId, \implode("_", $attributes));
     }
 
     public function makeSnapshot()
@@ -39,8 +42,7 @@ class VariantCode extends ValueObject
     public function getAttributesToCompare()
     {
         return [
-            $this->code,
-
+            $this->code
         ];
     }
 

@@ -300,10 +300,8 @@ class ChartCmdRepositoryImpl extends AbstractDoctrineRepository implements Chart
         } else {
             $localClassName = self::ACCOUNT_ENTITY_NAME;
             $rowEntityDoctrine = new $localClassName();
-
             // to update
             $rowEntityDoctrine->setCoa($rootEntityDoctrine);
-            $rowEntityDoctrine = new $localClassName();
         }
 
         if ($rowEntityDoctrine == null) {

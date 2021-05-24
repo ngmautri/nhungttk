@@ -2,7 +2,6 @@
 namespace Inventory\Domain\Item\Variant\Validator\Contracts;
 
 use Inventory\Domain\Item\Variant\BaseVariant;
-use Inventory\Domain\Item\Variant\BaseVariantAttribute;
 
 /**
  *
@@ -12,6 +11,6 @@ use Inventory\Domain\Item\Variant\BaseVariantAttribute;
 interface VariantValidatorInterface
 {
 
-    public function validate(BaseVariant $rootEntity, BaseVariantAttribute $localEntity);
+    public function validate(BaseVariant $rootEntity);
 }
 

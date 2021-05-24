@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Domain\Item;
 
+use Application\Application\Command\Options\CmdOptions;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Uom\Uom;
@@ -8,7 +9,10 @@ use Application\Domain\Util\Math\Combinition;
 use Doctrine\Common\Collections\ArrayCollection;
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Item\Collection\ItemVariantCollection;
+use Inventory\Domain\Item\Variant\Factory\ItemVariantFactory;
+use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Validator\Item\ItemValidatorCollection;
+use Webmozart\Assert\Assert;
 use Closure;
 use InvalidArgumentException;
 
@@ -39,25 +43,35 @@ abstract class GenericItem extends BaseItem
      */
     public function getLazyVariantCollection()
     {
-        $ref = $this->getItemAttributeCollectionRef();
+        $ref = $this->getVariantCollectionRef();
         if (! $ref instanceof Closure) {
-            return new ItemVariantCollection();
+            $this->variantCollection = new ItemVariantCollection();
+        } else {
+            $this->variantCollection = $ref();
         }
 
-        $this->variantCollection = $ref();
         return $this->variantCollection;
     }
 
     /**
      *
-     * @param ArrayCollection $input
+     * @param array $input
+     * @param CmdOptions $options
+     * @param SharedService $sharedService
      * @throws \InvalidArgumentException
-     * @return mixed
+     * @return boolean|\Inventory\Domain\Item\Collection\ItemVariantCollection|\Doctrine\Common\Collections\ArrayCollection
      */
-    public function generateVariants(ArrayCollection $input)
+    public function generateVariants($input, CmdOptions $options, SharedService $sharedService)
     {
-        if ($input->isEmpty()) {
-            throw new \InvalidArgumentException("No attribute date provided");
+        Assert::isArray($input);
+        if (count($input) == 0) {
+            throw new \InvalidArgumentException('Input for item variant empty!');
+        }
+
+        $inputCollection = new ArrayCollection();
+
+        foreach ($input as $a) {
+            $inputCollection->add(array_unique(array_map("strtolower", $a)));
         }
 
         $data = [];
@@ -67,16 +81,27 @@ abstract class GenericItem extends BaseItem
             $productId
         ];
 
-        foreach ($input as $k => $attrArray) {
+        foreach ($inputCollection as $k => $attrArray) {
             $data[] = $attrArray;
         }
 
         $helper = new Combinition();
         $result1 = $helper->getPossibleCombinitionArray($data);
 
-        $result['ItemId'] = $this->getId();
-        $result['Variants'] = $result1;
-        return $result;
+        if ($result1 == null) {
+            return false;
+        }
+
+        $variantCollection = $this->getLazyVariantCollection();
+        foreach ($result1 as $attributes) {
+            $variant = ItemVariantFactory::generateVariantFrom($this, $attributes, $options, $sharedService);
+            if ($variantCollection->isExits($variant)) {
+                continue;
+            }
+            $variantCollection->add($variant);
+        }
+
+        return $this->getVariantCollection();
     }
 
     public function createUom()

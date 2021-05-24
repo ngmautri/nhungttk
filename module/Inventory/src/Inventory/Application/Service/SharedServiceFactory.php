@@ -74,8 +74,11 @@ class SharedServiceFactory
         $companyCmdRepository = new ItemCmdRepositoryImpl($doctrineEM);
         $companyCmdRepository->setItemVariantRepository(new ItemVariantCmdRepositoryImpl($doctrineEM));
 
+        $fxService = new FXServiceImpl();
+        $fxService->setDoctrineEM($doctrineEM);
+
         $postingService = new ItemPostingService($companyCmdRepository);
-        $sharedService = new SharedService($sharedSpecsFactory, $postingService);
+        $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
 
         return $sharedService;
     }

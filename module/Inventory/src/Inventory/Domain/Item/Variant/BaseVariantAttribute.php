@@ -8,7 +8,7 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class BaseVariantAttribute extends AbstractVariant
+class BaseVariantAttribute extends AbstractVariantAttribute
 {
 
     public function equals(BaseVariantAttribute $other)
@@ -17,7 +17,7 @@ class BaseVariantAttribute extends AbstractVariant
             return false;
         }
 
-        return \strtolower(trim($this->getId())) == \strtolower(trim($other->getId()));
+        return \strtolower(trim($this->getAttribute())) == \strtolower(trim($other->getAttribute()));
     }
 
     public function makeSnapshot()

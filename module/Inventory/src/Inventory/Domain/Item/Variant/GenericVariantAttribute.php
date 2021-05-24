@@ -9,7 +9,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GenericVariantAttribute extends BaseVariant
+class GenericVariantAttribute extends BaseVariantAttribute
 {
 
     public static function constructFromDB(VariantAttributeSnapshot $snapshot)
@@ -22,13 +22,21 @@ class GenericVariantAttribute extends BaseVariant
         return $instance;
     }
 
+    /**
+     *
+     * @param BaseVariant $rootDoc
+     * @param VariantAttributeSnapshot $snapshot
+     * @return \Inventory\Domain\Item\Variant\GenericVariantAttribute
+     */
     public static function createFromSnapshot(BaseVariant $rootDoc, VariantAttributeSnapshot $snapshot)
     {
         Assert::isInstanceOf($rootDoc, BaseVariant::class, "BaseVariant required!");
         Assert::isInstanceOf($snapshot, VariantAttributeSnapshot::class, "VariantAttributeSnapshot is required!");
 
-        $instance = new GenericVariantAttribute();
+        $instance = new self();
         GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+
+        Assert::notNull($instance, "Can not create GenericVariantAttribute");
 
         return $instance;
     }

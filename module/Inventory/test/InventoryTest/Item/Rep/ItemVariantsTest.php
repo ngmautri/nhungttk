@@ -1,8 +1,10 @@
 <?php
 namespace InventoryTest\Item\Rep;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Application\Application\Command\Options\CmdOptions;
+use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Doctrine\ORM\EntityManager;
+use Inventory\Application\Service\SharedServiceFactory;
 use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
@@ -22,20 +24,26 @@ class ItemVariantsTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
+            $rep = new CompanyQueryRepositoryImpl($doctrineEM);
+            // $filter = new CompanyQuerySqlFilter();
+            $company = $rep->getById(1);
+            $companyVO = $company->createValueObject();
+
             $rep = new ItemQueryRepositoryImpl($doctrineEM);
 
             $id = 2427;
             $token = "4eyUIwcFv8_KxuYVvMdn4freRdKAyg1Q";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            $input = new ArrayCollection();
+
+            $input = [];
 
             $data = array(
                 'red',
-                'yellow',
-                'black',
-             );
-            $input->add($data);
+                'RED',
+                'black'
+            );
+            $input[] = $data;
 
             $data = array(
                 'xs',
@@ -43,23 +51,26 @@ class ItemVariantsTest extends PHPUnit_Framework_TestCase
                 'm',
                 'l',
                 'xl',
-                '2xl',
-                '3xl',
-                '4xl',
-                '5xl',
-                'spe'
+                '2xl'
             );
-            $input->add($data);
+            $input[] = $data;
 
             $data = array(
                 'cotton 100%',
-                'cotton 60%; polyster 40%',
+                'cotton 60%; polyster 40%'
             );
-            $input->add($data);
+            $input[] = $data;
 
             // \var_dump($input);
+            $userId = 39;
 
-            \var_dump($rootEntity->generateVariants($input));
+            $options = new CmdOptions($companyVO, $userId, __METHOD__);
+
+            $sharedService = SharedServiceFactory::createForItem($doctrineEM);
+
+            $variant = $rootEntity->generateVariants($input, $options, $sharedService);
+
+            \var_dump($variant->last());
         } catch (InvalidArgumentException $e) {
             // var_dump($e->getMessage());
         }

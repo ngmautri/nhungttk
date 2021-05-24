@@ -4,6 +4,7 @@ namespace Inventory\Domain\Item\Variant\Validator;
 use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Inventory\Domain\Item\Variant\Validator\Contracts\VariantAttributeValidatorCollection;
 use Inventory\Domain\Item\Variant\Validator\Contracts\VariantValidatorCollection;
+use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\VariantValidationService;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
@@ -16,7 +17,7 @@ use InvalidArgumentException;
 class VariantValidatorFactory
 {
 
-    public static function forCreatingVariant(SharedServiceInterface $sharedService, $isPosting = false)
+    public static function forCreatingVariant(SharedService $sharedService, $isPosting = false)
     {
         if ($sharedService == null) {
             throw new InvalidArgumentException("SharedService service not found");
@@ -45,7 +46,7 @@ class VariantValidatorFactory
      * @throws InvalidArgumentException
      * @return \Inventory\Domain\Service\VariantValidationService
      */
-    public static function forCreatingVariantAttribute(SharedServiceInterface $sharedService, $isPosting = false)
+    public static function forCreatingVariantAttribute(SharedService $sharedService, $isPosting = false)
     {
         if ($sharedService == null) {
             throw new InvalidArgumentException("SharedService service not found");

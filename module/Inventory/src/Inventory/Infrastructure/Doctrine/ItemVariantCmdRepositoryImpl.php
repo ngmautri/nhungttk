@@ -25,25 +25,22 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
 
     const VARIANT_ATTRIBUTE_ENTITY_NAME = "\Application\Entity\NmtInventoryItem";
 
-
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      * @see \Inventory\Domain\Item\Repository\ItemVariantCmdRepositoryInterface::storeVariantCollection()
      */
     public function storeVariantCollection(GenericItem $rootEntity, $generateSysNumber = True)
     {
         $collection = $rootEntity->getVariantCollection();
-        if($collection->isEmpty()){
+        if ($collection->isEmpty()) {
             return;
         }
 
-        foreach($collection as $localEntity){
+        foreach ($collection as $localEntity) {
             $this->storeWholeVariant($rootEntity, $localEntity);
         }
     }
-
-
 
     /**
      *
@@ -285,10 +282,7 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
         } else {
             $localClassName = self::VARIANT_ATTRIBUTE_ENTITY_NAME;
             $rowEntityDoctrine = new $localClassName();
-
-            // to update
-            $rowEntityDoctrine->setVariant($rootEntityDoctrine);
-            $rowEntityDoctrine = new $localClassName();
+            $rowEntityDoctrine->setVariant($rootEntityDoctrine); // To update, important.
         }
 
         if ($rowEntityDoctrine == null) {
@@ -297,5 +291,4 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
 
         return $rowEntityDoctrine;
     }
-
 }

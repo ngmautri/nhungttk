@@ -3,7 +3,7 @@ namespace Inventory\Domain\Item\Variant\Validator;
 
 use Application\Domain\Company\Validator\Contracts\AbstractValidator;
 use Inventory\Domain\Item\Variant\BaseVariant;
-use Inventory\Domain\Item\Variant\Validator\Contracts\VariantAttributeValidatorInterface;
+use Inventory\Domain\Item\Variant\Validator\Contracts\VariantValidatorInterface;
 use Exception;
 
 /**
@@ -11,7 +11,7 @@ use Exception;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class VariantDefaultValidator extends AbstractValidator implements VariantAttributeValidatorInterface
+class VariantDefaultValidator extends AbstractValidator implements VariantValidatorInterface
 {
 
     /**
@@ -26,7 +26,12 @@ class VariantDefaultValidator extends AbstractValidator implements VariantAttrib
             return;
         }
 
-        try {} catch (Exception $e) {
+        try {
+        /**
+         *
+         * @todo
+         */
+        } catch (Exception $e) {
             $rootEntity->addError($e->getMessage());
         }
     }

@@ -5,11 +5,12 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Event\Company\AccountChart\AccountCreated;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Doctrine\Common\Collections\ArrayCollection;
+use Application\Domain\Util\Collection\GenericCollection;
+use Inventory\Domain\Item\Collection\ItemVariantAttributteCollection;
 use Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface;
 use Inventory\Domain\Item\ValueObject\VariantCode;
 use Inventory\Domain\Item\Variant\Validator\VariantValidatorFactory;
-use Inventory\Domain\Service\Contracts\SharedServiceInterface;
+use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\VariantValidationServiceInterface;
 use Procure\Domain\AccountPayable\APRowSnapshot;
 use Webmozart\Assert\Assert;
@@ -23,21 +24,42 @@ use Closure;
 abstract class BaseVariant extends AbstractVariant
 {
 
-    private $attributeCollection;
+    protected $attributeCollection;
 
-    private $attributeCollectionRef;
+    protected $attributeCollectionRef;
 
     protected $variantCodeVO;
 
-    public function createAttributeFrom(VariantAttributeSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService, $storeNow = true)
+    public function getLazyAttributeCollection()
+    {
+        $ref = $this->getAttributeCollectionRef();
+        if (! $ref instanceof Closure) {
+            $this->attributeCollection = new ItemVariantAttributteCollection();
+        } else {
+            $this->attributeCollection = $ref();
+        }
+
+        return $this->attributeCollection;
+    }
+
+    public function createAttributeFrom(VariantAttributeSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
         Assert::notNull($snapshot, "VariantAttributeSnapshot not founds");
         Assert::notNull($options, "Options not founds");
 
         $validationService = VariantValidatorFactory::forCreatingVariantAttribute($sharedService);
-        $snapshot->init($options);
+        // $snapshot->init($options);
         $snapshot->setVariant($this->getId()); // important;
+
+        // var_dump($snapshot->getAttribute());
         $attr = GenericVariantAttribute::createFromSnapshot($this, $snapshot);
+        // var_dump($attr);
+
+        $attributeCollection = $this->getAttributeCollection();
+
+        if ($attributeCollection->isExits($attr)) {
+            throw new \RuntimeException("Attribute exits already: " . $attr->getAttribute());
+        }
 
         $this->validateAttribute($attr, $validationService);
 
@@ -45,11 +67,13 @@ abstract class BaseVariant extends AbstractVariant
             throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
+        // Adding into Collection
+        $attributeCollection->add($attr);
+
         $this->clearEvents();
-        $this->getAttributeCollection()->add($attr);
 
         if (! $storeNow) {
-            return $this;
+            return;
         }
 
         /**
@@ -154,20 +178,20 @@ abstract class BaseVariant extends AbstractVariant
         return $snapshot;
     }
 
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
     public function getAttributeCollection()
     {
+        if (! $this->attributeCollection instanceof ItemVariantAttributteCollection) {
+            $this->attributeCollection = new ItemVariantAttributteCollection();
+            return $this->attributeCollection;
+        }
         return $this->attributeCollection;
     }
 
     /**
      *
-     * @param ArrayCollection $attributeCollection
+     * @param GenericCollection $attributeCollection
      */
-    public function setAttributeCollection(ArrayCollection $attributeCollection)
+    public function setAttributeCollection(GenericCollection $attributeCollection)
     {
         $this->attributeCollection = $attributeCollection;
     }

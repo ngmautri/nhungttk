@@ -64,7 +64,7 @@ class ItemVariantFactory
             $snapshot->setVariant($variant->getId()); // might be no needed
             $variant->createAttributeFrom($snapshot, $options, $sharedService, FALSE);
         }
-
+        // \var_dump($variant);
         return $variant;
     }
 

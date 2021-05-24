@@ -35,10 +35,14 @@ class ItemVariantMapper
             return null;
         }
 
-        // =================================
-        // Mapping None-Object Field
-        // =================================
-        $entity->setId($snapshot->id);
+        /*
+         * |=============================
+         * | Mapping None-Object Field
+         * | not mapping setID
+         * |=============================
+         */
+
+        // $entity->setId($snapshot->id);
         $entity->setUuid($snapshot->uuid);
         $entity->setCombinedName($snapshot->combinedName);
         $entity->setPrice($snapshot->price);
@@ -56,9 +60,12 @@ class ItemVariantMapper
         $entity->setVariantAlias($snapshot->variantAlias);
         $entity->setSysNumber($snapshot->sysNumber);
 
-        // ============================
-        // DATE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | DATE MAPPING
+         * |
+         * |=============================
+         */
 
         /*
          * $entity->setCreatedOn($snapshot->createdOn);
@@ -72,10 +79,12 @@ class ItemVariantMapper
             $entity->setLastChangeOn(new \DateTime($snapshot->lastChangeOn));
         }
 
-        // ============================
-        // REFERRENCE MAPPING
-        // ============================
-
+        /*
+         * |=============================
+         * | REFERRENCE MAPPING
+         * |
+         * |=============================
+         */
         /*
          * $entity->setItem($snapshot->item);
          * $entity->setCreatedBy($snapshot->createdBy);

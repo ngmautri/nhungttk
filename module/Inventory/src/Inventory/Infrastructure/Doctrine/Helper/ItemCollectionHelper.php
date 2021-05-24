@@ -6,7 +6,7 @@ use Application\Entity\NmtInventoryItemVariantAttribute;
 use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Item\Collection\ItemVariantAttributteCollection;
 use Inventory\Domain\Item\Collection\ItemVariantCollection;
-use Inventory\Domain\Item\Variant\ItemVariantFactory;
+use Inventory\Domain\Item\Variant\Factory\ItemVariantFactory;
 use Inventory\Infrastructure\Mapper\ItemVariantMapper;
 use Closure;
 

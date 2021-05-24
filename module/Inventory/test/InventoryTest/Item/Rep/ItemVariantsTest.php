@@ -43,9 +43,12 @@ class ItemVariantsTest extends PHPUnit_Framework_TestCase
                 'RED',
                 'black'
             );
-            $input[] = $data;
+            $input['color'] = $data;
 
             $data = array(
+                'xs',
+                'xs',
+                'xs',
                 'xs',
                 's',
                 'm',
@@ -53,15 +56,14 @@ class ItemVariantsTest extends PHPUnit_Framework_TestCase
                 'xl',
                 '2xl'
             );
-            $input[] = $data;
+            $input['size'] = $data;
 
             $data = array(
                 'cotton 100%',
                 'cotton 60%; polyster 40%'
             );
-            $input[] = $data;
+            $input['material'] = $data;
 
-            // \var_dump($input);
             $userId = 39;
 
             $options = new CmdOptions($companyVO, $userId, __METHOD__);
@@ -70,7 +72,7 @@ class ItemVariantsTest extends PHPUnit_Framework_TestCase
 
             $variant = $rootEntity->generateVariants($input, $options, $sharedService);
 
-            \var_dump($variant->last());
+            \var_dump($variant->count());
         } catch (InvalidArgumentException $e) {
             // var_dump($e->getMessage());
         }

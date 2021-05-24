@@ -21,9 +21,9 @@ use InvalidArgumentException;
 class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemVariantCmdRepositoryInterface
 {
 
-    const VARIANT_ENTITY_NAME = "\Application\Entity\NmtInventoryItem";
+    const VARIANT_ENTITY_NAME = "\Application\Entity\NmtInventoryItemVariant";
 
-    const VARIANT_ATTRIBUTE_ENTITY_NAME = "\Application\Entity\NmtInventoryItem";
+    const VARIANT_ATTRIBUTE_ENTITY_NAME = "\Application\Entity\NmtInventoryItemVariantAttribute";
 
     /**
      *

@@ -9,6 +9,7 @@ use Application\Domain\Util\Math\Combinition;
 use Doctrine\Common\Collections\ArrayCollection;
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Item\Collection\ItemVariantCollection;
+use Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface;
 use Inventory\Domain\Item\Variant\Factory\ItemVariantFactory;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Validator\Item\ItemValidatorCollection;
@@ -39,7 +40,7 @@ abstract class GenericItem extends BaseItem
 
     /**
      *
-     * @return \Application\Domain\Company\Collection\ItemAttributeGroupCollection|mixed
+     * @return \Inventory\Domain\Item\Collection\ItemVariantCollection
      */
     public function getLazyVariantCollection()
     {
@@ -101,6 +102,12 @@ abstract class GenericItem extends BaseItem
             $variantCollection->add($variant);
         }
 
+        /**
+         *
+         * @var ItemCmdRepositoryInterface $rep
+         */
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rep->storeVariantCollection($this);
         return $this->getVariantCollection();
     }
 

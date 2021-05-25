@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryWarehouseLocation
  *
- * @ORM\Table(name="nmt_inventory_warehouse_location", indexes={@ORM\Index(name="nmt_inventory_warehouse_location_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK3_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_warehouse_location_idx1", columns={"uuid"}), @ORM\Index(name="nmt_inventory_warehouse_location_idx2", columns={"parent_uuid"})})
+ * @ORM\Table(name="nmt_inventory_warehouse_location", indexes={@ORM\Index(name="nmt_inventory_warehouse_location_idx1", columns={"uuid"}), @ORM\Index(name="nmt_inventory_warehouse_location_idx2", columns={"parent_uuid"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK01_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK02_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK03_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtInventoryWarehouseLocation
@@ -169,6 +169,23 @@ class NmtInventoryWarehouseLocation
     private $parentUuid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="parent_code", type="string", length=45, nullable=true)
+     */
+    private $parentCode;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
+     * })
+     */
+    private $warehouse;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -187,16 +204,6 @@ class NmtInventoryWarehouseLocation
      * })
      */
     private $lastChangeBy;
-
-    /**
-     * @var \Application\Entity\NmtInventoryWarehouse
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
-     * })
-     */
-    private $warehouse;
 
 
 
@@ -715,6 +722,54 @@ class NmtInventoryWarehouseLocation
     }
 
     /**
+     * Set parentCode
+     *
+     * @param string $parentCode
+     *
+     * @return NmtInventoryWarehouseLocation
+     */
+    public function setParentCode($parentCode)
+    {
+        $this->parentCode = $parentCode;
+
+        return $this;
+    }
+
+    /**
+     * Get parentCode
+     *
+     * @return string
+     */
+    public function getParentCode()
+    {
+        return $this->parentCode;
+    }
+
+    /**
+     * Set warehouse
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
+     *
+     * @return NmtInventoryWarehouseLocation
+     */
+    public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
+    {
+        $this->warehouse = $warehouse;
+
+        return $this;
+    }
+
+    /**
+     * Get warehouse
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getWarehouse()
+    {
+        return $this->warehouse;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -760,29 +815,5 @@ class NmtInventoryWarehouseLocation
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
-    }
-
-    /**
-     * Set warehouse
-     *
-     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
-     *
-     * @return NmtInventoryWarehouseLocation
-     */
-    public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
-    {
-        $this->warehouse = $warehouse;
-
-        return $this;
-    }
-
-    /**
-     * Get warehouse
-     *
-     * @return \Application\Entity\NmtInventoryWarehouse
-     */
-    public function getWarehouse()
-    {
-        return $this->warehouse;
     }
 }

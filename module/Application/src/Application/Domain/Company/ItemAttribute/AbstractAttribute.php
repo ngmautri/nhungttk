@@ -15,111 +15,33 @@ class AbstractAttribute extends AbstractEntity
 
     protected $uuid;
 
+    protected $attributeCode;
+
+    protected $attributeName;
+
+    protected $attributeName1;
+
+    protected $attributeName2;
+
+    protected $combinedName;
+
     protected $createdOn;
 
     protected $lastChangeOn;
 
-    protected $remarks;
+    protected $sysNumber;
+
+    protected $version;
 
     protected $revisionNo;
 
-    protected $attribute;
+    protected $remarks;
 
-    protected $variant;
+    protected $group;
 
     protected $createdBy;
 
     protected $lastChangeBy;
-
-    /**
-     *
-     * @param mixed $id
-     */
-    protected function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     *
-     * @param mixed $uuid
-     */
-    protected function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-
-    /**
-     *
-     * @param mixed $createdOn
-     */
-    protected function setCreatedOn($createdOn)
-    {
-        $this->createdOn = $createdOn;
-    }
-
-    /**
-     *
-     * @param mixed $lastChangeOn
-     */
-    protected function setLastChangeOn($lastChangeOn)
-    {
-        $this->lastChangeOn = $lastChangeOn;
-    }
-
-    /**
-     *
-     * @param mixed $remarks
-     */
-    protected function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-    }
-
-    /**
-     *
-     * @param mixed $revisionNo
-     */
-    protected function setRevisionNo($revisionNo)
-    {
-        $this->revisionNo = $revisionNo;
-    }
-
-    /**
-     *
-     * @param mixed $attribute
-     */
-    protected function setAttribute($attribute)
-    {
-        $this->attribute = $attribute;
-    }
-
-    /**
-     *
-     * @param mixed $variant
-     */
-    protected function setVariant($variant)
-    {
-        $this->variant = $variant;
-    }
-
-    /**
-     *
-     * @param mixed $createdBy
-     */
-    protected function setCreatedBy($createdBy)
-    {
-        $this->createdBy = $createdBy;
-    }
-
-    /**
-     *
-     * @param mixed $lastChangeBy
-     */
-    protected function setLastChangeBy($lastChangeBy)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-    }
 
     /**
      *
@@ -137,6 +59,51 @@ class AbstractAttribute extends AbstractEntity
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAttributeCode()
+    {
+        return $this->attributeCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAttributeName()
+    {
+        return $this->attributeName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAttributeName1()
+    {
+        return $this->attributeName1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAttributeName2()
+    {
+        return $this->attributeName2;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCombinedName()
+    {
+        return $this->combinedName;
     }
 
     /**
@@ -161,9 +128,18 @@ class AbstractAttribute extends AbstractEntity
      *
      * @return mixed
      */
-    public function getRemarks()
+    public function getSysNumber()
     {
-        return $this->remarks;
+        return $this->sysNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVersion()
+    {
+        return $this->version;
     }
 
     /**
@@ -179,18 +155,18 @@ class AbstractAttribute extends AbstractEntity
      *
      * @return mixed
      */
-    public function getAttribute()
+    public function getRemarks()
     {
-        return $this->attribute;
+        return $this->remarks;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getVariant()
+    public function getGroup()
     {
-        return $this->variant;
+        return $this->group;
     }
 
     /**
@@ -209,5 +185,149 @@ class AbstractAttribute extends AbstractEntity
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     *
+     * @param mixed $id
+     */
+    protected function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     *
+     * @param mixed $uuid
+     */
+    protected function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     *
+     * @param mixed $attributeCode
+     */
+    protected function setAttributeCode($attributeCode)
+    {
+        $this->attributeCode = $attributeCode;
+    }
+
+    /**
+     *
+     * @param mixed $attributeName
+     */
+    protected function setAttributeName($attributeName)
+    {
+        $this->attributeName = $attributeName;
+    }
+
+    /**
+     *
+     * @param mixed $attributeName1
+     */
+    protected function setAttributeName1($attributeName1)
+    {
+        $this->attributeName1 = $attributeName1;
+    }
+
+    /**
+     *
+     * @param mixed $attributeName2
+     */
+    protected function setAttributeName2($attributeName2)
+    {
+        $this->attributeName2 = $attributeName2;
+    }
+
+    /**
+     *
+     * @param mixed $combinedName
+     */
+    protected function setCombinedName($combinedName)
+    {
+        $this->combinedName = $combinedName;
+    }
+
+    /**
+     *
+     * @param mixed $createdOn
+     */
+    protected function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeOn
+     */
+    protected function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+    }
+
+    /**
+     *
+     * @param mixed $sysNumber
+     */
+    protected function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $version
+     */
+    protected function setVersion($version)
+    {
+        $this->version = $version;
+    }
+
+    /**
+     *
+     * @param mixed $revisionNo
+     */
+    protected function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $remarks
+     */
+    protected function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     *
+     * @param mixed $group
+     */
+    protected function setGroup($group)
+    {
+        $this->group = $group;
+    }
+
+    /**
+     *
+     * @param mixed $createdBy
+     */
+    protected function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeBy
+     */
+    protected function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
     }
 }

@@ -1,0 +1,125 @@
+<?php
+use Application\Application\Service\AccountChart\Export\ExportAsHtmlTable;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general"><?php
+
+        echo $this->translate('Product Attributes');
+        ?>
+
+
+      </li>
+   </ul>
+   <div id="general">
+      <a class="btn btn-default btn-sm" href="<?php
+
+    echo $this->baseUrl?>/application/item-attribute/create">
+         <small>
+            <i class="glyphicon glyphicon-plus"> </i>
+         </small>&nbsp;<?php
+
+        echo $this->translate('Create New');
+        ?></a>
+      <hr>
+      <div id="html" class="demo">
+<?php
+$export = new ExportAsHtmlTable();
+// echo $export->execute($chart);
+?>
+			<ul>
+         </ul>
+      </div>
+
+   <div id="gird_div" style="margin: 1px; font-size: 9pt"></div>
+   </div>
+</div>
+
+
+
+<script>
+
+<?php
+echo sprintf('var url="%s"', "/application/item-attribute/gird");
+?>
+
+
+var columns= [
+    { title: "Attribute", dataType: "string", dataIndx: "groupName", align: 'left',minWidth: 150,editable: false},
+    { title: "Attribute Name", dataType: "string", dataIndx: "coaCode", align: 'left',minWidth: 150,editable: false},
+    { title: "", editable: false, minWidth: 60, sortable: false,
+        render: function (ui) {
+         return '<button type="button" class="edit_btn">Show </button>';
+        }
+    },
+
+];
+
+
+var dataModel = {
+    dataType: "JSON",
+    location: "remote",
+    method: "GET",
+    recIndx: "id",
+    url: url,
+    getData: function (response) {
+       return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
+   },
+};
+
+var obj = {
+title: "Item /Product Attributes",
+   dataModel: dataModel,
+   colModel: columns,
+   height: $(window).height()-300,
+   width: 600,
+   hoverMode: 'row',
+   showTop: true,
+   collapsible: true,
+   showHeader: true,
+   showBottom: true,
+   editable: true,
+   wrap: true,
+   columnBorders: true,
+   numberCell: {show:true, resizable: true, width: 40, title: "#", minWidth: 25 },
+   pageModel: { type: "remote", rPP:100, strRpp: "{0}" },
+   editor: {
+       select: true
+   },
+};
+
+var $grid = $("#gird_div").pqGrid(obj);
+
+$grid.on('pqgridrefresh pqgridrefreshrow', function () {
+    //debugger;
+    var $grid = $(this);
+
+    $grid.find("button.edit_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+        var $tr = $(this).closest("tr"),
+        rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+        rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+        recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+        redirectUrl="/application/item-attribute/view?id="+rowData['id'],
+        window.location.href = redirectUrl;
+    });
+
+ });
+
+// important for datamodel: local.
+$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
+
+function refreshGird(){
+  $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+}
+
+
+</script>

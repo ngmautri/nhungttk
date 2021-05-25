@@ -16,6 +16,7 @@ use Application\Entity\NmtInventoryWarehouseLocation;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Application\Infrastructure\Mapper\CompanyMapper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
+use Application\Infrastructure\Persistence\Domain\Doctrine\Helper\CompanyCollectionHelper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Helper\CompanyHelper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\ChartMapper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\DepartmentMapper;
@@ -50,7 +51,9 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
          *
          * @var \Application\Entity\NmtApplicationCompany $entity ;
          */
-        $entity = $this->doctrineEM->getRepository("\Application\Entity\NmtApplicationCompany")->findOneBy($criteria);
+
+        $doctrineEM = $this->getDoctrineEM();
+        $entity = $doctrineEM->getRepository("\Application\Entity\NmtApplicationCompany")->findOneBy($criteria);
 
         Assert::notNull($entity, "NmtApplicationCompany not found!");
         $snapshot = CompanyMapper::createSnapshot($entity, $this->getDoctrineEM());
@@ -61,6 +64,7 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
         $entityRoot->setAccountChartCollectionRef($this->_createAccountChartCollectionRef($id));
         $entityRoot->setPostingPeriodCollectionRef($this->_createPostingPeriodCollectionRef($id));
         $entityRoot->setWarehouseCollectionRef($this->_createWarehouseCollectionRef($id));
+        $entityRoot->setItemAttributeCollectionRef(CompanyCollectionHelper::createItemAttributeGroupCollectionRef($doctrineEM, $id));
         return $entityRoot;
     }
 

@@ -90,7 +90,7 @@ class ItemAttributeFactory
         $target = $localSnapshot;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($localSnapshot->getId());
-        $defaultParams->setTargetToken($localSnapshot->getToken());
+        $defaultParams->setTargetToken($localSnapshot->getUuid());
         $defaultParams->setTargetRrevisionNo($localSnapshot->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
@@ -141,7 +141,6 @@ class ItemAttributeFactory
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
         $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());

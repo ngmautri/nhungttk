@@ -35,22 +35,22 @@ class AttributeGroupDefaultValidator extends AbstractValidator implements ItemAt
 
             $spec = $this->getSharedSpecificationFactory()->getNullorBlankSpecification();
 
-            if ($spec->isSatisfiedBy($rootEntity->getCoaCode())) {
-                $rootEntity->addError("Chart code is null or empty.");
+            if ($spec->isSatisfiedBy($rootEntity->getGroupCode())) {
+                $rootEntity->addError("Attribute code is null or empty.");
             } else {
 
-                if (preg_match('/[#$%@=+^]/', $rootEntity->getCoaCode()) == 1) {
-                    $err = "Chart code contains invalid character (e.g. #,%,&,*)";
+                if (preg_match('/[#$%@=+^]/', $rootEntity->getGroupCode()) == 1) {
+                    $err = "Attribute code contains invalid character (e.g. #,%,&,*)";
                     $rootEntity->addError($err);
                 }
             }
 
-            if ($spec->isSatisfiedBy($rootEntity->getCoaName())) {
-                $rootEntity->addError("Chart name is null or empty.");
+            if ($spec->isSatisfiedBy($rootEntity->getGroupName())) {
+                $rootEntity->addError("Attribute name is null or empty.");
             } else {
 
-                if (preg_match('/[#$%@=+^]/', $rootEntity->getCoaName()) == 1) {
-                    $err = "Chart name contains invalid character (e.g. #,%,&,*)";
+                if (preg_match('/[#$%@=+^]/', $rootEntity->getGroupName()) == 1) {
+                    $err = "Attribute name contains invalid character (e.g. #,%,&,*)";
                     $rootEntity->addError($err);
                 }
             }

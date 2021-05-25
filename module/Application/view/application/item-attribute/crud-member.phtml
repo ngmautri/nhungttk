@@ -1,0 +1,29 @@
+
+<?php
+use Application\Application\Helper\ErrorMessage;
+use Application\Form\Contracts\GenericForm;
+use Application\Form\ItemAttribute\ItemAttributeFormRender;
+
+/**
+ *
+ * @var GenericForm $form ;
+ *
+ */
+$error_msg = ErrorMessage::showErrorMessage($errors);
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">Create New Account</a>
+      </li>
+   </ul>
+   <div id="general">
+
+        <?php
+        // ==================
+        echo $error_msg;
+        echo $form->renderForView($this, new ItemAttributeFormRender());
+        ?>
+
+   </div>
+</div>

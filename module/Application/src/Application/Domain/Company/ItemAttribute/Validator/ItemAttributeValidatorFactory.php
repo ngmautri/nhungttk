@@ -1,11 +1,9 @@
 <?php
 namespace Application\Domain\Company\ItemAttribute\Validator;
 
-use Application\Domain\Company\AccountChart\Validator\AccountDefaultValidator;
-use Application\Domain\Company\AccountChart\Validator\ChartDefaultValidator;
-use Application\Domain\Company\AccountChart\Validator\Contracts\AccountValidatorCollection;
-use Application\Domain\Company\AccountChart\Validator\Contracts\ChartValidatorCollection;
-use Application\Domain\Service\AccountChartValidationService;
+use Application\Domain\Company\ItemAttribute\Validator\Contracts\ItemAttributeGroupValidatorCollection;
+use Application\Domain\Company\ItemAttribute\Validator\Contracts\ItemAttributeValidatorCollection;
+use Application\Domain\Service\ItemAttributeValidationService;
 use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
@@ -18,6 +16,13 @@ use InvalidArgumentException;
 class ItemAttributeValidatorFactory
 {
 
+    /**
+     *
+     * @param SharedServiceInterface $sharedService
+     * @param boolean $isPosting
+     * @throws InvalidArgumentException
+     * @return \Application\Domain\Service\ItemAttributeValidationService
+     */
     public static function forCreatingAttributeGroup(SharedServiceInterface $sharedService, $isPosting = false)
     {
         if ($sharedService == null) {
@@ -30,16 +35,22 @@ class ItemAttributeValidatorFactory
 
         $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();
 
-        $chartValidators = new ChartValidatorCollection();
+        $attributeGroupValidators = new ItemAttributeGroupValidatorCollection();
         $validator = new AttributeGroupDefaultValidator($sharedSpecsFactory);
-        $chartValidators->add($validator);
+        $attributeGroupValidators->add($validator);
 
-        $accountValidators = null;
-        Assert::notNull($chartValidators, "Attribute Default Validator is null");
+        Assert::notNull($attributeGroupValidators, "Attribute Default Validator is null");
 
-        return new AccountChartValidationService($chartValidators, $accountValidators);
+        return new ItemAttributeValidationService($attributeGroupValidators);
     }
 
+    /**
+     *
+     * @param SharedServiceInterface $sharedService
+     * @param boolean $isPosting
+     * @throws InvalidArgumentException
+     * @return \Application\Domain\Service\ItemAttributeValidationService
+     */
     public static function forCreatingAttribute(SharedServiceInterface $sharedService, $isPosting = false)
     {
         if ($sharedService == null) {
@@ -52,18 +63,17 @@ class ItemAttributeValidatorFactory
 
         $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();
 
-        $chartValidators = new ChartValidatorCollection();
-        $validator = new ChartDefaultValidator($sharedSpecsFactory);
-        $chartValidators->add($validator);
+        $attributeGroupValidators = new ItemAttributeGroupValidatorCollection();
+        $validator = new AttributeGroupDefaultValidator($sharedSpecsFactory);
+        $attributeGroupValidators->add($validator);
 
-        $accountValidators = new AccountValidatorCollection();
-        $validator = new AccountDefaultValidator($sharedSpecsFactory);
+        $attributeValidators = new ItemAttributeValidatorCollection();
+        $validator = new AttributeDefaultValidator($sharedSpecsFactory);
+        $attributeValidators->add($validator);
 
-        $accountValidators->add($validator);
+        Assert::notNull($attributeGroupValidators, "Attribute Group Validator is null");
+        Assert::notNull($attributeValidators, "Attribute validator is null");
 
-        Assert::notNull($chartValidators, "Chart validator is null");
-        Assert::notNull($accountValidators, "Account validator is null");
-
-        return new AccountChartValidationService($chartValidators, $accountValidators);
+        return new ItemAttributeValidationService($attributeGroupValidators, $attributeValidators);
     }
 }

@@ -8,6 +8,7 @@ use Zend\Form\View\Helper\FormCheckbox;
 use Zend\Form\View\Helper\FormDate;
 use Zend\Form\View\Helper\FormHidden;
 use Zend\Form\View\Helper\FormInput;
+use Zend\Form\View\Helper\FormMultiCheckbox;
 use Zend\Form\View\Helper\FormRadio;
 use Zend\Form\View\Helper\FormSelect;
 use Zend\Form\View\Helper\FormSubmit;
@@ -61,6 +62,10 @@ class FormHelperFactory
                 $helper = new FormSelect();
                 $newElement = self::_updateValueOptions($element);
                 return $helper->render($newElement);
+
+            case "multi_checkbox":
+                $helper = new FormMultiCheckbox();
+                return $helper->render($element);
 
             case "hidden":
                 $helper = new FormHidden();

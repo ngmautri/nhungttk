@@ -32,7 +32,7 @@ use Inventory\Domain\Warehouse\WarehouseSnapshot;
 use Inventory\Domain\Warehouse\Location\LocationSnapshot;
 use Zend\Escaper\Escaper;
 use Zend\Http\Response;
-use Zend\Stdlib\Hydrator\Reflection;
+use Zend\Hydrator\Reflection;
 use Zend\View\Model\ViewModel;
 
 /**

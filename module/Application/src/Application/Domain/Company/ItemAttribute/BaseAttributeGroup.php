@@ -2,6 +2,7 @@
 namespace Application\Domain\Company\ItemAttribute;
 
 use Application\Application\Event\DefaultParameter;
+use Application\Domain\Company\Collection\ItemAttributeCollection;
 use Application\Domain\Company\ItemAttribute\Repository\ItemAttributeCmdRepositoryInterface;
 use Application\Domain\Company\ItemAttribute\Tree\DefaultItemAttributeGroupTree;
 use Application\Domain\Company\ItemAttribute\Validator\ItemAttributeValidatorFactory;
@@ -14,7 +15,6 @@ use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
-use Doctrine\Common\Collections\ArrayCollection;
 use Webmozart\Assert\Assert;
 use Closure;
 
@@ -49,6 +49,12 @@ class BaseAttributeGroup extends AbstractAttributeGroup
         $snapshot->setGroup($this->getId()); // important;
         $attribute = GenericAttribute::createFromSnapshot($this, $snapshot);
 
+        $attributeCollection = $this->getLazyAttributeCollection();
+
+        if ($attributeCollection->isExits($attribute)) {
+            throw new \InvalidArgumentException(\sprintf("Attribute  (%s) exits already!", $attribute->getAttributeName()));
+        }
+
         $this->validateAttribute($attribute, $validationService);
 
         if ($this->hasErrors()) {
@@ -72,13 +78,13 @@ class BaseAttributeGroup extends AbstractAttributeGroup
 
         $params = [
             "rowId" => $localSnapshot->getId(),
-            "rowToken" => $localSnapshot->getToken()
+            "rowToken" => $localSnapshot->getUuid()
         ];
 
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($this->getId());
-        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetToken($this->getUuid());
         // $defaultParams->setTargetDocVersion($this->getDocVersion());
         // $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
@@ -285,16 +291,17 @@ class BaseAttributeGroup extends AbstractAttributeGroup
 
     /**
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Application\Domain\Company\Collection\ItemAttributeCollection|mixed
      */
     public function getLazyAttributeCollection()
     {
         $ref = $this->getAttributeCollectionRef();
         if (! $ref instanceof Closure) {
-            return new ArrayCollection();
+            $this->attributeCollection = new ItemAttributeCollection();
+        } else {
+            $this->attributeCollection = $ref();
         }
 
-        $this->attributeCollection = $ref();
         return $this->attributeCollection;
     }
 
@@ -339,10 +346,10 @@ class BaseAttributeGroup extends AbstractAttributeGroup
      */
     public function getAttributeCollection()
     {
-        if ($this->accountCollection == null) {
-            return new ArrayCollection();
+        if ($this->attributeCollection == null) {
+            $this->attributeCollection = new ItemAttributeCollection();
         }
-        return $this->accountCollection;
+        return $this->attributeCollection;
     }
 
     /**

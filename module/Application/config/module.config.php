@@ -30,6 +30,8 @@ use Application\Application\Service\AccountChart\AccountChartService;
 use Application\Application\Service\AccountChart\AccountChartServiceFactory;
 use Application\Application\Service\AccountChart\Upload\DefaultAccountChartUpload;
 use Application\Application\Service\AccountChart\Upload\DefaultAccountChartUploadFactory;
+use Application\Application\Service\ItemAttribute\ItemAttributeService;
+use Application\Application\Service\ItemAttribute\ItemAttributeServiceFactory;
 use Application\Application\Service\Shared\CommonCollection;
 use Application\Application\Service\Shared\CommonCollectionFactory;
 use Application\Application\Service\Shared\DefaultFormOptionCollection;
@@ -375,6 +377,8 @@ return array(
 
             AccountChartService::class => AccountChartServiceFactory::class,
             WarehouseService::class => WarehouseServiceFactory::class,
+            ItemAttributeService::class => ItemAttributeServiceFactory::class,
+
             DefaultAccountChartUpload::class => DefaultAccountChartUploadFactory::class,
 
             CommonCollection::class => CommonCollectionFactory::class,
@@ -450,6 +454,7 @@ return array(
             'Application\Controller\Country' => 'Application\Controller\CountryControllerFactory',
             'Application\Controller\AccountChart' => 'Application\Controller\AccountChartControllerFactory',
             'Application\Controller\Warehouse' => 'Application\Controller\WarehouseControllerFactory',
+            'Application\Controller\ItemAttribute' => 'Application\Controller\ItemAttributeControllerFactory', // added
 
             'Application\Controller\Currency' => 'Application\Controller\CurrencyControllerFactory',
             'Application\Controller\Uom' => 'Application\Controller\UomControllerFactory',

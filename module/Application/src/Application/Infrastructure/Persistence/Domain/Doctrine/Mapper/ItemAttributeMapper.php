@@ -80,13 +80,20 @@ class ItemAttributeMapper
         return $entity;
     }
 
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param AttributeSnapshot $snapshot
+     * @param NmtInventoryAttribute $entity
+     * @return NULL|\Application\Entity\NmtInventoryAttribute
+     */
     public static function mapAttributeEntity(EntityManager $doctrineEM, AttributeSnapshot $snapshot, NmtInventoryAttribute $entity)
     {
         if ($snapshot == null || $entity == null || $doctrineEM == null) {
             return null;
         }
 
-        $entity->setId($snapshot->id);
+        // $entity->setId($snapshot->id);
         $entity->setUuid($snapshot->uuid);
         $entity->setAttributeCode($snapshot->attributeCode);
         $entity->setAttributeName($snapshot->attributeName);
@@ -97,7 +104,7 @@ class ItemAttributeMapper
         $entity->setVersion($snapshot->version);
         $entity->setRevisionNo($snapshot->revisionNo);
         $entity->setRemarks($snapshot->remarks);
-        $entity->setGroup($snapshot->group);
+        // $entity->setGroup($snapshot->group);
 
         // Mapping Date
         // =====================
@@ -138,6 +145,15 @@ class ItemAttributeMapper
              */
             $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastChangeBy);
             $entity->setLastChangeBy($obj);
+        }
+
+        if ($snapshot->group > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryAttributeGroup $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryAttributeGroup')->find($snapshot->group);
+            $entity->setGroup($obj);
         }
 
         return $entity;
@@ -204,7 +220,7 @@ class ItemAttributeMapper
         return $snapshot;
     }
 
-    public static function createAttributetSnapshot(EntityManager $doctrineEM, NmtInventoryAttribute $entity)
+    public static function createAttributeSnapshot(EntityManager $doctrineEM, NmtInventoryAttribute $entity)
     {
         if ($entity == null) {
             return null;
@@ -222,7 +238,6 @@ class ItemAttributeMapper
         $snapshot->version = $entity->getVersion();
         $snapshot->revisionNo = $entity->getRevisionNo();
         $snapshot->remarks = $entity->getRemarks();
-        $snapshot->group = $entity->getGroup();
 
         // Mapping Date
         // =====================
@@ -247,6 +262,8 @@ class ItemAttributeMapper
         /*
          * $snapshot->createdBy = $entity->getCreatedBy();
          * $snapshot->lastChangeBy = $entity->getLastChangeBy();
+         * $snapshot->group = $entity->getGroup();
+         *
          */
 
         if ($entity->getCreatedBy() !== null) {
@@ -255,6 +272,10 @@ class ItemAttributeMapper
 
         if ($entity->getLastChangeBy() !== null) {
             $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
+        }
+
+        if ($entity->getGroup() !== null) {
+            $snapshot->group = $entity->getGroup()->getId();
         }
         return $snapshot;
     }

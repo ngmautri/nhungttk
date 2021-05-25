@@ -259,6 +259,7 @@ class WhMapper
         $snapshot->token = $entity->getToken();
         $snapshot->revisionNo = $entity->getRevisionNo();
         $snapshot->uuid = $entity->getUuid();
+        $snapshot->location = $entity->getLocation();
 
         // ============================
         // DATE MAPPING
@@ -315,9 +316,11 @@ class WhMapper
             $snapshot->whController = $entity->getWhController()->getId();
         }
 
-        if ($entity->getLocation() !== null) {
-            $snapshot->location = $entity->getLocation()->getId();
-        }
+        /*
+         * if ($entity->getLocation() !== null) {
+         * $snapshot->location = $entity->getLocation()->getId();
+         * }
+         */
 
         return $snapshot;
     }

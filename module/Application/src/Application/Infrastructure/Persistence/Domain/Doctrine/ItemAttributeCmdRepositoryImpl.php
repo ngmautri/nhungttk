@@ -2,18 +2,16 @@
 namespace Application\Infrastructure\Persistence\Domain\Doctrine;
 
 use Application\Domain\Company\BaseCompany;
-use Application\Domain\Company\AccountChart\AccountSnapshot;
 use Application\Domain\Company\ItemAttribute\AttributeGroupSnapshot;
+use Application\Domain\Company\ItemAttribute\AttributeSnapshot;
 use Application\Domain\Company\ItemAttribute\BaseAttribute;
 use Application\Domain\Company\ItemAttribute\BaseAttributeGroup;
 use Application\Domain\Company\ItemAttribute\BaseAttributeSnapshot;
 use Application\Domain\Company\ItemAttribute\Repository\ItemAttributeCmdRepositoryInterface;
-use Application\Entity\AppCoa;
 use Application\Entity\NmtApplicationCompany;
 use Application\Entity\NmtInventoryAttribute;
 use Application\Entity\NmtInventoryAttributeGroup;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\ChartMapper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\ItemAttributeMapper;
 use InvalidArgumentException;
 
@@ -139,11 +137,12 @@ class ItemAttributeCmdRepositoryImpl extends AbstractDoctrineRepository implemen
     public function removeAttributeGroup(BaseCompany $rootEntity, BaseAttributeGroup $localEntity, $isPosting = false)
     {}
 
-    private function _storeAttribute(AppCoa $rootEntityDoctrine, AccountSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion)
+    private function _storeAttribute(NmtInventoryAttributeGroup $rootEntityDoctrine, AttributeSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion)
     {
-        $rowEntityDoctrine = $this->assertAndReturnAccount($rootEntityDoctrine, $localSnapshot);
+        $rowEntityDoctrine = $this->assertAndReturnAttribute($rootEntityDoctrine, $localSnapshot);
 
-        $rowEntityDoctrine = ChartMapper::mapAccountEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
+        // Populate with data
+        $rowEntityDoctrine = ItemAttributeMapper::mapAttributeEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
 
         $this->doctrineEM->persist($rowEntityDoctrine);
 
@@ -265,7 +264,7 @@ class ItemAttributeCmdRepositoryImpl extends AbstractDoctrineRepository implemen
         return $rootEntityDoctrine;
     }
 
-    private function assertAndReturnAttribute(NmtInventoryAttribute $rootEntityDoctrine, BaseAttributeSnapshot $localSnapshot)
+    private function assertAndReturnAttribute(NmtInventoryAttributeGroup $rootEntityDoctrine, BaseAttributeSnapshot $localSnapshot)
     {
         $rowEntityDoctrine = null;
 
@@ -298,8 +297,7 @@ class ItemAttributeCmdRepositoryImpl extends AbstractDoctrineRepository implemen
             $localClassName = self::ATTRIBUTE_ENTITY_NAME;
 
             $rowEntityDoctrine = new $localClassName();
-            // to update
-            $rowEntityDoctrine->setGroup($rootEntityDoctrine); // important
+            $rowEntityDoctrine->setGroup($rootEntityDoctrine); // important and need to update.
         }
 
         if ($rowEntityDoctrine == null) {

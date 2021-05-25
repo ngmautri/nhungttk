@@ -42,6 +42,10 @@ class WHLoctionFormRender extends AbstractFormRender
         $e = $form->getParentCode();
         $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
 
+        $e = $form->getParentCode1();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3');
+
+
         $this->drawSeparator();
 
         $e = $form->getRemarks();

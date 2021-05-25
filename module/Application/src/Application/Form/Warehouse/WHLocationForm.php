@@ -6,6 +6,7 @@ use Application\Form\Contracts\GenericForm;
 use Application\Form\Helper\OptionsHelperFactory;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Select;
+use Zend\Form\Element\MultiCheckbox;
 
 /**
  *
@@ -211,6 +212,32 @@ class WHLocationForm extends GenericForm
         $select->setValueOptions($o);
         // $select->setDisableInArrayValidator(false);
         $this->add($select);
+
+
+
+        // Multi Select
+        $select = new Select();
+        $select->setName("parentCode1");
+        $select->setAttributes([
+            'id' => 'parentCode1',
+            'multiple' => 'multiple',
+            'class' => "form-control input-sm chosen-select",
+            'required' => true
+        ]);
+
+        $select->setOptions([
+            'label' => Translator::translate('Parent Location'),
+            'label_attributes' => [
+                'class' => "control-label col-sm-2"
+            ]
+        ]);
+
+        // $select->setEmptyOption(Translator::translate('Parent Account Number'));
+        $o = OptionsHelperFactory::createTreeNodeForOption($this->getLocationOptions());
+
+        $select->setValueOptions($o);
+        // $select->setDisableInArrayValidator(false);
+        $this->add($select);
     }
 
     /**
@@ -280,5 +307,11 @@ class WHLocationForm extends GenericForm
     public function getParentCode()
     {
         return $this->get("parentCode");
+    }
+
+
+    public function getParentCode1()
+    {
+        return $this->get("parentCode1");
     }
 }

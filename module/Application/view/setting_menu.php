@@ -20,6 +20,16 @@ echo $this->baseUrl?>/application/account-chart/list"><i
         echo $this->translate("Chart of accounts")?></a>
    </li>
 
+      </li>
+   <li><a href="<?php
+
+echo $this->baseUrl?>/application/item-attribute/list"><i
+         class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;<?php
+
+        echo $this->translate("Item Attributes")?></a>
+   </li>
+
+   <li class="divider"></li>
 	<li><a
 		href="<?php
 

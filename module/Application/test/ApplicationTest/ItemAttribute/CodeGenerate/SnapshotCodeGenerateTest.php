@@ -2,7 +2,7 @@
 namespace ApplicationTest\ItemAttribute\CodeGenerate;
 
 use Application\Application\Contracts\GenericSnapshotAssembler;
-use Application\Domain\Company\ItemAttribute\AbstractAttributeGroup;
+use Application\Domain\Company\ItemAttribute\AbstractAttribute;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
@@ -22,10 +22,10 @@ class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
             // $result = GenericSnapshotAssembler::(AppCoa::class, AbstractChart::class);
             // $result = GenericSnapshotAssembler::findMissingProps(AppCoaAccount::class, AbstractAccount::class);
 
-            // $result = GenericSnapshotAssembler::findMissingProps(AbstractAccount::class, AccountSnapshot::class);
+            // $result = GenericSnapshotAssembler::findMissingProps(NmtInventoryAttribute::class, AbstractAttribute::class);
 
             // $result = GenericSnapshotAssembler::createSnapshotProps(GenericAttribute::class, BaseAttribute::class);
-            $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(AbstractAttributeGroup::class);
+            $result = GenericSnapshotAssembler::createAllSnapshotProps(AbstractAttribute::class);
 
             // \var_dump(($result));
         } catch (InvalidArgumentException $e) {

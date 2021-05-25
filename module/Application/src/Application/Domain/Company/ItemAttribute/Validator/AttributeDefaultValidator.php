@@ -15,8 +15,10 @@ use Exception;
 class AttributeDefaultValidator extends AbstractValidator implements ItemAttributeValidatorInterface
 {
 
-    /*
+    /**
      *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\ItemAttribute\Validator\Contracts\ItemAttributeValidatorInterface::validate()
      */
     public function validate(BaseAttributeGroup $rootEntity, BaseAttribute $localEntity)
     {

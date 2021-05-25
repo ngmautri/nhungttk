@@ -21,7 +21,6 @@ class BaseAttributeGroupSnapshot extends AttributeGroupSnapshot
         $this->setCreatedBy($createdBy);
         $this->setRevisionNo(0);
         $this->setUuid(Uuid::uuid4()->toString());
-        $this->setToken($this->uuid);
         $this->setCompany($options->getCompanyVO()
             ->getId());
     }

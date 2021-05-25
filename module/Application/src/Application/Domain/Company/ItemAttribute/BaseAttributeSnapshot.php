@@ -21,7 +21,6 @@ class BaseAttributeSnapshot extends AttributeSnapshot
         $this->setCreatedBy($createdBy);
 
         $this->setUuid(Uuid::uuid4()->toString());
-        $this->setToken($this->uuid);
     }
 
     public function update(CommandOptions $options)

@@ -65,6 +65,7 @@ abstract class GenericItem extends BaseItem
     public function generateVariants($input, CmdOptions $options, SharedService $sharedService)
     {
         Assert::isArray($input);
+
         if (count($input) == 0) {
             throw new \InvalidArgumentException('Input for item variant empty!');
         }

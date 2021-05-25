@@ -62,14 +62,15 @@ class ItemVariantsTest extends PHPUnit_Framework_TestCase
             $input['material'] = $data;
 
             $userId = 39;
+            \var_dump($input);
 
             $options = new CmdOptions($companyVO, $userId, __METHOD__);
 
             $sharedService = SharedServiceFactory::createForItem($doctrineEM);
 
-            $variant = $rootEntity->generateVariants($input, $options, $sharedService);
+            // $variant = $rootEntity->generateVariants($input, $options, $sharedService);
 
-            \var_dump($variant->count());
+            // \var_dump($variant->count());
         } catch (InvalidArgumentException $e) {
             // var_dump($e->getMessage());
         }

@@ -279,9 +279,9 @@ class ItemVariantMapper
         if ($snapshot->attribute > 0) {
             /**
              *
-             * @var \Application\Entity\NmtInventoryItemAttribute $obj ;
+             * @var \Application\Entity\NmtInventoryAttribute $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryItemAttribute')->find($snapshot->attribute);
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryAttribute')->find($snapshot->attribute);
             $entity->setAttribute($obj);
         }
 

@@ -107,6 +107,7 @@ abstract class BaseVariant extends AbstractVariant
     public function createVariantCodeVO($itemId, $attributes)
     {
         $this->variantCodeVO = new VariantCode($itemId, $attributes);
+        $this->combinedName = $this->getVariantCodeVO()->getValue();
     }
 
     /**

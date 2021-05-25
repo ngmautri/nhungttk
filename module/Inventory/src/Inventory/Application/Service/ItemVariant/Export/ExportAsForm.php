@@ -1,8 +1,7 @@
 <?php
-namespace Application\Application\Service\ItemAttribute\Export;
+namespace Inventory\Application\Service\ItemVariant\Export;
 
 use Application\Domain\Company\ItemAttribute\GenericAttributeGroup;
-use Application\Domain\Util\Translator;
 use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
 use Application\Domain\Util\Collection\Contracts\FilterInterface;
 use Application\Domain\Util\Collection\Export\AbstractExport;
@@ -37,34 +36,27 @@ class ExportAsForm extends AbstractExport
             $filter = new DefaultFilter();
         }
 
-        foreach ($collection as $element) {
-            $element = $formatter->format($element);
-        }
+        $formId = 'variant_create_form';
 
         $tmp = sprintf('Record %s to %s found!', $filter->getLimit() + 1, $filter->getLimit() + $collection->count());
 
-        $cssClass = 'btn btn-primary btn-sm';
-        $formId = 'variant_create_form';
-        $submitBtn = sprintf(' <a class="%s" style="color: white" onclick="submitForm(\'%s\');" href="javascript:;">
-        <i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', $cssClass, $formId, (Translator::translate("Generate")));
+        $result_msg = '<div style="color:graytext; padding:10pt;">%s</div>';
 
-        $result_msg = sprintf('<div style="color:graytext; padding:10pt;">%s</div><form id="%s">', $tmp, $formId);
-
-        $table = $result_msg . '
+        $table = '
 <table id="mytable26" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Attribute</b></td>
+   <thead>
+      <tr>
+         <td><b>#</b></td>
+         <td><b>Attribute</b></td>
             <td><b>Value</b></td>
-	        <td><b>Action</b></td>
-		</tr>
-	</thead>
-	<tbody>
+           <td><b>Action</b></td>
+      </tr>
+   </thead>
+   <tbody>
 %s
     </tbody>
 </table>
-</form>';
+';
 
         $bodyHtml = '';
         $n = 0;
@@ -89,8 +81,6 @@ class ExportAsForm extends AbstractExport
             $bodyHtml = $bodyHtml . "</tr>";
         }
 
-        $bodyHtml = $bodyHtml . sprintf("<tr>%s</tr>", "dsfgdf");
-
         return sprintf($table, $bodyHtml);
     }
 
@@ -107,7 +97,7 @@ class ExportAsForm extends AbstractExport
 
         // $n = Inflector::camelize($element->getGroupName());
         $n = 'attribute_group_' . $element->getId();
-
+        // $n = 'attribute_group';
         $select = \sprintf('<select name="%s[]" data-placeholder="Select multiple attribute value..." class="chosen-select" multiple>', $n);
 
         foreach ($collection as $e) {

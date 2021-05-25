@@ -2,6 +2,7 @@
 namespace Application\Infrastructure\Persistence\Application\Doctrine;
 
 use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
+use Application\Entity\NmtInventoryAttributeGroup;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Application\Infrastructure\Persistence\Application\Contracts\AppCollectionRepositoryInterface;
 
@@ -74,4 +75,29 @@ class AppCollectionRepositoryImpl extends AbstractDoctrineRepository implements 
 
     public function getUomGroupCollection(CompanySqlFilterInterface $filter)
     {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Infrastructure\Persistence\Application\Contracts\AppCollectionRepositoryInterface::getItemAttributeGroupCollection()
+     */
+    public function getItemAttributeGroupCollection(CompanySqlFilterInterface $filter)
+    {
+        $criteria = [];
+
+        if ($filter->getCompanyId() > 0) {
+            $criteria = [
+                'company' => $filter->getCompanyId()
+            ];
+        }
+
+        $sort_criteria = [];
+
+        /**
+         *
+         * @var NmtInventoryAttributeGroup $list
+         */
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryAttributeGroup')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
 }

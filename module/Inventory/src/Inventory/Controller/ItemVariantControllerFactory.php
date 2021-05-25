@@ -1,13 +1,13 @@
 <?php
 namespace Inventory\Controller;
 
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemVariantControllerFactory implements FactoryInterface
 {
@@ -27,8 +27,8 @@ class ItemVariantControllerFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $container->get('Inventory\Service\ItemSearchService');
-        $controller->setItemSearchService($sv);
+        $sv = $container->get('AppLogger');
+        $controller->setLogger($sv);
 
         return $controller;
     }

@@ -1,11 +1,12 @@
 <?php
-use Application\Application\Service\AccountChart\Export\ExportAsHtmlTable;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
+use Application\Application\Service\ItemAttribute\Export\ExportAsForm;
+
 ?>
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
@@ -31,8 +32,8 @@ use Application\Application\Service\AccountChart\Export\ExportAsHtmlTable;
       <hr>
       <div id="html" class="demo">
 <?php
-$export = new ExportAsHtmlTable();
-// echo $export->execute($chart);
+$export = new ExportAsForm();
+echo $export->execute($resultCollection);
 ?>
 			<ul>
          </ul>
@@ -78,7 +79,7 @@ var obj = {
 title: "Item /Product Attributes",
    dataModel: dataModel,
    colModel: columns,
-   height: $(window).height()-300,
+   height: $(window).height()-500,
    width: 600,
    hoverMode: 'row',
    showTop: true,

@@ -195,8 +195,13 @@ if (! $dto == null) {
         $url1 = sprintf($format, $dto->getId());
         $repairTab = sprintf('<a title="Repair Cost Overview" href="%s"><i class="fa fa-wrench" aria-hidden="true"></i>&nbsp;Repair Cost %s</a>', $url1, "");
 
+        $format = '/inventory/item-variant/list?target_token=%s&target_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $variantTab = sprintf('<a title="Serial" href="%s"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;Variant</a>', $url1);
+
         $tabsList = [
             // $logisticTab,
+            $variantTab,
             $stockTab,
             $repairTab,
             $pricesTab,

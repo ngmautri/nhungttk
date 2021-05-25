@@ -19,7 +19,7 @@ class CompositeTest extends PHPUnit_Framework_TestCase
 
         $result = PorterStemmer::stem($word);
 
-        $result = Inflector::dasherize('glass_Hutter');
+        $result = Inflector::camelize('Garment Size');
         \var_dump($result);
     }
 }

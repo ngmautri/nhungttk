@@ -452,6 +452,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
             $data = $prg;
 
+            var_dump($data);
+
             $options = new CreateHeaderCmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
             $cmdHandler = $this->getCmdHandlerFactory()->getCreateHeaderCmdHandler();
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);

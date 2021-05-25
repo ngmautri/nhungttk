@@ -28,9 +28,12 @@ class WhMapper
             return null;
         }
 
-        // =================================
-        // Mapping None-Object Field
-        // =================================
+        /*
+         * |=============================
+         * | Mapping None-Object Field
+         * | not mapping setID
+         * |=============================
+         */
 
         // $entity->setId($snapshot->id);
         $entity->setWhCode($snapshot->whCode);
@@ -48,9 +51,13 @@ class WhMapper
         $entity->setRevisionNo($snapshot->revisionNo);
         $entity->setUuid($snapshot->uuid);
 
-        // ============================
-        // DATE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | DATE MAPPING
+         * |
+         * |=============================
+         */
+
         /*
          * $entity->setCreatedOn($snapshot->createdOn);
          * $entity->setLastChangeOn($snapshot->lastChangeOn);
@@ -63,9 +70,13 @@ class WhMapper
             $entity->setLastchangeOn(new \DateTime($snapshot->lastChangeOn));
         }
 
-        // ============================
-        // REFERRENCE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | REFERRENCE MAPPING
+         * |
+         * |=============================
+         */
+
         /*
          * $entity->setCreatedBy($snapshot->createdBy);
          * $entity->setCompany($snapshot->company);

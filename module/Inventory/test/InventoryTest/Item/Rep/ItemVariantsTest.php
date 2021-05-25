@@ -47,9 +47,6 @@ class ItemVariantsTest extends PHPUnit_Framework_TestCase
 
             $data = array(
                 'xs',
-                'xs',
-                'xs',
-                'xs',
                 's',
                 'm',
                 'l',

@@ -7,6 +7,7 @@ use Application\Application\Service\Contracts\FormOptionCollectionInterface;
 use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
 use Application\Entity\MlaUsers;
 use Application\Entity\NmtApplicationCountry;
+use Application\Entity\NmtInventoryAttributeGroup;
 use Application\Infrastructure\Persistence\Application\Contracts\AppCollectionRepositoryInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -20,6 +21,30 @@ class DefaultFormOptionCollection extends AbstractService implements FormOptionC
 {
 
     private $appCollectionRepository;
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Infrastructure\Persistence\Application\Contracts\AppCollectionRepositoryInterface::getItemAttributeGroupCollection()
+     */
+    public function getItemAttributeGroupCollection(CompanySqlFilterInterface $filter)
+    {
+        $list = $this->getAppCollectionRepository()->getItemAttributeGroupCollection($filter);
+
+        $result = new ArrayCollection();
+        if ($list == null) {
+            return $result;
+        }
+
+        /**
+         *
+         * @var NmtInventoryAttributeGroup $l ;
+         */
+        foreach ($list as $l) {
+            $result->add($this->createElement($l->getId(), \sprintf('%s %s', $l->getGroupName(), '')));
+        }
+        return $result;
+    }
 
     public function getPaymentTermCollection(CompanySqlFilterInterface $filter)
     {}

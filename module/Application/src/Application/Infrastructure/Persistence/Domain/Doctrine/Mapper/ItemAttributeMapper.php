@@ -10,6 +10,12 @@ use Doctrine\ORM\EntityManager;
 class ItemAttributeMapper
 {
 
+    /*
+     * |=============================
+     * |Mapping Variant
+     * |
+     * |=============================
+     */
     public static function mapAttributeGroupEntity(EntityManager $doctrineEM, AttributeGroupSnapshot $snapshot, NmtInventoryAttributeGroup $entity)
     {
         if ($snapshot == null || $entity == null || $doctrineEM == null) {
@@ -227,7 +233,7 @@ class ItemAttributeMapper
         }
 
         $snapshot = new AttributeSnapshot();
-        // $snapshot->id = $entity->getId();
+        $snapshot->id = $entity->getId();
         $snapshot->uuid = $entity->getUuid();
         $snapshot->attributeCode = $entity->getAttributeCode();
         $snapshot->attributeName = $entity->getAttributeName();

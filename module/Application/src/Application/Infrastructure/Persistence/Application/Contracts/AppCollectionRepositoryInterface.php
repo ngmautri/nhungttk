@@ -30,5 +30,7 @@ Interface AppCollectionRepositoryInterface
     public function getGLAccountCollection(CompanySqlFilterInterface $filter);
 
     public function getCostCenterAccountCollection(CompanySqlFilterInterface $filter);
+
+    public function getItemAttributeGroupCollection(CompanySqlFilterInterface $filter);
 }
 

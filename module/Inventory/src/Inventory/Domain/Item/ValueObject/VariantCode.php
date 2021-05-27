@@ -20,6 +20,26 @@ class VariantCode extends ValueObject
 
     private $attributes;
 
+    const SEPERATOR = '_I_A_';
+
+    const ATTR_SEPERATOR = '_';
+
+    /**
+     *
+     * @param string $variantCode
+     */
+    public static function createFrom($variantCode)
+
+    {
+        $result = \explode(self::SEPERATOR, $variantCode, 2);
+
+        if (count($result) != 2) {
+            throw new \InvalidArgumentException('Variant Code not valid!');
+        }
+
+        return new self($result[0], \explode('_', $result[1]));
+    }
+
     public function __construct($itemId, $attributes, $context = null)
     {
         $this->itemIdVO = new ItemId($itemId, 'Item ID');
@@ -28,7 +48,7 @@ class VariantCode extends ValueObject
         $this->itemId = $itemId;
         sort($attributes);
         $this->attributes = $attributes;
-        $this->code = \sprintf("i%s_a_%s", $itemId, \implode("_", $attributes));
+        $this->code = \sprintf("%s%s%s", $itemId, self::SEPERATOR, \implode(self::ATTR_SEPERATOR, $attributes));
     }
 
     public function makeSnapshot()

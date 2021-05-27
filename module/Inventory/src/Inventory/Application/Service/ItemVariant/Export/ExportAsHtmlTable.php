@@ -1,12 +1,12 @@
 <?php
-namespace Application\Application\Service\ItemAttribute\Export;
+namespace Inventory\Application\Service\ItemVariant\Export;
 
-use Application\Domain\Company\ItemAttribute\GenericAttributeGroup;
 use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
 use Application\Domain\Util\Collection\Contracts\FilterInterface;
 use Application\Domain\Util\Collection\Export\AbstractExport;
 use Application\Domain\Util\Collection\Filter\DefaultFilter;
 use Application\Domain\Util\Collection\Formatter\NullFormatter;
+use Inventory\Domain\Item\Variant\GenericVariant;
 use Traversable;
 
 /**
@@ -48,8 +48,8 @@ class ExportAsHtmlTable extends AbstractExport
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>Chart</b></td>
-            <td><b>CC</b></td>
+			<td><b>Attribute</b></td>
+
 	        <td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -64,7 +64,7 @@ class ExportAsHtmlTable extends AbstractExport
 
         foreach ($collection as $element) {
 
-            /**@var GenericAttributeGroup $element ;*/
+            /**@var GenericVariant $element ;*/
 
             $n ++;
 
@@ -74,9 +74,7 @@ class ExportAsHtmlTable extends AbstractExport
 
             $bodyHtml = $bodyHtml . "<tr>\n";
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $n + $filter->getOffset());
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $element->getGroupName());
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $element->getLazyAttributeCollection()->count());
-
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $element->getCombinedName());
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $showUrl);
 
             $bodyHtml = $bodyHtml . "</tr>";

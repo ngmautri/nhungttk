@@ -25,6 +25,13 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
 
     const VARIANT_ATTRIBUTE_ENTITY_NAME = "\Application\Entity\NmtInventoryItemVariantAttribute";
 
+    /*
+     * |=============================
+     * | Delegation
+     * |
+     * |=============================
+     */
+
     /**
      *
      * {@inheritdoc}
@@ -69,6 +76,13 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
         $isFlush = false;
         $n = 0;
 
+        $combinedName = '';
+        $c = '';
+
+        if ($entity->getItem() != null) {
+            $combinedName = $entity->getItem()->getItemName() . '-';
+        }
+
         foreach ($collection as $attributeEntity) {
             $n ++;
 
@@ -78,9 +92,22 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
             }
 
             $localSnapshot = $this->_getLocalSnapshot($attributeEntity);
-            $this->_storeVariantAttribute($entity, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
+            $rowEntityDoctrine = $this->_storeVariantAttribute($entity, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
+
+            $a = $rowEntityDoctrine->getAttribute();
+
+            if ($a != null) {
+                if ($a->getGroup() != null) {
+                    $gn = $a->getGroup()->getGroupName();
+                    $an = $a->getAttributeName();
+                    $combinedName = $combinedName . \sprintf('%s%s', $c, $an);
+                    $c = '-';
+                }
+            }
         }
 
+        $entity->setCombinedName($combinedName);
+        $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
 
         return $rootSnapshot;
@@ -155,6 +182,17 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
      * |
      * |=============================
      */
+
+    /**
+     *
+     * @param NmtInventoryItemVariant $rootEntityDoctrine
+     * @param VariantAttributeSnapshot $localSnapshot
+     * @param boolean $isPosting
+     * @param boolean $isFlush
+     * @param boolean $increaseVersion
+     * @throws \RuntimeException
+     * @return NULL|\Application\Entity\NmtInventoryItemVariantAttribute
+     */
     private function _storeVariantAttribute(NmtInventoryItemVariant $rootEntityDoctrine, VariantAttributeSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion)
     {
         $rowEntityDoctrine = $this->assertAndReturnVariantAttribute($rootEntityDoctrine, $localSnapshot);
@@ -174,6 +212,15 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
         return $rowEntityDoctrine;
     }
 
+    /**
+     *
+     * @param VariantSnapshot $rootSnapshot
+     * @param boolean $isPosting
+     * @param boolean $isFlush
+     * @param boolean $increaseVersion
+     * @throws InvalidArgumentException
+     * @return NULL|\Application\Entity\NmtInventoryItemVariant
+     */
     private function _storeVariant(VariantSnapshot $rootSnapshot, $isPosting, $isFlush, $increaseVersion)
     {
         if ($rootSnapshot->getId() > 0) {

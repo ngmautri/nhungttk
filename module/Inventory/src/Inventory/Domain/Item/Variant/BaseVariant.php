@@ -33,6 +33,7 @@ abstract class BaseVariant extends AbstractVariant
     public function getLazyAttributeCollection()
     {
         $ref = $this->getAttributeCollectionRef();
+
         if (! $ref instanceof Closure) {
             $this->attributeCollection = new ItemVariantAttributteCollection();
         } else {
@@ -42,6 +43,15 @@ abstract class BaseVariant extends AbstractVariant
         return $this->attributeCollection;
     }
 
+    /**
+     *
+     * @param VariantAttributeSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @param boolean $storeNow
+     * @throws \RuntimeException
+     * @return void|\Procure\Domain\AccountPayable\APRowSnapshot
+     */
     public function createAttributeFrom(VariantAttributeSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
         Assert::notNull($snapshot, "VariantAttributeSnapshot not founds");
@@ -107,7 +117,14 @@ abstract class BaseVariant extends AbstractVariant
     public function createVariantCodeVO($itemId, $attributes)
     {
         $this->variantCodeVO = new VariantCode($itemId, $attributes);
-        $this->combinedName = $this->getVariantCodeVO()->getValue();
+        $v = $this->getVariantCodeVO()->getValue();
+        $this->setCombinedName($v);
+        $this->setVariantCode($v);
+    }
+
+    public function createVOFromVariantCode()
+    {
+        $this->variantCodeVO = VariantCode::createFrom($this->getVariantCode());
     }
 
     /**

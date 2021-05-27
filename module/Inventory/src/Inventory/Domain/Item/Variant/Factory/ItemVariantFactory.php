@@ -40,9 +40,19 @@ class ItemVariantFactory
 
         $instance = new GenericVariant();
         GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        $instance->createVOFromVariantCode();
+
         return $instance;
     }
 
+    /**
+     *
+     * @param GenericItem $entity
+     * @param array $attributes
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @return \Inventory\Domain\Item\Variant\GenericVariant
+     */
     public static function generateVariantFrom(GenericItem $entity, $attributes, CommandOptions $options, SharedService $sharedService)
     {
         Assert::notNull($entity, "Item not found");
@@ -56,6 +66,9 @@ class ItemVariantFactory
         $variant = new GenericVariant();
         GenericObjectAssembler::updateAllFieldsFrom($variant, $variantSnapshot);
         $variant->createVariantCodeVO($entity->getId(), $attributes);
+
+        // update current Variant Attribute
+        // $variant->getLazyAttributeCollection();
 
         // create attribute
         foreach ($attributes as $a) {

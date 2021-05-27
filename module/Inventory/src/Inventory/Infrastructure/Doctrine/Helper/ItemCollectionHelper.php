@@ -72,13 +72,38 @@ class ItemCollectionHelper
             if (count($results) == 0) {
                 return $collection;
             }
-
+            $name = '';
             foreach ($results as $r) {
-
                 /**@var NmtInventoryItemVariantAttribute $localEnityDoctrine ;*/
                 $localEnityDoctrine = $r;
+                $name = $name . '-' . $localEnityDoctrine->getAttribute()->getAttributeCode();
+
                 $localSnapshot = ItemVariantMapper::createVariantAttributeSnapshot($localEnityDoctrine);
                 $collection->add($localSnapshot);
+            }
+            return $collection;
+        };
+    }
+
+    static public function getCombinedNameRef(EntityManager $doctrineEM, $id)
+    {
+        return function () use ($doctrineEM, $id) {
+
+            $criteria = [
+                'variant' => $id
+            ];
+            $results = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItemVariantAttribute')->findBy($criteria);
+
+            $collection = new ItemVariantAttributteCollection();
+            $name = '';
+
+            if (count($results) == 0) {
+                return $name;
+            }
+            foreach ($results as $r) {
+                /**@var NmtInventoryItemVariantAttribute $localEnityDoctrine ;*/
+                $localEnityDoctrine = $r;
+                $name = $name . '-' . $localEnityDoctrine->getAttribute()->getAttributeCode();
             }
             return $collection;
         };

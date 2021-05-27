@@ -25,7 +25,9 @@ class VariantCodeTest extends PHPUnit_Framework_TestCase
             1
         ];
         $v1 = new VariantCode($itemId, $attributes);
-        echo $v1->getValue();
-        \var_dump($vo->equals($v1));
+        // echo $v1->getValue();
+        // \var_dump($vo->equals($v1));
+
+        \var_dump(VariantCode::createFrom('1_I_A_4_1_5_3'));
     }
 }

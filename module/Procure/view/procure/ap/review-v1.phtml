@@ -796,6 +796,41 @@ echo $upload_btn;
       </div>
    </div>
 </div>
+
+
+<div class="modal" id="confirm_remove_row_modal_sm" role="dialog">
+   <div class="modal-dialog modal-md">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+         </div>
+         <div class="modal-body" id="b_modal_sm_body">
+            <h5>#<?php
+
+            echo $this->translate('Row will be removed!');
+            ?></h5>
+            <div class="alert alert-warning">
+               <strong>[Info]</strong> <?php
+
+            echo $this->translate('Remove can not be recalled!');
+            ?>
+               <!-- Journal Entry will be created. <br>- Warehouse Journal will be
+               created.
+                -->
+            </div>
+            <p><?php
+
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+         </div>
+         <div class="modal-footer">
+            <button onclick="doRemovingRow();" type="button" class="btn btn-primary btn-sm">YES</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
+</div>
+
 <script>
 
 var data = <?php
@@ -1220,7 +1255,7 @@ echo $hoverMode;
              { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
-        		return '<button type="button" class="edit_btn">Edit </button>';
+        		return '<button type="button" class="edit_btn">Edit </button>' '<button type="button" class="remove_btn">Edit </button>';
            }
        },
        <?php endif;
@@ -1297,6 +1332,22 @@ echo $hoverMode;
         var $grid = $(this);
 
         $grid.find("button.edit_btn").button({})
+        .unbind("click")
+        .bind("click", function (evt) {
+
+            var $tr = $(this).closest("tr"),
+            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+            redirectUrl="/procure/ap/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
+          	//alert(redirectUrl);
+			window.location.href = redirectUrl;
+          	//window.open(redirectUrl,'_blank');
+        });
+
+        $grid.find("button.remove_btn").button({})
         .unbind("click")
         .bind("click", function (evt) {
 

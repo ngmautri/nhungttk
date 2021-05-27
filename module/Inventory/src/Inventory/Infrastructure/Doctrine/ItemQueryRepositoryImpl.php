@@ -112,20 +112,19 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
             'id' => $id
         );
 
-        $rootEntityDoctrine = $this->getDoctrineEM()
-            ->getRepository('\Application\Entity\NmtInventoryItem')
-            ->findOneBy($criteria);
+        $doctrineEM = $this->getDoctrineEM();
+        $rootEntityDoctrine = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->findOneBy($criteria);
 
         if ($rootEntityDoctrine == null) {
             return null;
         }
 
         $rootSnapshot = ItemMapper::createSnapshot($rootEntityDoctrine, null, true);
-        if ($rootSnapshot == null) {
-            return null;
-        }
-
         $rootEntity = ItemFactory::contructFromDB($rootSnapshot);
+
+        Assert::notNull($rootEntity);
+        $rootEntity->setVariantCollectionRef(ItemCollectionHelper::createVariantCollectionRef($doctrineEM, $id));
+
         return $rootEntity;
     }
 

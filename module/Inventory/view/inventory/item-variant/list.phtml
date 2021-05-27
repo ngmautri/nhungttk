@@ -5,6 +5,8 @@
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
+use Inventory\Application\Service\ItemVariant\Export\ExportAsHtmlTable;
+
 $url = sprintf('/inventory/item-variant/create?item_id=%s', $item_id);
 ?>
 <a class="btn btn-default btn-sm" href="<?php
@@ -17,3 +19,8 @@ echo $url;
 
 echo $this->translate('Create New');
 ?></a>
+
+<?php
+$export = new ExportAsHtmlTable();
+echo $export->execute($variantCollection);
+?>

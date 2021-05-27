@@ -9,6 +9,7 @@ use Application\Domain\Util\Math\Combinition;
 use Doctrine\Common\Collections\ArrayCollection;
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Item\Collection\ItemVariantCollection;
+use Inventory\Domain\Item\Contracts\ItemType;
 use Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface;
 use Inventory\Domain\Item\Variant\Factory\ItemVariantFactory;
 use Inventory\Domain\Service\SharedService;
@@ -64,6 +65,10 @@ abstract class GenericItem extends BaseItem
      */
     public function generateVariants($input, CmdOptions $options, SharedService $sharedService)
     {
+        if ($this->getItemTypeId() == ItemType::SERVICE_ITEM_TYPE) {
+            throw new \InvalidArgumentException('Variant is not applied to service items');
+        }
+
         Assert::isArray($input);
 
         if (count($input) == 0) {
@@ -98,7 +103,7 @@ abstract class GenericItem extends BaseItem
         foreach ($result1 as $attributes) {
             $variant = ItemVariantFactory::generateVariantFrom($this, $attributes, $options, $sharedService);
             if ($variantCollection->isExits($variant)) {
-                continue;
+                throw new \InvalidArgumentException('Variant already exits!');
             }
             $variantCollection->add($variant);
         }

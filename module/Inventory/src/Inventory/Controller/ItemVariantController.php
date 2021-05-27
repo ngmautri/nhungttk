@@ -8,6 +8,7 @@ use Application\Domain\Contracts\FormActions;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Inventory\Application\Command\TransactionalCommandHandler;
 use Inventory\Application\Command\Item\Variant\CreateVariantCmdHandler;
+use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -67,9 +68,14 @@ class ItemVariantController extends AbstractGenericController
             return $viewModel;
         }
 
+        /*
+         * |=============================
+         * | POSTING
+         * |
+         * |=============================
+         */
         $notification = null;
         try {
-
             $data = $prg;
             $itemId = $data['item_id'];
 
@@ -133,8 +139,16 @@ class ItemVariantController extends AbstractGenericController
             return $this->redirect()->toRoute('not_found');
         }
 
+        $rep = new ItemQueryRepositoryImpl($this->getDoctrineEM());
+        $item = $rep->getRootEntityById($itemId);
+
+        if ($item == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
         $viewModel = new ViewModel(array(
-            'item_id' => $itemId
+            'item_id' => $itemId,
+            'variantCollection' => $item->getLazyVariantCollection()
         ));
 
         return $viewModel;

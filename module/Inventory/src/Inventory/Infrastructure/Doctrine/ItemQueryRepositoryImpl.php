@@ -5,6 +5,7 @@ use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Inventory\Domain\Item\Factory\ItemFactory;
 use Inventory\Domain\Item\Repository\ItemQueryRepositoryInterface;
 use Inventory\Infrastructure\Doctrine\Helper\ItemCollectionHelper;
+use Inventory\Infrastructure\Doctrine\Helper\ItemStatistisHelper;
 use Inventory\Infrastructure\Mapper\ItemMapper;
 use Webmozart\Assert\Assert;
 
@@ -73,6 +74,26 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
      */
     public function getRootEntityByTokenId($id, $token)
     {
+        $rootEntityDoctrine = $this->getRootDoctrineEntityByTokenId($id, $token);
+
+        if ($rootEntityDoctrine == null) {
+            return null;
+        }
+        $rootSnapshot = ItemMapper::createSnapshot($rootEntityDoctrine, null, true);
+        $rootEntity = ItemFactory::contructFromDB($rootSnapshot);
+
+        Assert::notNull($rootEntity);
+
+        $doctrineEM = $this->getDoctrineEM();
+        $rootEntity->setStatistics(ItemStatistisHelper::createItemStatistics($doctrineEM, $id));
+        $rootEntity->setVariantCollectionRef(ItemCollectionHelper::createVariantCollectionRef($doctrineEM, $id));
+        $rootEntity->setPictureCollectionRef(ItemCollectionHelper::createPictureCollectionRef($doctrineEM, $rootEntityDoctrine));
+
+        return $rootEntity;
+    }
+
+    private function getRootDoctrineEntityByTokenId($id, $token)
+    {
         if ($id == null || $token == null) {
             return null;
         }
@@ -83,18 +104,7 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
         );
 
         $doctrineEM = $this->getDoctrineEM();
-        $rootEntityDoctrine = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->findOneBy($criteria);
-        if ($rootEntityDoctrine == null) {
-            return null;
-        }
-
-        $rootSnapshot = ItemMapper::createSnapshot($rootEntityDoctrine, null, true);
-        $rootEntity = ItemFactory::contructFromDB($rootSnapshot);
-
-        Assert::notNull($rootEntity);
-        $rootEntity->setVariantCollectionRef(ItemCollectionHelper::createVariantCollectionRef($doctrineEM, $id));
-
-        return $rootEntity;
+        return $doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->findOneBy($criteria);
     }
 
     /**
@@ -167,16 +177,16 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
         $criteria = array(
             'id' => $id
         );
-
-        $rootEntityDoctrine = $this->getDoctrineEM()
-            ->getRepository('\Application\Entity\NmtInventoryItem')
-            ->findOneBy($criteria);
+        $doctrineEM = $this->getDoctrineEM();
+        $rootEntityDoctrine = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->findOneBy($criteria);
 
         if ($rootEntityDoctrine == null) {
             return null;
         }
 
-        return ItemMapper::createSnapshot($rootEntityDoctrine, null, $needDetails);
+        $rootSnapshot = ItemMapper::createSnapshot($rootEntityDoctrine);
+        $rootSnapshot->setStatistics(ItemStatistisHelper::createItemStatistics($doctrineEM, $id));
+        return $rootSnapshot;
     }
 
     /*

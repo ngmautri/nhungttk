@@ -253,6 +253,13 @@ class NmtInventoryItemSerial
     private $isReversable;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=45, nullable=true)
+     */
+    private $uuid;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1134,6 +1141,30 @@ class NmtInventoryItemSerial
     public function getIsReversable()
     {
         return $this->isReversable;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     /**

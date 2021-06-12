@@ -357,8 +357,9 @@ class PoController extends ProcureCRUDController
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
+        $sn = $cmd->getOutput();
 
-        $redirectUrl = sprintf("/procure/po/view?entity_token=%s&entity_id=%s", $rootEntity->getToken(), $rootEntity->getId());
+        $redirectUrl = sprintf("/procure/po/view?entity_token=%s&entity_id=%s", $sn->getToken(), $sn->getId());
         $this->flashMessenger()->addMessage($notification->successMessage(true));
 
         return $this->redirect()->toUrl($redirectUrl);

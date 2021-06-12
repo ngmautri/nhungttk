@@ -9,9 +9,9 @@ use Inventory\Infrastructure\Mapper\ItemMapper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements ItemQueryRepositoryInterface
+class ItemVariantQueryRepositoryImpl extends AbstractDoctrineRepository implements ItemQueryRepositoryInterface
 {
 
     /**

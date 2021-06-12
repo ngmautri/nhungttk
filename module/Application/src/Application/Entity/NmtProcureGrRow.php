@@ -435,6 +435,13 @@ class NmtProcureGrRow
     private $clearingDocId;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="variant_id", type="integer", nullable=true)
+     */
+    private $variantId;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1980,6 +1987,30 @@ class NmtProcureGrRow
     public function getClearingDocId()
     {
         return $this->clearingDocId;
+    }
+
+    /**
+     * Set variantId
+     *
+     * @param integer $variantId
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setVariantId($variantId)
+    {
+        $this->variantId = $variantId;
+
+        return $this;
+    }
+
+    /**
+     * Get variantId
+     *
+     * @return integer
+     */
+    public function getVariantId()
+    {
+        return $this->variantId;
     }
 
     /**

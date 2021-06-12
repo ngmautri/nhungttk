@@ -8,11 +8,13 @@ use Application\Application\Helper\ErrorMessage;
 use Application\Application\Helper\OptionList;
 use Application\Controller\Plugin\SharedCollectionPlugin;
 use Application\Domain\Shared\Constants;
+use Inventory\Domain\Item\Statistics\ItemStatistics;
 
 /**
  *
  * @var \Inventory\Application\DTO\Item\ItemDTO $dto ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ * @var ItemStatistics $stat;
  * @var SharedCollectionPlugin $sharedCollection ;
  */
 $tab_active = 0;
@@ -91,7 +93,11 @@ if ($action != Constants::FORM_ACTION_SHOW) {
 
 $hsCodeSearchUrl = '';
 $q = '';
+$stat = new ItemStatistics();
+
 if (! $dto == null) {
+
+    $stat = $dto->getStatistics();
 
     $q = $dto->hsCode;
     if (strlen($dto->hsCode) > 6) {
@@ -149,31 +155,31 @@ if (! $dto == null) {
 
         $format = '/inventory/item-picture/list1?token=%s&target_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
-        $picturesTab = sprintf('<a title="Picture" href="%s"><span class="glyphicon glyphicon-picture"></span>&nbsp;(%s)</a></li></a>', $url1, $dto->getPictureList()->count());
+        $picturesTab = sprintf('<a title="Picture" href="%s"><span class="glyphicon glyphicon-picture"></span>&nbsp;(%s)</a></li></a>', $url1, $stat->getTotalPicture());
 
         $format = '/inventory/item-serial/list1?token=%s&target_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
-        $serialNoTab = sprintf('<a title="Serial" href="%s"><span class=""></span>Serial No.(%s)</a></li></a>', $url1, $dto->getSerialNoList()->count());
+        $serialNoTab = sprintf('<a title="Serial" href="%s"><span class=""></span>Serial No.(%s)</a></li></a>', $url1, $stat->getTotalSerial());
 
         $format = '/inventory/item-attachment/list1?token=%s&target_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
-        $attachTab = sprintf('<a title="Serial" href="%s"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;(%s)</a></li></a>', $url1, $dto->getAttachmentList()->count());
+        $attachTab = sprintf('<a title="Serial" href="%s"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;(%s)</a></li></a>', $url1, $stat->getTotalAttachment());
 
         $format = '/procure/pr-row/pr-of-item?token=%s&item_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
-        $prTab = sprintf('<a title="Purchase Request" href="%s">PR&nbsp;(%s)</a></li></a>', $url1, $dto->getPrList()->count());
+        $prTab = sprintf('<a title="Purchase Request" href="%s">PR&nbsp;(%s)</a></li></a>', $url1, $stat->getTotalPR());
 
         $format = '/procure/quote-row/qo-of-item?token=%s&item_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
-        $qoTab = sprintf('<a title="Quotation" href="%s">QO&nbsp;(%s)</a></li></a>', $url1, $dto->getQoList()->count());
+        $qoTab = sprintf('<a title="Quotation" href="%s">QO&nbsp;(%s)</a></li></a>', $url1, $stat->getTotalQO());
 
         $format = '/procure/po-row/po-of-item?token=%s&item_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
-        $poTab = sprintf('<a title="Purchase Order" href="%s">PO&nbsp;(%s)</a></li></a>', $url1, $dto->getPoList()->count());
+        $poTab = sprintf('<a title="Purchase Order" href="%s">PO&nbsp;(%s)</a></li></a>', $url1, $stat->getTotalPO());
 
         $format = '/finance/v-invoice-row/ap-of-item?token=%s&item_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
-        $apTab = sprintf('<a title="AP Invoice" href="%s">AP&nbsp;(%s)</a></li></a>', $url1, $dto->getApList()->count());
+        $apTab = sprintf('<a title="AP Invoice" href="%s">AP&nbsp;(%s)</a></li></a>', $url1, $stat->getTotalAP());
 
         $format = '/inventory/change-log/list1?object_token=%s&object_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
@@ -185,7 +191,7 @@ if (! $dto == null) {
 
         $format = '/inventory/association-item/list?token=%s&entity_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
-        $associationTab = sprintf('<a title="Association" href="%s"><i class="fa fa-chain" aria-hidden="true"></i>&nbsp;Association (%s)</a>', $url1, $dto->getAssociationList()->count());
+        $associationTab = sprintf('<a title="Association" href="%s"><i class="fa fa-chain" aria-hidden="true"></i>&nbsp;Association (%s)</a>', $url1, $stat->getTotalAssosiation());
 
         $format = '/finance/v-invoice-row/ap-of-item?token=%s&item_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
@@ -197,7 +203,7 @@ if (! $dto == null) {
 
         $format = '/inventory/item-variant/list?target_token=%s&target_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
-        $variantTab = sprintf('<a title="Serial" href="%s"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;Variant</a>', $url1);
+        $variantTab = sprintf('<a title="Serial" href="%s"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;Variant (%s)</a>', $url1, $stat->getTotalVariant());
 
         $tabsList = [
             // $logisticTab,

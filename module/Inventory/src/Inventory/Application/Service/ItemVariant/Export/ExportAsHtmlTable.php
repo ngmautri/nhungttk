@@ -41,13 +41,15 @@ class ExportAsHtmlTable extends AbstractExport
         }
 
         $tmp = sprintf('Record %s to %s found!', $filter->getLimit() + 1, $filter->getLimit() + $collection->count());
-        $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;">%s</div>', $tmp);
+        $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;font:courier;">%s</div>', $tmp);
 
         $table = $result_msg . '
-<table id="mytable26" class="table table-bordered table-hover">
+<table id="mytable26" class="table table-bordered table-hover" style="color:graytext; padding-top:10pt;font:courier;">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+            <td><b>Item</b></td>
+ <td><b>SysNo.</b></td>
 			<td><b>Attribute</b></td>
 
 	        <td><b>Action</b></td>
@@ -74,7 +76,10 @@ class ExportAsHtmlTable extends AbstractExport
 
             $bodyHtml = $bodyHtml . "<tr>\n";
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $n + $filter->getOffset());
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $element->getCombinedName());
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", \ucwords($element->getItemName()));
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", \ucwords($element->getSysNumber()));
+
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", \strtoupper($element->getFullCombinedName()));
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $showUrl);
 
             $bodyHtml = $bodyHtml . "</tr>";

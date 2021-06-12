@@ -71,11 +71,13 @@ class ItemController extends AbstractGenericController
         $token = $this->params()->fromQuery('entity_token');
         $tab_idx = $this->params()->fromQuery('tab_idx');
 
-        $rootEntity = $this->getItemService()->getDocDetailsByTokenId($id, $token);
-        if ($rootEntity == null) {
+        $dto = $this->getItemService()->getItemSnapshotByToken($id);
+        if ($dto == null) {
             return $this->redirect()->toRoute('not_found');
         }
-        $dto = $rootEntity->makeSnapshot();
+        // $dto = $rootEntity->makeSnapshot();
+        // var_dump($dto);
+
         $viewModel = new ViewModel(array(
             'action' => Constants::FORM_ACTION_SHOW,
             'form_action' => $action,
@@ -84,7 +86,7 @@ class ItemController extends AbstractGenericController
             'dto' => $dto,
             'dto1' => $dto,
             'errors' => null,
-            'version' => $rootEntity->getRevisionNo(),
+            'version' => $dto->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
             'tab_id' => __FUNCTION__,
             'tab_idx' => $tab_idx,
@@ -117,11 +119,11 @@ class ItemController extends AbstractGenericController
 
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
-        $rootEntity = $this->getItemService()->getDocDetailsByTokenId($id, $token);
-        if ($rootEntity == null) {
+
+        $dto = $this->getItemService()->getItemSnapshotByToken($id);
+        if ($dto == null) {
             return $this->redirect()->toRoute('not_found');
         }
-        $dto = $rootEntity->makeSnapshot();
 
         $viewModel = new ViewModel(array(
             'action' => Constants::FORM_ACTION_SHOW,
@@ -131,7 +133,7 @@ class ItemController extends AbstractGenericController
             'dto' => $dto,
             'dto1' => $dto,
             'errors' => null,
-            'version' => $rootEntity->getRevisionNo(),
+            'version' => $dto->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
             'tab_id' => __FUNCTION__,
             'sharedCollection' => $this->getSharedCollection()

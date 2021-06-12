@@ -225,6 +225,13 @@ class NmtInventoryFifoLayer
     private $standardConvertFactor;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="variant_id", type="integer", nullable=true)
+     */
+    private $variantId;
+
+    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -1000,6 +1007,30 @@ class NmtInventoryFifoLayer
     public function getStandardConvertFactor()
     {
         return $this->standardConvertFactor;
+    }
+
+    /**
+     * Set variantId
+     *
+     * @param integer $variantId
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setVariantId($variantId)
+    {
+        $this->variantId = $variantId;
+
+        return $this;
+    }
+
+    /**
+     * Get variantId
+     *
+     * @return integer
+     */
+    public function getVariantId()
+    {
+        return $this->variantId;
     }
 
     /**

@@ -44,8 +44,10 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
             return;
         }
 
+        $n = 0;
         foreach ($collection as $localEntity) {
-            $this->storeWholeVariant($rootEntity, $localEntity);
+            $n ++;
+            $this->storeWholeVariant($rootEntity, $localEntity, $generateSysNumber, $n);
         }
     }
 
@@ -54,14 +56,15 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
      * {@inheritdoc}
      * @see \Inventory\Domain\Item\Repository\ItemVariantCmdRepositoryInterface::storeWholeVariant()
      */
-    public function storeWholeVariant(GenericItem $rootEntity, BaseVariant $localEntity, $generateSysNumber = True)
+    public function storeWholeVariant(GenericItem $rootEntity, BaseVariant $localEntity, $generateSysNumber = True, $n = null)
     {
         $rootSnapshot = $this->_getRootSnapshot($localEntity);
 
         $isFlush = true;
         $increaseVersion = true;
         $isPosting = false;
-        $entity = $this->_storeVariant($rootSnapshot, $isPosting, $isFlush, $increaseVersion);
+        $sysNumber = $rootEntity->getSysNumber() . '-' . $n;
+        $entity = $this->_storeVariant($rootSnapshot, $isPosting, $isFlush, $increaseVersion, $sysNumber);
 
         $rootSnapshot->id = $entity->getId();
         $rootSnapshot->revisionNo = $entity->getRevisionNo();
@@ -77,11 +80,14 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
         $n = 0;
 
         $combinedName = '';
+        $fullCombinedName = '';
         $c = '';
 
-        if ($entity->getItem() != null) {
-            $combinedName = $entity->getItem()->getItemName() . '-';
-        }
+        /*
+         * if ($entity->getItem() != null) {
+         * $combinedName = $entity->getItem()->getItemName() . '-';
+         * }
+         */
 
         foreach ($collection as $attributeEntity) {
             $n ++;
@@ -101,12 +107,14 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
                     $gn = $a->getGroup()->getGroupName();
                     $an = $a->getAttributeName();
                     $combinedName = $combinedName . \sprintf('%s%s', $c, $an);
-                    $c = '-';
+                    $fullCombinedName = $fullCombinedName . \sprintf('%s%s-%s', $c, $gn, $an);
+                    $c = ';';
                 }
             }
         }
 
         $entity->setCombinedName($combinedName);
+        $entity->setFullCombinedName($fullCombinedName);
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
 
@@ -221,7 +229,7 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
      * @throws InvalidArgumentException
      * @return NULL|\Application\Entity\NmtInventoryItemVariant
      */
-    private function _storeVariant(VariantSnapshot $rootSnapshot, $isPosting, $isFlush, $increaseVersion)
+    private function _storeVariant(VariantSnapshot $rootSnapshot, $isPosting, $isFlush, $increaseVersion, $sysNumber = null)
     {
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::VARIANT_ENTITY_NAME, $rootSnapshot->getId());
@@ -235,6 +243,7 @@ class ItemVariantCmdRepositoryImpl extends AbstractDoctrineRepository implements
 
         // Populate with data
         $entity = ItemVariantMapper::mapVariantEntity($this->getDoctrineEM(), $rootSnapshot, $entity);
+        $entity->setSysNumber($sysNumber);
 
         $this->doctrineEM->persist($entity);
 

@@ -134,6 +134,13 @@ class NmtInventoryFifoLayerConsume
     private $isReversable;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="variant_id", type="integer", nullable=true)
+     */
+    private $variantId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -607,6 +614,30 @@ class NmtInventoryFifoLayerConsume
     public function getIsReversable()
     {
         return $this->isReversable;
+    }
+
+    /**
+     * Set variantId
+     *
+     * @param integer $variantId
+     *
+     * @return NmtInventoryFifoLayerConsume
+     */
+    public function setVariantId($variantId)
+    {
+        $this->variantId = $variantId;
+
+        return $this;
+    }
+
+    /**
+     * Get variantId
+     *
+     * @return integer
+     */
+    public function getVariantId()
+    {
+        return $this->variantId;
     }
 
     /**

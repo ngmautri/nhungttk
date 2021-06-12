@@ -55,6 +55,12 @@ class AbstractVariant extends AbstractEntity
 
     protected $lastChangeBy;
 
+    protected $fullCombinedName;
+
+    protected $itemName;
+
+    protected $variantSku;
+
     /**
      *
      * @return mixed
@@ -449,5 +455,59 @@ class AbstractVariant extends AbstractEntity
     protected function setLastChangeBy($lastChangeBy)
     {
         $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getFullCombinedName()
+    {
+        return $this->fullCombinedName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemName()
+    {
+        return $this->itemName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVariantSku()
+    {
+        return $this->variantSku;
+    }
+
+    /**
+     *
+     * @param mixed $fullCombinedName
+     */
+    protected function setFullCombinedName($fullCombinedName)
+    {
+        $this->fullCombinedName = $fullCombinedName;
+    }
+
+    /**
+     *
+     * @param mixed $itemName
+     */
+    protected function setItemName($itemName)
+    {
+        $this->itemName = $itemName;
+    }
+
+    /**
+     *
+     * @param mixed $variantSku
+     */
+    protected function setVariantSku($variantSku)
+    {
+        $this->variantSku = $variantSku;
     }
 }

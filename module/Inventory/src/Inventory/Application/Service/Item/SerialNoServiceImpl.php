@@ -12,7 +12,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SerialNoServiceImpl extends AbstractService implements SerialNoServiceInterface
 {
@@ -43,7 +43,9 @@ class SerialNoServiceImpl extends AbstractService implements SerialNoServiceInte
 
             if ($row->getItemMonitorMethod() == MonitorMethod::ITEM_WITH_SERIAL_NO || $row->getIsFixedAsset() == 1) {
 
-                for ($i = 0; $i < $row->getQuantity(); $i ++) {
+                // Need use standard quantity.
+
+                for ($i = 0; $i < $row->getConvertedStandardQuantity(); $i ++) {
 
                     // create new serial number
                     $sn_entity = new \Application\Entity\NmtInventoryItemSerial();

@@ -2,15 +2,20 @@
 namespace Inventory\Domain\Item;
 
 use Application\Application\Command\Options\CmdOptions;
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Uom\Uom;
 use Application\Domain\Util\Math\Combinition;
 use Doctrine\Common\Collections\ArrayCollection;
 use Inventory\Application\DTO\Item\ItemDTO;
+use Inventory\Domain\Event\Item\ItemVariantsGenerated;
+use Inventory\Domain\Item\Collection\ItemPictureCollection;
+use Inventory\Domain\Item\Collection\ItemSerialCollection;
 use Inventory\Domain\Item\Collection\ItemVariantCollection;
 use Inventory\Domain\Item\Contracts\ItemType;
 use Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface;
+use Inventory\Domain\Item\Statistics\ItemStatistics;
 use Inventory\Domain\Item\Variant\Factory\ItemVariantFactory;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Validator\Item\ItemValidatorCollection;
@@ -26,15 +31,25 @@ use InvalidArgumentException;
 abstract class GenericItem extends BaseItem
 {
 
-    private $variantCollection;
+    protected $statistics;
 
-    private $variantCollectionRef;
+    protected $variantCollection;
+
+    protected $variantCollectionRef;
+
+    protected $serialCollection;
+
+    protected $serialCollectionRef;
+
+    protected $pictureCollection;
+
+    protected $pictureCollectionRef;
 
     abstract public function specifyItem();
 
     /*
      * |=============================
-     * | Update Snapshot from Array
+     * | Collection
      * |
      * |=============================
      */
@@ -57,6 +72,45 @@ abstract class GenericItem extends BaseItem
 
     /**
      *
+     * @return \Inventory\Domain\Item\Collection\ItemSerialCollection
+     */
+    public function getLazySerialCollection()
+    {
+        $ref = $this->getSerialCollectionRef();
+        if (! $ref instanceof Closure) {
+            $this->serialCollection = new ItemSerialCollection();
+        } else {
+            $this->serialCollection = $ref();
+        }
+
+        return $this->serialCollection;
+    }
+
+    /**
+     *
+     * @return \Inventory\Domain\Item\Collection\ItemPictureCollection
+     */
+    public function getLazyPictureCollection()
+    {
+        $ref = $this->getPictureCollectionRef();
+        if (! $ref instanceof Closure) {
+            $this->serialCollection = new ItemPictureCollection();
+        } else {
+            $this->serialCollection = $ref();
+        }
+
+        return $this->serialCollection;
+    }
+
+    /*
+     * |=============================
+     * |Variants
+     * |
+     * |=============================
+     */
+
+    /**
+     *
      * @param array $input
      * @param CmdOptions $options
      * @param SharedService $sharedService
@@ -72,7 +126,7 @@ abstract class GenericItem extends BaseItem
         Assert::isArray($input);
 
         if (count($input) == 0) {
-            throw new \InvalidArgumentException('Input for item variant empty!');
+            throw new \InvalidArgumentException('Input for item variants empty!');
         }
 
         $inputCollection = new ArrayCollection();
@@ -114,7 +168,21 @@ abstract class GenericItem extends BaseItem
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $rep->storeVariantCollection($this);
-        return $this->getVariantCollection();
+
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new ItemVariantsGenerated($target, $defaultParams, $params);
+
+        $this->clearEvents();
+        $this->addEvent($event);
+        return $this;
     }
 
     public function createUom()
@@ -140,6 +208,13 @@ abstract class GenericItem extends BaseItem
     {
         return DTOFactory::createDTOFrom($this, new ItemDTO());
     }
+
+    /*
+     * |=============================
+     * |Validating
+     * |
+     * |=============================
+     */
 
     /**
      *
@@ -208,5 +283,98 @@ abstract class GenericItem extends BaseItem
     public function setVariantCollectionRef(Closure $variantCollectionRef)
     {
         $this->variantCollectionRef = $variantCollectionRef;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialCollection()
+    {
+        return $this->serialCollection;
+    }
+
+    /**
+     *
+     * @param mixed $serialCollection
+     */
+    public function setSerialCollection($serialCollection)
+    {
+        $this->serialCollection = $serialCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialCollectionRef()
+    {
+        return $this->serialCollectionRef;
+    }
+
+    /**
+     *
+     * @param mixed $serialCollectionRef
+     */
+    public function setSerialCollectionRef($serialCollectionRef)
+    {
+        $this->serialCollectionRef = $serialCollectionRef;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPictureCollection()
+    {
+        return $this->pictureCollection;
+    }
+
+    /**
+     *
+     * @param mixed $pictureCollection
+     */
+    public function setPictureCollection($pictureCollection)
+    {
+        $this->pictureCollection = $pictureCollection;
+    }
+
+    /**
+     *
+     * @return Closure
+     */
+    public function getPictureCollectionRef()
+    {
+        return $this->pictureCollectionRef;
+    }
+
+    /**
+     *
+     * @param Closure $pictureCollectionRef
+     */
+    public function setPictureCollectionRef(Closure $pictureCollectionRef)
+    {
+        $this->pictureCollectionRef = $pictureCollectionRef;
+    }
+
+    /**
+     *
+     * @return \Inventory\Domain\Item\Statistics\ItemStatistics
+     */
+    public function getStatistics()
+    {
+        if ($this->statistics == null) {
+            $this->statistics = new ItemStatistics();
+        }
+        return $this->statistics;
+    }
+
+    /**
+     *
+     * @param ItemStatistics $statistics
+     */
+    public function setStatistics(ItemStatistics $statistics)
+    {
+        $this->statistics = $statistics;
     }
 }

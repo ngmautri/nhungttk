@@ -8,9 +8,9 @@ use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class ItemService extends AbstractService
+class EmployeeService extends AbstractService
 {
 
     public function getDocDetailsByTokenId($id, $token)

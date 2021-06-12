@@ -8,7 +8,7 @@ use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemService extends AbstractService
 {
@@ -21,6 +21,14 @@ class ItemService extends AbstractService
         if (! $rootEntity instanceof GenericItem) {
             return null;
         }
+        return $rootEntity;
+    }
+
+    public function getItemSnapshotByToken($token)
+    {
+        $rep = new ItemQueryRepositoryImpl($this->getDoctrineEM());
+        $rootEntity = $rep->getItemSnapshotById($token);
+
         return $rootEntity;
     }
 }

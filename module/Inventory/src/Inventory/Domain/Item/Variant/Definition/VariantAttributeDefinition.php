@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Item\Definition;
+namespace Inventory\Domain\Item\Varian\Definition;
 
 /**
  *

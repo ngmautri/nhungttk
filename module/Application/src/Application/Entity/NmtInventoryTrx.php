@@ -589,6 +589,27 @@ class NmtInventoryTrx
     private $clearingDocId;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="variant_id", type="integer", nullable=true)
+     */
+    private $variantId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="serial_id", type="integer", nullable=true)
+     */
+    private $serialId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="batch_id", type="integer", nullable=true)
+     */
+    private $batchId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -2798,6 +2819,78 @@ class NmtInventoryTrx
     public function getClearingDocId()
     {
         return $this->clearingDocId;
+    }
+
+    /**
+     * Set variantId
+     *
+     * @param integer $variantId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setVariantId($variantId)
+    {
+        $this->variantId = $variantId;
+
+        return $this;
+    }
+
+    /**
+     * Get variantId
+     *
+     * @return integer
+     */
+    public function getVariantId()
+    {
+        return $this->variantId;
+    }
+
+    /**
+     * Set serialId
+     *
+     * @param integer $serialId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setSerialId($serialId)
+    {
+        $this->serialId = $serialId;
+
+        return $this;
+    }
+
+    /**
+     * Get serialId
+     *
+     * @return integer
+     */
+    public function getSerialId()
+    {
+        return $this->serialId;
+    }
+
+    /**
+     * Set batchId
+     *
+     * @param integer $batchId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setBatchId($batchId)
+    {
+        $this->batchId = $batchId;
+
+        return $this;
+    }
+
+    /**
+     * Get batchId
+     *
+     * @return integer
+     */
+    public function getBatchId()
+    {
+        return $this->batchId;
     }
 
     /**

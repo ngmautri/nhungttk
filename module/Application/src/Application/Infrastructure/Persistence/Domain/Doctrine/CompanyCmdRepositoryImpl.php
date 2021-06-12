@@ -3,14 +3,20 @@ namespace Application\Infrastructure\Persistence\Domain\Doctrine;
 
 use Application\Domain\Company\BaseCompany;
 use Application\Domain\Company\GenericCompany;
+use Application\Domain\Company\AccessControl\BaseRole;
+use Application\Domain\Company\AccessControl\Repository\RoleCmdRepositoryInterface;
 use Application\Domain\Company\AccountChart\BaseAccount;
 use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Company\Department\Repository\DepartmentCmdRepositoryInterface;
+use Application\Domain\Company\ItemAssociation\BaseAssociation;
+use Application\Domain\Company\ItemAssociation\Repository\ItemAssociationCmdRepositoryInterface;
 use Application\Domain\Company\ItemAttribute\BaseAttribute;
 use Application\Domain\Company\ItemAttribute\BaseAttributeGroup;
 use Application\Domain\Company\ItemAttribute\Repository\ItemAttributeCmdRepositoryInterface;
+use Application\Domain\Company\PostingPeriod\BasePostingPeriod;
+use Application\Domain\Company\PostingPeriod\Repository\PostingPeriodCmdRepositoryInterface;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
 use Application\Entity\NmtApplicationCompany;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
@@ -35,6 +41,12 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
 
     private $itemAttributeCmdRepository;
 
+    private $itemAssociationCmdRepository;
+
+    private $postingPeriodCmdRepository;
+
+    private $roleCmdRepository;
+
     const COMPANY_ENTITY_NAME = "\Application\Entity\NmtApplicationCompany";
 
     public function storeCompany(GenericCompany $company)
@@ -49,6 +61,51 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
      * |
      * |==================================
      */
+
+    // +++++++++++++++++++++
+    // User Role
+    // +++++++++++++++++++++
+    public function removeRole(BaseCompany $rootEntity, BaseRole $localEntity, $isPosting = false)
+    {
+        $this->assertRoleRepository();
+        return $this->getRoleCmdRepository()->removeRole($rootEntity, $localEntity);
+    }
+
+    public function storeRole(BaseCompany $rootEntity, BaseRole $localEntity, $isPosting = false)
+    {
+        $this->assertRoleRepository();
+        return $this->getRoleCmdRepository()->storeRole($rootEntity, $localEntity);
+    }
+
+    // +++++++++++++++++++++
+    // Item Assocation
+    // +++++++++++++++++++++
+    public function storeItemAssociation(BaseCompany $rootEntity, BaseAssociation $localEntity, $isPosting = false)
+    {
+        $this->assertItemAssociationRepository();
+        return $this->getItemAssociationCmdRepository()->storeItemAssociation($rootEntity, $localEntity);
+    }
+
+    public function removeItemAssociation(BaseCompany $rootEntity, BaseAssociation $localEntity, $isPosting = false)
+    {
+        $this->assertItemAssociationRepository();
+        return $this->getItemAssociationCmdRepository()->removeItemAssociation($rootEntity, $localEntity);
+    }
+
+    // +++++++++++++++++++++
+    // Posting Period
+    // +++++++++++++++++++++
+    public function removePostingPeriod(BaseCompany $rootEntity, BasePostingPeriod $localEntity, $isPosting = false)
+    {
+        $this->assertPostingPeriodRepository();
+        return $this->getPostingPeriodCmdRepository()->storePostingPeriod($rootEntity, $localEntity);
+    }
+
+    public function storePostingPeriod(BaseCompany $rootEntity, BasePostingPeriod $localEntity, $isPosting = false)
+    {
+        $this->assertPostingPeriodRepository();
+        return $this->getPostingPeriodCmdRepository()->removePostingPeriod($rootEntity, $localEntity);
+    }
 
     // +++++++++++++++++++++
     // Item Attribute
@@ -191,15 +248,33 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
         return $this->getDepartmentCmdRepository()->storeDepartment($rootEntity, $localSnapshot, $isPosting);
     }
 
-    public function storePostingPeriod(GenericCompany $company)
-    {}
-
     /*
      * |=================================
      * | Assert underlying repository
      * |
      * |==================================
      */
+    private function assertRoleRepository()
+    {
+        if ($this->getRoleCmdRepository() == null) {
+            throw new InvalidArgumentException("Role repository is not found!");
+        }
+    }
+
+    private function assertPostingPeriodRepository()
+    {
+        if ($this->getPostingPeriodCmdRepository() == null) {
+            throw new InvalidArgumentException("Posting period repository is not found!");
+        }
+    }
+
+    private function assertItemAssociationRepository()
+    {
+        if ($this->getItemAssociationCmdRepository() == null) {
+            throw new InvalidArgumentException("Item Association repository is not found!");
+        }
+    }
+
     private function assertItemAttributeRepository()
     {
         if ($this->getItemAttributeCmdRepository() == null) {
@@ -331,5 +406,59 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     public function setItemAttributeCmdRepository(ItemAttributeCmdRepositoryInterface $itemAttributeCmdRepository)
     {
         $this->itemAttributeCmdRepository = $itemAttributeCmdRepository;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Company\ItemAssociation\Repository\ItemAssociationCmdRepositoryInterface
+     */
+    public function getItemAssociationCmdRepository()
+    {
+        return $this->itemAssociationCmdRepository;
+    }
+
+    /**
+     *
+     * @param ItemAssociationCmdRepositoryInterface $itemAssociationCmdRepository
+     */
+    public function setItemAssociationCmdRepository(ItemAssociationCmdRepositoryInterface $itemAssociationCmdRepository)
+    {
+        $this->itemAssociationCmdRepository = $itemAssociationCmdRepository;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Company\PostingPeriod\Repository\PostingPeriodCmdRepositoryInterface
+     */
+    public function getPostingPeriodCmdRepository()
+    {
+        return $this->postingPeriodCmdRepository;
+    }
+
+    /**
+     *
+     * @param PostingPeriodCmdRepositoryInterface $postingPeriodCmdRepository
+     */
+    public function setPostingPeriodCmdRepository(PostingPeriodCmdRepositoryInterface $postingPeriodCmdRepository)
+    {
+        $this->postingPeriodCmdRepository = $postingPeriodCmdRepository;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Company\AccessControl\Repository\RoleCmdRepositoryInterface
+     */
+    public function getRoleCmdRepository()
+    {
+        return $this->roleCmdRepository;
+    }
+
+    /**
+     *
+     * @param RoleCmdRepositoryInterface $roleCmdRepository
+     */
+    public function setRoleCmdRepository(RoleCmdRepositoryInterface $roleCmdRepository)
+    {
+        $this->roleCmdRepository = $roleCmdRepository;
     }
 }

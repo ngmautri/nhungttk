@@ -358,6 +358,13 @@ class NmtProcureQoRow
     private $convertedStockQuantity;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="variant_id", type="integer", nullable=true)
+     */
+    private $variantId;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1589,6 +1596,30 @@ class NmtProcureQoRow
     public function getConvertedStockQuantity()
     {
         return $this->convertedStockQuantity;
+    }
+
+    /**
+     * Set variantId
+     *
+     * @param integer $variantId
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setVariantId($variantId)
+    {
+        $this->variantId = $variantId;
+
+        return $this;
+    }
+
+    /**
+     * Get variantId
+     *
+     * @return integer
+     */
+    public function getVariantId()
+    {
+        return $this->variantId;
     }
 
     /**

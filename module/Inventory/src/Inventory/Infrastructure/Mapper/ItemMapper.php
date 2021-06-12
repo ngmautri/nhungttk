@@ -3,6 +3,7 @@ namespace Inventory\Infrastructure\Mapper;
 
 use Application\Entity\NmtInventoryItem;
 use Doctrine\ORM\EntityManager;
+use Inventory\Domain\Item\GenericItemSnapshot;
 use Inventory\Domain\Item\ItemSnapshot;
 
 /**
@@ -307,17 +308,18 @@ class ItemMapper
     /**
      *
      * @param NmtInventoryItem $entity
-     * @param ItemSnapshot $snapshot
-     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
+     * @param GenericItemSnapshot $snapshot
+     * @param boolean $needDetails
+     * @return NULL|\Inventory\Domain\Item\GenericItemSnapshot
      */
-    public static function createSnapshot(NmtInventoryItem $entity, ItemSnapshot $snapshot = null, $needDetails = false)
+    public static function createSnapshot(NmtInventoryItem $entity, GenericItemSnapshot $snapshot = null, $needDetails = false)
     {
         if ($entity == null) {
             return null;
         }
 
         if ($snapshot == null) {
-            $snapshot = new ItemSnapshot();
+            $snapshot = new GenericItemSnapshot();
         }
 
         // =================================
@@ -327,7 +329,7 @@ class ItemMapper
         if ($needDetails == true) {
             $snapshot->qoList = $entity->getQoList();
             $snapshot->procureGrList = $entity->getProcureGrList();
-            $snapshot->pictureList = $entity->getPictureList();
+
             $snapshot->attachmentList = $entity->getAttachmentList();
             $snapshot->prList = $entity->getPrList();
             $snapshot->poList = $entity->getPoList();
@@ -335,14 +337,13 @@ class ItemMapper
             $snapshot->fifoLayerList = $entity->getFifoLayerList();
             $snapshot->fifoLayerConsumeList = $entity->getFifoLayerConsumeList();
             $snapshot->stockGrList = $entity->getStockGrList();
-            $snapshot->stockGrList = $entity->getStockGrList();
             $snapshot->associationList = $entity->getAssociationList();
             $snapshot->backwardAssociationList = $entity->getBackwardAssociationList();
-        }
 
-        $snapshot->serialNoList = $entity->getSerialNoList();
-        $snapshot->batchNoList = $entity->getBatchNoList();
-        $snapshot->pictureList = $entity->getPictureList();
+            $snapshot->serialNoList = $entity->getSerialNoList();
+            $snapshot->batchNoList = $entity->getBatchNoList();
+            $snapshot->pictureList = $entity->getPictureList();
+        }
 
         // ================================================
 

@@ -7,7 +7,9 @@ use Application\Domain\Service\SharedService;
 use Application\Infrastructure\Persistence\Domain\Doctrine\ChartCmdRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyCmdRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\DepartmentCmdRepositoryImpl;
+use Application\Infrastructure\Persistence\Domain\Doctrine\ItemAssociationCmdRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\ItemAttributeCmdRepositoryImpl;
+use Application\Infrastructure\Persistence\Domain\Doctrine\PostingPeriodCmdRepositoryImpl;
 use Inventory\Infrastructure\Doctrine\WhCmdRepositoryImpl;
 use Webmozart\Assert\Assert;
 
@@ -30,10 +32,14 @@ class SharedServiceFactory
         $sharedSpecsFactory = new ZendSpecificationFactory($doctrineEM);
 
         $companyCmdRepository = new CompanyCmdRepositoryImpl($doctrineEM);
+
+        // Adding underling repository
         $companyCmdRepository->setChartCmdRepository(new ChartCmdRepositoryImpl($doctrineEM));
         $companyCmdRepository->setDepartmentCmdRepository(new DepartmentCmdRepositoryImpl($doctrineEM));
         $companyCmdRepository->setWhCmdRepository(new WhCmdRepositoryImpl($doctrineEM));
         $companyCmdRepository->setItemAttributeCmdRepository(new ItemAttributeCmdRepositoryImpl($doctrineEM));
+        $companyCmdRepository->setItemAssociationCmdRepository(new ItemAssociationCmdRepositoryImpl($doctrineEM));
+        $companyCmdRepository->setPostingPeriodCmdRepository(new PostingPeriodCmdRepositoryImpl($doctrineEM));
 
         $postingService = new CompanyPostingService($companyCmdRepository);
         $sharedService = new SharedService($sharedSpecsFactory, $postingService);

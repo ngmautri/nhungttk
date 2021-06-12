@@ -2,7 +2,7 @@
 namespace InventoryTest\Item\CodeGenerate;
 
 use Application\Application\Contracts\GenericSnapshotAssembler;
-use Inventory\Domain\Item\Variant\AbstractVariantAttribute;
+use Inventory\Domain\Item\Variant\AbstractVariant;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
@@ -22,8 +22,8 @@ class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
             // $result = GenericSnapshotAssembler::cre(NmtInventoryItem::class);
 
             // $result = GenericSnapshotAssembler::createAllSnapshotProps(AbstractVariant::class);
-            $result = GenericSnapshotAssembler::createAllSnapshotProps(AbstractVariantAttribute::class);
-            // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(AbstractVariant::class);
+            // $result = GenericSnapshotAssembler::createAllSnapshotProps(AbstractVariantAttribute::class);
+            $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(AbstractVariant::class);
             // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(AbstractAttribute::class);
 
             // $result = GenericSnapshotAssembler::findMissingProps(NmtInventoryItemVariant::class, AbstractVariant::class);

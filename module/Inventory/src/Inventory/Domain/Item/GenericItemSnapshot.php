@@ -1,10 +1,12 @@
 <?php
 namespace Inventory\Domain\Item;
 
+use Ramsey\Uuid\Uuid;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GenericItemSnapshot extends BaseItemSnapshot
 {
@@ -78,6 +80,27 @@ class GenericItemSnapshot extends BaseItemSnapshot
     public $onHandValue;
 
     public $standardUnitName;
+
+    public $statistics;
+
+    public $variantCollection;
+
+    public function initDoc($createdBy, $createdDate)
+    {
+        $this->setCreatedOn($createdDate);
+        $this->setCreatedBy($createdBy);
+
+        $this->setIsActive(1);
+        $this->setRevisionNo(0);
+        $this->setUuid(Uuid::uuid4()->toString());
+        $this->setToken($this->getUuid());
+    }
+
+    public function updateDoc($createdBy, $createdDate)
+    {
+        $this->setLastChangeOn($createdDate);
+        $this->setLastChangeBy($createdBy);
+    }
 
     /**
      *
@@ -392,5 +415,356 @@ class GenericItemSnapshot extends BaseItemSnapshot
     public function getStandardUnitName()
     {
         return $this->standardUnitName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStatistics()
+    {
+        return $this->statistics;
+    }
+
+    /**
+     *
+     * @param mixed $assetLabel1
+     */
+    public function setAssetLabel1($assetLabel1)
+    {
+        $this->assetLabel1 = $assetLabel1;
+    }
+
+    /**
+     *
+     * @param mixed $serialNo
+     */
+    public function setSerialNo($serialNo)
+    {
+        $this->serialNo = $serialNo;
+    }
+
+    /**
+     *
+     * @param mixed $serialNo1
+     */
+    public function setSerialNo1($serialNo1)
+    {
+        $this->serialNo1 = $serialNo1;
+    }
+
+    /**
+     *
+     * @param mixed $serialNo2
+     */
+    public function setSerialNo2($serialNo2)
+    {
+        $this->serialNo2 = $serialNo2;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgNumber
+     */
+    public function setSerialMfgNumber($serialMfgNumber)
+    {
+        $this->serialMfgNumber = $serialMfgNumber;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgDate
+     */
+    public function setSerialMfgDate($serialMfgDate)
+    {
+        $this->serialMfgDate = $serialMfgDate;
+    }
+
+    /**
+     *
+     * @param mixed $serialWarrantyStartDate
+     */
+    public function setSerialWarrantyStartDate($serialWarrantyStartDate)
+    {
+        $this->serialWarrantyStartDate = $serialWarrantyStartDate;
+    }
+
+    /**
+     *
+     * @param mixed $serialWarrantyEndDate
+     */
+    public function setSerialWarrantyEndDate($serialWarrantyEndDate)
+    {
+        $this->serialWarrantyEndDate = $serialWarrantyEndDate;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgName
+     */
+    public function setSerialMfgName($serialMfgName)
+    {
+        $this->serialMfgName = $serialMfgName;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgName1
+     */
+    public function setSerialMfgName1($serialMfgName1)
+    {
+        $this->serialMfgName1 = $serialMfgName1;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgModel
+     */
+    public function setSerialMfgModel($serialMfgModel)
+    {
+        $this->serialMfgModel = $serialMfgModel;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgModel1
+     */
+    public function setSerialMfgModel1($serialMfgModel1)
+    {
+        $this->serialMfgModel1 = $serialMfgModel1;
+    }
+
+    /**
+     *
+     * @param mixed $serialERPNumber
+     */
+    public function setSerialERPNumber($serialERPNumber)
+    {
+        $this->serialERPNumber = $serialERPNumber;
+    }
+
+    /**
+     *
+     * @param mixed $serialERPNumber1
+     */
+    public function setSerialERPNumber1($serialERPNumber1)
+    {
+        $this->serialERPNumber1 = $serialERPNumber1;
+    }
+
+    /**
+     *
+     * @param mixed $serialLotNumber
+     */
+    public function setSerialLotNumber($serialLotNumber)
+    {
+        $this->serialLotNumber = $serialLotNumber;
+    }
+
+    /**
+     *
+     * @param mixed $serialId
+     */
+    public function setSerialId($serialId)
+    {
+        $this->serialId = $serialId;
+    }
+
+    /**
+     *
+     * @param mixed $serialSystemNo
+     */
+    public function setSerialSystemNo($serialSystemNo)
+    {
+        $this->serialSystemNo = $serialSystemNo;
+    }
+
+    /**
+     *
+     * @param mixed $associationList
+     */
+    public function setAssociationList($associationList)
+    {
+        $this->associationList = $associationList;
+    }
+
+    /**
+     *
+     * @param mixed $backwardAssociationList
+     */
+    public function setBackwardAssociationList($backwardAssociationList)
+    {
+        $this->backwardAssociationList = $backwardAssociationList;
+    }
+
+    /**
+     *
+     * @param mixed $qoList
+     */
+    public function setQoList($qoList)
+    {
+        $this->qoList = $qoList;
+    }
+
+    /**
+     *
+     * @param mixed $procureGrList
+     */
+    public function setProcureGrList($procureGrList)
+    {
+        $this->procureGrList = $procureGrList;
+    }
+
+    /**
+     *
+     * @param mixed $batchNoList
+     */
+    public function setBatchNoList($batchNoList)
+    {
+        $this->batchNoList = $batchNoList;
+    }
+
+    /**
+     *
+     * @param mixed $fifoLayerConsumeList
+     */
+    public function setFifoLayerConsumeList($fifoLayerConsumeList)
+    {
+        $this->fifoLayerConsumeList = $fifoLayerConsumeList;
+    }
+
+    /**
+     *
+     * @param mixed $stockGrList
+     */
+    public function setStockGrList($stockGrList)
+    {
+        $this->stockGrList = $stockGrList;
+    }
+
+    /**
+     *
+     * @param mixed $pictureList
+     */
+    public function setPictureList($pictureList)
+    {
+        $this->pictureList = $pictureList;
+    }
+
+    /**
+     *
+     * @param mixed $attachmentList
+     */
+    public function setAttachmentList($attachmentList)
+    {
+        $this->attachmentList = $attachmentList;
+    }
+
+    /**
+     *
+     * @param mixed $prList
+     */
+    public function setPrList($prList)
+    {
+        $this->prList = $prList;
+    }
+
+    /**
+     *
+     * @param mixed $poList
+     */
+    public function setPoList($poList)
+    {
+        $this->poList = $poList;
+    }
+
+    /**
+     *
+     * @param mixed $apList
+     */
+    public function setApList($apList)
+    {
+        $this->apList = $apList;
+    }
+
+    /**
+     *
+     * @param mixed $serialNoList
+     */
+    public function setSerialNoList($serialNoList)
+    {
+        $this->serialNoList = $serialNoList;
+    }
+
+    /**
+     *
+     * @param mixed $batchList
+     */
+    public function setBatchList($batchList)
+    {
+        $this->batchList = $batchList;
+    }
+
+    /**
+     *
+     * @param mixed $fifoLayerList
+     */
+    public function setFifoLayerList($fifoLayerList)
+    {
+        $this->fifoLayerList = $fifoLayerList;
+    }
+
+    /**
+     *
+     * @param mixed $onHandQty
+     */
+    public function setOnHandQty($onHandQty)
+    {
+        $this->onHandQty = $onHandQty;
+    }
+
+    /**
+     *
+     * @param mixed $onHandValue
+     */
+    public function setOnHandValue($onHandValue)
+    {
+        $this->onHandValue = $onHandValue;
+    }
+
+    /**
+     *
+     * @param mixed $standardUnitName
+     */
+    public function setStandardUnitName($standardUnitName)
+    {
+        $this->standardUnitName = $standardUnitName;
+    }
+
+    /**
+     *
+     * @param mixed $statistics
+     */
+    public function setStatistics($statistics)
+    {
+        $this->statistics = $statistics;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVariantCollection()
+    {
+        return $this->variantCollection;
+    }
+
+    /**
+     *
+     * @param mixed $variantCollection
+     */
+    public function setVariantCollection($variantCollection)
+    {
+        $this->variantCollection = $variantCollection;
     }
 }

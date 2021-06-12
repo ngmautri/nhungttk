@@ -143,7 +143,7 @@ class ItemVariantController extends AbstractGenericController
         $item = $rep->getRootEntityById($itemId);
 
         if ($item == null) {
-            return $this->redirect()->toRoute('not_found');
+            // return $this->redirect()->toRoute('not_found');
         }
 
         $viewModel = new ViewModel(array(

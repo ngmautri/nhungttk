@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Item\Definition;
+namespace Inventory\Domain\Item\Variant\Definition;
 
 /**
  *
@@ -31,7 +31,10 @@ class VariantDefinition
         "sysNumber",
         "item",
         "createdBy",
-        "lastChangeBy"
+        "lastChangeBy",
+        "fullCombinedName",
+        "itemName",
+        "variantSku"
     ];
 
     public static $defaultExcludedFields = [];

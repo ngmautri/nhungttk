@@ -148,6 +148,27 @@ class NmtInventoryItemVariant
     private $sysNumber;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="full_combined_name", type="string", length=200, nullable=true)
+     */
+    private $fullCombinedName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_name", type="string", length=100, nullable=true)
+     */
+    private $itemName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="variant_sku", type="string", length=45, nullable=true)
+     */
+    private $variantSku;
+
+    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -619,6 +640,78 @@ class NmtInventoryItemVariant
     public function getSysNumber()
     {
         return $this->sysNumber;
+    }
+
+    /**
+     * Set fullCombinedName
+     *
+     * @param string $fullCombinedName
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setFullCombinedName($fullCombinedName)
+    {
+        $this->fullCombinedName = $fullCombinedName;
+
+        return $this;
+    }
+
+    /**
+     * Get fullCombinedName
+     *
+     * @return string
+     */
+    public function getFullCombinedName()
+    {
+        return $this->fullCombinedName;
+    }
+
+    /**
+     * Set itemName
+     *
+     * @param string $itemName
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setItemName($itemName)
+    {
+        $this->itemName = $itemName;
+
+        return $this;
+    }
+
+    /**
+     * Get itemName
+     *
+     * @return string
+     */
+    public function getItemName()
+    {
+        return $this->itemName;
+    }
+
+    /**
+     * Set variantSku
+     *
+     * @param string $variantSku
+     *
+     * @return NmtInventoryItemVariant
+     */
+    public function setVariantSku($variantSku)
+    {
+        $this->variantSku = $variantSku;
+
+        return $this;
+    }
+
+    /**
+     * Get variantSku
+     *
+     * @return string
+     */
+    public function getVariantSku()
+    {
+        return $this->variantSku;
     }
 
     /**

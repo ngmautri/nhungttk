@@ -3,7 +3,7 @@ namespace Procure\Application\Service\Shared\Snapshot;
 
 use Application\Domain\Shared\Number\NumberParser;
 use Doctrine\ORM\EntityManager;
-use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Domain\Item\GenericItemSnapshot;
 use Inventory\Domain\Item\Contracts\ItemType;
 use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 use Procure\Domain\RowSnapshot;
@@ -39,7 +39,7 @@ class GenericRowSnapshotModifier
             $rep = new ItemQueryRepositoryImpl($doctrineEM);
             $itemSnapshot = $rep->getItemSnapshotById($snapshot->getItem());
 
-            if ($itemSnapshot instanceof ItemSnapshot) {
+            if ($itemSnapshot instanceof GenericItemSnapshot) {
 
                 switch ($itemSnapshot->getItemTypeId()) {
                     case ItemType::FIXED_ASSET_ITEM_TYPE:

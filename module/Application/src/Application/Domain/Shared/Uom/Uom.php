@@ -20,12 +20,12 @@ final class Uom extends BaseUom implements \JsonSerializable
      * @param string $uomName
      * @throws \InvalidArgumentException
      */
-    public function __construct($uomName, $uomCode = null)
+    public function __construct($uomName, $ctx = null)
     {
         // ignore case incentive.
         $this->uomName = trim(\strtolower($uomName));
-        $this->uomCode = trim(\strtolower($uomCode));
-        Assert::stringNotEmpty($uomName, \sprintf('Uom Name should not be null! %s', $uomName));
+        // $this->uomCode = trim(\strtolower($uomCode));
+        Assert::stringNotEmpty($uomName, \sprintf('Uom name empty! %s %s', $uomName, $ctx));
         Assert::maxLength($uomName, 45);
     }
 
@@ -56,7 +56,7 @@ final class Uom extends BaseUom implements \JsonSerializable
     private static function assertInstance(Uom $instance)
     {
         $instance->uomName = trim(\strtolower($instance->getUomName()));
-        $instance->uomCode = trim(\strtolower($instance->getUomCode()));
+        // $instance->uomCode = trim(\strtolower($instance->getUomCode()));
         Assert::stringNotEmpty($instance->getUomName());
         Assert::maxLength($instance->getUomName(), 45);
         return $instance;

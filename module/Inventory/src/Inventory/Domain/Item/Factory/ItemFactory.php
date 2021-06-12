@@ -2,24 +2,25 @@
 namespace Inventory\Domain\Item\Factory;
 
 use Application\Application\Event\DefaultParameter;
-use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Item\ItemCreated;
 use Inventory\Domain\Event\Item\ItemUpdated;
 use Inventory\Domain\Item\FixedAssetItem;
 use Inventory\Domain\Item\GenericItem;
+use Inventory\Domain\Item\GenericItemSnapshot;
 use Inventory\Domain\Item\InventoryItem;
 use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Domain\Item\ItemSnapshotAssembler;
 use Inventory\Domain\Item\NoneInventoryItem;
 use Inventory\Domain\Item\ServiceItem;
 use Inventory\Domain\Item\Contracts\ItemType;
+use Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface;
 use Inventory\Domain\Item\Validator\ValidatorFactory;
 use Inventory\Domain\Service\SharedService;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use RuntimeException;
-use Inventory\Domain\Item\ItemSnapshotAssembler;
 
 /**
  *
@@ -31,7 +32,7 @@ class ItemFactory
 
     public static function contructFromDB($snapshot)
     {
-        if (! $snapshot instanceof ItemSnapshot) {
+        if (! $snapshot instanceof GenericItemSnapshot) {
             throw new InvalidArgumentException("ItemSnapshot not found!");
         }
 
@@ -120,10 +121,10 @@ class ItemFactory
         /**
          *
          * @var ItemSnapshot $rootSnapshot
+         * @var ItemCmdRepositoryInterface $rep ;
          */
-        $rootSnapshot = $sharedService->getPostingService()
-            ->getCmdRepository()
-            ->store($item, true);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->store($item, true);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();

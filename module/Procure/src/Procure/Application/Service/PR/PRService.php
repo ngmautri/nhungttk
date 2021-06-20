@@ -198,6 +198,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
                 $builder = new PdfBuilder();
                 $formatter = new RowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsPdf($builder);
+                $factory->setDoctrineEM($this->getDoctrineEM());
                 break;
             default:
                 // always save array.

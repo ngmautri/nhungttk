@@ -19,6 +19,8 @@ use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
 Interface CompanyCmdRepositoryInterface extends WhCmdRepositoryInterface, ChartCmdRepositoryInterface, ItemAttributeCmdRepositoryInterface, ItemAssociationCmdRepositoryInterface, PostingPeriodCmdRepositoryInterface, RoleCmdRepositoryInterface
 {
 
+    public function getBrandCmdRepository();
+
     public function storeCompany(GenericCompany $company);
 
     // ================================================================

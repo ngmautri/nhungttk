@@ -8,6 +8,7 @@ use Application\Domain\Company\AccessControl\Repository\RoleCmdRepositoryInterfa
 use Application\Domain\Company\AccountChart\BaseAccount;
 use Application\Domain\Company\AccountChart\BaseChart;
 use Application\Domain\Company\AccountChart\Repository\ChartCmdRepositoryInterface;
+use Application\Domain\Company\Brand\Repository\BrandCmdRepositoryInterface;
 use Application\Domain\Company\Department\DepartmentSnapshot;
 use Application\Domain\Company\Department\Repository\DepartmentCmdRepositoryInterface;
 use Application\Domain\Company\ItemAssociation\BaseAssociation;
@@ -46,6 +47,8 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     private $postingPeriodCmdRepository;
 
     private $roleCmdRepository;
+
+    private $brandCmdRepository;
 
     const COMPANY_ENTITY_NAME = "\Application\Entity\NmtApplicationCompany";
 
@@ -332,6 +335,21 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
 
     /*
      * |=================================
+     * | GETTER UNDERLYING REPOSITORY
+     * |
+     * |==================================
+     */
+    public function getBrandCmdRepository()
+    {
+        if (! $this->brandCmdRepository instanceof BrandCmdRepositoryInterface) {
+            throw new InvalidArgumentException("Brand repository is not found!");
+        }
+
+        return $this->brandCmdRepository;
+    }
+
+    /*
+     * |=================================
      * | GETTER AND SETTER
      * |
      * |==================================
@@ -460,5 +478,14 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     public function setRoleCmdRepository(RoleCmdRepositoryInterface $roleCmdRepository)
     {
         $this->roleCmdRepository = $roleCmdRepository;
+    }
+
+    /**
+     *
+     * @param BrandCmdRepositoryInterface $brandCmdRepository
+     */
+    public function setBrandCmdRepository(BrandCmdRepositoryInterface $brandCmdRepository)
+    {
+        $this->brandCmdRepository = $brandCmdRepository;
     }
 }

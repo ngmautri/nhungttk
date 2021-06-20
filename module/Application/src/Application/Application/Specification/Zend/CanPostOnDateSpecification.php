@@ -1,17 +1,14 @@
 <?php
 namespace Application\Application\Specification\Zend;
 
-use Application\Domain\Company\PostingPeriod\PostingPeriodstatus;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
+use Application\Domain\Company\Contracts\PostingPeriodstatus;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CanPostOnDateSpecification extends DoctrineSpecification
 {
@@ -47,8 +44,8 @@ class CanPostOnDateSpecification extends DoctrineSpecification
 
         $sql_tmp = "
 SELECT * FROM nmt_fin_posting_period
-WHERE nmt_fin_posting_period.posting_from_date <= '%s' 
-AND nmt_fin_posting_period.posting_to_date >= '%s' 
+WHERE nmt_fin_posting_period.posting_from_date <= '%s'
+AND nmt_fin_posting_period.posting_to_date >= '%s'
 AND company_id=%s";
 
         $sql = sprintf($sql_tmp, $movementDate, $movementDate, $companyId);

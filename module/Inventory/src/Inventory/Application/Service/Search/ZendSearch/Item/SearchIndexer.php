@@ -4,7 +4,7 @@ namespace Inventory\Application\Service\Search\ZendSearch\Item;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 final class SearchIndexer
 {
@@ -28,6 +28,10 @@ final class SearchIndexer
     const ITEM_KEY = '_item_key';
 
     const ITEM_KEY_FORMAT = '_item_%s';
+
+    const DOC_TYPE_SN = '_sn_';
+
+    const DOC_TYPE_VARIANT = '_variant_';
 
     public static function getItemKeyQuery($id)
     {

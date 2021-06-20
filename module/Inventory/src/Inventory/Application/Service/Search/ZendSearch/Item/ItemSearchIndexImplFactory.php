@@ -7,7 +7,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri
- *        
+ *
  */
 class ItemSearchIndexImplFactory implements FactoryInterface
 {
@@ -21,7 +21,7 @@ class ItemSearchIndexImplFactory implements FactoryInterface
     {
         $container = $serviceLocator;
 
-        $service = new ItemSearchIndexImpl();
+        $service = new ItemSearchIndexImpl_V01();
 
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);

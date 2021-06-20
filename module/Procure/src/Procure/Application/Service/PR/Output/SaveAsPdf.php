@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\Service\PR\Output;
 
+use Application\Entity\NmtInventoryItemPicture;
 use Procure\Application\Service\Output\AbstractDocSaveAsPdf;
 use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
 use Procure\Domain\GenericDoc;
@@ -10,7 +11,7 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SaveAsPdf extends AbstractDocSaveAsPdf
 {
@@ -199,11 +200,12 @@ EOF;
         <tr class="text-left" style="color:black;">
         <th class="text-left" style="width: 30px;">#</th>
         <th class="text-left" style="width: 40%;">Item</th>
+        <th class="text-left" style="width: 80pt;">Picture</th>
         <th class="text-left" style="width: 5px;">Unit</th>
         <th class="text-left">Requested</th>
         <th class="text-left">Reveived</th>
         <th class="text-left">Open</th>
-     
+
           </tr>';
         $n = 0;
 
@@ -221,6 +223,7 @@ EOF;
              *
              * @var PRRowSnapshot $row ;
              */
+            $item_thumbnail = $this->getItemPic($r->getItem());
 
             $row = $formatter->format($r->makeSnapshot());
 
@@ -252,6 +255,8 @@ EOF;
             $details .= '<tr style="font-size: 9.5px; border: 0px solid black;">';
             $details .= sprintf('<td class="text-left">%s<br></td>', $n);
             $details .= sprintf('<td class="text-left"><div>%s</div>%s</td>', strtoupper($row->getItemName()), $itemDetails);
+            $details .= sprintf('<td><img src="%s" width="80" height="80"></td>', $item_thumbnail);
+
             $details .= sprintf('<td class="text-left">%s</td>', $row->getDocUnit());
             $details .= sprintf('<td class="text-left">%s</td>', $row->getDocQuantity());
             $details .= sprintf('<td class="text-left">%s</td>', $row->getPostedGrQuantity());
@@ -271,5 +276,28 @@ EOF;
 
         // created footer and export
         $this->getBuilder()->buildFooter();
+    }
+
+    private function getItemPic($id)
+    {
+
+        /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
+        $pic = $this->getDoctrineEM()
+            ->getRepository('Application\Entity\NmtInventoryItemPicture')
+            ->findOneBy(array(
+            'item' => $id,
+            'isActive' => 1
+        ));
+
+        $thumbnail_file = '/images/no-pic1.jpg';
+        if ($pic instanceof NmtInventoryItemPicture) {
+
+            $thumbnail_file = "/thumbnail/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+            $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
+
+            return $thumbnail_file;
+        }
+
+        return $thumbnail_file;
     }
 }

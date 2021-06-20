@@ -1,38 +1,39 @@
-    <?php
-    namespace InventoryTest\Service;
+<?php
 
-    use Doctrine\ORM\EntityManager;
-    use InventoryTest\Bootstrap;
-    use Inventory\Application\Service\Upload\Item\UploadItem;
-    use PHPUnit_Framework_TestCase;
+namespace InventoryTest\Service;
 
-    class ItemUploadTest extends PHPUnit_Framework_TestCase
+use Doctrine\ORM\EntityManager;
+use InventoryTest\Bootstrap;
+use Inventory\Application\Service\Upload\Item\UploadItem;
+use PHPUnit_Framework_TestCase;
+
+class ItemUploadTest extends PHPUnit_Framework_TestCase
+{
+
+    protected $serviceManager;
+
+    /**
+     *
+     * @var EntityManager $em;
+     */
+    protected $em;
+
+    public function setUp()
+    {}
+
+    public function testOther()
     {
-
-        protected $serviceManager;
+        $root = realpath(dirname(dirname(dirname(__FILE__))));
 
         /**
          *
-         * @var EntityManager $em;
+         * @var UploadItem $uploader
          */
-        protected $em;
+        $uploader = Bootstrap::getServiceManager()->get(UploadItem::class);
+        $uploader->setCompanyId(1);
+        $uploader->setUserId(39);
+        $file = $root . "/InventoryTest/Data/ItemUpload.xlsx";
 
-        public function setUp()
-        {}
-
-        public function testOther()
-        {
-            $root = realpath(dirname(dirname(dirname(__FILE__))));
-
-            /**
-             *
-             * @var UploadItem $uploader
-             */
-            $uploader = Bootstrap::getServiceManager()->get(UploadItem::class);
-            $uploader->setCompanyId(1);
-            $uploader->setUserId(39);
-            $file = $root . "/InventoryTest/Data/ItemUpload.xlsx";
-
-            $uploader->run($file);
-        }
+        $uploader->run($file);
     }
+}

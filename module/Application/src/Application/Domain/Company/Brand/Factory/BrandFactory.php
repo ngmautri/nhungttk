@@ -3,6 +3,8 @@ namespace Application\Domain\Company\Brand\Factory;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Company\BaseCompany;
+use Application\Domain\Company\Brand\BrandSnapshot;
+use Application\Domain\Company\Brand\GenericBrand;
 use Application\Domain\Company\ItemAttribute\AttributeGroupSnapshot;
 use Application\Domain\Company\ItemAttribute\AttributeGroupSnapshotAssembler;
 use Application\Domain\Company\ItemAttribute\BaseAttributeGroup;
@@ -26,13 +28,13 @@ use InvalidArgumentException;
 class BrandFactory
 {
 
-    public static function contructFromDB(AttributeGroupSnapshot $snapshot)
+    public static function contructFromDB(BrandSnapshot $snapshot)
     {
-        if (! $snapshot instanceof AttributeGroupSnapshot) {
+        if (! $snapshot instanceof BrandSnapshot) {
             throw new InvalidArgumentException("AttributeGroupSnapshot not found!");
         }
 
-        $instance = new GenericAttributeGroup();
+        $instance = new GenericBrand();
         GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
         return $instance;
     }

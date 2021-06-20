@@ -29,6 +29,14 @@ echo $this->baseUrl?>/application/item-attribute/list"><i
         echo $this->translate("Item Attributes")?></a>
    </li>
 
+    <li><a href="<?php
+
+    echo $this->baseUrl?>/application/brand/list"><i
+         class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;<?php
+
+        echo $this->translate("Brands")?></a>
+   </li>
+
    <li class="divider"></li>
 	<li><a
 		href="<?php

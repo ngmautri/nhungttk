@@ -23,7 +23,7 @@ class CreateIndexTest extends PHPUnit_Framework_TestCase
         try {
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-            $logger = Bootstrap::getServiceManager()->get('AppLogger');
+            $logger = Bootstrap::getServiceManager()->get('InventoryLogger');
 
             $stopWatch = new Stopwatch();
             $rep = new ItemReportRepositoryImpl($doctrineEM);

@@ -21,12 +21,12 @@ class ItemSearchQueryTest extends PHPUnit_Framework_TestCase
         try {
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-            $logger = Bootstrap::getServiceManager()->get('AppLogger');
+            $logger = Bootstrap::getServiceManager()->get('InventoryLogger');
 
             $searcher = new ItemSearchQueryImpl();
             $searcher->setLogger($logger);
             $queryFilter = new ItemQueryFilter();
-            $results = $searcher->searchMainItem("nmt*", $queryFilter);
+            $results = $searcher->search("nghe", $queryFilter);
             var_dump(($results->getMessage()));
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());

@@ -41,9 +41,9 @@ class OnItemUpdatedUpdateIndex extends AbstractEventHandler
             $indexer->setLogger($this->getLogger());
             $indexer->createDoc($item->makeSnapshot());
 
-            $format = "Index for item #%s updated!";
-            $this->logInfo(\sprintf($format, $event->getTarget()
-                ->getId()));
+            $itemId = $event->getTarget()->getId();
+            $format = "Item %s updated -> search index updated";
+            $this->logInfo(\sprintf($format, $itemId));
         } catch (\Exception $e) {
             throw $e;
         }

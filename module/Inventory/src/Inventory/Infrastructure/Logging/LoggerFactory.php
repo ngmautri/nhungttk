@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class LoggerFactory implements FactoryInterface
 {
@@ -23,7 +23,7 @@ class LoggerFactory implements FactoryInterface
     {
         $logger = new Logger("InventoryLog");
 
-        $path = './data/log';
+        $path = './data/inventory/log';
         $filename = \sprintf("inventory_log_%s_%s_W%s.log", date('Y'), date('n'), date('W'));
 
         if (false === file_exists($path)) {

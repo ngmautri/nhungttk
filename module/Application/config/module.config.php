@@ -30,6 +30,8 @@ use Application\Application\Service\AccountChart\AccountChartService;
 use Application\Application\Service\AccountChart\AccountChartServiceFactory;
 use Application\Application\Service\AccountChart\Upload\DefaultAccountChartUpload;
 use Application\Application\Service\AccountChart\Upload\DefaultAccountChartUploadFactory;
+use Application\Application\Service\Brand\BrandService;
+use Application\Application\Service\Brand\BrandServiceFactory;
 use Application\Application\Service\ItemAttribute\ItemAttributeService;
 use Application\Application\Service\ItemAttribute\ItemAttributeServiceFactory;
 use Application\Application\Service\Shared\CommonCollection;
@@ -368,16 +370,33 @@ return array(
             'Application\Service\PaymentTermService' => 'Application\Service\PaymentTermServiceFactory',
             'Application\Service\PmtMethodService' => 'Application\Service\PmtMethodServiceFactory',
             \Application\Application\Service\MessageStore\MessageQuery::class => \Application\Application\Service\MessageStore\MessageQueryFactory::class,
+
+
+            /*
+             * |=================================
+             * | Logger Service
+             * |
+             * |==================================
+             */
             "AppLogger" => LoggerFactory::class,
             "AppCache" => CacheFactory::class,
             "RedisCache" => RedisCacheFactory::class,
 
+
+
+            /*
+             * |=================================
+             * | Service
+             * |
+             * |==================================
+             */
             UomService::class => UomServiceFactory::class,
             UomGroupService::class => UomGroupServiceFactory::class,
 
             AccountChartService::class => AccountChartServiceFactory::class,
             WarehouseService::class => WarehouseServiceFactory::class,
             ItemAttributeService::class => ItemAttributeServiceFactory::class,
+            BrandService::class => BrandServiceFactory::class,
 
             DefaultAccountChartUpload::class => DefaultAccountChartUploadFactory::class,
 
@@ -386,9 +405,12 @@ return array(
 
             AppCollectionRepositoryImpl::class => AppCollectionRepositoryImplFactory::class,
 
-            // =============================================================
-            // Event Bus Service
-            // =============================================================
+             /*
+             * |=================================
+             * | Event Bus Service
+             * |
+             * |==================================
+             */
             EventBusService::class => EventBusServiceFactory::class,
             HandlerMapper::class => HandlerMapperFactory::class,
 
@@ -408,9 +430,12 @@ return array(
             OnDepartmentRemovedSaveToLog::class => OnDepartmentRemovedSaveToLogFactory::class,
             OnDepartmentRemovedSaveToDB::class => OnDepartmentRemovedSaveToDBFactory::class,
 
-            // =============================================================
-            // Event Bus Service End
-            // =============================================================
+            /*
+             * |=================================
+             * | Event Bus Service
+             * |
+             * |==================================
+             */
 
             // Report
             MessageStoreRepository::class => MessageStoreRepositoryFactory::class
@@ -455,6 +480,7 @@ return array(
             'Application\Controller\AccountChart' => 'Application\Controller\AccountChartControllerFactory',
             'Application\Controller\Warehouse' => 'Application\Controller\WarehouseControllerFactory',
             'Application\Controller\ItemAttribute' => 'Application\Controller\ItemAttributeControllerFactory', // added
+            'Application\Controller\Brand' => 'Application\Controller\BrandControllerFactory', // added
 
             'Application\Controller\Currency' => 'Application\Controller\CurrencyControllerFactory',
             'Application\Controller\Uom' => 'Application\Controller\UomControllerFactory',

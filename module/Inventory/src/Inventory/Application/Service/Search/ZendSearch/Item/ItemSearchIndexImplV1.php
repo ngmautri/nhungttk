@@ -5,10 +5,8 @@ use Application\Application\Service\Search\Contracts\IndexingResult;
 use Application\Entity\NmtInventoryItemPicture;
 use Application\Entity\NmtInventoryItemSerial;
 use Application\Service\AbstractService;
-use Doctrine\Common\Collections\Collection;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\ItemSnapshot;
-use Inventory\Domain\Item\Collection\ItemVariantCollection;
 use Inventory\Domain\Item\Variant\GenericVariant;
 use Inventory\Domain\Service\Search\ItemSearchIndexInterface;
 use Webmozart\Assert\Assert;
@@ -99,12 +97,6 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
              * @var GenericItem $item ;
              */
             foreach ($rows as $item) {
-
-                /*
-                 * if ($item->getId() < 5722) {
-                 * continue;
-                 * }
-                 */
 
                 $item->getLazyVariantCollection();
                 $item->getLazySerialCollection();
@@ -243,7 +235,7 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
         $doc = $this->_createDoc($snapshot);
         $indexer->addDocument($doc);
 
-        $message = \sprintf('Index doc item %s added', $snapshot->getId());
+        $message = \sprintf('Index doc for item %s added', $snapshot->getId());
         $this->logInfo($message);
 
         /*
@@ -575,68 +567,5 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
         }
 
         return $indexer;
-    }
-
-    /**
-     *
-     * @deprecated
-     * @param \ZendSearch\Lucene\SearchIndexInterface $indexer
-     * @param ItemSnapshot $snapshot
-     * @throws \InvalidArgumentException
-     */
-    private function _createNewIndexFromSnapshot(SearchIndexInterface $indexer, ItemSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof ItemSnapshot) {
-            throw new \InvalidArgumentException("ItemSnapshot empty");
-        }
-
-        $snList = $snapshot->getSerialNoList();
-
-        if ($snList instanceof Collection) {
-
-            if ($snList->count() > 0) {
-                // add doc with serial numeber
-                foreach ($snList as $sn) {
-                    $message = \sprintf('Add doc with serial numeber! %s', \get_class($snList));
-                    $this->logInfo($message);
-
-                    $doc = $this->__createDoc($snapshot, $sn);
-                    $indexer->addDocument($doc);
-                }
-
-                $message = \sprintf('Search index created for item with serial no.! %s', $snapshot->getId());
-                $this->logInfo($message);
-
-                return;
-            }
-        }
-
-        /**
-         *
-         * @var ItemVariantCollection $variantCollection ;
-         */
-        $variantCollection = $snapshot->getVariantCollection();
-
-        if ($variantCollection->count() > 0) {
-            // add doc with serial numeber
-            foreach ($variantCollection as $variant) {
-                $message = \sprintf('Add doc with variants! %s', \get_class($snList));
-                $this->logInfo($message);
-
-                $doc = $this->__createDocForVariant($snapshot, $variant);
-                $indexer->addDocument($doc);
-            }
-
-            $message = \sprintf('Search index created for item with serial no.! %s', $snapshot->getId());
-            $this->logInfo($message);
-
-            return;
-        }
-
-        $doc = $this->__createDoc($snapshot);
-        $indexer->addDocument($doc);
-
-        $message = \sprintf('Search index created! %s', $snapshot->getId());
-        $this->logInfo($message);
     }
 }

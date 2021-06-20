@@ -352,7 +352,12 @@ return array(
             OnApPostedCreateGrByWarehouse::class => OnApPostedCreateGrByWarehouseFactory::class,
             OnApReversedCreateGrReversalByWarehouse::class => OnApReversedCreateGrReversalByWarehouseFactory::class,
 
-            // Logger
+            /*
+             * |=================================
+             * | Logger Service
+             * |
+             * |==================================
+             */
             "ProcureLogger" => LoggerFactory::class,
             "ProcureCache" => CacheFactory::class,
             "ProcureRedisCache" => RedisCacheFactory::class

@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class OnItemCreatedCreateIndexFactory implements FactoryInterface
 {
@@ -28,7 +28,7 @@ class OnItemCreatedCreateIndexFactory implements FactoryInterface
 
         $service = new OnItemCreatedCreateIndex($doctrineEM, $eventBusService);
 
-        $sv = $container->get("AppLogger");
+        $sv = $container->get("InventoryLogger");
         $service->setLogger($sv);
 
         $sv = $container->get("AppCache");

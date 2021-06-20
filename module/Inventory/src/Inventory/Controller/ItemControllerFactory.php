@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri
- *        
+ *
  */
 class ItemControllerFactory implements FactoryInterface
 {
@@ -44,7 +44,7 @@ class ItemControllerFactory implements FactoryInterface
         $sv = $container->get('FileSystemCache');
         $controller->setCacheService($sv);
 
-        $sv = $container->get('AppLogger');
+        $sv = $container->get('InventoryLogger');
         $controller->setLogger($sv);
 
         $sv = $container->get(ItemService::class);

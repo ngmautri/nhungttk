@@ -3,14 +3,14 @@ namespace Inventory\Application\EventBus\Handler\Item;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
-use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
+use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImplV1;
 use Inventory\Domain\Event\Item\ItemCreated;
 use Inventory\Domain\Item\ItemSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class OnItemCreatedCreateIndex extends AbstractEventHandler
 {
@@ -25,16 +25,16 @@ class OnItemCreatedCreateIndex extends AbstractEventHandler
     {
         try {
             if (! $event->getTarget() instanceof ItemSnapshot) {
-                Throw new \InvalidArgumentException("ItemSnapshot not given for updating index.");
+                Throw new \InvalidArgumentException("ItemSnapshot not given for new index.");
             }
 
-            $indexer = new ItemSearchIndexImpl();
+            $indexer = new ItemSearchIndexImplV1();
             $indexer->setLogger($this->getLogger());
             $indexer->createDoc($event->getTarget());
 
-            $format = "Index for item #%s created!";
-            $this->logInfo(\sprintf($format, $event->getTarget()
-                ->getId()));
+            $itemId = $event->getTarget()->getId();
+            $format = "Item %s created -> search index created";
+            $this->logInfo(\sprintf($format, $itemId));
         } catch (\Exception $e) {
             $this->logException($e);
             throw $e;

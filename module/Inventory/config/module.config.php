@@ -4,6 +4,7 @@
  * @author Nguyen Mau Tri
  *
  */
+use Application\Application\Cache\CacheFactory;
 use Inventory\Application\EventBus\Handler\Item\OnItemCreatedCreateIndex;
 use Inventory\Application\EventBus\Handler\Item\OnItemUpdatedUpdateIndex;
 use Inventory\Application\EventBus\Handler\Item\OnProcureGrPostedCreateSerialNo;
@@ -68,6 +69,7 @@ use Inventory\Application\Service\Upload\HSCode\HSCodeUpload;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUploadServiceFactory;
 use Inventory\Application\Service\Upload\Item\UploadItem;
 use Inventory\Application\Service\Upload\Item\UploadItemFactory;
+use Inventory\Infrastructure\Logging\LoggerFactory;
 use Inventory\Infrastructure\Persistence\Doctrine\ItemReportRepositoryImpl;
 use Inventory\Infrastructure\Persistence\Doctrine\TrxReportRepositoryImpl;
 use Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemReportRepositoryImplFactory;
@@ -360,7 +362,16 @@ return array(
 
             OnWhOpenBalancePostedCloseFifoLayer::class => OnWhOpenBalancePostedCloseFifoLayerFactory::class,
             OnWhOpenBlancePostedCreateSerialNo::class => OnWhOpenBlancePostedCreateSerialNoFactory::class,
-            OnWhOpenBalancePostedCloseTrx::class => OnWhOpenBalancePostedCloseTrxFactory::class
+            OnWhOpenBalancePostedCloseTrx::class => OnWhOpenBalancePostedCloseTrxFactory::class,
+
+            /*
+             * |=================================
+             * | Logger Service
+             * |
+             * |==================================
+             */
+            "InventoryLogger" => LoggerFactory::class,
+            "InventoryCache" => CacheFactory::class
         )
     ),
 

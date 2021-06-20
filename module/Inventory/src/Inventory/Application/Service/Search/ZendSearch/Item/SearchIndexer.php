@@ -29,9 +29,17 @@ final class SearchIndexer
 
     const ITEM_KEY_FORMAT = '_item_%s';
 
-    const DOC_TYPE_SN = '_sn_';
+    const VARIANT_KEY = 'isVariant_key';
 
-    const DOC_TYPE_VARIANT = '_variant_';
+    const SERIAL_KEY = 'isSerial_key';
+
+    const VARIANT_VALUE = 'variant_%';
+
+    const SERIAL_VALUE = 'sn_%';
+
+    const YES = 'yes';
+
+    const NO = 'no';
 
     public static function getItemKeyQuery($id)
     {

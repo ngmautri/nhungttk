@@ -24,6 +24,7 @@ use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Inventory\Domain\Warehouse\BaseWarehouse;
 use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
+use User\Domain\User\Repository\UserCmdRepositoryInterface;
 use InvalidArgumentException;
 
 /**
@@ -49,6 +50,8 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     private $roleCmdRepository;
 
     private $brandCmdRepository;
+
+    private $userCmdRepository;
 
     const COMPANY_ENTITY_NAME = "\Application\Entity\NmtApplicationCompany";
 
@@ -487,5 +490,24 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
     public function setBrandCmdRepository(BrandCmdRepositoryInterface $brandCmdRepository)
     {
         $this->brandCmdRepository = $brandCmdRepository;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::getUserCmdRepository()
+     */
+    public function getUserCmdRepository(UserCmdRepositoryInterface $userCmdRepository)
+    {
+        return $this->userCmdRepository;
+    }
+
+    /**
+     *
+     * @param mixed $userCmdRepository
+     */
+    public function setUserCmdRepository($userCmdRepository)
+    {
+        $this->userCmdRepository = $userCmdRepository;
     }
 }

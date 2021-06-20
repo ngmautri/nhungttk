@@ -3,11 +3,15 @@ namespace Inventory\Infrastructure\Persistence\Doctrine;
 
 use Application\Entity\NmtInventoryItem;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
+use Inventory\Domain\Item\Factory\ItemFactory;
+use Inventory\Infrastructure\Doctrine\Helper\ItemCollectionHelper;
+use Inventory\Infrastructure\Doctrine\Helper\ItemStatistisHelper;
 use Inventory\Infrastructure\Mapper\ItemMapper;
 use Inventory\Infrastructure\Persistence\Contracts\ItemReportRepositoryInterface;
 use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
 use Inventory\Infrastructure\Persistence\Filter\ItemSerialSqlFilter;
 use Inventory\Infrastructure\Persistence\Helper\ItemReportHelper;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -38,6 +42,32 @@ class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements Ite
         }
 
         // return $list;
+    }
+
+    public function getItemListForIndexing(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        $results = ItemReportHelper::getItemList1($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
+
+        if ($results == null) {
+            yield ;
+        }
+
+        // $list = [];
+        foreach ($results as $rootEntityDoctrine) {
+
+            $id = $rootEntityDoctrine->getId();
+            $rootSnapshot = ItemMapper::createSnapshot($rootEntityDoctrine, null, true);
+            $rootEntity = ItemFactory::contructFromDB($rootSnapshot);
+
+            Assert::notNull($rootEntity);
+
+            $doctrineEM = $this->getDoctrineEM();
+            $rootEntity->setStatistics(ItemStatistisHelper::createItemStatistics($doctrineEM, $id));
+            $rootEntity->setVariantCollectionRef(ItemCollectionHelper::createVariantCollectionRef($doctrineEM, $id));
+            $rootEntity->setPictureCollectionRef(ItemCollectionHelper::createPictureCollectionRef($doctrineEM, $rootEntityDoctrine));
+
+            yield $rootEntity;
+        }
     }
 
     public function getItemList1(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)

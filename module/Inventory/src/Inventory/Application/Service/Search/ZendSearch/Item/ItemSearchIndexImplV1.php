@@ -6,6 +6,7 @@ use Application\Entity\NmtInventoryItemPicture;
 use Application\Entity\NmtInventoryItemSerial;
 use Application\Service\AbstractService;
 use Doctrine\Common\Collections\Collection;
+use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\Collection\ItemVariantCollection;
 use Inventory\Domain\Item\Variant\GenericVariant;
@@ -53,7 +54,62 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
 
             foreach ($rows as $snapshot) {
                 $currentSnapshot = $snapshot;
-                $this->_createNewIndexFromSnapshot($indexer, $snapshot);
+                $this->_createIndexForSnapshot($indexer, $snapshot);
+            }
+
+            // $message = \sprintf('Index has been created successfully! %s', count($rows));
+
+            $indexResult = new IndexingResult();
+            $this->_updateIndexingResult($indexer, $indexResult);
+            // $indexResult->setMessage($message);
+            $indexResult->setIsSuccess(True);
+        } catch (Exception $e) {
+
+            $this->logException($e);
+            $m = '??';
+            if ($currentSnapshot !== null) {
+                $m = $currentSnapshot->getId();
+            }
+
+            $message = \sprintf('Failed! %s - %s', $e->getMessage(), $m);
+
+            $indexResult->setMessage($message);
+            $indexResult->setIsSuccess(False);
+        }
+
+        return $indexResult;
+    }
+
+    public function createNewIndex($rows)
+    {
+        $indexResult = new IndexingResult();
+        $currentSnapshot = null;
+
+        try {
+
+            // take long time
+            set_time_limit(10000);
+
+            $indexer = Lucene::create(getcwd() . SearchIndexer::INDEX_PATH);
+
+            Analyzer::setDefault(new CaseInsensitive());
+
+            /**
+             *
+             * @var GenericItem $item ;
+             */
+            foreach ($rows as $item) {
+
+                /*
+                 * if ($item->getId() < 5722) {
+                 * continue;
+                 * }
+                 */
+
+                $item->getLazyVariantCollection();
+                $item->getLazySerialCollection();
+                $currentSnapshot = $item->makeSnapshot();
+                $this->_createIndexForSnapshot($indexer, $currentSnapshot);
             }
 
             // $message = \sprintf('Index has been created successfully! %s', count($rows));
@@ -155,18 +211,26 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
             throw new \InvalidArgumentException("ItemSnapshot empty");
         }
 
+        /*
+         * |=================================
+         * | Delete, if exits
+         * |
+         * |==================================
+         */
+
         $k = SearchIndexer::ITEM_KEY;
         $v = \sprintf(SearchIndexer::ITEM_KEY_FORMAT, $snapshot->getId());
 
         $ck_query = \sprintf('%s:%s', $k, $v);
 
         $ck_hits = $indexer->find($ck_query);
+        $totalHits = count($ck_hits);
 
-        if (count($ck_hits) > 0) {
+        if ($totalHits > 0) {
             foreach ($ck_hits as $hit) {
                 $indexer->delete($hit->id);
             }
-            $message = \sprintf('Search index deleted! %s', $snapshot->getId());
+            $message = \sprintf('%s docs removed from index file! %s', $totalHits, $snapshot->getId());
             $this->logInfo($message);
         }
 
@@ -178,6 +242,9 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
          */
         $doc = $this->_createDoc($snapshot);
         $indexer->addDocument($doc);
+
+        $message = \sprintf('Index doc item %s added', $snapshot->getId());
+        $this->logInfo($message);
 
         /*
          * |=================================
@@ -191,15 +258,12 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
 
             // add doc with serial numeber
             foreach ($variantCollection as $variant) {
-                $message = \sprintf('Add doc with variants! %s', \get_class($variant));
+                $message = \sprintf('Index doc for item-variant %s-%s added', $snapshot->getId(), $variant->getId());
                 $this->logInfo($message);
 
                 $doc = $this->_createDocWithVariant($snapshot, $variant);
                 $indexer->addDocument($doc);
             }
-
-            $message = \sprintf('Search index created for item with variant no.! %s', $snapshot->getId());
-            $this->logInfo($message);
         }
 
         /*
@@ -214,15 +278,12 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
 
             // add doc with serial numeber
             foreach ($snCollection as $sn) {
-                $message = \sprintf('Add doc with serial numnber! %s', \get_class($sn));
+                $message = \sprintf('Index doc for item-serial %s-%s added', $snapshot->getId(), $sn->getId());
                 $this->logInfo($message);
 
                 $doc = $this->_createDocWithSerial($snapshot, $sn);
                 $indexer->addDocument($doc);
             }
-
-            $message = \sprintf('Search index created for item with serial no.! %s', $snapshot->getId());
-            $this->logInfo($message);
         }
     }
 
@@ -366,16 +427,41 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
     {
         Assert::notNull($doc);
 
+        $k = SearchIndexer::VARIANT_KEY;
+        $v = SearchIndexer::YES;
+
         if ($variant == null) {
             $variant = new GenericVariant(); // create empty variant
+            $v = SearchIndexer::NO;
         }
 
-        $doc->addField(Field::UnIndexed('variantId', $variant->getId()));
+        /*
+         * |=================================
+         * | Keywords Fields
+         * |
+         * |==================================
+         */
+        $doc->addField(Field::keyword($k, $v));
+
         $doc->addField(Field::keyword('variantCode', $variant->getVariantCode()));
         $doc->addField(Field::keyword('variantSysNumber', $variant->getSysNumber()));
+
+        /*
+         * |=================================
+         * | UnIndexed Fields
+         * |
+         * |==================================
+         */
+        $doc->addField(Field::UnIndexed('variantId', $variant->getId()));
+
+        /*
+         * |=================================
+         * | Text Fields
+         * |
+         * |==================================
+         */
         $doc->addField(Field::text('variantName', $variant->getCombinedName()));
         $doc->addField(Field::text('variantFullName', $variant->getFullCombinedName()));
-        $doc->addField(Field::keyword('variantSysNumber', $variant->getSysNumber()));
 
         return $doc;
     }
@@ -391,19 +477,42 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
     {
         Assert::notNull($doc);
 
+        $k = SearchIndexer::SERIAL_KEY;
+        $v = SearchIndexer::YES;
+
         if ($sn == null) {
             $sn = new NmtInventoryItemSerial();
+            $v = SearchIndexer::NO;
         }
 
-        $doc->addField(Field::UnIndexed('serialId', $sn->getId()));
+        /*
+         * |=================================
+         * | Keywords Fields
+         * |
+         * |==================================
+         */
+        $doc->addField(Field::keyword($k, $v));
         $doc->addField(Field::keyword('serialSystemNo', $sn->getSysNumber()));
 
+        /*
+         * |=================================
+         * | UnIndexed Fields
+         * |
+         * |==================================
+         */
+        $doc->addField(Field::UnIndexed('serialId', $sn->getId()));
+
+        /*
+         * |=================================
+         * | Text Fields
+         * |
+         * |==================================
+         */
         $doc->addField(Field::text('serialNo', $sn->getSerialNumber()));
 
         $serialNo1 = null;
         if ($sn->getSerialNumber() != null) {
             $v = preg_replace('/[-]/', '', \substr($sn->getSerialNumber(), - 5));
-            echo $v . "\n====";
             $serialNo1 = $v * 1;
         }
         $doc->addField(Field::text('serialNo1', $serialNo1));

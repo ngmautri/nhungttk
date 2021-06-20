@@ -4,6 +4,7 @@ namespace Application\Application\Service;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Service\CompanyPostingService;
 use Application\Domain\Service\SharedService;
+use Application\Infrastructure\Persistence\Domain\Doctrine\BrandCmdRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\ChartCmdRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyCmdRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\DepartmentCmdRepositoryImpl;
@@ -40,6 +41,7 @@ class SharedServiceFactory
         $companyCmdRepository->setItemAttributeCmdRepository(new ItemAttributeCmdRepositoryImpl($doctrineEM));
         $companyCmdRepository->setItemAssociationCmdRepository(new ItemAssociationCmdRepositoryImpl($doctrineEM));
         $companyCmdRepository->setPostingPeriodCmdRepository(new PostingPeriodCmdRepositoryImpl($doctrineEM));
+        $companyCmdRepository->setBrandCmdRepository(new BrandCmdRepositoryImpl($doctrineEM));
 
         $postingService = new CompanyPostingService($companyCmdRepository);
         $sharedService = new SharedService($sharedSpecsFactory, $postingService);

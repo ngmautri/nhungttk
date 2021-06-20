@@ -10,6 +10,7 @@ use Application\Domain\Company\ItemAssociation\Repository\ItemAssociationCmdRepo
 use Application\Domain\Company\ItemAttribute\Repository\ItemAttributeCmdRepositoryInterface;
 use Application\Domain\Company\PostingPeriod\Repository\PostingPeriodCmdRepositoryInterface;
 use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
+use User\Domain\User\Repository\UserCmdRepositoryInterface;
 
 /**
  *
@@ -19,8 +20,70 @@ use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
 Interface CompanyCmdRepositoryInterface extends WhCmdRepositoryInterface, ChartCmdRepositoryInterface, ItemAttributeCmdRepositoryInterface, ItemAssociationCmdRepositoryInterface, PostingPeriodCmdRepositoryInterface, RoleCmdRepositoryInterface
 {
 
+    /*
+     * |=================================
+     * | Facade Pattern
+     * |
+     * | delegating to underlying repository.
+     * | AccountChart, Warehouse, Department, PostingPeriode, ItemAttribute...;
+     * |
+     * |==================================
+     */
+
+    /**
+     *
+     * @return BrandCmdRepositoryInterface;
+     */
     public function getBrandCmdRepository();
 
+    /**
+     *
+     * @return ChartCmdRepositoryInterface;
+     */
+    public function getChartCmdRepository();
+
+    /**
+     *
+     * @return DepartmentCmdRepositoryInterface;
+     */
+    public function getDepartmentCmdRepository();
+
+    /**
+     *
+     * @return ItemAssociationCmdRepositoryInterface;
+     */
+    public function getItemAssociationCmdRepository();
+
+    /**
+     *
+     * @return RoleCmdRepositoryInterface
+     */
+    public function getRoleCmdRepository();
+
+    /**
+     *
+     * @return PostingPeriodCmdRepositoryInterface
+     */
+    public function getPostingPeriodCmdRepository();
+
+    /**
+     *
+     * @return ItemAttributeCmdRepositoryInterface
+     */
+    public function getItemAttributeCmdRepository();
+
+    /**
+     *
+     * @return UserCmdRepositoryInterface
+     */
+    public function getUserCmdRepository();
+
+    /*
+     * |=================================
+     * | Facade Pattern
+     * |
+     * |==================================
+     */
     public function storeCompany(GenericCompany $company);
 
     // ================================================================

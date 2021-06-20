@@ -2,7 +2,7 @@
 namespace InventoryTest\Item\Search;
 
 use Doctrine\ORM\EntityManager;
-use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
+use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImplV1;
 use Inventory\Infrastructure\Persistence\Doctrine\ItemReportRepositoryImpl;
 use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
 use ProcureTest\Bootstrap;
@@ -23,6 +23,7 @@ class CreateIndexTest extends PHPUnit_Framework_TestCase
         try {
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+            $logger = Bootstrap::getServiceManager()->get('AppLogger');
 
             $stopWatch = new Stopwatch();
             $rep = new ItemReportRepositoryImpl($doctrineEM);
@@ -33,10 +34,15 @@ class CreateIndexTest extends PHPUnit_Framework_TestCase
             $sort_by = null;
             $limit = null;
             $offset = null;
-            $results = $rep->getItemList($filter, $sort_by, $sort, $limit, $offset);
 
-            $indexer = new ItemSearchIndexImpl();
-            $r = $indexer->createIndex($results);
+            $stopWatch->start("test");
+            $results = $rep->getItemListForIndexing($filter, $sort_by, $sort, $limit, $offset);
+            // var_dump(\get_class($results->current()));
+
+            $indexer = new ItemSearchIndexImplV1();
+            $indexer->setLogger($logger);
+
+            $r = $indexer->createNewIndex($results);
             var_dump($r);
             $r = $indexer->optimizeIndex();
             var_dump($r);

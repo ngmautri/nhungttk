@@ -5,7 +5,6 @@ use Application\Domain\Company\Brand\Factory\BrandFactory;
 use Application\Domain\Company\ItemAttribute\Repository\ItemAttributeQueryRepositoryInterface;
 use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Application\Infrastructure\Persistence\Domain\Doctrine\Helper\CompanyCollectionHelper;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\BrandMapper;
 
 /**
@@ -68,8 +67,6 @@ class BrandQueryRepositoryImpl extends AbstractDoctrineRepository implements Ite
 
         $rootSnapshot = BrandMapper::createBrandSnapshot($doctrineEM, $rootEntityDoctrine);
         $rootEntity = BrandFactory::contructFromDB($rootSnapshot);
-
-        $rootEntity->setAttributeCollectionRef(CompanyCollectionHelper::createItemAttributeCollectionRef($doctrineEM, $id));
         return $rootEntity;
     }
 

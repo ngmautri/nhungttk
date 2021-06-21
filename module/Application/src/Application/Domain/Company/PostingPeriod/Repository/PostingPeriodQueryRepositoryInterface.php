@@ -11,6 +11,12 @@ use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
 Interface PostingPeriodQueryRepositoryInterface
 {
 
+    public function getLatestFX($sourceCurrencyId, $targetCurrencyId);
+
+    public function getPostingPeriod($postingDate);
+
+    public function getPostingPeriodStatus($postingDate);
+
     public function getRootByMemberId($memberId);
 
     public function getById($id);

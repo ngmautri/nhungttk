@@ -28,7 +28,7 @@ class BrandMapper
          * |=============================
          */
 
-        $entity->setId($snapshot->id);
+        // $entity->setId($snapshot->id);
         $entity->setUuid($snapshot->uuid);
         $entity->setToken($snapshot->token);
         $entity->setBrandName($snapshot->brandName);

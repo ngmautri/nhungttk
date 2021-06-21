@@ -32,11 +32,9 @@ class CompanyQueryRepository1Test extends PHPUnit_Framework_TestCase
          *
          * @var BaseWarehouse $wh ;
          */
-        $wh = $results->getLazyWarehouseCollection()->first();
+        $wh = $results->getLazyBrandCollection()->first();
 
-        \var_dump($wh->createLocationTree()
-            ->getRoot()
-            ->display());
+        \var_dump($wh);
 
         // $root = $chart->createChartTree()->getRoot();
         // echo $root->display();

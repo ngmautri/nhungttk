@@ -246,15 +246,18 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
          */
         $variantCollection = $snapshot->getVariantCollection();
 
-        if ($variantCollection->count() > 0) {
+        if ($variantCollection != null) {
 
-            // add doc with serial numeber
-            foreach ($variantCollection as $variant) {
-                $message = \sprintf('Index doc for item-variant %s-%s added', $snapshot->getId(), $variant->getId());
-                $this->logInfo($message);
+            if ($variantCollection->count() > 0) {
 
-                $doc = $this->_createDocWithVariant($snapshot, $variant);
-                $indexer->addDocument($doc);
+                // add doc with serial numeber
+                foreach ($variantCollection as $variant) {
+                    $message = \sprintf('Index doc for item-variant %s-%s added', $snapshot->getId(), $variant->getId());
+                    $this->logInfo($message);
+
+                    $doc = $this->_createDocWithVariant($snapshot, $variant);
+                    $indexer->addDocument($doc);
+                }
             }
         }
 
@@ -266,15 +269,17 @@ class ItemSearchIndexImplV1 extends AbstractService implements ItemSearchIndexIn
          */
         $snCollection = $snapshot->getSerialNoList();
 
-        if ($snCollection->count() > 0) {
+        if ($snCollection != null) {
+            if ($snCollection->count() > 0) {
 
-            // add doc with serial numeber
-            foreach ($snCollection as $sn) {
-                $message = \sprintf('Index doc for item-serial %s-%s added', $snapshot->getId(), $sn->getId());
-                $this->logInfo($message);
+                // add doc with serial numeber
+                foreach ($snCollection as $sn) {
+                    $message = \sprintf('Index doc for item-serial %s-%s added', $snapshot->getId(), $sn->getId());
+                    $this->logInfo($message);
 
-                $doc = $this->_createDocWithSerial($snapshot, $sn);
-                $indexer->addDocument($doc);
+                    $doc = $this->_createDocWithSerial($snapshot, $sn);
+                    $indexer->addDocument($doc);
+                }
             }
         }
     }

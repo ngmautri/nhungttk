@@ -3,7 +3,10 @@ namespace Application\Domain\Company;
 
 use Application\Domain\Company\AccountChart\ChartSnapshot;
 use Application\Domain\Company\AccountChart\Factory\ChartFactory;
+use Application\Domain\Company\Brand\BrandSnapshot;
+use Application\Domain\Company\Brand\Factory\BrandFactory;
 use Application\Domain\Company\Collection\AccountChartCollection;
+use Application\Domain\Company\Collection\BrandCollection;
 use Application\Domain\Company\Collection\ItemAttributeGroupCollection;
 use Application\Domain\Company\Collection\WarehouseCollection;
 use Application\Domain\Company\Department\BaseDepartmentSnapshot;
@@ -46,6 +49,10 @@ class BaseCompany extends AbstractCompany
 
     protected $itemAttributeCollectionRef;
 
+    protected $brandCollection;
+
+    protected $brandCollectionRef;
+
     /**
      *
      * @return \Application\Domain\Company\CompanyVO
@@ -55,6 +62,23 @@ class BaseCompany extends AbstractCompany
         $vo = new CompanyVO();
         GenericObjectAssembler::updateAllFieldsFrom($vo, $this);
         return $vo;
+    }
+
+    /*
+     * |=================================
+     * |Lazy Collection
+     * |
+     * |==================================
+     */
+    public function getLazyBrandCollection()
+    {
+        $ref = $this->getBrandCollectionRef();
+        if (! $ref instanceof Closure) {
+            return new BrandCollection();
+        }
+
+        $this->brandCollection = $ref();
+        return $this->brandCollection;
     }
 
     /**
@@ -133,6 +157,11 @@ class BaseCompany extends AbstractCompany
      * |
      * |==================================
      */
+    public function createBrandFrom(BrandSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService, $storeNow = true)
+    {
+        return BrandFactory::createFrom($this, $snapshot, $options, $sharedService);
+    }
+
     public function createItemAttributeGroupFrom(AttributeGroupSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService, $storeNow = true)
     {
         return ItemAttributeFactory::createFrom($this, $snapshot, $options, $sharedService);
@@ -190,9 +219,13 @@ class BaseCompany extends AbstractCompany
         $this->warehouseCollectionRef = $warehouseCollectionRef;
     }
 
-    // ==========================================
-    // ========== Setter and Getter ============
-    // ==========================================
+    /*
+     * |=================================
+     * |Setter and Getter
+     * |
+     * |
+     * |==================================
+     */
 
     /**
      *
@@ -381,5 +414,41 @@ class BaseCompany extends AbstractCompany
     public function setItemAttributeCollectionRef(Closure $itemAttributeCollectionRef)
     {
         $this->itemAttributeCollectionRef = $itemAttributeCollectionRef;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBrandCollection()
+    {
+        return $this->brandCollection;
+    }
+
+    /**
+     *
+     * @param mixed $brandCollection
+     */
+    public function setBrandCollection($brandCollection)
+    {
+        $this->brandCollection = $brandCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBrandCollectionRef()
+    {
+        return $this->brandCollectionRef;
+    }
+
+    /**
+     *
+     * @param mixed $brandCollectionRef
+     */
+    public function setBrandCollectionRef(Closure $brandCollectionRef)
+    {
+        $this->brandCollectionRef = $brandCollectionRef;
     }
 }

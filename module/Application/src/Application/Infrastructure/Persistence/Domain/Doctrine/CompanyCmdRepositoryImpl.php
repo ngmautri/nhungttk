@@ -497,7 +497,7 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
      * {@inheritdoc}
      * @see \Application\Domain\Company\Repository\CompanyCmdRepositoryInterface::getUserCmdRepository()
      */
-    public function getUserCmdRepository(UserCmdRepositoryInterface $userCmdRepository)
+    public function getUserCmdRepository()
     {
         return $this->userCmdRepository;
     }
@@ -506,7 +506,7 @@ class CompanyCmdRepositoryImpl extends AbstractDoctrineRepository implements Com
      *
      * @param mixed $userCmdRepository
      */
-    public function setUserCmdRepository($userCmdRepository)
+    public function setUserCmdRepository(UserCmdRepositoryInterface $userCmdRepository)
     {
         $this->userCmdRepository = $userCmdRepository;
     }

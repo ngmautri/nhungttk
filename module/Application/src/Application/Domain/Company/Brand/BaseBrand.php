@@ -1,8 +1,8 @@
 <?php
 namespace Application\Domain\Company\Brand;
 
+use Application\Domain\Company\Brand\Validator\Contracts\BrandValidatorCollection;
 use Application\Domain\Company\ItemAttribute\BaseAttribute;
-use Application\Domain\Company\ItemAttribute\BaseAttributeSnapshot;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
@@ -12,6 +12,15 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
  */
 class BaseBrand extends AbstractBrand
 {
+
+    public function validateBrand(BrandValidatorCollection $validators, $isPosting = false)
+    {
+        $validators->validate($this);
+
+        if ($this->hasErrors()) {
+            $this->addErrorArray($this->getErrors());
+        }
+    }
 
     /**
      *
@@ -24,7 +33,7 @@ class BaseBrand extends AbstractBrand
             return false;
         }
 
-        return \strtolower(trim($this->getAttributeName())) == \strtolower(trim($other->getAttributeName()));
+        return \strtolower(trim($this->getBrandName())) == \strtolower(trim($other->getBrandName()));
     }
 
     /**
@@ -33,7 +42,7 @@ class BaseBrand extends AbstractBrand
      */
     public function makeSnapshot()
     {
-        $snapshot = new BaseAttributeSnapshot();
+        $snapshot = new BrandSnapshot();
         GenericObjectAssembler::updateAllFieldsFrom($snapshot, $this);
         return $snapshot;
     }

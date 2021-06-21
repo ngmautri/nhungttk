@@ -4,8 +4,8 @@ namespace Application\Controller;
 use Application\Notification;
 use Application\Application\Command\TransactionalCommandHandler;
 use Application\Application\Command\Doctrine\GenericCommand;
+use Application\Application\Command\Doctrine\Company\Brand\CreateBrandCmdHandler;
 use Application\Application\Command\Doctrine\Company\ItemAttribute\CreateAttributeCmdHandler;
-use Application\Application\Command\Doctrine\Company\ItemAttribute\CreateAttributeGroupCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\LockWarehouseCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\RemoveLocationCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\UnLockWarehouseCmdHandler;
@@ -21,14 +21,11 @@ use Application\Controller\Contracts\EntityCRUDController;
 use Application\Domain\Company\Brand\BrandSnapshot;
 use Application\Domain\Company\Brand\GenericBrand;
 use Application\Domain\Company\ItemAttribute\AttributeSnapshot;
-use Application\Domain\Company\ItemAttribute\GenericAttributeGroup;
 use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Collection\Export\ExportAsArray;
-use Application\Domain\Util\Pagination\Paginator;
 use Application\Form\Brand\BrandForm;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
-use Doctrine\Common\Collections\ArrayCollection;
 use Inventory\Domain\Warehouse\BaseWarehouse;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Zend\Escaper\Escaper;
@@ -204,7 +201,7 @@ class BrandController extends EntityCRUDController
             $data = $prg;
 
             $options = new CmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
-            $cmdHandler = new CreateAttributeGroupCmdHandler();
+            $cmdHandler = new CreateBrandCmdHandler();
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->setLogger($this->getLogger());
@@ -867,7 +864,7 @@ class BrandController extends EntityCRUDController
         $rep = new CompanyQueryRepositoryImpl($this->getDoctrineEM());
         $results = $rep->getById($this->getCompanyId());
 
-        $resultCollection = $results->getLazyItemAttributeGroupCollection();
+        $resultCollection = $results->getLazyBrandCollection();
 
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('not_found');
@@ -894,59 +891,13 @@ class BrandController extends EntityCRUDController
         $rep = new CompanyQueryRepositoryImpl($this->getDoctrineEM());
         $results = $rep->getById($this->getCompanyId());
 
-        $chart = $results->getLazyItemAttributeGroupCollection();
+        $collection = $results->getLazyBrandCollection();
 
         $exporter = new ExportAsArray();
-        $girdData = $exporter->execute($chart);
+        $girdData = $exporter->execute($collection);
 
         $a_json_final['data'] = $girdData;
-        $a_json_final['totalRecords'] = $chart->count();
-        $a_json_final['curPage'] = $pq_curPage;
-
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($a_json_final));
-        return $response;
-    }
-
-    /**
-     *
-     * @return \Zend\Stdlib\ResponseInterface
-     */
-    public function attributeGirdAction()
-    {
-        $rootId = $this->getGETparam('rid');
-        $pq_curPage = $this->getGETparam('pq_curpage', 1);
-        $pq_rPP = $this->getGETparam('pq_rpp', 100);
-
-        /**
-         *
-         * @var GenericAttributeGroup $entity ;
-         */
-        $entity = $this->getEntityService()->getRootEntityById($rootId);
-        $resultCollection = $entity->getLazyAttributeCollection();
-
-        $total_records = $resultCollection->count();
-        $data = $resultCollection;
-
-        $limit = null;
-        $offset = null;
-
-        if ($total_records > 0) {
-            if ($total_records > $pq_rPP) {
-                $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
-                $offset = $paginator->getMinInPage() - 1;
-            }
-        }
-
-        $data = new ArrayCollection($resultCollection->slice($offset, $limit));
-
-        $exporter = new ExportAsArray();
-        $girdData = $exporter->execute($data);
-
-        $a_json_final['data'] = $girdData;
-        $a_json_final['totalRecords'] = $total_records;
+        $a_json_final['totalRecords'] = $collection->count();
         $a_json_final['curPage'] = $pq_curPage;
 
         $response = $this->getResponse();

@@ -48,13 +48,13 @@ echo $export->execute($resultCollection);
 <script>
 
 <?php
-echo sprintf('var url="%s"', "/application/item-attribute/gird");
+echo sprintf('var url="%s"', "/application/brand/gird");
 ?>
 
 
 var columns= [
-    { title: "Attribute", dataType: "string", dataIndx: "groupName", align: 'left',minWidth: 150,editable: false},
-    { title: "Attribute Name", dataType: "string", dataIndx: "coaCode", align: 'left',minWidth: 150,editable: false},
+    { title: "Brand", dataType: "string", dataIndx: "brandName", align: 'left',minWidth: 150,editable: false},
+    { title: "Brand1", dataType: "string", dataIndx: "brandName1", align: 'left',minWidth: 150,editable: false},
     { title: "", editable: false, minWidth: 60, sortable: false,
         render: function (ui) {
          return '<button type="button" class="edit_btn">Show </button>';
@@ -76,7 +76,7 @@ var dataModel = {
 };
 
 var obj = {
-title: "Item /Product Attributes",
+title: "Brand",
    dataModel: dataModel,
    colModel: columns,
    height: $(window).height()-500,
@@ -109,7 +109,7 @@ $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
         rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
         recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-        redirectUrl="/application/item-attribute/view?id="+rowData['id'],
+        redirectUrl="/application/brand/view?id="+rowData['id'],
         window.location.href = redirectUrl;
     });
 

@@ -65,6 +65,7 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
         $entityRoot->setPostingPeriodCollectionRef($this->_createPostingPeriodCollectionRef($id));
         $entityRoot->setWarehouseCollectionRef($this->_createWarehouseCollectionRef($id));
         $entityRoot->setItemAttributeCollectionRef(CompanyCollectionHelper::createItemAttributeGroupCollectionRef($doctrineEM, $id));
+        $entityRoot->setBrandCollectionRef(CompanyCollectionHelper::createBrandCollectionRef($doctrineEM, $id));
         return $entityRoot;
     }
 

@@ -1,23 +1,19 @@
 <?php
 namespace Application\Infrastructure\AggregateRepository;
 
-use Application\Domain\Company\PostingPeriod\PostingPeriodQueryRepositoryInterface;
+use Application\Domain\Company\PostingPeriod\Repository\PostingPeriodQueryRepositoryInterface;
+use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class DoctrinePostingPeriodQueyrRepository extends AbstractDoctrineRepository implements PostingPeriodQueryRepositoryInterface
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Application\Domain\Company\PostingPeriod\PostingPeriodQueryRepositoryInterface::getPostingPeriodStatus()
-     */
     public function getPostingPeriodStatus($postingDate)
     {
         $query = $this->_em->createQuery('SELECT p
@@ -31,11 +27,6 @@ class DoctrinePostingPeriodQueyrRepository extends AbstractDoctrineRepository im
         return null;
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Application\Domain\Company\PostingPeriod\PostingPeriodQueryRepositoryInterface::getPostingPeriod()
-     */
     public function getPostingPeriod($postingDate)
     {
         $query = $this->_em->createQuery('SELECT p
@@ -49,18 +40,13 @@ class DoctrinePostingPeriodQueyrRepository extends AbstractDoctrineRepository im
         return "Period not found";
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Application\Domain\Company\PostingPeriod\PostingPeriodQueryRepositoryInterface::getLatestFX()
-     */
     public function getLatestFX($sourceCurrencyId, $targetCurrencyId)
     {
         $sql = "
 SELECT
 *
 FROM fin_fx
-            
+
 JOIN
 (
     SELECT
@@ -86,4 +72,16 @@ WHERE 1
             return null;
         }
     }
+
+    public function getById($id)
+    {}
+
+    public function getList(CompanySqlFilterInterface $filter)
+    {}
+
+    public function getRootByMemberId($memberId)
+    {}
+
+    public function getByUUID($uuid)
+    {}
 }

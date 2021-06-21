@@ -1,6 +1,7 @@
 <?php
 namespace Application\Application\Service\Brand\Export;
 
+use Application\Domain\Company\Brand\GenericBrand;
 use Application\Domain\Company\ItemAttribute\GenericAttributeGroup;
 use Application\Domain\Util\Translator;
 use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
@@ -56,7 +57,7 @@ class ExportAsForm extends AbstractExport
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Attribute</b></td>
-            <td><b>Value</b></td>
+
 	        <td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -71,7 +72,7 @@ class ExportAsForm extends AbstractExport
 
         foreach ($collection as $element) {
 
-            /**@var GenericAttributeGroup $element ;*/
+            /**@var GenericBrand $element ;*/
 
             $n ++;
 
@@ -81,15 +82,15 @@ class ExportAsForm extends AbstractExport
 
             $bodyHtml = $bodyHtml . "<tr>\n";
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $n + $filter->getOffset());
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $element->getGroupName());
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $this->_createMultiSelect($element));
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $element->getBrandName());
+            // $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $this->_createMultiSelect($element));
 
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $showUrl);
 
             $bodyHtml = $bodyHtml . "</tr>";
         }
 
-        $bodyHtml = $bodyHtml . sprintf("<tr>%s</tr>", "dsfgdf");
+        $bodyHtml = $bodyHtml . sprintf("<tr>%s</tr>", "");
 
         return sprintf($table, $bodyHtml);
     }

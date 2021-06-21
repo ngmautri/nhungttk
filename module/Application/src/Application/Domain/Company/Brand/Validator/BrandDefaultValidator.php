@@ -1,5 +1,5 @@
 <?php
-namespace Application\Domain\Company\ItemAssociation\Validator;
+namespace Application\Domain\Company\Brand\Validator;
 
 use Application\Domain\Company\Brand\BaseBrand;
 use Application\Domain\Company\Brand\Validator\Contracts\BrandValidatorInterface;

@@ -3,11 +3,12 @@ namespace Application\Application\Command\Doctrine\Company\Brand;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
-use Application\Application\Command\Options\UpdateMemberCmdOptions;
+use Application\Application\Command\Options\UpdateEntityCmdOptions;
 use Application\Application\Service\SharedServiceFactory;
+use Application\Domain\Company\Brand\BaseBrand;
+use Application\Domain\Company\Brand\Factory\BrandFactory;
 use Application\Domain\Shared\Command\CommandInterface;
-use Inventory\Domain\Warehouse\BaseWarehouse;
-use Inventory\Domain\Warehouse\Location\BaseLocation;
+use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
@@ -27,26 +28,28 @@ class RemoveBrandCmdHandler extends AbstractCommandHandler
     {
         /**
          *
-         * @var UpdateMemberCmdOptions $options ;
+         * @var UpdateEntityCmdOptions $options ;
          * @var AbstractCommand $cmd ;
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
-        Assert::isInstanceOf($cmd->getOptions(), UpdateMemberCmdOptions::class);
+        Assert::isInstanceOf($cmd->getOptions(), UpdateEntityCmdOptions::class);
 
         $options = $cmd->getOptions();
 
         try {
 
+            $rep = new CompanyQueryRepositoryImpl($cmd->getDoctrineEM());
+            $companyEntity = $rep->getById($options->getCompanyVO()
+                ->getId());
+
             /**
              *
-             * @var BaseWarehouse $rootEntity ;
-             * @var BaseLocation $localEntity ;
+             * @var BaseBrand $rootEntity ;
              */
             $rootEntity = $options->getRootEntity();
-            $localEntity = $options->getLocalEntity();
 
             $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
-            $rootEntity->removeLocation($localEntity, $options, $sharedService);
+            BrandFactory::remove($companyEntity, $rootEntity, $options, $sharedService);
 
             // event dispatch
             // ================
@@ -54,7 +57,7 @@ class RemoveBrandCmdHandler extends AbstractCommandHandler
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
 
-            $m = sprintf("[OK] WH Location #%s removed!", $localEntity->getId());
+            $m = sprintf("[OK] Brand #%s removed!", $rootEntity->getId());
             $cmd->addSuccess($m);
 
             // ================

@@ -1,7 +1,7 @@
 <?php
 namespace Application\Application\Service\Brand\Export;
 
-use Application\Domain\Company\ItemAttribute\GenericAttributeGroup;
+use Application\Domain\Company\Brand\GenericBrand;
 use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
 use Application\Domain\Util\Collection\Contracts\FilterInterface;
 use Application\Domain\Util\Collection\Export\AbstractExport;
@@ -48,8 +48,8 @@ class ExportAsHtmlTable extends AbstractExport
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>Chart</b></td>
-            <td><b>CC</b></td>
+			<td><b>Brand</b></td>
+
 	        <td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -64,21 +64,19 @@ class ExportAsHtmlTable extends AbstractExport
 
         foreach ($collection as $element) {
 
-            /**@var GenericAttributeGroup $element ;*/
+            /**@var GenericBrand $element ;*/
 
             $n ++;
 
             $element = $formatter->format($element);
 
-            $showUrl = \sprintf("<a href=\"/application/account-chart/view?id=%s\">Show</a>", $element->getId());
+            $showUrl = \sprintf("<a href=\"/application/brand/view?id=%s\">Show</a>", $element->getId());
+            $editUrl = \sprintf("<a href=\"/application/brand/update?id=%s\">Edit</a>", $element->getId());
 
             $bodyHtml = $bodyHtml . "<tr>\n";
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $n + $filter->getOffset());
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $element->getGroupName());
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $element->getLazyAttributeCollection()->count());
-
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $showUrl);
-
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $element->getBrandName());
+            $bodyHtml = $bodyHtml . sprintf("<td>%s %s</td>\n", $showUrl, $editUrl);
             $bodyHtml = $bodyHtml . "</tr>";
         }
 

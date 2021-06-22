@@ -2,7 +2,7 @@
 namespace Application\Application\Service\Brand;
 
 use Application\Application\Service\Brand\Contracts\BrandServiceInterface;
-use Application\Infrastructure\Persistence\Domain\Doctrine\ItemAttributeQueryRepositoryImpl;
+use Application\Infrastructure\Persistence\Domain\Doctrine\BrandQueryRepositoryImpl;
 use Application\Service\AbstractService;
 
 class BrandService extends AbstractService implements BrandServiceInterface
@@ -10,7 +10,7 @@ class BrandService extends AbstractService implements BrandServiceInterface
 
     public function getRootEntityById($id, $locale = 'en_EN')
     {
-        $rep = new ItemAttributeQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new BrandQueryRepositoryImpl($this->getDoctrineEM());
         return $rep->getById($id);
     }
 

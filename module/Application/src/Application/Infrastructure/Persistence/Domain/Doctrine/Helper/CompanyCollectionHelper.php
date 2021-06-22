@@ -35,7 +35,10 @@ class CompanyCollectionHelper
             $criteria = [
                 'company' => $id
             ];
-            $results = $doctrineEM->getRepository('\Application\Entity\NmtInventoryAttributeGroup')->findBy($criteria);
+            $sort = [
+                'groupName' => 'ASC'
+            ];
+            $results = $doctrineEM->getRepository('\Application\Entity\NmtInventoryAttributeGroup')->findBy($criteria, $sort);
 
             $collection = new ItemAttributeGroupCollection();
 
@@ -69,7 +72,10 @@ class CompanyCollectionHelper
             $criteria = [
                 'group' => $id
             ];
-            $results = $doctrineEM->getRepository('\Application\Entity\NmtInventoryAttribute')->findBy($criteria);
+            $sort = [
+                'attributeName' => 'ASC'
+            ];
+            $results = $doctrineEM->getRepository('\Application\Entity\NmtInventoryAttribute')->findBy($criteria, $sort);
 
             $collection = new ItemAttributeCollection();
 
@@ -102,7 +108,11 @@ class CompanyCollectionHelper
             $criteria = [
                 'company' => $id
             ];
-            $results = $doctrineEM->getRepository('\Application\Entity\NmtApplicationBrand')->findBy($criteria);
+
+            $sort = [
+                'brandName' => 'ASC'
+            ];
+            $results = $doctrineEM->getRepository('\Application\Entity\NmtApplicationBrand')->findBy($criteria, $sort);
 
             $collection = new BrandCollection();
 

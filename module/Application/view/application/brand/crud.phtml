@@ -1,7 +1,7 @@
 
 <?php
 use Application\Application\Helper\ErrorMessage;
-use Application\Domain\Company\AccountChart\GenericChart;
+use Application\Domain\Company\Brand\GenericBrand;
 use Application\Form\Brand\BrandFormRender;
 use Application\Form\Contracts\GenericForm;
 
@@ -9,12 +9,14 @@ use Application\Form\Contracts\GenericForm;
  *
  * @var GenericForm $form ;
  *
- * @var GenericChart $rootEntity ;
+ * @var GenericBrand $rootEntity ;
  */
 $error_msg = ErrorMessage::showErrorMessage($errors);
 $rootId = null;
+$rootName = null;
 if ($rootEntity !== null) {
     $rootId = $rootEntity->getId();
+    $rootName = $rootEntity->getBrandName();
 }
 
 ?>
@@ -44,7 +46,7 @@ echo $form->renderForView($this, new BrandFormRender());
       <!-- General -->
    </div>
    <!-- Tab -->
-   <div class="modal" id="confirm_remove_node" role="dialog">
+   <div class="modal" id="confirm_remove_modal_sm" role="dialog">
       <div class="modal-dialog modal-md">
          <div class="modal-content">
             <div class="modal-header">
@@ -53,7 +55,7 @@ echo $form->renderForView($this, new BrandFormRender());
             <div class="modal-body" id="b_modal_sm_body">
                <h5>#<?php
 
-            echo $this->translate('Account will be removed!');
+            echo $this->translate('Brand will be removed!');
             ?></h5>
                <div class="alert alert-warning">
                   <strong>[Info]</strong> <?php
@@ -70,7 +72,7 @@ echo $form->renderForView($this, new BrandFormRender());
             ?></p>
             </div>
             <div class="modal-footer">
-               <button onclick="doRemovingNode();" type="button" class="btn btn-primary btn-sm">YES</button>
+               <button onclick="doRemoving();" type="button" class="btn btn-primary btn-sm">YES</button>
                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
             </div>
          </div>
@@ -78,3 +80,47 @@ echo $form->renderForView($this, new BrandFormRender());
    </div>
    <script>
 
+   <?php
+echo sprintf('var rootId="%s";', $rootId);
+echo sprintf('var rootName="%s";', $rootName);
+echo sprintf('var url="%s";', "/application/brand/remove?id=%s" . $rootId);
+echo sprintf('var view_url="%s";', "/application/brand/list");
+
+?>
+
+function confirmModal(id) {
+    var id = '#'+ id;
+    $(id).modal();
+}
+
+
+   function confirmRemove() {
+       $('#confirm_remove_modal_sm').modal();
+    }
+
+    function doRemoving() {
+    $('#confirm_remove_modal_sm').modal('hide');
+    $('#b_modal_no_header').modal();
+
+    $.ajax({
+	      type: 'POST',
+	      url: url,
+	      data: {rid : rootId, rname:rootName},
+	      success: function(data){
+		     window.location = view_url;
+	      },
+	      error: function(xhr, textStatus, error){
+
+
+		     $('#confirm_remove_node').hide();
+		     $('#b_modal_no_header').modal().hide();
+
+	         //alert(xhr.responseText);
+	          console.log(xhr.statusText);
+	          console.log(textStatus);
+	          console.log(error);
+	          window.location = view_url;
+	      }
+	   });
+   }
+  </script>

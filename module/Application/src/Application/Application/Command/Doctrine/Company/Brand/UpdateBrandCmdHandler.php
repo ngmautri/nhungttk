@@ -6,12 +6,11 @@ use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Application\Command\Options\UpdateEntityCmdOptions;
 use Application\Application\Command\Options\UpdateMemberCmdOptions;
 use Application\Application\Service\SharedServiceFactory;
+use Application\Domain\Company\Brand\BaseBrand;
+use Application\Domain\Company\Brand\BrandSnapshotAssembler;
+use Application\Domain\Company\Brand\Factory\BrandFactory;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
-use Inventory\Domain\Warehouse\BaseWarehouse;
-use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
-use Inventory\Domain\Warehouse\Factory\WarehouseFactory;
-use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Webmozart\Assert\Assert;
 
 /**
@@ -47,15 +46,14 @@ class UpdateBrandCmdHandler extends AbstractCommandHandler
 
             /**
              *
-             * @var BaseWarehouse $rootEntity ;
-             * @var BaseLocation $localEntity ;
+             * @var BaseBrand $rootEntity ;
              */
             $rootEntity = $options->getRootEntity();
 
             $snapshot = $rootEntity->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $newSnapshot = WarehouseSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
+            $newSnapshot = BrandSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
 
             $changeLog = $snapshot->compare($newSnapshot);
@@ -70,11 +68,11 @@ class UpdateBrandCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedService = SharedServiceFactory::createForCompany($cmd->getDoctrineEM());
-            WarehouseFactory::updateFrom($companyEntity, $rootEntity, $newSnapshot, $options, $params, $sharedService);
+            BrandFactory::updateFrom($companyEntity, $rootEntity, $newSnapshot, $options, $params, $sharedService);
 
             $this->setOutput($snapshot); // important;
 
-            $m = sprintf("[OK] WH #%s updated!", $snapshot->getId());
+            $m = sprintf("[OK] Brand #%s updated!", $snapshot->getId());
             $cmd->addSuccess($m);
 
             // event dispatch

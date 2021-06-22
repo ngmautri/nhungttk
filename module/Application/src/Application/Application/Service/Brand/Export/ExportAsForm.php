@@ -78,7 +78,7 @@ class ExportAsForm extends AbstractExport
 
             $element = $formatter->format($element);
 
-            $showUrl = \sprintf("<a href=\"/application/item-attribute/view?id=%s\">Show</a>", $element->getId());
+            $showUrl = \sprintf("<a href=\"/application/brand/view?id=%s\">Show</a>", $element->getId());
 
             $bodyHtml = $bodyHtml . "<tr>\n";
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $n + $filter->getOffset());

@@ -3,6 +3,7 @@ namespace Application\Form\Brand;
 
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
+use Zend\Form\Element\Hidden;
 
 /**
  *
@@ -21,7 +22,6 @@ class BrandForm extends GenericForm
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
         $this->addRootElement();
-        $this->addMemberElement();
     }
 
     public function setAction($url)
@@ -191,7 +191,12 @@ class BrandForm extends GenericForm
      * @see \Application\Form\Contracts\GenericForm::addManualElements()
      */
     protected function addManualElements()
-    {}
+    {
+        $this->add([
+            'type' => Hidden::class,
+            'name' => 'id'
+        ]);
+    }
 
     /*
      * |=============================
@@ -200,6 +205,13 @@ class BrandForm extends GenericForm
      * |
      * |=============================
      */
+
+    // this one ID
+    public function getRootId()
+    {
+        return $this->get("id");
+    }
+
     public function getBrandName()
     {
         return $this->get("brandName");

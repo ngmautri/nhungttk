@@ -42,7 +42,7 @@ class BaseBrand extends AbstractBrand
      */
     public function makeSnapshot()
     {
-        $snapshot = new BrandSnapshot();
+        $snapshot = new BaseBrandSnapshot();
         GenericObjectAssembler::updateAllFieldsFrom($snapshot, $this);
         return $snapshot;
     }

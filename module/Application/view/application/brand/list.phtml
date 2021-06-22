@@ -5,7 +5,7 @@
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-use Application\Application\Service\Brand\Export\ExportAsForm;
+use Application\Application\Service\Brand\Export\ExportAsHtmlTable;
 
 ?>
 <div id="tabs" style="font-size: 9.5pt">
@@ -32,7 +32,7 @@ use Application\Application\Service\Brand\Export\ExportAsForm;
       <hr>
       <div id="html" class="demo">
 <?php
-$export = new ExportAsForm();
+$export = new ExportAsHtmlTable();
 echo $export->execute($resultCollection);
 ?>
 			<ul>

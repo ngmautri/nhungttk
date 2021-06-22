@@ -42,5 +42,13 @@ class BrandDefinition
         "lastChangeBy"
     ];
 
-    public static $defaultIncludedFields = [];
+    public static $defaultIncludedFields = [
+        "brandName",
+        "brandName1",
+        "description",
+        "remarks",
+        "isActive",
+        "logo",
+        "brandName2"
+    ];
 }

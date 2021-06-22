@@ -5,6 +5,7 @@ use Application\Domain\Company\BaseCompany;
 use Application\Domain\Company\Brand\BaseBrand;
 use Application\Domain\Company\Brand\BrandSnapshot;
 use Application\Domain\Company\Brand\Repository\BrandCmdRepositoryInterface;
+use Application\Entity\NmtApplicationBrand;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\BrandMapper;
 use InvalidArgumentException;
@@ -22,7 +23,20 @@ class BrandCmdRepositoryImpl extends AbstractDoctrineRepository implements Brand
     const ROOT_ENTITY_NAME = "\Application\Entity\NmtApplicationBrand";
 
     public function removeBrand(BaseCompany $rootEntity, BaseBrand $localEntity, $isPosting = false)
-    {}
+    {
+        $rootEntityDoctrine = $this->assertAndReturnBrand($localEntity);
+
+        $isFlush = true;
+
+        // remove row.
+        $this->getDoctrineEM()->remove($rootEntityDoctrine);
+
+        if ($isFlush) {
+            $this->doctrineEM->flush();
+        }
+
+        return true;
+    }
 
     public function storeBrand(BaseCompany $rootEntity, BaseBrand $localEntity, $isPosting = false)
     {
@@ -37,6 +51,24 @@ class BrandCmdRepositoryImpl extends AbstractDoctrineRepository implements Brand
         $rootSnapshot->version = $entity->getVersion();
 
         return $rootSnapshot;
+    }
+
+    private function assertAndReturnBrand(BaseBrand $rootEntity)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("BaseBrand not given.");
+        }
+
+        /**
+         *
+         * @var NmtApplicationBrand $rootEntityDoctrine ;
+         */
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
+        if (! $rootEntityDoctrine instanceof NmtApplicationBrand) {
+            throw new InvalidArgumentException("brand entity not found!");
+        }
+
+        return $rootEntityDoctrine;
     }
 
     private function _getRootSnapshot(BaseBrand $rootEntity)

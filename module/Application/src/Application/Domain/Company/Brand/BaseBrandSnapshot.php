@@ -20,6 +20,8 @@ class BaseBrandSnapshot extends BrandSnapshot
         $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $this->setCreatedBy($createdBy);
         $this->setUuid(Uuid::uuid4()->toString());
+
+        // important
         $this->setCompany($options->getCompanyVO()
             ->getId());
     }

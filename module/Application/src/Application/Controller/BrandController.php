@@ -5,18 +5,17 @@ use Application\Notification;
 use Application\Application\Command\TransactionalCommandHandler;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Command\Doctrine\Company\Brand\CreateBrandCmdHandler;
+use Application\Application\Command\Doctrine\Company\Brand\RemoveBrandCmdHandler;
+use Application\Application\Command\Doctrine\Company\Brand\UpdateBrandCmdHandler;
 use Application\Application\Command\Doctrine\Company\ItemAttribute\CreateAttributeCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\LockWarehouseCmdHandler;
-use Application\Application\Command\Doctrine\Company\Warehouse\RemoveLocationCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\UnLockWarehouseCmdHandler;
 use Application\Application\Command\Doctrine\Company\Warehouse\UpdateLocationCmdHandler;
-use Application\Application\Command\Doctrine\Company\Warehouse\UpdateWarehouseCmdHandler;
 use Application\Application\Command\Options\CmdOptions;
 use Application\Application\Command\Options\CreateMemberCmdOptions;
 use Application\Application\Command\Options\UpdateEntityCmdOptions;
 use Application\Application\Command\Options\UpdateMemberCmdOptions;
 use Application\Application\Service\Warehouse\Tree\Output\PureWhLocationWithRootForOptionFormatter;
-use Application\Application\Service\Warehouse\Tree\Output\WhLocationJsTreeFormatter;
 use Application\Controller\Contracts\EntityCRUDController;
 use Application\Domain\Company\Brand\BrandSnapshot;
 use Application\Domain\Company\Brand\GenericBrand;
@@ -268,7 +267,7 @@ class BrandController extends EntityCRUDController
             // probably this is the first time the form was loaded
 
             $rootId = $this->params()->fromQuery('id');
-            $form->setRedirectUrl(\sprintf("/application/warehouse/view?id=%s", $rootId));
+            $form->setRedirectUrl(\sprintf("/application/brand/view?id=%s", $rootId));
 
             /**
              *
@@ -277,12 +276,6 @@ class BrandController extends EntityCRUDController
             $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
-            }
-
-            if ($rootEntity->getIsDefault()) {
-                $this->flashMessenger()->addMessage("Default Warehouse can not be changed!");
-                $redirectUrl = \sprintf("/application/warehouse/view?id=%s", $rootId);
-                return $this->redirect()->toUrl($redirectUrl);
             }
 
             $snapshot = $rootEntity->makeSnapshot();
@@ -302,9 +295,7 @@ class BrandController extends EntityCRUDController
                 'defaultWarehouseId' => $this->getDefautWarehouseId(),
                 'companyVO' => $this->getCompanyVO(),
                 'form' => $form,
-                'jsTree' => $rootEntity->createLocationTree()
-                    ->getRoot()
-                    ->display(new WhLocationJsTreeFormatter()),
+                'jsTree' => null,
                 'rootEntity' => $rootEntity
             ));
 
@@ -319,7 +310,7 @@ class BrandController extends EntityCRUDController
         $notification = null;
 
         $rootId = $data['id']; // to update
-        $form->setRedirectUrl(\sprintf("/application/warehouse/view?id=%s", $rootId));
+        $form->setRedirectUrl(\sprintf("/application/brand/view?id=%s", $rootId));
 
         /**
          *
@@ -335,7 +326,7 @@ class BrandController extends EntityCRUDController
         $version = null;
 
         $options = new UpdateEntityCmdOptions($this->getCompanyVO(), $rootEntity, $rootId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
-        $cmdHandler = new UpdateWarehouseCmdHandler();
+        $cmdHandler = new UpdateBrandCmdHandler();
         $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
         $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
         $cmd->setLogger($this->getLogger());
@@ -363,9 +354,7 @@ class BrandController extends EntityCRUDController
                 'sharedCollection' => $this->getSharedCollection(),
                 'companyVO' => $this->getCompanyVO(),
                 'form' => $form,
-                'jsTree' => $rootEntity->createLocationTree()
-                    ->getRoot()
-                    ->display(new WhLocationJsTreeFormatter()),
+                'jsTree' => null,
                 'rootEntity' => $rootEntity
             ));
             $viewModel->setTemplate($viewTemplete);
@@ -374,7 +363,7 @@ class BrandController extends EntityCRUDController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
 
-        $redirectUrl = \sprintf("/application/warehouse/view?id=%s", $rootId);
+        $redirectUrl = \sprintf("/application/brand/view?id=%s", $rootId);
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -669,69 +658,7 @@ class BrandController extends EntityCRUDController
      * @see \Application\Controller\Contracts\EntityCRUDController::removeMemberAction()
      */
     public function removeMemberAction()
-    {
-        $response = $this->getResponse();
-        $escaper = new Escaper();
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-
-        try {
-
-            $rootId = $escaper->escapeHtml($_POST['rid']);
-            $memberCode = $escaper->escapeHtml($_POST['mid']);
-
-            /**
-             *
-             * @var GenericWarehouse $rootEntity
-             */
-            $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
-            if ($rootEntity == null) {
-                throw new \InvalidArgumentException("WH Location [$rootId] not found!");
-            }
-
-            $memberEntity = $rootEntity->getLocationByCode($memberCode);
-            if ($memberEntity == null) {
-                throw new \InvalidArgumentException("WH Location [$memberCode] not found!");
-            }
-
-            $entityToken = null;
-            $version = null;
-            $data = null;
-
-            $options = new UpdateMemberCmdOptions($this->getCompanyVO(), $rootEntity, $memberEntity, $rootId, $entityToken, $version, $this->getUserId(), __METHOD__);
-
-            $cmdHandler = new RemoveLocationCmdHandler();
-            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
-
-            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
-            $cmd->execute();
-
-            $this->logInfo($cmd->getNotification()
-                ->successMessage(false));
-        } catch (\Exception $e) {
-
-            $this->logInfo($e->getMessage());
-            $notification = new Notification();
-            $notification->addError($e->getTraceAsString());
-
-            $this->logException($e);
-
-            $response->setStatusCode(Response::STATUS_CODE_400);
-            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-
-            $m = $nmtPlugin->translate($e->getMessage());
-            $response->setContent(\json_encode("[Bad request] " . $m));
-            $this->flashMessenger()->addMessage('[Bad request] ' . $m);
-
-            return $response;
-        }
-
-        $response->setStatusCode(Response::STATUS_CODE_200);
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(\json_encode("[OK] Location Node removed!"));
-        $this->flashMessenger()->addMessage("[OK] Location Node removed!");
-        return $response;
-    }
+    {}
 
     public function lockAction()
     {
@@ -787,6 +714,64 @@ class BrandController extends EntityCRUDController
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setContent(\json_encode("[OK] Warehouse Locked!"));
         $this->flashMessenger()->addMessage("[OK] Warehouse Locked!");
+        return $response;
+    }
+
+    public function removeAction()
+    {
+        $response = $this->getResponse();
+        $escaper = new Escaper();
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        try {
+
+            $rootId = $escaper->escapeHtml($_POST['rid']);
+            $rootRame = $escaper->escapeHtml($_POST['rname']);
+
+            /**
+             *
+             * @var GenericWarehouse $rootEntity
+             */
+            $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
+            if ($rootEntity == null) {
+                throw new \InvalidArgumentException("Brand  [$rootId] not found!");
+            }
+
+            $rootEntityToken = null;
+            $version = null;
+            $data = null;
+            $options = new UpdateEntityCmdOptions($this->getCompanyVO(), $rootEntity, $rootId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+            $cmdHandler = new RemoveBrandCmdHandler();
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->execute();
+
+            $this->logInfo($cmd->getNotification()
+                ->successMessage(false));
+        } catch (\Exception $e) {
+
+            $this->logInfo($e->getMessage());
+            $notification = new Notification();
+            $notification->addError($e->getTraceAsString());
+
+            $this->logException($e);
+
+            $response->setStatusCode(Response::STATUS_CODE_400);
+            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+
+            $m = $nmtPlugin->translate($e->getMessage());
+            $response->setContent(\json_encode("[Bad request] " . $m));
+            $this->flashMessenger()->addMessage('[Bad request] ' . $m);
+
+            return $response;
+        }
+
+        $response->setStatusCode(Response::STATUS_CODE_200);
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(\json_encode(\sprintf("[OK] Brand [%s] removed!", $rootRame)));
+        $this->flashMessenger()->addMessage(\sprintf("[OK] Brand [%s] removed!", $rootRame));
         return $response;
     }
 

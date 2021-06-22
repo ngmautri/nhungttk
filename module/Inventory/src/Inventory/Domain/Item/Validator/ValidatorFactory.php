@@ -9,7 +9,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ValidatorFactory
 {
@@ -59,6 +59,11 @@ class ValidatorFactory
 
             case ItemType::NONE_INVENTORY_ITEM_TYPE:
                 $validator = new LogisticDataValidator($sharedSpecsFactory);
+                $validatorCollection->add($validator);
+                break;
+
+            case ItemType::COMPOSITE_ITEM:
+                $validator = new CompositeItemValidator($sharedSpecsFactory);
                 $validatorCollection->add($validator);
                 break;
         }

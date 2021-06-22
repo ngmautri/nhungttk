@@ -310,6 +310,7 @@ class GrMapper
         $entity->setConvertFactorPurchase($snapshot->convertFactorPurchase);
         $entity->setDocVersion($snapshot->docVersion);
         $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
+        $entity->setBrand($snapshot->brand);
 
         // ============================
         // DATE MAPPING
@@ -702,6 +703,7 @@ class GrMapper
         $snapshot->convertFactorPurchase = $entity->getConvertFactorPurchase();
         $snapshot->docVersion = $entity->getDocVersion();
         $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
+        $snapshot->brand = $entity->getBrand();
 
         // ============================
         // DATE MAPPING

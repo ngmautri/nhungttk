@@ -180,6 +180,8 @@ class PrMapper
         $entity->setVendorItemName($snapshot->vendorItemName);
         $entity->setVendorItemCode($snapshot->vendorItemCode);
         $entity->setClearingDocId($snapshot->clearingDocId);
+        $entity->setBrand($snapshot->brand);
+
         // ============================
         // DATE MAPPING
         // ============================
@@ -444,6 +446,7 @@ class PrMapper
         $snapshot->vendorItemName = $entity->getVendorItemName();
         $snapshot->vendorItemCode = $entity->getVendorItemCode();
         $snapshot->clearingDocId = $entity->getClearingDocId();
+        $snapshot->brand = $entity->getBrand();
 
         // ============================
         // DATE MAPPING
@@ -561,6 +564,8 @@ class PrMapper
         $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
         $snapshot->vendorItemName = $entity->getVendorItemName();
         $snapshot->vendorItemCode = $entity->getVendorItemCode();
+        $snapshot->brand = $entity->getBrand();
+
 
         // ============================
         // DATE MAPPING

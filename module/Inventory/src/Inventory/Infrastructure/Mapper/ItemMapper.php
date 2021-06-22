@@ -2,9 +2,11 @@
 namespace Inventory\Infrastructure\Mapper;
 
 use Application\Entity\NmtInventoryItem;
+use Application\Entity\NmtInventoryItemComposite;
 use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Item\GenericItemSnapshot;
 use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Domain\Item\Composite\CompositeSnapshot;
 
 /**
  *
@@ -300,6 +302,93 @@ class ItemMapper
              */
             $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->find($snapshot->lastTrxRow);
             $entity->setLastTrxRow($obj);
+        }
+
+        return $entity;
+    }
+
+    public static function mapItemCompositeSnapshotEntity(EntityManager $doctrineEM, CompositeSnapshot $snapshot, NmtInventoryItemComposite $entity)
+    {
+        if ($snapshot == null || $entity == null || $doctrineEM == null) {
+            return null;
+        }
+
+        // =================================
+        // Mapping None-Object Field
+        // =================================
+
+        // entity->setId($snapshot->id);
+        $entity->setToken($snapshot->token);
+        $entity->setUuid($snapshot->uuid);
+        $entity->setCreatedBy($snapshot->createdBy);
+        $entity->setLastChangeBy($snapshot->lastChangeBy);
+        $entity->setCreatedOn($snapshot->createdOn);
+        $entity->setLastChangeOn($snapshot->lastChangeOn);
+        $entity->setQuantity($snapshot->quantity);
+        $entity->setUom($snapshot->uom);
+        $entity->setPrice($snapshot->price);
+        $entity->setRemarks($snapshot->remarks);
+        $entity->setHasMember($snapshot->hasMember);
+        $entity->setParentUuid($snapshot->parentUuid);
+        $entity->setParent($snapshot->parent);
+        $entity->setItem($snapshot->item);
+        // $entity->setId($snapshot->id);
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+
+        /*
+         * $entity->setCreatedOn($snapshot->createdOn);
+         * $entity->setLastChangeOn($snapshot->lastChangeOn);
+         */
+
+        if ($snapshot->createdOn !== null) {
+            $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
+        }
+        if ($snapshot->lastChangeOn !== null) {
+            $entity->setLastChangeOn(new \DateTime($snapshot->lastChangeOn));
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+
+        // $entity->setCreatedBy($snapshot->createdBy);
+        // $entity->setItemGroup($snapshot->itemGroup);
+        // $entity->setStockUom($snapshot->stockUom);
+        // $entity->setCogsAccount($snapshot->cogsAccount);
+        // $entity->setPurchaseUom($snapshot->purchaseUom);
+        // $entity->setSalesUom($snapshot->salesUom);
+        // $entity->setInventoryAccount($snapshot->inventoryAccount);
+        // $entity->setExpenseAccount($snapshot->expenseAccount);
+        // $entity->setRevenueAccount($snapshot->revenueAccount);
+        // $entity->setDefaultWarehouse($snapshot->defaultWarehouse);
+        // $entity->setLastChangeBy($snapshot->lastChangeBy);
+        // $entity->setStandardUom($snapshot->standardUom);
+        // $entity->setCompany($snapshot->company);
+        // $entity->setLastPrRow($snapshot->lastPrRow);
+        // $entity->setLastPoRow($snapshot->lastPoRow);
+        // $entity->setLastApInvoiceRow($snapshot->lastApInvoiceRow);
+        // $entity->setLastTrxRow($snapshot->lastTrxRow);
+        // $entity->setLastPurchasing($snapshot->lastPurchasing);
+
+        if ($snapshot->createdBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->createdBy);
+            $entity->setCreatedBy($obj);
+        }
+
+        if ($snapshot->lastChangeBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastChangeBy);
+            $entity->setLastChangeBy($obj);
         }
 
         return $entity;

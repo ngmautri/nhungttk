@@ -610,6 +610,13 @@ class NmtInventoryTrx
     private $batchId;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="brand", type="string", length=100, nullable=true)
+     */
+    private $brand;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -2891,6 +2898,30 @@ class NmtInventoryTrx
     public function getBatchId()
     {
         return $this->batchId;
+    }
+
+    /**
+     * Set brand
+     *
+     * @param string $brand
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    /**
+     * Get brand
+     *
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->brand;
     }
 
     /**

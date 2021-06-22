@@ -318,6 +318,8 @@ class BaseRowSnapshot extends AbstractDTO
 
     public $clearingDocId;
 
+    public $brand;
+
     /**
      *
      * @return mixed
@@ -3070,6 +3072,24 @@ class BaseRowSnapshot extends AbstractDTO
     public function setClearingDocId($clearingDocId)
     {
         $this->clearingDocId = $clearingDocId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     *
+     * @param mixed $brand
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
     }
 }
 

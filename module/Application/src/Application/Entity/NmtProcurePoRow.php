@@ -456,6 +456,13 @@ class NmtProcurePoRow
     private $variantId;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="brand", type="string", length=100, nullable=true)
+     */
+    private $brand;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -2033,6 +2040,30 @@ class NmtProcurePoRow
     public function getVariantId()
     {
         return $this->variantId;
+    }
+
+    /**
+     * Set brand
+     *
+     * @param string $brand
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    /**
+     * Get brand
+     *
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->brand;
     }
 
     /**

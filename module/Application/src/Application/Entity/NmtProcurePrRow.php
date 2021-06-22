@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"}), @ORM\Index(name="nmt_procure_pr_row_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_procure_pr_row_IDX2", columns={"current_state"}), @ORM\Index(name="nmt_procure_pr_row_FK6_idx", columns={"doc_uom"}), @ORM\Index(name="nmt_procure_pr_row_FK7_idx", columns={"warehouse_id"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
  */
 class NmtProcurePrRow
 {
@@ -272,6 +273,20 @@ class NmtProcurePrRow
      * @ORM\Column(name="clearing_doc_id", type="integer", nullable=true)
      */
     private $clearingDocId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="variant_id", type="integer", nullable=true)
+     */
+    private $variantId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="brand", type="string", length=100, nullable=true)
+     */
+    private $brand;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -1217,6 +1232,54 @@ class NmtProcurePrRow
     public function getClearingDocId()
     {
         return $this->clearingDocId;
+    }
+
+    /**
+     * Set variantId
+     *
+     * @param integer $variantId
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setVariantId($variantId)
+    {
+        $this->variantId = $variantId;
+
+        return $this;
+    }
+
+    /**
+     * Get variantId
+     *
+     * @return integer
+     */
+    public function getVariantId()
+    {
+        return $this->variantId;
+    }
+
+    /**
+     * Set brand
+     *
+     * @param string $brand
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    /**
+     * Get brand
+     *
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->brand;
     }
 
     /**

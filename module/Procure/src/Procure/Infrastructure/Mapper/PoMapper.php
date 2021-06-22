@@ -325,6 +325,8 @@ class PoMapper
         $entity->setCostCenter($snapshot->costCenter);
         $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
         $entity->setClearingDocId($snapshot->clearingDocId);
+        $entity->setBrand($snapshot->brand);
+
         // ============================
         // DATE MAPPING
         // ============================
@@ -708,6 +710,7 @@ class PoMapper
         $snapshot->costCenter = $entity->getCostCenter();
 
         $snapshot->clearingDocId = $entity->getClearingDocId();
+        $snapshot->brand = $entity->getBrand();
 
         if ($entity->getGlAccount() > 0) {
             /**

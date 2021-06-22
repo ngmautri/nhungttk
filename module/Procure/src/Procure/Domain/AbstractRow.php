@@ -154,6 +154,8 @@ class AbstractRow extends AbstractEntity
 
     protected $clearingDocId;
 
+    protected $brand;
+
     /**
      *
      * @param mixed $id
@@ -1412,5 +1414,23 @@ class AbstractRow extends AbstractEntity
     protected function setClearingDocId($clearingDocId)
     {
         $this->clearingDocId = $clearingDocId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     *
+     * @param mixed $brand
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
     }
 }

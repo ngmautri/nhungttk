@@ -127,6 +127,11 @@ class UploadPoRows extends AbstractProcureRowsUpload
                             case 10: // remarks
                                 $rowSnapshot->remarks = $val;
                                 break;
+
+
+                            case 11: // brand
+                                $rowSnapshot->brand = $val;
+                                break;
                         }
                     }
 

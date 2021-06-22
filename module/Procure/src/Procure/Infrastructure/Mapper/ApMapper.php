@@ -375,6 +375,7 @@ class ApMapper
         $entity->setDocVersion($snapshot->docVersion);
         $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
         $entity->setClearingDocId($snapshot->clearingDocId);
+        $entity->setBrand($snapshot->brand);
 
         // ============================
         // DATE MAPPING
@@ -798,6 +799,8 @@ class ApMapper
         $snapshot->docVersion = $entity->getDocVersion();
         $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
         $snapshot->clearingDocId = $entity->getClearingDocId();
+        $snapshot->brand = $entity->getBrand();
+
         // ============================
         // DATE MAPPING
         // ============================

@@ -21,6 +21,7 @@ use Inventory\Domain\Service\SharedService;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use RuntimeException;
+use Inventory\Domain\Item\CompositeItem;
 
 /**
  *
@@ -223,6 +224,10 @@ class ItemFactory
 
             case ItemType::FIXED_ASSET_ITEM_TYPE:
                 $item = new FixedAssetItem();
+                break;
+
+            case ItemType::COMPOSITE_ITEM:
+                $item = new CompositeItem();
                 break;
             default:
                 $item = new InventoryItem();

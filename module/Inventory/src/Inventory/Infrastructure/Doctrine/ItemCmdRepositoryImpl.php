@@ -26,6 +26,8 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
 
     private $itemVariantRepository;
 
+    private $itemComponentRepository;
+
     /*
      * |=============================
      * | Delegation
@@ -39,15 +41,15 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
 
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      * @see \Inventory\Domain\Item\Repository\ItemVariantCmdRepositoryInterface::storeVariantCollection()
      */
     public function storeVariantCollection(GenericItem $rootEntity, $generateSysNumber = True)
     {
         $this->assertItemVariantRepository();
         return $this->getItemVariantRepository()->storeVariantCollection($rootEntity);
-
     }
+
     public function storeWholeVariant(GenericItem $rootEntity, BaseVariant $localEntity, $generateSysNumber = True)
     {
         $this->assertItemVariantRepository();
@@ -150,6 +152,37 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
 
     /**
      *
+     * @return \Inventory\Infrastructure\Doctrine\ItemComponentCmdRepositoryImpl
+     */
+    public function getItemComponentRepository()
+    {
+        if ($this->itemComponentRepository == null) {
+            throw new InvalidArgumentException("Item Variant repository is not found!");
+        }
+        return $this->itemComponentRepository;
+    }
+
+    /**
+     *
+     * @return \Inventory\Domain\Item\Repository\ItemVariantCmdRepositoryInterface
+     */
+    public function getItemVariantRepository()
+    {
+        if ($this->itemVariantRepository == null) {
+            throw new InvalidArgumentException("Item Variant repository is not found!");
+        }
+        return $this->itemVariantRepository;
+    }
+
+    /*
+     * |=================================
+     * | Setter and getter
+     * |
+     * |==================================
+     */
+
+    /**
+     *
      * @param BaseItem $rootEntity
      * @throws InvalidArgumentException
      * @return \Application\Entity\NmtInventoryItem|object|NULL
@@ -191,15 +224,6 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
 
     /**
      *
-     * @return \Inventory\Domain\Item\Repository\ItemVariantCmdRepositoryInterface
-     */
-    public function getItemVariantRepository()
-    {
-        return $this->itemVariantRepository;
-    }
-
-    /**
-     *
      * @param ItemVariantCmdRepositoryInterface $itemVariantRepository
      */
     public function setItemVariantRepository(ItemVariantCmdRepositoryInterface $itemVariantRepository)
@@ -207,5 +231,12 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
         $this->itemVariantRepository = $itemVariantRepository;
     }
 
-
+    /**
+     *
+     * @param ItemComponentCmdRepositoryImpl $itemComponentRepository
+     */
+    public function setItemComponentRepository(ItemComponentCmdRepositoryImpl $itemComponentRepository)
+    {
+        $this->itemComponentRepository = $itemComponentRepository;
+    }
 }

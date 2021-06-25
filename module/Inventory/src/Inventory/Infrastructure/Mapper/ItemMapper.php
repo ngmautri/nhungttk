@@ -2,11 +2,12 @@
 namespace Inventory\Infrastructure\Mapper;
 
 use Application\Entity\NmtInventoryItem;
-use Application\Entity\NmtInventoryItemComposite;
+use Application\Entity\NmtInventoryItemComponent;
 use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Item\GenericItemSnapshot;
 use Inventory\Domain\Item\ItemSnapshot;
-use Inventory\Domain\Item\Composite\CompositeSnapshot;
+use Inventory\Domain\Item\Component\BaseComponentSnapshot;
+use Inventory\Domain\Item\Component\ComponentSnapshot;
 
 /**
  *
@@ -22,9 +23,12 @@ class ItemMapper
             return null;
         }
 
-        // =================================
-        // Mapping None-Object Field
-        // =================================
+        /*
+         * |=============================
+         * | Mapping None-Object Field
+         * | not mapping setID
+         * |=============================
+         */
 
         // $entity->setId($snapshot->id);
         $entity->setWarehouseId($snapshot->warehouseId);
@@ -96,9 +100,12 @@ class ItemMapper
         $entity->setStandardWidth($snapshot->standardWidth);
         $entity->setUomGroup($snapshot->uomGroup);
 
-        // ============================
-        // DATE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | DATE MAPPING
+         * |
+         * |=============================
+         */
 
         /*
          * $entity->setCreatedOn($snapshot->createdOn);
@@ -128,9 +135,12 @@ class ItemMapper
             $entity->setLastChangeOn(new \DateTime($snapshot->lastChangeOn));
         }
 
-        // ============================
-        // REFERRENCE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | REFERRENCE MAPPING
+         * |
+         * |=============================
+         */
 
         // $entity->setCreatedBy($snapshot->createdBy);
         // $entity->setItemGroup($snapshot->itemGroup);
@@ -307,36 +317,43 @@ class ItemMapper
         return $entity;
     }
 
-    public static function mapItemCompositeSnapshotEntity(EntityManager $doctrineEM, CompositeSnapshot $snapshot, NmtInventoryItemComposite $entity)
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param ComponentSnapshot $snapshot
+     * @param NmtInventoryItemComponent $entity
+     * @return NULL|\Application\Entity\NmtInventoryItemComponent
+     */
+    public static function mapItemComponentSnapshotEntity(EntityManager $doctrineEM, ComponentSnapshot $snapshot, NmtInventoryItemComponent $entity)
     {
         if ($snapshot == null || $entity == null || $doctrineEM == null) {
             return null;
         }
 
-        // =================================
-        // Mapping None-Object Field
-        // =================================
-
+        /*
+         * |=============================
+         * | Mapping None-Object Field
+         * | not mapping setID
+         * |=============================
+         */
         // entity->setId($snapshot->id);
         $entity->setToken($snapshot->token);
         $entity->setUuid($snapshot->uuid);
-        $entity->setCreatedBy($snapshot->createdBy);
-        $entity->setLastChangeBy($snapshot->lastChangeBy);
-        $entity->setCreatedOn($snapshot->createdOn);
-        $entity->setLastChangeOn($snapshot->lastChangeOn);
         $entity->setQuantity($snapshot->quantity);
         $entity->setUom($snapshot->uom);
         $entity->setPrice($snapshot->price);
         $entity->setRemarks($snapshot->remarks);
         $entity->setHasMember($snapshot->hasMember);
         $entity->setParentUuid($snapshot->parentUuid);
-        $entity->setParent($snapshot->parent);
-        $entity->setItem($snapshot->item);
-        // $entity->setId($snapshot->id);
+        $entity->setRevisionNo($snapshot->revisionNo);
+        $entity->setVersion($snapshot->version);
 
-        // ============================
-        // DATE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | DATE MAPPING
+         * |
+         * |=============================
+         */
 
         /*
          * $entity->setCreatedOn($snapshot->createdOn);
@@ -350,29 +367,19 @@ class ItemMapper
             $entity->setLastChangeOn(new \DateTime($snapshot->lastChangeOn));
         }
 
-        // ============================
-        // REFERRENCE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | REFERRENCE MAPPING
+         * |
+         * |=============================
+         */
 
-        // $entity->setCreatedBy($snapshot->createdBy);
-        // $entity->setItemGroup($snapshot->itemGroup);
-        // $entity->setStockUom($snapshot->stockUom);
-        // $entity->setCogsAccount($snapshot->cogsAccount);
-        // $entity->setPurchaseUom($snapshot->purchaseUom);
-        // $entity->setSalesUom($snapshot->salesUom);
-        // $entity->setInventoryAccount($snapshot->inventoryAccount);
-        // $entity->setExpenseAccount($snapshot->expenseAccount);
-        // $entity->setRevenueAccount($snapshot->revenueAccount);
-        // $entity->setDefaultWarehouse($snapshot->defaultWarehouse);
-        // $entity->setLastChangeBy($snapshot->lastChangeBy);
-        // $entity->setStandardUom($snapshot->standardUom);
-        // $entity->setCompany($snapshot->company);
-        // $entity->setLastPrRow($snapshot->lastPrRow);
-        // $entity->setLastPoRow($snapshot->lastPoRow);
-        // $entity->setLastApInvoiceRow($snapshot->lastApInvoiceRow);
-        // $entity->setLastTrxRow($snapshot->lastTrxRow);
-        // $entity->setLastPurchasing($snapshot->lastPurchasing);
-
+        /*
+         * $entity->setCreatedBy($snapshot->createdBy);
+         * $entity->setLastChangeBy($snapshot->lastChangeBy);
+         * $entity->setParent($snapshot->parent);
+         * $entity->setItem($snapshot->item);
+         */
         if ($snapshot->createdBy > 0) {
             /**
              *
@@ -389,6 +396,24 @@ class ItemMapper
              */
             $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastChangeBy);
             $entity->setLastChangeBy($obj);
+        }
+
+        if ($snapshot->parent > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryItem $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($snapshot->parent);
+            $entity->setParent($obj);
+        }
+
+        if ($snapshot->item > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryItem $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($snapshot->item);
+            $entity->setItem($obj);
         }
 
         return $entity;
@@ -634,6 +659,91 @@ class ItemMapper
             $snapshot->lastPurchasing = $entity->getLastPurchasing()->getId();
         }
 
+        return $snapshot;
+    }
+
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param NmtInventoryItemComponent $entity
+     * @return NULL|\Inventory\Domain\Item\Component\BaseComponentSnapshot
+     */
+    public static function createItemComponentSnapshot(EntityManager $doctrineEM, NmtInventoryItemComponent $entity)
+    {
+        if ($entity == null) {
+            return null;
+        }
+
+        $snapshot = new BaseComponentSnapshot();
+
+        /*
+         * |=============================
+         * | Mapping None-Object Field
+         * |
+         * |=============================
+         */
+
+        $snapshot->id = $entity->getId();
+        $snapshot->token = $entity->getToken();
+        $snapshot->uuid = $entity->getUuid();
+        $snapshot->quantity = $entity->getQuantity();
+        $snapshot->uom = $entity->getUom();
+        $snapshot->price = $entity->getPrice();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->hasMember = $entity->getHasMember();
+        $snapshot->parentUuid = $entity->getParentUuid();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->version = $entity->getVersion();
+
+        /*
+         * |=============================
+         * | DATE MAPPING
+         * |
+         * |=============================
+         */
+        /*
+         * $snapshot->createdOn = $entity->getCreatedOn();
+         * $snapshot->lastChangeOn = $entity->getLastChangeOn();
+         *
+         *
+         */
+        if (! $entity->getLastChangeOn() == null) {
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
+        }
+
+        // $snapshot->createdOn = $entity->getCreatedOn();
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
+        }
+
+        /*
+         * |=============================
+         * | REFERRENCE MAPPING
+         * |
+         * |=============================
+         */
+
+        /*
+         * $snapshot->company = $entity->getCompany();
+         * $snapshot->createdBy = $entity->getCreatedBy();
+         * $snapshot->lastChangeBy = $entity->getLastChangeBy();
+         */
+
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+        }
+
+        if ($entity->getLastChangeBy() !== null) {
+            $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
+        }
+
+        if ($entity->getParent() !== null) {
+            $snapshot->parent = $entity->getParent()->getId();
+        }
+
+        if ($entity->getItem() !== null) {
+            $snapshot->item = $entity->getItem()->getId();
+        }
         return $snapshot;
     }
 }

@@ -12,5 +12,9 @@ use Inventory\Domain\Item\GenericItem;
 Interface ItemCmdRepositoryInterface extends CmdRepositoryInterface, ItemVariantCmdRepositoryInterface
 {
 
+    public function getItemComponentRepository();
+
+    public function getItemVariantRepository();
+
     public function store(GenericItem $rootEntity, $generateSysNumber = True);
 }

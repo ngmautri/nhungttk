@@ -1,0 +1,350 @@
+
+<?php
+use Application\Application\Helper\ErrorMessage;
+use Application\Domain\Company\AccountChart\GenericChart;
+use Application\Domain\Util\Translator;
+use Application\Form\Contracts\GenericForm;
+use Inventory\Application\Service\ItemVariant\Export\ExportAsForm;
+
+/**
+ *
+ * @var GenericForm $form ;
+ *
+ * @var GenericChart $rootEntity ;
+ */
+$error_msg = ErrorMessage::showErrorMessage($errors);
+$rootId = null;
+if ($rootEntity !== null) {
+    $rootId = $rootEntity->getId();
+}
+$formId = 'nmt_variant_form';
+
+$cssClass = 'btn btn-primary btn-sm';
+$submitBtn = sprintf(' <a class="%s" style="color: white" onclick="submitForm(\'%s\');" href="javascript:;">
+        <i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', $cssClass, $formId, (Translator::translate("Generate")));
+// echo $itemId;
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">Create New Component</a>
+      </li>
+   </ul>
+   <div id="general">
+
+ <?php
+
+echo $error_msg;
+?>
+
+<FORM id="nmt_variant_form" action="/inventory/item-variant/create" method="post" enctype="multipart/form-data">
+<input type="hidden" name="item_id" value="<?php
+
+echo $itemId;
+?>" />
+   <?php
+// ==================
+$export = new ExportAsForm();
+echo $export->execute($attributeCollection);
+
+echo $submitBtn;
+?>
+</FORM>
+
+
+
+<div class="container-fluid">
+         <div class="row">
+            <div class="col-md-6">
+               <div id="gird_div" style="margin: 1px; font-size: 9pt"></div>
+            </div>
+            <div class="col-md-6"></div>
+         </div>
+      </div>
+      <!-- General -->
+   </div>
+   <!-- Tab -->
+   <div class="modal" id="confirm_remove_node" role="dialog">
+      <div class="modal-dialog modal-md">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="b_modal_sm_body">
+               <h5>#<?php
+
+            echo $this->translate('Account will be removed!');
+            ?></h5>
+               <div class="alert alert-warning">
+                  <strong>[Info]</strong> <?php
+
+                echo $this->translate('Remove can not be recalled!');
+                ?>
+               <!-- Journal Entry will be created. <br>- Warehouse Journal will be
+               created.
+                -->
+               </div>
+               <p><?php
+
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+            </div>
+            <div class="modal-footer">
+               <button onclick="doRemovingNode();" type="button" class="btn btn-primary btn-sm">YES</button>
+               <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <script>
+
+<?php
+echo sprintf("var rootId=%s;", $rootId);
+echo sprintf("var redirectUrl = \"/application/item-attribute/view?id=%s\"", $rootId);
+?>;
+
+
+var node_to_remove = null;
+
+function confirmRemoveNode() {
+    $('#confirm_remove_node').modal();
+ }
+
+function doRemovingNode() {
+
+    $('#confirm_remove_node').hide();
+
+  //alert(data.node.parent +  data.node.id  +  data.node.text );
+    $('#b_modal_no_header').modal();
+
+    //alert(node_to_remove + rootId);
+
+     $.post("/application/account-chart/remove-member", {
+        rid : rootId,
+        mid: node_to_remove
+
+    }, function(data, status) {
+       //alert(data);
+       window.location = redirectUrl;
+    });
+}
+
+
+//html demo
+$('#html1').jstree({
+   "core" : {
+          // so that create works
+          "check_callback" : true
+        },
+       "plugins" : [ "contextmenu","types"],
+
+       "types" : {
+
+	      "demo" : {
+	        "icon" : "fa fa-book"
+	      }
+	    },
+
+       "contextmenu":{
+           "items": function($node) {
+               var tree = $("#html1").jstree(true);
+               return {
+
+                      "Add Account": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Add new account",
+                          "title": "Add new account",
+                          "icon": "fa fa-plus",
+                          "action": function (obj) {
+                           var redirectUrl = "/application/account-chart/add-member?rid=" +rootId+ "&pid="+ $node.id;
+                           //alert(redirectUrl);
+                           window.location = redirectUrl;
+                         }
+                      },
+
+                      "Update Account": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Update Account",
+                          "title": "Update Account",
+                          "icon": "fa fa-edit",
+                          "separator_after": true,
+                          "action": function (obj) {
+                           var redirectUrl = "/application/account-chart/update-member?rid=" +rootId+ "&mid="+ $node.id
+                           //alert(redirectUrl);
+                           window.location = redirectUrl;
+                         }
+                      },
+
+
+                     /*  'Move Account': {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Move Account",
+                          "icon": "fa fa-bars",
+                          "action": function (obj) {
+                           var redirectUrl = "/application/account-chart/move?n="+$node.id;
+                           window.location = redirectUrl;
+                         }
+                      }, */
+
+
+                   /* "Create": {
+                       "separator_before": false,
+                       "separator_after": false,
+                       "label": "Create New Deparment",
+                       "action": function (obj) {
+                        var ref = $.jstree.reference(obj.reference);
+                        sel = ref.get_selected();
+                       $node = tree.create_node($node);
+                          tree.edit($node);
+                       }
+                   }, */
+
+                   /* "Rename": {
+                       "separator_before": false,
+                       "separator_after": false,
+                       "label": "Rename Account",
+                       "icon": "fa fa-edit",
+
+                       "action": function (obj) {
+                           tree.edit($node);
+                       }
+                   }, */
+                   "Remove": {
+                       "separator_before": false,
+                       "separator_after": false,
+                       "label": "<span style=\"color:red\">Remove Account</span>",
+                       "icon": "fa fa-remove",
+                       "action": function (obj) {
+                           tree.delete_node($node);
+                       }
+                   },
+
+
+
+               };
+           }
+       }
+
+});
+
+
+
+// DELETE ===============
+$('#html1').on('delete_node.jstree', function (e, data) {
+
+     $('#confirm_remove_node').modal();
+     //alert( data.node.id);
+     node_to_remove = data.node.id;
+
+
+});
+// DELETE ===============
+
+
+$("#html1").on("click", ".jstree-anchor", function(e) {
+      var node = $("#html1").jstree(true).get_node($(this));
+
+      var id = $("#html1").jstree(true).get_node($(this)).id;
+      var cat_name = $("#html1").jstree(true).get_node($(this)).text;
+
+      if (!node.state.disabled)
+         {
+      $("#node_selected").html('"' + cat_name + '" selected');
+      $("#department_name").val(cat_name);
+      $("#department_name_selected").val(id);
+
+      $('#modal1 .close').click();
+      $('#global-notice').show();
+      $('#global-notice').html('"' + cat_name + '" selected');
+      $('#global-notice').fadeOut(3000);
+         }
+});
+
+
+
+
+//================
+
+var columns= [
+    { title: "#", dataType: "string", dataIndx: "group", align: 'left',minWidth: 80,editable: false},
+    { title: "Name", dataType: "string", dataIndx: "attributeCode", align: 'left',minWidth: 100,editable: false},
+    { title: "Name1", dataType: "string", dataIndx: "attributeName", align: 'left',minWidth: 100,editable: false},
+    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 300,editable: false},
+
+     { title: "", editable: false, minWidth: 60, sortable: false,
+        render: function (ui) {
+         return '<button type="button" class="edit_btn">Show </button>';
+        }
+    },
+
+];
+
+
+var dataModel = {
+    dataType: "JSON",
+    location: "remote",
+    method: "GET",
+    recIndx: "id",
+    url: "/application/item-attribute/attribute-gird?rid=" + rootId,
+
+    getData: function (response) {
+       return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
+   },
+};
+
+var obj = {
+   title: "<p style='text-align:center;'><b>Attribute Value</b></p>",
+   resizable: true,
+   dataModel: dataModel,
+   colModel: columns,
+   height: $(window).height()-500,
+   width: '95%',
+   hoverMode: 'row',
+   selectionModel: { type: 'row' },
+   showTop: true,
+   showToolbar: true,
+   collapsible: { collapsed : false },
+   showHeader: true,
+   showBottom: true,
+   editable: true,
+   wrap: true,
+   //crollModel: { autoFit: true },
+   columnBorders: true,
+   numberCell: {show:true, resizable: true, width: 40, title: "#", minWidth: 25 },
+   pageModel: { type: "remote", rPP:100, strRpp: "{0}" },
+   editor: {
+       select: true
+   },
+
+};
+
+var $grid = $("#gird_div").pqGrid(obj);
+
+$grid.on('pqgridrefresh pqgridrefreshrow', function () {
+    //debugger;
+    var $grid = $(this);
+
+    $grid.find("button.edit_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+        var $tr = $(this).closest("tr"),
+        rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+        rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+        recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+        redirectUrl="/application/account-chart/update-member?rid=" +rootId+ "&mid="+ rowData['accountNumber']
+        window.location.href = redirectUrl;
+    });
+
+ });
+
+// important for datamodel: local.
+$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
+
+function refreshGird(){
+  $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+}
+
+</script>

@@ -10,6 +10,7 @@ use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxPostingService;
 use Inventory\Domain\Service\TrxValuationService;
 use Inventory\Infrastructure\Doctrine\ItemCmdRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\ItemComponentCmdRepositoryImpl;
 use Inventory\Infrastructure\Doctrine\ItemVariantCmdRepositoryImpl;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Inventory\Infrastructure\Doctrine\WhQueryRepositoryImpl;
@@ -72,7 +73,15 @@ class SharedServiceFactory
         $sharedSpecsFactory = new ZendSpecificationFactory($doctrineEM);
 
         $companyCmdRepository = new ItemCmdRepositoryImpl($doctrineEM);
+
+        /*
+         * |=============================
+         * | Delegation
+         * |
+         * |=============================
+         */
         $companyCmdRepository->setItemVariantRepository(new ItemVariantCmdRepositoryImpl($doctrineEM));
+        $companyCmdRepository->setItemComponentRepository(new ItemComponentCmdRepositoryImpl($doctrineEM));
 
         $fxService = new FXServiceImpl();
         $fxService->setDoctrineEM($doctrineEM);

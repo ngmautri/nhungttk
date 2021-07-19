@@ -779,7 +779,7 @@ class PoMapper
 
         // $snapshot->prRow= $entity->getPrRow();
         if ($entity->getPrRow() !== null) {
-            RowMapper::updatePRDetails($snapshot, $entity->getPrRow());
+            RowMapper::updateOnlyPRDetails($snapshot, $entity->getPrRow());
         }
 
         // $snapshot->createdBy= $entity->getCreatedBy();

@@ -28,9 +28,12 @@ class ApMapper
             return null;
         }
 
-        // =================================
-        // Mapping None-Object Field
-        // =================================
+        /*
+         * |=============================
+         * | Mapping None-Object Field
+         * | not mapping setID
+         * |=============================
+         */
 
         // $entity->setId($snapshot->id);
         $entity->setToken($snapshot->token);
@@ -82,9 +85,12 @@ class ApMapper
         $entity->setTargetDocType($snapshot->targetDocType);
         $entity->setClearingDocId($snapshot->clearingDocId);
 
-        // ============================
-        // DATE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | DATE MAPPING
+         * |
+         * |=============================
+         */
 
         /*
          * $entity->setInvoiceDate($snapshot->invoiceDate);
@@ -133,9 +139,12 @@ class ApMapper
             $entity->setDocDate(new \DateTime($snapshot->docDate));
         }
 
-        // ============================
-        // REFERRENCE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | REFERRENCE MAPPING
+         * |
+         * |=============================
+         */
         /*
          * $entity->setVendor($snapshot->vendor);
          * $entity->setProcureGr($snapshot->procureGr);
@@ -311,10 +320,12 @@ class ApMapper
             return null;
         }
 
-        // =================================
-        // Mapping None-Object Field
-        // =================================
-
+        /*
+         * |=============================
+         * | Mapping None-Object Field
+         * | not mapping setID
+         * |=============================
+         */
         // $entity->setId($snapshot->id);
         $entity->setRowNumber($snapshot->rowNumber);
         $entity->setToken($snapshot->token);
@@ -377,9 +388,12 @@ class ApMapper
         $entity->setClearingDocId($snapshot->clearingDocId);
         $entity->setBrand($snapshot->brand);
 
-        // ============================
-        // DATE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | DATE MAPPING
+         * |
+         * |=============================
+         */
         /*
          * $entity->setCreatedOn($snapshot->createdOn);
          * $entity->setLastchangeOn($snapshot->lastchangeOn);
@@ -398,9 +412,12 @@ class ApMapper
             $entity->setReversalDate(new \DateTime($snapshot->reversalDate));
         }
 
-        // ============================
-        // REFERRENCE MAPPING
-        // ============================
+        /*
+         * |=============================
+         * | REFERRENCE MAPPING
+         * |
+         * |=============================
+         */
         /*
          * $entity->setInvoice($snapshot->invoice);
          * $entity->setGlAccount($snapshot->glAccount);
@@ -637,10 +654,12 @@ class ApMapper
             $snapshot->docDate = $entity->getDocDate()->format("Y-m-d");
         }
 
-        // ============================
-        // REFERRENCE MAPPING
-        // ============================
-
+        /*
+         * |=============================
+         * | REFERRENCE MAPPING
+         * |
+         * |=============================
+         */
         /*
          * $snapshot->vendor = $entity->getVendor();
          * $snapshot->procureGr = $entity->getProcureGr();
@@ -872,7 +891,7 @@ class ApMapper
         }
 
         if ($entity->getPrRow() !== null) {
-            RowMapper::updatePRDetails($snapshot, $entity->getPrRow());
+            RowMapper::updateOnlyPRDetails($snapshot, $entity->getPrRow());
         }
 
         if ($entity->getCreatedBy() !== null) {

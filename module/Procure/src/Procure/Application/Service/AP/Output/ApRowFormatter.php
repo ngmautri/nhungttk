@@ -9,7 +9,7 @@ use Procure\Domain\AccountPayable\APRowSnapshot;
  * AP Row Output.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApRowFormatter extends RowFormatterDecorator
 {
@@ -33,7 +33,7 @@ class ApRowFormatter extends RowFormatterDecorator
         );
 
         if (in_array($row->getDocCurrencyISO(), $curency)) {
-            $decimalNo = 2;
+            $decimalNo = 4;
         }
 
         $row = $this->formatter->format($row);

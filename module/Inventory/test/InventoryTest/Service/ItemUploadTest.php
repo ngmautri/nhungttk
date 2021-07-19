@@ -1,5 +1,4 @@
 <?php
-
 namespace InventoryTest\Service;
 
 use Doctrine\ORM\EntityManager;

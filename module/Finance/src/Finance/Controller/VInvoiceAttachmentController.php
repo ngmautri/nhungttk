@@ -1,14 +1,13 @@
 <?php
 namespace Finance\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
-use MLA\Paginator;
 use Application\Entity\NmtApplicationAttachment;
+use Doctrine\ORM\EntityManager;
 use Zend\Http\Headers;
-use Zend\Validator\Date;
 use Zend\Math\Rand;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Validator\Date;
+use Zend\View\Model\ViewModel;
 
 /**
  *
@@ -468,30 +467,29 @@ class VInvoiceAttachmentController extends AbstractActionController
 
         $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
 
-        if ($target != null) {
-
-            /**
-             *
-             * @todo : Change Target
-             */
-            $criteria = array(
-                'vInvoice' => $target_id,
-                'isActive' => 1
-            );
-
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findBy($criteria);
-            $total_records = count($list);
-            $paginator = null;
-
-            return new ViewModel(array(
-                'list' => $list,
-                'total_records' => $total_records,
-                'paginator' => $paginator,
-                'target' => $target
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
+        if ($target == null) {
+            return $this->redirect()->toRoute('not_found');
         }
+
+        /**
+         *
+         * @todo : Change Target
+         */
+        $criteria = array(
+            'vInvoice' => $target_id,
+            'isActive' => 1
+        );
+
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findBy($criteria);
+        $total_records = count($list);
+        $paginator = null;
+
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'target' => $target
+        ));
     }
 
     /**

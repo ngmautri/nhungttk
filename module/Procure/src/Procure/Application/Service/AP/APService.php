@@ -61,8 +61,12 @@ class APService extends AbstractService implements ApServiceInterface
 
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new ApRowFormatter(new RowTextAndNumberFormatter());
+                $f = new RowTextAndNumberFormatter();
+                $f->setLocale($locale);
+                $formatter = new ApRowFormatter($f);
                 $factory = new DocSaveAsArray();
+                break;
+
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ApExcelBuilder();
@@ -82,7 +86,9 @@ class APService extends AbstractService implements ApServiceInterface
                 break;
 
             default:
-                $formatter = new ApRowFormatter(new RowTextAndNumberFormatter());
+                $f = new RowTextAndNumberFormatter();
+                $f->setLocale($locale);
+                $formatter = new ApRowFormatter($f);
                 $factory = new DocSaveAsArray();
                 break;
         }

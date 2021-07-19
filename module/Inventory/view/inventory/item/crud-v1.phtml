@@ -512,7 +512,7 @@ echo $entityFormInput;
                <select name="standardUom" id="standardUom_id" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
-                echo $this->translate("Select Standard unit");
+                echo $this->translate("---");
                 ?></option>
    	              <?php
                 echo $uom_option;
@@ -529,7 +529,7 @@ echo $entityFormInput;
                <select name="stockUom" id="stockUom_id" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
-                echo $this->translate("Select inventory unit");
+                echo $this->translate("---");
                 ?></option>
    	    		<?php
         echo $stock_uom_option;
@@ -559,7 +559,7 @@ echo $entityFormInput;
                <select name="purchaseUom" id="purchaseUom_id" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
-                echo $this->translate("Select purchase unit");
+                echo $this->translate("---");
                 ?></option>
                 <?php
                 echo $purchase_uom_option;
@@ -588,6 +588,10 @@ echo $entityFormInput;
             ?>:</label>
             <div class="col-sm-3">
                <select name="salesUom" id="salesUom_id" class="form-control input-sm chosen-select">
+               <option value=""><?php
+
+            echo $this->translate("---");
+            ?></option>
                   <option value="">
                    <?php
                 echo $sales_uom_option;
@@ -624,7 +628,7 @@ echo $entityFormInput;
                <select name="uomGroup" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
-                echo $this->translate("Select Uom Group");
+                echo $this->translate("---");
                 ?></option>
                               <?php
                             echo $uom_group_option?>
@@ -645,7 +649,7 @@ echo $entityFormInput;
                <select name="itemGroup" class="form-control input-sm chosen-select">
                   <option value=""><?php
 
-                echo $this->translate("Select Group");
+                echo $this->translate("---");
                 ?></option>
    	    							<?php
             echo $item_group_option?>

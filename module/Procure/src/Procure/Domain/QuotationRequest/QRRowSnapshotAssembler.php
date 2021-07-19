@@ -3,6 +3,7 @@ namespace Procure\Domain\QuotationRequest;
 
 use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
+use Procure\Domain\QuotationRequest\Definition\QrRowDefinition;
 
 /**
  *
@@ -11,45 +12,6 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
  */
 class QRRowSnapshotAssembler
 {
-
-    private static $defaultExcludedFields = array(
-        "id",
-        "uuid",
-        "token",
-        "checksum",
-        "createdBy",
-        "createdOn",
-        "lastChangeOn",
-        "lastChangeBy",
-        "sysNumber",
-        "company",
-        "itemType",
-        "revisionNo",
-        "currencyIso3",
-        "vendorName",
-        "docStatus",
-        "workflowStatus",
-        "transactionStatus",
-        "paymentStatus"
-    );
-
-    private static $defaultIncludedFields = array(
-        "isActive",
-        "remarks",
-        "rowNumber",
-        "item",
-        "prRow",
-        "vendorItemCode",
-        "vendorItemName",
-        "docQuantity",
-        "docUnit",
-        "docUnitPrice",
-        "conversionFactor",
-        "standardConvertFactor",
-        "descriptionText",
-        "taxRate",
-        "exwUnitPrice"
-    );
 
     public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)
     {
@@ -63,7 +25,7 @@ class QRRowSnapshotAssembler
 
     public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, QrRowDefinition::$defaultIncludedFields);
     }
 
     public static function updateExcludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
@@ -73,7 +35,7 @@ class QRRowSnapshotAssembler
 
     public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultExcludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, QrRowDefinition::$defaultExcludedFields);
     }
 
     // from Object
@@ -90,7 +52,7 @@ class QRRowSnapshotAssembler
 
     public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, QrRowDefinition::$defaultIncludedFields);
     }
 
     public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
@@ -100,7 +62,7 @@ class QRRowSnapshotAssembler
 
     public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, QrRowDefinition::$defaultExcludedFields);
     }
 
     public static function createFromQueryHit($hit)

@@ -47,6 +47,7 @@ $incotermId = null;
 $upload_btn = "";
 $rows_upload_url = "/procure/ap/upload-rows";
 $update_header_url = null;
+$review_url = null;
 
 if (! $headerDTO == null) {
 
@@ -58,7 +59,7 @@ if (! $headerDTO == null) {
     }
 
     $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $attachment_url = sprintf($this->baseUrl . "/procure/v-invoice-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $attachment_url = sprintf($this->baseUrl . "/finance/v-invoice-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $review_url = sprintf($this->baseUrl . "/procure/ap/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $view_url = sprintf($this->baseUrl . "/procure/ap/view?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
@@ -832,6 +833,28 @@ echo $upload_btn;
 </div>
 
 <script>
+ <?php
+
+echo sprintf('var review_url="%s";', $review_url)?>
+</script>
+
+
+<script>
+var remove_url='';
+
+function confirmRemoveRow(url) {
+    $('#confirm_remove_row_modal_sm').modal();
+    remove_url = url;
+  }
+
+function doRemovingRow() {
+    $('#confirm_remove_row_modal_sm').modal('hide');
+    $('#b_modal_no_header').modal();
+    $.get(remove_url,function( data ) {
+        window.location.href= review_url;
+      });
+}
+
 
 var data = <?php
 
@@ -1252,10 +1275,10 @@ echo $hoverMode;
 
         if ($canPost) :
             ?>
-             { title: "", editable: false, minWidth: 55, sortable: false,
+             { title: "", editable: false, minWidth: 130, sortable: false,
            render: function (ui) {
                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
-        		return '<button type="button" class="edit_btn">Edit </button><button type="button" class="remove_btn">Edit </button>';
+        		return '<button type="button" class="edit_btn">Edit </button><button type="button" class="remove_btn">Remove </button>';
            }
        },
        <?php endif;
@@ -1356,12 +1379,10 @@ echo $hoverMode;
 
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-
-            redirectUrl="/procure/ap/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
-          	//alert(redirectUrl);
-			window.location.href = redirectUrl;
-          	//window.open(redirectUrl,'_blank');
-        });
+            redirectUrl="/procure/ap/remove-row?ver="+rowData['docRevisionNo']+"&entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
+            //alert(redirectUrl);
+            confirmRemoveRow(redirectUrl);
+       });
 
      });
 

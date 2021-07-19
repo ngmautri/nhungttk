@@ -138,12 +138,12 @@ class GenericRowSnapshotModifier
         // parse Number
         $parsedDocQuantity = NumberParser::parseAndConvertToEN($snapshot->getDocQuantity(), $locale);
         if ($parsedDocQuantity == false) {
-            $snapshot->addError(\sprintf('Can not parse doc quantity [%s] Locale: %s', $snapshot->getDocQuantity(), $locale));
+            $snapshot->addError(\sprintf('Can not parse doc quantity [%s]-Locale: %s.', $snapshot->getDocQuantity(), $locale));
         }
 
         $parsedStandardConvertFactor = NumberParser::parseAndConvertToEN($snapshot->getStandardConvertFactor(), $locale);
         if ($parsedStandardConvertFactor == false) {
-            $snapshot->addError(\sprintf('Can not parse standard conversion factor [%s] Locale: %s', $snapshot->getStandardConvertFactor(), $locale));
+            $snapshot->addError(\sprintf('Can not parse standard conversion factor [%s]-Locale: %s.', $snapshot->getStandardConvertFactor(), $locale));
         }
 
         if ($snapshot->hasErrors()) {

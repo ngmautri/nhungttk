@@ -210,7 +210,45 @@ class RowMapper
         $snapshot->prRowName = $entity->getRowName();
         $snapshot->prRowConvertFactor = $entity->getConversionFactor();
         $snapshot->prRowUnit = $entity->getRowUnit();
-        $snapshot->docRevisionNo = $entity->getRevisionNo();
+
+        $snapshot->docRevisionNo = $entity->getRevisionNo(); // attention.
+
+        if ($entity->getPr() !== null) {
+            $snapshot->pr = $entity->getPr()->getId();
+            $snapshot->prSysNumber = $entity->getPr()->getPrAutoNumber();
+            $snapshot->prNumber = $entity->getPr()->getPrNumber();
+            $snapshot->prToken = $entity->getPr()->getToken();
+            $snapshot->prChecksum = $entity->getPr()->getChecksum();
+
+            if ($entity->getPr()->getDepartment() !== null) {
+                $snapshot->prDepartment = $entity->getPr()
+                    ->getDepartment()
+                    ->getNodeId();
+                $snapshot->prDepartmentName = $entity->getPr()
+                    ->getDepartment()
+                    ->getNodeName();
+            }
+        }
+
+        return $snapshot;
+    }
+
+    public static function updateOnlyPRDetails(RowSnapshot $snapshot, NmtProcurePrRow $entity)
+    {
+        if ($snapshot == null) {
+            return null;
+        }
+
+        if ($entity == null) {
+            return $snapshot;
+        }
+
+        $snapshot->prRow = $entity->getId();
+        $snapshot->prRowIndentifer = $entity->getRowIdentifer();
+        $snapshot->prRowCode = $entity->getRowCode();
+        $snapshot->prRowName = $entity->getRowName();
+        $snapshot->prRowConvertFactor = $entity->getConversionFactor();
+        $snapshot->prRowUnit = $entity->getRowUnit();
 
         if ($entity->getPr() !== null) {
             $snapshot->pr = $entity->getPr()->getId();

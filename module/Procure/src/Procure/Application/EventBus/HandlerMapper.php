@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Eventbus;
+namespace Procure\Application\EventBus;
 
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
@@ -16,7 +16,7 @@ use Procure\Application\EventBus\Handler\QR\UpdateIndexOnQrPosted;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class HandlerMapper extends AbstractService
 {

@@ -30,7 +30,7 @@ class ApControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $sm->get(EventBusService::class);
+        $sv = $sm->get('Procure\Application\Eventbus\EventBusService');
         $controller->setEventBusService($sv);
 
         $sv = $sm->get(APService::class);

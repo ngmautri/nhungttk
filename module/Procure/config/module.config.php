@@ -4,6 +4,10 @@
  * Configuration file.
  * @author Ngyuyen Mau Tri
  */
+use Procure\Application\EventBus\EventBusService;
+use Procure\Application\EventBus\EventBusServiceFactory;
+use Procure\Application\EventBus\HandlerMapper;
+use Procure\Application\EventBus\HandlerMapperFactory;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPostedFactory;
 use Procure\Application\EventBus\Handler\GR\CreateGrOnApPosted;
@@ -20,10 +24,6 @@ use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmittedFactory;
 use Procure\Application\EventBus\Handler\QR\UpdateIndexOnQrPosted;
 use Procure\Application\EventBus\Handler\QR\UpdateIndexOnQrPostedFactory;
-use Procure\Application\Eventbus\EventBusService;
-use Procure\Application\Eventbus\EventBusServiceFactory;
-use Procure\Application\Eventbus\HandlerMapper;
-use Procure\Application\Eventbus\HandlerMapperFactory;
 use Procure\Application\Reporting\GR\GrReporter;
 use Procure\Application\Reporting\GR\GrReporterFactory;
 use Procure\Application\Reporting\PR\PrReporter;
@@ -336,6 +336,13 @@ return array(
             // Event Handler
             'Procure\Application\Event\Handler\PoHeaderCreatedEventHandler' => 'Procure\Application\Event\Handler\PoHeaderCreatedEventHandlerFactory',
 
+            /*
+             * |=================================
+             * | Event Bus
+             * |
+             * |==================================
+             */
+                        
             // Event Handler Resolver
             HandlerMapper::class => HandlerMapperFactory::class,
             EventBusService::class => EventBusServiceFactory::class,

@@ -1,6 +1,12 @@
 <?php
 use Application\Application\Cache\CacheFactory;
 use Application\Application\Cache\RedisCacheFactory;
+use Application\Application\EventBus\EventBusService;
+use Application\Application\EventBus\EventBusServiceFactory;
+use Application\Application\EventBus\HandlerMapper;
+use Application\Application\EventBus\HandlerMapperFactory;
+use Application\Application\EventBus\PsrHandlerResolver;
+use Application\Application\EventBus\PsrHandlerResolverFactory;
 use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToDB;
 use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToLog;
 use Application\Application\EventBus\Handler\Department\OnDepartmentMovedSaveToDB;
@@ -19,12 +25,6 @@ use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentRena
 use Application\Application\EventBus\Handler\Department\Factory\OnDepartmentRenamedSaveToLogFactory;
 use Application\Application\Event\Handler\DummyEventHandler;
 use Application\Application\Event\Handler\DummyEventHandlerFactory;
-use Application\Application\Eventbus\EventBusService;
-use Application\Application\Eventbus\EventBusServiceFactory;
-use Application\Application\Eventbus\HandlerMapper;
-use Application\Application\Eventbus\HandlerMapperFactory;
-use Application\Application\Eventbus\PsrHandlerResolver;
-use Application\Application\Eventbus\PsrHandlerResolverFactory;
 use Application\Application\Logger\LoggerFactory;
 use Application\Application\Service\AccountChart\AccountChartService;
 use Application\Application\Service\AccountChart\AccountChartServiceFactory;
@@ -52,7 +52,7 @@ use Application\Infrastructure\Persistence\Application\Doctrine\Factory\AppColle
 /**
  *
  * @author Nguyen Mau Tri
- *
+ *        
  */
 return array(
 
@@ -411,8 +411,8 @@ return array(
              * |
              * |==================================
              */
-            "Application\Application\Eventbus\EventBusService" =>  "Application\Application\Eventbus\EventBusServiceFactory",
-            
+            EventBusService::class => EventBusServiceFactory::class,
+
             HandlerMapper::class => HandlerMapperFactory::class,
 
             DummyEventHandler::class => DummyEventHandlerFactory::class,

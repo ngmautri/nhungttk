@@ -1,5 +1,5 @@
 <?php
-namespace Application\Application\Eventbus;
+namespace Application\Application\EventBus;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -7,7 +7,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class HandlerMapperFactory implements FactoryInterface
 {

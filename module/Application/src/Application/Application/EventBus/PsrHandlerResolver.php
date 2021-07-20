@@ -1,5 +1,5 @@
 <?php
-namespace Application\Application\Eventbus;
+namespace Application\Application\EventBus;
 
 use Application\Domain\EventBus\Handler\Resolver\PsrContainerResolver;
 use Application\Service\AbstractService;

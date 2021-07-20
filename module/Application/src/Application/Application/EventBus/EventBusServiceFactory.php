@@ -1,5 +1,5 @@
 <?php
-namespace Application\Application\Eventbus;
+namespace Application\Application\EventBus;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;

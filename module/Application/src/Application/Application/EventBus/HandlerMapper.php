@@ -1,5 +1,5 @@
 <?php
-namespace Application\Application\Eventbus;
+namespace Application\Application\EventBus;
 
 use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToDB;
 use Application\Application\EventBus\Handler\Department\OnDepartmentInsertedSaveToLog;

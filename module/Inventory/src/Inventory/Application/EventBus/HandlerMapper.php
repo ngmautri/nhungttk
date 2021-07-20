@@ -1,10 +1,11 @@
 <?php
-namespace Inventory\Application\Eventbus;
+namespace Inventory\Application\EventBus;
 
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
 use Inventory\Application\EventBus\Handler\Item\OnItemCreatedCreateIndex;
 use Inventory\Application\EventBus\Handler\Item\OnItemUpdatedUpdateIndex;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGiForPoReturnPostedCalculateCost;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGiPostedCalculateCost;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGoodsExchagePostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
@@ -12,12 +13,11 @@ use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedClos
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferLocationPostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferPostedCreateTrx;
-use Inventory\Application\EventBus\Handler\Transaction\OnWhGiForPoReturnPostedCalculateCost;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class HandlerMapper extends AbstractService
 {

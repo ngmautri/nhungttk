@@ -1,7 +1,7 @@
 <?php
-namespace Inventory\Application\Eventbus;
+namespace Inventory\Application\EventBus;
 
-use Application\Application\Eventbus\PsrHandlerResolver;
+use Application\Application\EventBus\PsrHandlerResolver;
 use Application\Domain\EventBus\EventBus;
 use Application\Domain\EventBus\EventBusServiceInterface;
 use Application\Domain\EventBus\Middleware\EventBusMiddleware;

@@ -5,6 +5,10 @@
  *
  */
 use Application\Application\Cache\CacheFactory;
+use Inventory\Application\EventBus\EventBusService;
+use Inventory\Application\EventBus\EventBusServiceFactory;
+use Inventory\Application\EventBus\HandlerMapper;
+use Inventory\Application\EventBus\HandlerMapperFactory;
 use Inventory\Application\EventBus\Handler\Item\OnItemCreatedCreateIndex;
 use Inventory\Application\EventBus\Handler\Item\OnItemUpdatedUpdateIndex;
 use Inventory\Application\EventBus\Handler\Item\OnProcureGrPostedCreateSerialNo;
@@ -35,10 +39,6 @@ use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhOpenBalancePo
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhOpenBlancePostedCreateSerialNoFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhTransferLocationPostedCreateTrxFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhTransferPostedCreateTrxFactory;
-use Inventory\Application\Eventbus\EventBusService;
-use Inventory\Application\Eventbus\EventBusServiceFactory;
-use Inventory\Application\Eventbus\HandlerMapper;
-use Inventory\Application\Eventbus\HandlerMapperFactory;
 use Inventory\Application\Reporting\Item\ItemReporter;
 use Inventory\Application\Reporting\Item\ItemReporterFactory;
 use Inventory\Application\Reporting\Transaction\TrxReporter;

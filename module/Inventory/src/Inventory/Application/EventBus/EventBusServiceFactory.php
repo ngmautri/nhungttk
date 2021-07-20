@@ -1,7 +1,7 @@
 <?php
-namespace Inventory\Application\Eventbus;
+namespace Inventory\Application\EventBus;
 
-use Application\Application\Eventbus\PsrHandlerResolver;
+use Application\Application\EventBus\PsrHandlerResolver;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Controller;
 
-use Inventory\Application\Eventbus\EventBusService;
+use Inventory\Application\EventBus\EventBusService;
 use Inventory\Application\Service\Item\ItemService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri
- *
+ *        
  */
 class ItemControllerFactory implements FactoryInterface
 {

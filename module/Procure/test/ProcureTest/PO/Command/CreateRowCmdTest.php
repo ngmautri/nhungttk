@@ -7,10 +7,10 @@ use ProcureTest\Bootstrap;
 use Procure\Application\Command\TransactionalCommandHandler;
 use Procure\Application\Command\Doctrine\PO\CreateRowCmdHandler;
 use Procure\Application\Command\Options\CreateRowCmdOptions;
+use Procure\Application\EventBus\EventBusService;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
-use Procure\Application\Eventbus\EventBusService;
 
 class CreateRowCmdTest extends PHPUnit_Framework_TestCase
 {

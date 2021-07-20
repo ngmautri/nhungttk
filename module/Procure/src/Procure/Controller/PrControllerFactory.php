@@ -2,7 +2,7 @@
 namespace Procure\Controller;
 
 use Procure\Application\Command\Doctrine\PR\Factory\PRCmdHandlerFactory;
-use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\EventBus\EventBusService;
 use Procure\Application\Service\PR\PRService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author nmt
- *
+ *        
  */
 class PrControllerFactory implements FactoryInterface
 {

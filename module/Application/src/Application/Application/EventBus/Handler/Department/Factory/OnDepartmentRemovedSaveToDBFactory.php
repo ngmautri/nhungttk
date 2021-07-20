@@ -1,15 +1,15 @@
 <?php
 namespace Application\Application\EventBus\Handler\Department\Factory;
 
+use Application\Application\EventBus\EventBusService;
 use Application\Application\EventBus\Handler\Department\OnDepartmentRemovedSaveToDB;
-use Application\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class OnDepartmentRemovedSaveToDBFactory implements FactoryInterface
 {

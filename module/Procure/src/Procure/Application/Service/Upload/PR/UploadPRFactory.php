@@ -1,14 +1,14 @@
 <?php
 namespace Procure\Application\Service\Upload\PR;
 
-use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\EventBus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UploadPRFactory implements FactoryInterface
 {

@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\EventBus\Handler\AP;
 
-use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\EventBus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

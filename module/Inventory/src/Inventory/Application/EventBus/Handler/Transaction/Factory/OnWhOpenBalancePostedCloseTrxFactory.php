@@ -1,8 +1,8 @@
 <?php
 namespace Inventory\Application\EventBus\Handler\Transaction\Factory;
 
+use Inventory\Application\EventBus\EventBusService;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseTrx;
-use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

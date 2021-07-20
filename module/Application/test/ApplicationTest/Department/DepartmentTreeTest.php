@@ -2,7 +2,7 @@
 namespace ApplicationTest\Department;
 
 use ApplicationTest\Bootstrap;
-use Application\Application\Eventbus\EventBusService;
+use Application\Application\EventBus\EventBusService;
 use Application\Application\Service\Department\Tree\DepartmentNode;
 use Application\Application\Service\Department\Tree\TestDepartmentTree;
 use Doctrine\ORM\EntityManager;

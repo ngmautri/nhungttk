@@ -9,7 +9,7 @@ use ProcureTest\Bootstrap;
 use Procure\Application\Command\TestTransactionalCommandHandler;
 use Procure\Application\Command\Doctrine\AP\PostCmdHandler;
 use Procure\Application\Command\Options\PostCmdOptions;
-use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\EventBus\EventBusService;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 

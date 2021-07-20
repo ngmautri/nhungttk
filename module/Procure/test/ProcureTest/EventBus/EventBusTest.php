@@ -1,12 +1,12 @@
 <?php
 namespace ProcureTest\EventBus;
 
-use Application\Application\Eventbus\PsrHandlerResolver;
+use Application\Application\EventBus\PsrHandlerResolver;
 use Application\Domain\EventBus\Queue\AmqpQueue;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use ProcureTest\Bootstrap;
-use Procure\Application\Eventbus\EventBusService;
-use Procure\Application\Eventbus\HandlerMapper;
+use Procure\Application\EventBus\EventBusService;
+use Procure\Application\EventBus\HandlerMapper;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use PHPUnit_Framework_TestCase;

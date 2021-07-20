@@ -2,7 +2,7 @@
 namespace Procure\Controller;
 
 use Procure\Application\Command\Doctrine\GR\Factory\GRCmdHandlerFactory;
-use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\EventBus\EventBusService;
 use Procure\Application\Reporting\GR\GrReporter;
 use Procure\Application\Service\GR\GRService;
 use Zend\ServiceManager\FactoryInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GrControllerFactory implements FactoryInterface
 {

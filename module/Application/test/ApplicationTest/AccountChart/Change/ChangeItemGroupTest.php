@@ -1,6 +1,7 @@
 <?php
 namespace InventoryTest\Item\Change;
 
+use Application\Application\EventBus\EventBusService;
 use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
 use Inventory\Application\Command\GenericCmd;
@@ -8,7 +9,6 @@ use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
 use Inventory\Application\Command\Item\UpdateCmdHandler;
 use Inventory\Application\Command\Item\Options\UpdateItemOptions;
 use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 

@@ -8,7 +8,7 @@ use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\GR\PostCmdHandler;
 use Procure\Application\Command\GR\Options\GrPostOptions;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\EventBus\EventBusService;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 

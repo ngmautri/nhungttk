@@ -1,8 +1,8 @@
 <?php
 namespace Procure\Application\EventBus\Handler\GR\Factory;
 
+use Procure\Application\EventBus\EventBusService;
 use Procure\Application\EventBus\Handler\GR\CreateGrOnApPosted;
-use Procure\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

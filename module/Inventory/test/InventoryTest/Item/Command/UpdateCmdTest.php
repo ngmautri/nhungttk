@@ -6,7 +6,7 @@ use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\Item\UpdateCmdHandler;
 use Inventory\Application\Command\Item\Options\UpdateItemOptions;
 use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Application\Eventbus\EventBusService;
+use Inventory\Application\EventBus\EventBusService;
 use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 use ProcureTest\Bootstrap;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;

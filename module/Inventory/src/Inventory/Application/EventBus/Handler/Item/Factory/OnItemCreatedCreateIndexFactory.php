@@ -1,15 +1,15 @@
 <?php
 namespace Inventory\Application\EventBus\Handler\Item\Factory;
 
+use Inventory\Application\EventBus\EventBusService;
 use Inventory\Application\EventBus\Handler\Item\OnItemCreatedCreateIndex;
-use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class OnItemCreatedCreateIndexFactory implements FactoryInterface
 {

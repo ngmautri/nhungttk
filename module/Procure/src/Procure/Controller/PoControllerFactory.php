@@ -1,16 +1,16 @@
 <?php
 namespace Procure\Controller;
 
-use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\Command\Doctrine\PO\Factory\POCmdHandlerFactory;
+use Procure\Application\EventBus\EventBusService;
+use Procure\Application\Service\PO\POService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Procure\Application\Service\PO\POService;
-use Procure\Application\Command\Doctrine\PO\Factory\POCmdHandlerFactory;
 
 /**
  *
  * @author nmt
- *
+ *        
  */
 class PoControllerFactory implements FactoryInterface
 {

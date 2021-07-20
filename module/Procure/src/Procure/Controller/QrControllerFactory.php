@@ -2,7 +2,7 @@
 namespace Procure\Controller;
 
 use Procure\Application\Command\Doctrine\QR\Factory\QRCmdHandlerFactory;
-use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\EventBus\EventBusService;
 use Procure\Application\Reporting\QR\QrReporter;
 use Procure\Application\Service\QR\QRService;
 use Zend\ServiceManager\FactoryInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author nmt
- *
+ *        
  */
 class QrControllerFactory implements FactoryInterface
 {

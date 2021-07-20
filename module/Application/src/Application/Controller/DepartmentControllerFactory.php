@@ -1,14 +1,14 @@
 <?php
 namespace Application\Controller;
 
-use Application\Application\Eventbus\EventBusService;
+use Application\Application\EventBus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class DepartmentControllerFactory implements FactoryInterface
 {
@@ -27,7 +27,7 @@ class DepartmentControllerFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $container->get('Application\Application\Eventbus\EventBusService');
+        $sv = $container->get(EventBusService::class);
         $controller->setEventBusService($sv);
 
         $sv = $container->get("AppLogger");

@@ -2,7 +2,6 @@
 namespace Procure\Controller;
 
 use Procure\Application\Command\Doctrine\AP\Factory\APCmdHandlerFactory;
-use Procure\Application\Eventbus\EventBusService;
 use Procure\Application\Service\AP\APService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -10,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ApControllerFactory implements FactoryInterface
 {

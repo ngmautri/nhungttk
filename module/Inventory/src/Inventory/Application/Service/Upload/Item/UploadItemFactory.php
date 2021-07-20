@@ -1,14 +1,14 @@
 <?php
 namespace Inventory\Application\Service\Upload\Item;
 
-use Inventory\Application\Eventbus\EventBusService;
+use Inventory\Application\EventBus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UploadItemFactory implements FactoryInterface
 {
@@ -35,7 +35,6 @@ class UploadItemFactory implements FactoryInterface
 
         $sv = $container->get(EventBusService::class);
         $service->setEventBusService($sv);
-
 
         return $service;
     }

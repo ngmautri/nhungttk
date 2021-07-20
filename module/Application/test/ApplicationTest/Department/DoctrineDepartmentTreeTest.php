@@ -3,7 +3,7 @@ namespace ApplicationTest\Department;
 
 use ApplicationTest\Bootstrap;
 use Application\Application\Command\Options\CmdOptions;
-use Application\Application\Eventbus\EventBusService;
+use Application\Application\EventBus\EventBusService;
 use Application\Application\Service\Department\Tree\DepartmentNode;
 use Application\Application\Service\Department\Tree\DepartmentTree;
 use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;

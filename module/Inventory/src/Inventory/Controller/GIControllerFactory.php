@@ -2,7 +2,7 @@
 namespace Inventory\Controller;
 
 use Inventory\Application\Command\Transaction\Doctrine\Factory\TrxCmdHandlerFactory;
-use Inventory\Application\Eventbus\EventBusService;
+use Inventory\Application\EventBus\EventBusService;
 use Inventory\Application\Service\Transaction\TrxService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GIControllerFactory implements FactoryInterface
 {

@@ -411,7 +411,8 @@ return array(
              * |
              * |==================================
              */
-            EventBusService::class => EventBusServiceFactory::class,
+            "Application\Application\Eventbus\EventBusService" =>  "Application\Application\Eventbus\EventBusServiceFactory",
+            
             HandlerMapper::class => HandlerMapperFactory::class,
 
             DummyEventHandler::class => DummyEventHandlerFactory::class,

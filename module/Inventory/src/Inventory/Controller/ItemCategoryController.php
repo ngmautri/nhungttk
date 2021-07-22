@@ -2,15 +2,15 @@
 namespace Inventory\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtInventoryItemCategory;
 use Application\Service\ItemCategoryService;
-use MLA\Paginator;
 use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemCategoryController extends AbstractGenericController
 {
@@ -171,8 +171,8 @@ class ItemCategoryController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         if ($catId == 50) {

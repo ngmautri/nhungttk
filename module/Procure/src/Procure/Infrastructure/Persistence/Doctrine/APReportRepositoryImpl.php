@@ -12,7 +12,7 @@ use Procure\Infrastructure\Persistence\Helper\ApReportHelper;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class ApReportRepositoryImpl extends AbstractDoctrineRepository implements ApReportRepositoryInterface
+class APReportRepositoryImpl extends AbstractDoctrineRepository implements ApReportRepositoryInterface
 {
 
     public function getOfItem($item_id, $item_token)

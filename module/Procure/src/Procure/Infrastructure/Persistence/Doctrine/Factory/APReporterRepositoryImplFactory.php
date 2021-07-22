@@ -24,7 +24,7 @@ class APReporterRepositoryImplFactory implements FactoryInterface
         $container = $serviceLocator;
         $sv = $container->get('doctrine.entitymanager.orm_default');
 
-        $service = new ApReportRepositoryImpl($sv);
+        $service = new APReportRepositoryImpl($sv);
         return $service;
     }
 }

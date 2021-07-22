@@ -3,12 +3,11 @@ namespace Inventory\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Procure\Controller\PrRowController;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GIRowControllerFactory implements FactoryInterface
 {
@@ -23,7 +22,7 @@ class GIRowControllerFactory implements FactoryInterface
     {
         $sm = $serviceLocator->getServiceLocator();
 
-        $controller = new GiRowController();
+        $controller = new GIRowController();
 
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);

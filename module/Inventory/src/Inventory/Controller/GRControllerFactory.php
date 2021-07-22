@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRControllerFactory implements FactoryInterface
 {
@@ -25,7 +25,7 @@ class GRControllerFactory implements FactoryInterface
     {
         $sm = $serviceLocator->getServiceLocator();
 
-        $controller = new GrController();
+        $controller = new GRController();
 
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);

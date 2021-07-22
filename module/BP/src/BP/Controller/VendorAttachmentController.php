@@ -11,7 +11,7 @@ namespace BP\Controller;
 
 use Application\Entity\NmtApplicationAttachment;
 use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Http\Headers;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;

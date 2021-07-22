@@ -1558,7 +1558,7 @@
 // 			->joinInner(array('t2' => 'mib_users'),'t2.id = t1.user_id')
 // 			->joinInner(array('t3' => 'mib_companies'),'t3.id = t1.company_id')
 // 			->where('t1.company_id = ?', $companyId)
-// 			->limit(($paginator->maxInPage - $paginator->minInPage)+1,$paginator->minInPage-1)
+// 			->limit(($paginator->getMaxInPage() - $paginator->getMinInPage())+1,$paginator->getMinInPage()-1)
 // 			->order(array('lastname'));
 
 // 			$stmt = $db->query($select);
@@ -1566,10 +1566,10 @@
 
 // 			$obj = new stdClass();
 // 			$obj->totals 		= $totals;
-// 			$obj->page 			= $paginator->page;
-// 			$obj->totalPages 	= $paginator->totalPages;
-// 			$obj->minInPageSet	= $paginator->minInPageSet;
-// 			$obj->maxInPageSet	= $paginator->maxInPageSet;
+// 			$obj->page 			= $paginator->getPage();
+// 			$obj->totalPages 	= $paginator->getTotalPages();
+// 			$obj->minInPageSet	= $paginator->getMinInPageSet();
+// 			$obj->maxInPageSet	= $paginator->getMaxInPageSet();
 // 			$obj->members = null ;
 
 // 			if(count($results)>0)

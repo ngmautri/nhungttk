@@ -15,7 +15,7 @@ use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
 use Zend\Http\Headers;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use Inventory\Model\SparepartPicture;
 use Inventory\Model\SparepartPictureTable;
@@ -1064,7 +1064,7 @@ class SparepartsController extends AbstractActionController
         $paginator = null;
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $spareparts = $this->sparePartCategoryMemberTable->getAllSP(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $spareparts = $this->sparePartCategoryMemberTable->getAllSP(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         } else {
             $spareparts = $this->sparePartCategoryMemberTable->getAllSP(0, 0);
         }
@@ -1173,7 +1173,7 @@ class SparepartsController extends AbstractActionController
         $paginator = null;
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         } else {
             $spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion(0, 0);
         }
@@ -1210,7 +1210,7 @@ class SparepartsController extends AbstractActionController
         $paginator = null;
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $spareparts = $this->sparePartTable->getLimitSpareParts(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $spareparts = $this->sparePartTable->getLimitSpareParts(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         $this->layout('layout/no-layout');
@@ -1275,7 +1275,7 @@ class SparepartsController extends AbstractActionController
         $paginator = null;
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID($id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID($id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         } else {
             $spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID($id, 0, 0);
         }
@@ -1315,7 +1315,7 @@ class SparepartsController extends AbstractActionController
         /*
          * if ($totalResults > $resultsPerPage) {
          * $paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-         * //$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+         * //$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
          * $spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
          * } else {
          * $spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
@@ -1490,7 +1490,7 @@ class SparepartsController extends AbstractActionController
             $paginator = null;
             if ($totalResults > $resultsPerPage) {
                 $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-                $movements = $this->sparepartMovementsTable->getSparePartMovementsByID($id, $fromDate, $toDate, $flow, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+                $movements = $this->sparepartMovementsTable->getSparePartMovementsByID($id, $fromDate, $toDate, $flow, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
             }
 
             if ($layout == "ajax") {

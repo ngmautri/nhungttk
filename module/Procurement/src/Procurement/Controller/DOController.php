@@ -12,7 +12,7 @@ namespace Procurement\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\I18n\Validator\Int;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use Procurement\Model\PurchaseRequest;
 use Procurement\Model\PurchaseRequestTable;
@@ -99,7 +99,7 @@ class DOController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$deliveries = $this->deliveryTable->getDOList ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$deliveries = $this->deliveryTable->getDOList ( ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (

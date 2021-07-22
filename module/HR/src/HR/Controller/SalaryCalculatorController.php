@@ -10,7 +10,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use HR\Payroll\Calculator\PayrollCalculator;
 use HR\Payroll\Calculator\Visitor\PayslipVisitor;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 
 /**
  *

@@ -16,7 +16,7 @@ class ListHelper
             $n ++;
             
             if ($paginator !== null) {
-                $count = $paginator->minInPage - 1 + $n;
+                $count = $paginator->getMinInPage() - 1 + $n;
             } else {
                 $count = $n;
             }

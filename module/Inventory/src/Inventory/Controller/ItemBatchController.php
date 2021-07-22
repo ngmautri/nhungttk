@@ -3,7 +3,7 @@ namespace Inventory\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Inventory\Service\ItemSearchService;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
@@ -457,8 +457,8 @@ class ItemBatchController extends AbstractActionController
                 ->setParameters(array(
                 "1" => 1
             ))
-                ->setFirstResult($paginator->minInPage - 1)
-                ->setMaxResults(($paginator->maxInPage - $paginator->minInPage) + 1)
+                ->setFirstResult($paginator->getMinInPage() - 1)
+                ->setMaxResults(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1)
                 ->getResult();
         }
 

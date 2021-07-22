@@ -4,7 +4,7 @@ namespace Procure\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtPmProject;
 use Zend\Validator\Date;
 use Zend\Math\Rand;
@@ -177,7 +177,7 @@ class PrRowController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtPmProject')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtPmProject')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(
@@ -479,7 +479,7 @@ class PrRowController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $output);
+            $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1, $output);
         } else {
             $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0, $output);
         }
@@ -624,7 +624,7 @@ class PrRowController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getAllPrRow($pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getAllPrRow($pr_year, $balance, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
@@ -742,8 +742,8 @@ class PrRowController extends AbstractActionController
                 ->setParameters(array(
                 "1" => 1
             ))
-                ->setFirstResult($paginator->minInPage - 1)
-                ->setMaxResults(($paginator->maxInPage - $paginator->minInPage) + 1)
+                ->setFirstResult($paginator->getMinInPage() - 1)
+                ->setMaxResults(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1)
                 ->getResult();
         }
 
@@ -1134,7 +1134,7 @@ class PrRowController extends AbstractActionController
 
             if ($total_records > $resultsPerPage) {
                 $paginator = new Paginator($total_records, $page, $resultsPerPage);
-                $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getPrRow($target_id, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+                $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getPrRow($target_id, $balance, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
             }
 
             return new ViewModel(array(
@@ -1235,7 +1235,7 @@ class PrRowController extends AbstractActionController
                 /*
                  * if ($total_records > $pq_rPP) {
                  * $paginator = new Paginator ( $total_records, $pq_curPage, $pq_rPP );
-                 * $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+                 * $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
                  * }
                  */
 
@@ -1737,7 +1737,7 @@ class PrRowController extends AbstractActionController
                 /*
                  * if ($total_records > $pq_rPP) {
                  * $paginator = new Paginator ( $total_records, $pq_curPage, $pq_rPP );
-                 * $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+                 * $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
                  * }
                  */
 
@@ -1873,7 +1873,7 @@ class PrRowController extends AbstractActionController
 
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $list = $res->getAllPrRow1($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+                $list = $res->getAllPrRow1($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
             }
             $count = 0;
             foreach ($list as $a) {
@@ -1893,7 +1893,7 @@ class PrRowController extends AbstractActionController
                 if ($paginator == null) {
                     $a_json_row["row_number"] = $count;
                 } else {
-                    $a_json_row["row_number"] = $paginator->minInPage - 1 + $count;
+                    $a_json_row["row_number"] = $paginator->getMinInPage() - 1 + $count;
                 }
 
                 $a_json_row["pr_number"] = $pr_row_entity->getPr()->getPrNumber() . '<a style="" target="blank"  title="' . $pr_row_entity->getPr()->getPrNumber() . '" href="/procure/pr/show?token=' . $pr_row_entity->getPr()->getToken() . '&entity_id=' . $pr_row_entity->getPr()->getId() . '&checksum=' . $pr_row_entity->getPr()->getChecksum() . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
@@ -2047,7 +2047,7 @@ class PrRowController extends AbstractActionController
 
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $list = $res->getAllPrRow1($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+                $list = $res->getAllPrRow1($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
             }
             $count = 0;
             foreach ($list as $a) {
@@ -2071,7 +2071,7 @@ class PrRowController extends AbstractActionController
                 if ($paginator == null) {
                     $a_json_row["row_number"] = $count;
                 } else {
-                    $a_json_row["row_number"] = $paginator->minInPage - 1 + $count;
+                    $a_json_row["row_number"] = $paginator->getMinInPage() - 1 + $count;
                 }
 
                 $a_json_row["pr_number"] = $pr_row_entity->getPr()->getPrNumber() . '<a style="" target="blank"  title="' . $pr_row_entity->getPr()->getPrNumber() . '" href="/procure/pr/show?token=' . $pr_row_entity->getPr()->getToken() . '&entity_id=' . $pr_row_entity->getPr()->getId() . '&checksum=' . $pr_row_entity->getPr()->getChecksum() . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
@@ -2215,7 +2215,7 @@ class PrRowController extends AbstractActionController
 
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $output);
+                $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1, $output);
             } else {
                 $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0, $output);
             }

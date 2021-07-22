@@ -7,7 +7,7 @@ use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
 use Inventory\Application\Reporting\Item\ItemReporter;
 use Inventory\Infrastructure\Persistence\Filter\InOutOnhandSqlFilter;
 use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\View\Model\ViewModel;
 use DateTime;
@@ -71,8 +71,8 @@ class ItemReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+            $offset = $paginator->getMinInPage() - 1;
         }
 
         if ($file_type != SaveAsSupportedType::OUTPUT_IN_ARRAY) {
@@ -156,8 +156,8 @@ class ItemReportController extends AbstractGenericController
         if ($total_records > 0) {
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-                $offset = $paginator->minInPage - 1;
+                $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+                $offset = $paginator->getMinInPage() - 1;
             }
         }
 
@@ -223,8 +223,8 @@ class ItemReportController extends AbstractGenericController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+            $offset = $paginator->getMinInPage() - 1;
         }
 
         $result = $this->getReporter()->getInOutOnhand($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -299,8 +299,8 @@ class ItemReportController extends AbstractGenericController
 
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-                $offset = $paginator->minInPage - 1;
+                $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+                $offset = $paginator->getMinInPage() - 1;
             }
         }
         $result = $this->getReporter()->getInOutOnhand($filter, $sort_by, $sort, $limit, $offset, $file_type);

@@ -14,7 +14,7 @@ use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
 use Application\Entity\NmtInventoryItem;
 use User\Model\UserTable;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Inventory\Service\ItemSearchService;
 use Application\Entity\NmtInventoryItemAttachment;
 use Zend\Validator\Date;
@@ -619,8 +619,8 @@ class ItemPurchaseController extends AbstractActionController
                 ->setParameters(array(
                 "1" => 1
             ))
-                ->setFirstResult($paginator->minInPage - 1)
-                ->setMaxResults(($paginator->maxInPage - $paginator->minInPage) + 1)
+                ->setFirstResult($paginator->getMinInPage() - 1)
+                ->setMaxResults(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1)
                 ->getResult();
         }
 

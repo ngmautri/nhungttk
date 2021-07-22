@@ -171,8 +171,8 @@ class ItemCategoryController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = $this->getPaginatorLimit($paginator);
-            $offset = $this->getPaginatorOffset($paginator);
+            $limit = $paginator->getLimit();
+            $offset = $paginator->getOffset();
         }
 
         if ($catId == 50) {

@@ -20,7 +20,7 @@ use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\Wildcard;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Http\Headers;
 use MLA\Files;
 use Procurement\Model\PurchaseRequest;
@@ -105,7 +105,7 @@ class PRController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $flow, $last_status, $department_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $flow, $last_status, $department_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -593,7 +593,7 @@ class PRController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$my_pr = $this->purchaseRequestTable->getPROf ( $user ['id'], $pr_year, $flow, $last_status, $order_by, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $order_by );
+			$my_pr = $this->purchaseRequestTable->getPROf ( $user ['id'], $pr_year, $flow, $last_status, $order_by, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1, $order_by );
 		}
 		
 		return new ViewModel ( array (
@@ -676,7 +676,7 @@ class PRController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getPRItemsOf ( $user ['id'], $pr_year, $last_status, $balance, $unconfirmed_quantity, $processing, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsOf ( $user ['id'], $pr_year, $last_status, $balance, $unconfirmed_quantity, $processing, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -1092,7 +1092,7 @@ class PRController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$articles = $this->articleTable->getArticles ( $user_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$articles = $this->articleTable->getArticles ( $user_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -1222,7 +1222,7 @@ class PRController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$my_pr = $this->purchaseRequestTable->getMyPR ( $user ['id'], $pr_status, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $order_by );
+			$my_pr = $this->purchaseRequestTable->getMyPR ( $user ['id'], $pr_status, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1, $order_by );
 		}
 		
 		return new ViewModel ( array (
@@ -1310,7 +1310,7 @@ class PRController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $last_status, $department_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $last_status, $department_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -1625,7 +1625,7 @@ class PRController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $pr_year, $department_id, $last_status, $balance, $unconfirmed_quantity, $processing, $sort_by, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $pr_year, $department_id, $last_status, $balance, $unconfirmed_quantity, $processing, $sort_by, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (

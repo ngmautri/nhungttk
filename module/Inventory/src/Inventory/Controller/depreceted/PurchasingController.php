@@ -8,7 +8,7 @@ use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
 use Zend\Http\Headers;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use Inventory\Model\MLASparepart;
 use Inventory\Model\MLASparepartTable;

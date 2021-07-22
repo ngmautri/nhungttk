@@ -198,7 +198,7 @@ if ($total_records <= 0) {
 } else {
 
     if (! is_null($paginator)) {
-        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+        echo 'Record ' . $paginator->getMinInPage() . ' to ' . $paginator->getMaxInPage() . ' | ' . $total_records . ' records found!';
     } else {
         echo $total_records . ' records found!';
     }
@@ -238,7 +238,7 @@ if ($total_records <= 0) {
                      <div style="position: relative; float: right;">
                         <!-- <span class="badge badge-primary"><?php
 
-        echo ($paginator === null) ? $count : $paginator->minInPage - 1 + $count + 1;
+        echo ($paginator === null) ? $count : $paginator->getMinInPage() - 1 + $count + 1;
         ?></span> -->
                         <!--  <img id="item_<?php
 

@@ -4,7 +4,7 @@ namespace Inventory\Controller;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Entity\NmtInventorySerial;
 use Inventory\Service\ItemSearchService;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
@@ -609,7 +609,7 @@ class ItemSerialController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

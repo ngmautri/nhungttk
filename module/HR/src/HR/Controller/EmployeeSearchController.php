@@ -12,7 +12,7 @@ namespace HR\Controller;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtHrEmployee;
 use Zend\Validator\Date;
 use HR\Service\EmployeeSearchService;

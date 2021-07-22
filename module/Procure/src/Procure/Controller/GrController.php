@@ -103,8 +103,8 @@ class GrController extends ProcureCRUDController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = $this->getPaginatorLimit($paginator);
-            $offset = $this->getPaginatorOffset($paginator);
+            $limit = $paginator->getLimit();
+            $offset =$paginator->getOffset();
         }
 
         $list = $this->getGrReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);

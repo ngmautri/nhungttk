@@ -12,7 +12,7 @@ namespace HR\Controller;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Entity\NmtHrEmployee;
 use HR\Service\EmployeeSearchService;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
@@ -186,7 +186,7 @@ class EmployeeController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(
@@ -245,7 +245,7 @@ class EmployeeController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         } else {
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, 0, 0);
         }
@@ -313,7 +313,7 @@ class EmployeeController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         } else {
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, 0, 0);
         }

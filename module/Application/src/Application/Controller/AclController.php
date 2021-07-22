@@ -3,7 +3,7 @@ namespace Application\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Service\ApplicationService;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Math\Rand;
 use Zend\View\Model\ViewModel;
 
@@ -79,7 +79,7 @@ class AclController extends AbstractGenericController
 
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $resources = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy($criteria, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $resources = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy($criteria, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

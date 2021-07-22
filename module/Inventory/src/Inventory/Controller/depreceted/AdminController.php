@@ -17,7 +17,7 @@ use Inventory\Model\SparepartCategoryMember;
 use Inventory\Model\SparepartCategoryMemberTable;
 use Inventory\Model\MLASparepart;
 use Inventory\Model\MLASparepartTable;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Inventory\Model\ArticleCategoryMember;
 use Inventory\Model\ArticleCategoryMemberTable;
 use Inventory\Model\ArticleCategoryTable;

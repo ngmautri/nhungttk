@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Application\Entity\NmtApplicationAclUserRole;
 use Application\Entity\NmtApplicationDepartment;
 use Application\Entity\NmtApplicationCountry;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 
 /**
  *
@@ -269,7 +269,7 @@ class CountryController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCountry')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCountry')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

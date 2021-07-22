@@ -115,7 +115,7 @@ if ($total_records <= 0):
 else:
 	
 	if (! is_null ( $paginator)):
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+		echo 'Record ' . $paginator->getMinInPage() . ' to ' . $paginator->getMaxInPage() . ' | ' . $total_records . ' records found!';
 	else:
 		echo $total_records . ' records found!';
 	endif;
@@ -148,7 +148,7 @@ else:
 		
 	<tr>
 			<td>
-<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/po/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
+<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/po/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo ($paginator==null)? $count:$paginator->getMinInPage() -1+ $count;?></a>
 			</td>
 			<td><?php echo $l['item_name'];?></td>
 				<td><?php echo $a->getUnitPrice();?></td>
@@ -181,25 +181,25 @@ else:
 	$base = $this->baseUrl . sprintf('/procure/po-row/row-of-vendor?token=%s&target_id=%s',$vendor_token, $vendor_id);
 		$_connector_symbol = '&';
 		
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->getResultsPerPage();;
+		$last = $base . $_connector_symbol . 'page=' . $paginator->getTotalPages() . '&perPage=' . $paginator->getResultsPerPage();;
 		
 		$first_js = "doPaginator('".$first . "','activity_log')";
 		$last_js = "doPaginator('". $last . "','activity_log')";
 		
 		
 		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
+		$p1 = ($paginator->getPage()) - 1;
+		$p2 = ($paginator->getPage()) + 1;
 		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->getResultsPerPage();;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->getResultsPerPage();;
 		$next_js = "doPaginator('". $next . "','activity_log')";
 		$prev_js = "doPaginator('". $prev . "','activity_log')";
 		
 		echo '<ul class="pagination pagination-sm">';
 		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+		if ($paginator->getPage() != 1 and $paginator->getTotalPages() > 10) {
 			//echo '<li><a href="' . $first . '"> |< </a></li>';
 			//echo '<li><a href="' . $prev . '"> < </a></li>';
 			
@@ -208,13 +208,13 @@ else:
 		    
 		}
 		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+		for($i = $paginator->getMinInPageSet(); $i <= $paginator->getMaxInPageSet(); $i ++) {
 			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->getResultsPerPage();;
 			$url_js = "doPaginator('". $url . "','activity_log')";
 		    
 		    
-			if ($i == $paginator->page) {
+			if ($i == $paginator->getPage()) {
 				echo '<li><a class="active" href="#">' . $i . '</a></li>';
 			} else {
 				//echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
@@ -222,7 +222,7 @@ else:
 				
 			}
 		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+		if ($paginator->getPage() != $paginator->getTotalPages() and $paginator->getTotalPages() > 10) {
 			//echo '<li><a href="' . $next . '"> > </a></li>';
 		    echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
 		    echo '<li><a href="javascript:;" onclick="' . $last_js . '"> >| </a></li>';

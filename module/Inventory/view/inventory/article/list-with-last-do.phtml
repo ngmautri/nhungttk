@@ -27,7 +27,7 @@ if ($total_articles <= 0) {
 } else {
 
     if (! is_null($paginator)) {
-        echo 'Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_articles . ' spare parts found!';
+        echo 'Result ' . $paginator->getMinInPage() . ' to ' . $paginator->getMaxInPage() . ' | ' . $total_articles . ' spare parts found!';
     } else {
         echo $total_articles . ' articles found!';
     }
@@ -105,33 +105,33 @@ if ($total_articles <= 0) {
         // change it only
         $base = $this->baseUrl . '/inventory/article/list-with-last-do';
 
-        $last = $base . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-        $first = $base . '?page=1&perPage=' . $paginator->resultsPerPage;
+        $last = $base . '?page=' . $paginator->getTotalPages() . '&perPage=' . $paginator->getResultsPerPage();;
+        $first = $base . '?page=1&perPage=' . $paginator->getResultsPerPage();;
 
-        $p1 = ($paginator->page) - 1;
-        $p2 = ($paginator->page) + 1;
+        $p1 = ($paginator->getPage()) - 1;
+        $p2 = ($paginator->getPage()) + 1;
 
-        $prev = $base . '?page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-        $next = $base . '?page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        $prev = $base . '?page=' . $p1 . '&perPage=' . $paginator->getResultsPerPage();;
+        $next = $base . '?page=' . $p2 . '&perPage=' . $paginator->getResultsPerPage();;
 
         echo '<ul class="pagination">';
 
-        if ($paginator->page != 1) {
+        if ($paginator->getPage() != 1) {
             echo '<li><a href="' . $first . '"> |< </a></li>';
             echo '<li><a href="' . $prev . '"> < </a></li>';
         }
 
-        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+        for ($i = $paginator->getMinInPageSet(); $i <= $paginator->getMaxInPageSet(); $i ++) {
 
-            $url = $base . '?page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+            $url = $base . '?page=' . $i . '&perPage=' . $paginator->getResultsPerPage();;
 
-            if ($i == $paginator->page) {
+            if ($i == $paginator->getPage()) {
                 echo '<li><a class="active" href="#">' . $i . '</a></li>';
             } else {
                 echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
             }
         }
-        if ($paginator->page != $paginator->totalPages) {
+        if ($paginator->getPage() != $paginator->getTotalPages()) {
             echo '<li><a href="' . $next . '"> > </a></li>';
             echo '<li><a href="' . $last . '"> >| </a></li>';
 		}

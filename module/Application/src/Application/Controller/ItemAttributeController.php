@@ -951,8 +951,8 @@ class ItemAttributeController extends EntityCRUDController
         if ($total_records > 0) {
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = $this->getPaginatorLimit($paginator);
-                $offset = $this->getPaginatorOffset($paginator);
+                $limit = $paginator->getLimit();
+                $offset =$paginator->getOffset();
             }
         }
 

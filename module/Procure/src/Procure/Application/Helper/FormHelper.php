@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\Helper;
 
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 
 /**
  *
@@ -70,33 +70,33 @@ class FormHelper
             return;
         }
 
-        $last = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $paginator->totalPages, $paginator->resultsPerPage);
-        $first = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, 1, $paginator->resultsPerPage);
+        $last = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $paginator->getTotalPages(), $paginator->getResultsPerPage());
+        $first = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, 1, $paginator->getResultsPerPage());
 
-        $p1 = ($paginator->page) - 1;
-        $p2 = ($paginator->page) + 1;
+        $p1 = ($paginator->getPage()) - 1;
+        $p2 = ($paginator->getPage()) + 1;
 
-        $prev = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p1, $paginator->resultsPerPage);
-        $next = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p2, $paginator->resultsPerPage);
+        $prev = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p1, $paginator->getResultsPerPage());
+        $next = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p2, $paginator->getResultsPerPage());
 
         $paginator_str = '<ul class="pagination pagination-sm">';
 
-        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+        if ($paginator->getPage() != 1 and $paginator->getTotalPages() > 10) {
             $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $first, "|<");
             $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $prev, "<");
         }
 
-        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+        for ($i = $paginator->getMinInPageSet(); $i <= $paginator->getMaxInPageSet(); $i ++) {
 
-            $url = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $i, $paginator->resultsPerPage);
+            $url = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $i, $paginator->getResultsPerPage());
 
-            if ($i == $paginator->page) {
+            if ($i == $paginator->getPage()) {
                 $paginator_str = $paginator_str . \sprintf('<li><a class="active" href="#">%s</a></li>', $i);
             } else {
                 $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $url, $i);
             }
         }
-        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+        if ($paginator->getPage() != $paginator->getTotalPages() and $paginator->getTotalPages() > 10) {
 
             $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $next, ">");
             $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $last, ">|");
@@ -154,39 +154,39 @@ class FormHelper
             return;
         }
 
-        $last = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $paginator->totalPages, $paginator->resultsPerPage);
-        $first = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, 1, $paginator->resultsPerPage);
+        $last = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $paginator->getTotalPages(), $paginator->getResultsPerPage());
+        $first = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, 1, $paginator->getResultsPerPage());
 
         $first_js = \sprintf("doPaginator('%s','%s')", $first, $result_div);
         $last_js = \sprintf("doPaginator('%s','%s')", $last, $result_div);
 
-        $p1 = ($paginator->page) - 1;
-        $p2 = ($paginator->page) + 1;
+        $p1 = ($paginator->getPage()) - 1;
+        $p2 = ($paginator->getPage()) + 1;
 
-        $prev = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p1, $paginator->resultsPerPage);
-        $next = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p2, $paginator->resultsPerPage);
+        $prev = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p1, $paginator->getResultsPerPage());
+        $next = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p2, $paginator->getResultsPerPage());
         $next_js = \sprintf("doPaginator('%s','%s')", $next, $result_div);
         $prev_js = \sprintf("doPaginator('%s','%s')", $prev, $result_div);
 
         $paginator_str = '<ul class="pagination pagination-sm">';
 
-        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+        if ($paginator->getPage() != 1 and $paginator->getTotalPages() > 10) {
             $paginator_str = $paginator_str . \sprintf('<li><a href="javascript:;" onclick="%s;">%s</a></li>', $first_js, "|<");
             $paginator_str = $paginator_str . \sprintf('<li><a href="javascript:;" onclick="%s;">%s</a></li>', $prev_js, "<");
         }
 
-        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+        for ($i = $paginator->getMinInPageSet(); $i <= $paginator->getMaxInPageSet(); $i ++) {
 
-            $url = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $i, $paginator->resultsPerPage);
+            $url = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $i, $paginator->getResultsPerPage());
             $url_js = \sprintf("doPaginator('%s','%s')", $url, $result_div);
 
-            if ($i == $paginator->page) {
+            if ($i == $paginator->getPage()) {
                 $paginator_str = $paginator_str . \sprintf('<li><a class="active" href="#">%s</a></li>', $i);
             } else {
                 $paginator_str = $paginator_str . \sprintf('<li><a href="javascript:;" onclick="%s;">%s</a></li>', $url_js, $i);
             }
         }
-        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+        if ($paginator->getPage() != $paginator->getTotalPages() and $paginator->getTotalPages() > 10) {
             $paginator_str = $paginator_str . \sprintf('<li><a href="javascript:;" onclick="%s;">%s</a></li>', $next_js, ">");
             $paginator_str = $paginator_str . \sprintf('<li><a href="javascript:;" onclick="%s;">%s</a></li>', $last_js, ">|");
         }

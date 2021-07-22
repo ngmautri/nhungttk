@@ -305,8 +305,8 @@ class AssociationItemController extends AbstractGenericController
         $paginator = null;
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = $this->getPaginatorLimit($paginator);
-            $offset = $this->getPaginatorOffset($paginator);
+            $limit = $paginator->getLimit();
+            $offset =$paginator->getOffset();
         }
 
         $result = $this->getAssociationService()->getAssociationOf($entity_id, $limit, $offset);

@@ -4,7 +4,7 @@ namespace Procure\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Procure\Service\PrSearchService;
 
 /**

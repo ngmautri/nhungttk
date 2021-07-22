@@ -4,7 +4,7 @@ namespace HR\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Http\Headers;
 use Zend\Validator\Date;
 use Zend\Math\Rand;
@@ -307,7 +307,7 @@ class LeaveReasonController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrLeaveReason')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrLeaveReason')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();

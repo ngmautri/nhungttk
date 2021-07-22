@@ -20,7 +20,7 @@ use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mail\Header\ContentType;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use Inventory\Model\SparepartPicture;
 use Inventory\Model\SparepartPictureTable;

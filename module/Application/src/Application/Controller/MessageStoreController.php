@@ -3,7 +3,7 @@ namespace Application\Controller;
 
 use Application\Application\Service\MessageStore\MessageQuery;
 use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -81,8 +81,8 @@ class MessageStoreController extends AbstractActionController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+            $offset = $paginator->getMinInPage() - 1;
         }
 
         $result = $this->getMessageQuery()->getMessagesOf($entity_id, $entity_token, null, null, $limit, $offset);

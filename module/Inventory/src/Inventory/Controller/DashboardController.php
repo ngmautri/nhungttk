@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
 use Inventory\Infrastructure\Persistence\DoctrineItemListRepository;
 use Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 
 /**
  *
@@ -81,8 +81,8 @@ class DashboardController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getLastAPRows(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
+            $list = $res->getLastAPRows(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(
@@ -132,8 +132,8 @@ class DashboardController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getLastCreatedPrRow(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
+            $list = $res->getLastCreatedPrRow(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(
@@ -183,8 +183,8 @@ class DashboardController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $mostOrderItems = $res->getMostOrderItems(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
+            $mostOrderItems = $res->getMostOrderItems(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(
@@ -234,8 +234,8 @@ class DashboardController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getLastCreatedItems(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
+            $list = $res->getLastCreatedItems(($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(
@@ -287,8 +287,8 @@ class DashboardController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getMostValueItems(8200, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
+            $list = $res->getMostValueItems(8200, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

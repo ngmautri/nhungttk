@@ -606,8 +606,8 @@ class ItemController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = $this->getPaginatorLimit($paginator);
-            $offset = $this->getPaginatorOffset($paginator);
+            $limit = $paginator->getLimit();
+            $offset =$paginator->getOffset();
         }
 
         $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, $limit, $offset);
@@ -1925,10 +1925,10 @@ class ItemController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
-            // $list = array_slice($list, $paginator->minInPage - 1, ($paginator->maxInPage - $paginator->minInPage) + 1);
+            // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
+            // $list = array_slice($list, $paginator->getMinInPage() - 1, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1);
 
-            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         } else {
             $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
         }
@@ -2068,7 +2068,7 @@ class ItemController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         } else {
             $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
         }
@@ -2179,9 +2179,9 @@ class ItemController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
-            // $list = array_slice($list, $paginator->minInPage - 1, ($paginator->maxInPage - $paginator->minInPage) + 1);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getItemPrice($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
+            // $list = array_slice($list, $paginator->getMinInPage() - 1, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getItemPrice($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         } else {
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getItemPrice($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
         }

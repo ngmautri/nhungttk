@@ -12,7 +12,7 @@ namespace HR\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtApplicationAttachment;
 use Zend\Http\Headers;
 use Zend\Validator\Date;

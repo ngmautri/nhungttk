@@ -16,7 +16,7 @@ if ($total_records <= 0) {
 } else {
 
     if (! is_null($paginator)) {
-        echo '<span style="font-size: 9pt; color: gray;"> Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!</span>';
+        echo '<span style="font-size: 9pt; color: gray;"> Record ' . $paginator->getMinInPage() . ' to ' . $paginator->getMaxInPage() . ' | ' . $total_records . ' records found!</span>';
     } else {
         echo '<span style="font-size: 9pt; color: gray;">' . $total_records . ' records found!</span>';
     }
@@ -62,7 +62,7 @@ if ($total_records <= 0) {
         $count ++;
         ?>
 	 <tr>
-			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><?php echo ($paginator===null)? $count:$paginator->getMinInPage() -1+ $count;?></td>
 			<td><a style="color: navy;" href="javascript:;"
 				onclick="showJqueryDialog('Change Log: <?php echo (!$a == null)? $a->getSalaryName():"";?>','900','500', '/hr/contract-log/list1?object_token=<?php echo (!$a == null)? $a->getToken():"";?>&object_id=<?php echo (!$a == null)? $a->getID():"";?>&class_name=<?php echo (!$a == null)? get_class($a):"";?>','j_loaded_data', true);"><?php echo $a->getRevisionNo();?>
 </a></td>

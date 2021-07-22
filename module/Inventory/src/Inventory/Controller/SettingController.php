@@ -4,7 +4,7 @@ namespace Inventory\Controller;
 use Application\Entity\NmtInventorySerial;
 use Doctrine\ORM\EntityManager;
 use Inventory\Service\ItemSearchService;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;

@@ -12,7 +12,7 @@ namespace PM\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use PM\Service\ProjectSearchService;
 
 /*

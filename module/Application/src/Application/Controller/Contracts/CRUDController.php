@@ -3,10 +3,10 @@ namespace Application\Controller\Contracts;
 
 use Application\Application\Service\ValueObject\ValueObjectService;
 use Application\Domain\Contracts\FormActions;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Infrastructure\Persistence\Contracts\CrudRepositoryInterface;
-use MLA\Paginator;
-use Zend\View\Model\ViewModel;
 use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
+use Zend\View\Model\ViewModel;
 
 /**
  *
@@ -63,8 +63,8 @@ abstract class CRUDController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $paginator->getLimit();
+            $offset =$paginator->getOffset();
         }
 
         $filter = new DefaultListSqlFilter();

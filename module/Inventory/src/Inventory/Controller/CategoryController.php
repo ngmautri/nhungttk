@@ -16,7 +16,7 @@ use Zend\Barcode\Barcode;
 use Application\Entity\NmtInventoryItem;
 use Application\Entity\NmtInventoryItemPicture;
 use User\Model\UserTable;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 
 /*
  * Control Panel Controller
@@ -221,7 +221,7 @@ class CategoryController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findBy($criteria, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findBy($criteria, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

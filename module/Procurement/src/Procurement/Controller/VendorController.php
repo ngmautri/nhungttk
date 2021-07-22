@@ -13,7 +13,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\I18n\Validator\Int;
 use User\Model\UserTable;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;

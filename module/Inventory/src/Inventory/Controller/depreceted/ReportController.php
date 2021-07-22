@@ -16,7 +16,7 @@ use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
 use Zend\Http\Headers;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use Inventory\Model\SparepartPicture;
 use Inventory\Model\SparepartPictureTable;
@@ -148,7 +148,7 @@ class ReportController extends AbstractActionController
             $paginator = null;
             if ($totalResults > $resultsPerPage) {
                 $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-                $movements = $this->sparepartMovementsTable->getSparePartMovements($fromDate, $toDate, $flow, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+                $movements = $this->sparepartMovementsTable->getSparePartMovements($fromDate, $toDate, $flow, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
             }
 
             return new ViewModel(array(

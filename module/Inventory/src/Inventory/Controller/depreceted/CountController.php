@@ -15,7 +15,7 @@ use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\Wildcard;

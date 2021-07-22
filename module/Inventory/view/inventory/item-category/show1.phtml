@@ -1,5 +1,4 @@
 <?php
-use Inventory\Domain\Item\ItemType;
 use Inventory\Domain\Item\ItemSnapshot;
 
 $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
@@ -14,10 +13,13 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 	<div id="tabs1" style="font-size: 9.5pt">
 
 		<ul>
-			<li><a href="#general"><?php echo $cat_name; ?></a></li>
+			<li><a href="#general"><?php
+
+echo $cat_name;
+?></a></li>
 		</ul>
 		<div id="general">
-		
+
 <?php
 
 if ($total_records <= 0) {
@@ -26,7 +28,7 @@ if ($total_records <= 0) {
 } else {
 
     if (! is_null($paginator)) {
-        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+        echo 'Record ' . $paginator->getMinInPage() . ' to ' . $paginator->getMaxInPage() . ' | ' . $total_records . ' records found!';
     } else {
         echo $total_records . ' records found!';
     }
@@ -67,46 +69,100 @@ if ($total_records <= 0) {
 
 
 								<div style="position: relative; float: right; border: 1px;">
-									<!-- <span class="badge badge-primary"><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count+1;?></span> -->
+									<!-- <span class="badge badge-primary"><?php
 
-									<!--  <img id="item_<?php echo $this->escapeHtml($a->getId());?>"
+        echo ($paginator === null) ? $count : $paginator->getMinInPage() - 1 + $count + 1;
+        ?></span> -->
+
+									<!--  <img id="item_<?php
+
+        echo $this->escapeHtml($a->getId());
+        ?>"
 									style="cursor: pointer;" title="click for more detail!"
 									onclick="" class="img-rounded" width="120" height="120"
-									src="/inventory/item/get-picture1?&item_id=<?php echo $a->getId();?>" />-->
+									src="/inventory/item/get-picture1?&item_id=<?php
+
+        echo $a->getId();
+        ?>" />-->
 
 
 									<a target="_blank" style="color: black;"
-										href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $a->getToken() ;?>&entity_id=<?php echo  $a->getId();?>&checksum=<?php echo $a->getChecksum();?>">
-										<img id="item_<?php echo $this->escapeHtml($a->getId());?>"
+										href="<?php
+
+        echo $this->baseUrl?>/inventory/item/show?token=<?php
+
+        echo $a->getToken();
+        ?>&entity_id=<?php
+
+        echo $a->getId();
+        ?>&checksum=<?php
+
+        echo $a->getChecksum();
+        ?>">
+										<img id="item_<?php
+
+        echo $this->escapeHtml($a->getId());
+        ?>"
 										style="cursor: pointer;" title="click for more detail!"
 										onclick="" class="img-rounded" width="150" height="150"
-										src="<?php echo $url; ?>" />
+										src="<?php
+
+        echo $url;
+        ?>" />
 									</a>
 
 								</div>
 							</td>
 
 							<td style="padding: 1pt 1pt 1pt 10pt;"><span
-								id="<?php echo $a->getId();?>" class="itemDraggable"
-								style="cursor: move; padding: 1pt 1pt 1pt 2pt; font-weight: bold;"> 
-							<?php echo ucwords(substr($this->escapeHtml($a->getItemName()),0,100));?></span>
-																		
-							<?php if($a->getItemType()=="SERVICE"):?>			
+								id="<?php
+
+        echo $a->getId();
+        ?>" class="itemDraggable"
+								style="cursor: move; padding: 1pt 1pt 1pt 2pt; font-weight: bold;">
+							<?php
+
+        echo ucwords(substr($this->escapeHtml($a->getItemName()), 0, 100));
+        ?></span>
+
+							<?php
+
+        if ($a->getItemType() == "SERVICE") :
+            ?>
 							<span style="font-size: 8pt;" class="badge">S</span>
-							<?php endif; ?>
-							
-								<?php if($a->getIsFixedAsset()=="1"):?>			
+							<?php endif;
+
+        ?>
+
+								<?php
+
+        if ($a->getIsFixedAsset() == "1") :
+            ?>
 							<span style="font-size: 6pt;" class="badge">A</span>
-							<?php endif; ?>
-							
+							<?php endif;
+
+        ?>
+
 						<span
 								style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-size: 8pt;">
-									<br><?php echo $this->escapeHtml(($a->getItemSku()));?>
-						
-			<br><?php echo $this->escapeHtml($a->getSysNumber());?>
-				<br><?php echo $this->escapeHtml($a->getSerialNumber());?>
-						<br><?php echo substr($this->escapeHtml($a->getManufacturerModel()),0,30);?>
-						
+									<br><?php
+
+        echo $this->escapeHtml(($a->getItemSku()));
+        ?>
+
+			<br><?php
+
+        echo $this->escapeHtml($a->getSysNumber());
+        ?>
+				<br><?php
+
+        echo $this->escapeHtml($a->getSerialNumber());
+        ?>
+						<br><?php
+
+        echo substr($this->escapeHtml($a->getManufacturerModel()), 0, 30);
+        ?>
+
 						<div style="margin: 2px; font-size: 9pt">
 
 										<div class="dropdown">
@@ -120,15 +176,17 @@ if ($total_records <= 0) {
 											</button>
 
 										</div>
-						
-	
-		<?php ?>
-	
-					
-					
-					
+
+
+		<?php
+
+        ?>
+
+
+
+
 					<tr>
-					
+
 					</table>
 
 
@@ -142,9 +200,12 @@ if ($total_records <= 0) {
             echo '</div><hr style="margin: 5pt 1pt 5pt 1pt;">';
         }
         ?>
-        
-    	
-<?php endforeach; ?>
+
+
+<?php
+    endforeach
+    ;
+    ?>
 </div>
 
 <?php
@@ -157,23 +218,26 @@ if ($total_records <= 0) {
 
         $_connector_symbol = '&';
 
-        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->getResultsPerPage();
+        $last = $base . $_connector_symbol . 'page=' . $paginator->getTotalPages() . '&perPage=' . $paginator->getResultsPerPage();
+        ;
 
         $first_js = "doPaginator('" . $first . "','content_id')";
         $last_js = "doPaginator('" . $last . "','content_id')";
 
-        $p1 = ($paginator->page) - 1;
-        $p2 = ($paginator->page) + 1;
+        $p1 = ($paginator->getPage()) - 1;
+        $p2 = ($paginator->getPage()) + 1;
 
-        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->getResultsPerPage();
+        ;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->getResultsPerPage();
+        ;
         $next_js = "doPaginator('" . $next . "','content_id')";
         $prev_js = "doPaginator('" . $prev . "','content_id')";
 
         echo '<ul class="pagination pagination-sm">';
 
-        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+        if ($paginator->getPage() != 1 and $paginator->getTotalPages() > 10) {
             // echo '<li><a href="' . $first . '"> |< </a></li>';
             // echo '<li><a href="' . $prev . '"> < </a></li>';
 
@@ -181,19 +245,20 @@ if ($total_records <= 0) {
             echo '<li><a href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
         }
 
-        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+        for ($i = $paginator->getMinInPageSet(); $i <= $paginator->getMaxInPageSet(); $i ++) {
 
-            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->getResultsPerPage();
+            ;
             $url_js = "doPaginator('" . $url . "','content_id')";
 
-            if ($i == $paginator->page) {
+            if ($i == $paginator->getPage()) {
                 echo '<li><a class="active" href="#">' . $i . '</a></li>';
             } else {
                 // echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
                 echo '<li><a href="javascript:;" onclick="' . $url_js . '">' . $i . '</a></li>';
             }
         }
-        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+        if ($paginator->getPage() != $paginator->getTotalPages() and $paginator->getTotalPages() > 10) {
             // echo '<li><a href="' . $next . '"> > </a></li>';
             echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
             echo '<li><a href="javascript:;" onclick="' . $last_js . '"> >| </a></li>';
@@ -222,7 +287,7 @@ function myHelper() {
 	}
 
 function refreshDroppable(){
-	
+
 	$( ".categoryDroppable" ).droppable({
 		accept: ".itemDraggable",
 		classes: {
@@ -237,10 +302,19 @@ function refreshDroppable(){
 		            $(this).removeClass('cat_drag_over');
 		       },
 
-		              
+
 	    drop: function( event, ui ) {
-	        
-	        addItemToCategory(ui.draggable.attr('id'), $( this ).attr('id'),'<?php echo $cat_id; ?>', '<?php echo $cat_name;?>', '<?php echo $page;?>');
+
+	        addItemToCategory(ui.draggable.attr('id'), $( this ).attr('id'),'<?php
+
+        echo $cat_id;
+        ?>', '<?php
+
+        echo $cat_name;
+        ?>', '<?php
+
+        echo $page;
+        ?>');
 	        $(this).removeClass('cat_drag_over');
 	    }
 	  });
@@ -250,24 +324,24 @@ function refreshDroppable(){
 $( "#tabs1" ).tabs({
 
 	beforeLoad:function(e,ui){
-		$( ui.panel ).html('<p>Loading...</p>');       
+		$( ui.panel ).html('<p>Loading...</p>');
 	    },
-	   
+
 });
 
 
 
 
     function addItemToCategory(item_id, cat_id, current_cat, cat_name, current_page) {
-    
+
     	//alert(cat_id);
-    	
+
         $.get("/inventory/item-category/add-member", {
     		cat_id : cat_id,
     		item_id : item_id,
      	}, function(data, status) {
     		//alert(data);
-    		
+
     			$('#global-notice').show();
 				$('#global-notice').html('"' + item_id + '" moved to category #' + cat_id+ '"');
 				$('#global-notice').fadeOut(5000);

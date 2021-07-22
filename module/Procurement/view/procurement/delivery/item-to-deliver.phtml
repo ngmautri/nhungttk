@@ -92,7 +92,7 @@ echo '<div class="alert alert-info">';
 <?php if(count($pr_items) >0): 
 
 	if (! is_null ( $paginator )):
-		echo '<h5>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage . ' | ' .  $total_items . ' Items found | Deparment = ' . $department_name . ''. $status_name. '</h5>';
+		echo '<h5>Result '. $paginator->getMinInPage(). ' to '.$paginator->getMaxInPage() . ' | ' .  $total_items . ' Items found | Deparment = ' . $department_name . ''. $status_name. '</h5>';
 	else:
 		echo '<h5>'. $total_items . ' Items found | Deparment = ' . $department_name . ''. $status_name .'</h5>';
 	endif;
@@ -170,35 +170,35 @@ if (! is_null ( $paginator )) {
 	
 	$_connector_symbol = '&';
 
-	$last 	= $base . $_connector_symbol.'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-	$first 	= $base . $_connector_symbol.'page=1&perPage=' . $paginator->resultsPerPage;
+	$last 	= $base . $_connector_symbol.'page=' . $paginator->getTotalPages() . '&perPage=' . $paginator->getResultsPerPage();;
+	$first 	= $base . $_connector_symbol.'page=1&perPage=' . $paginator->getResultsPerPage();;
 
-	$p1 = ($paginator->page)-1;
-	$p2 = ($paginator->page)+1;
+	$p1 = ($paginator->getPage())-1;
+	$p2 = ($paginator->getPage())+1;
 
-	$prev = $base . $_connector_symbol.'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-	$next = $base . $_connector_symbol.'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+	$prev = $base . $_connector_symbol.'page=' . $p1 . '&perPage=' . $paginator->getResultsPerPage();;
+	$next = $base . $_connector_symbol.'page=' . $p2 . '&perPage=' . $paginator->getResultsPerPage();;
 
 
 	echo '<ul class="pagination">';
 
-	if($paginator->page != 1 AND $paginator->totalPages > 10){
+	if($paginator->getPage() != 1 AND $paginator->getTotalPages() > 10){
 		echo '<li><a href="'.  $first.'"> |< </a></li>';
 		echo '<li><a href="'.  $prev .'"> < </a></li>';
 	}
 
-	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+	for($i = $paginator->getMinInPageSet(); $i <= $paginator->getMaxInPageSet(); $i ++) {
 			
-		$url = $base. $_connector_symbol.'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+		$url = $base. $_connector_symbol.'page=' . $i . '&perPage=' . $paginator->getResultsPerPage();;
 
 			
-		if ($i == $paginator->page) {
+		if ($i == $paginator->getPage()) {
 			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
 		} else {
 			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
 		}
 	}
-	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
+	if($paginator->getPage() != $paginator->getTotalPages() AND $paginator->getTotalPages() > 10){
 		echo '<li><a href="'.  $next.'"> > </a></li>';
 		echo '<li><a href="'.  $last .'"> >| </a></li>';
 	}

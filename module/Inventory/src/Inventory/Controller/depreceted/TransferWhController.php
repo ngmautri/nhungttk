@@ -25,7 +25,7 @@ use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Service\Transaction\TrxService;
 use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
 use Inventory\Domain\Transaction\Contracts\TrxType;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\View\Model\ViewModel;
 use Exception;
 
@@ -281,8 +281,8 @@ class TransferWhController extends AbstractGenericController
 
                 if ($total_records > $pq_rPP) {
                     $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                    $offset = $paginator->minInPage - 1;
-                    $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+                    $offset = $paginator->getMinInPage() - 1;
+                    $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
                 }
             }
             $rootEntity = $this->getTrxService()->getLazyDocOutputByTokenId($entity_id, $entity_token, $offset, $limit, $outputStrategy);

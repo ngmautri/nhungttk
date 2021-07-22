@@ -94,8 +94,8 @@ class ApReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = $this->getPaginatorLimit($paginator);
-            $offset = $this->getPaginatorOffset($paginator);
+            $limit = $paginator->getLimit();
+            $offset =$paginator->getOffset();
         }
 
         $list = $this->getApReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -183,8 +183,8 @@ class ApReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = $this->getPaginatorLimit($paginator);
-            $offset = $this->getPaginatorOffset($paginator);
+            $limit = $paginator->getLimit();
+            $offset =$paginator->getOffset();
         }
 
         if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
@@ -277,8 +277,8 @@ class ApReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = $this->getPaginatorLimit($paginator);
-            $offset = $this->getPaginatorOffset($paginator);
+            $limit = $paginator->getLimit();
+            $offset =$paginator->getOffset();
         }
 
         if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
@@ -377,8 +377,8 @@ class ApReportController extends AbstractGenericController
 
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = $this->getPaginatorLimit($paginator);
-                $offset = $this->getPaginatorOffset($paginator);
+                $limit = $paginator->getLimit();
+                $offset =$paginator->getOffset();
             }
         }
         $result = $this->getApReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);

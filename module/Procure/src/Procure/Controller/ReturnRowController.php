@@ -8,7 +8,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePoRow;
 use Application\Entity\NmtInventoryTrx;

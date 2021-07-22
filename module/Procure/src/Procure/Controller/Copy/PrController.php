@@ -7,7 +7,7 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
 use Endroid\QrCode\QrCode;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\PR\AddRowCmdHandler;
@@ -889,8 +889,8 @@ class PrController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+            $offset = $paginator->getMinInPage() - 1;
         }
 
         $list = $this->getPrReporter()->getListWithCustomDTO($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -1061,7 +1061,7 @@ class PrController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtPmProject')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtPmProject')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(
@@ -1279,7 +1279,7 @@ class PrController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $res->getPrList($row_number, $pr_year, $is_active, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getPrList($row_number, $pr_year, $is_active, $balance, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

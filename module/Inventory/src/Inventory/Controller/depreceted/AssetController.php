@@ -14,7 +14,7 @@ use Zend\View\Model\ViewModel;
 use Inventory\Model\AssetCategory;
 use Inventory\Model\MLAAsset;
 use Inventory\Model\AssetPicture;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use Zend\Barcode\Barcode;
 
@@ -445,7 +445,7 @@ class AssetController extends AbstractActionController
         $paginator = null;
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $assets = $this->getMLAAssetTable()->getLimitAssetsByCategoryID($categeory_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $assets = $this->getMLAAssetTable()->getLimitAssetsByCategoryID($categeory_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

@@ -4,7 +4,7 @@ namespace HR\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtHrEmployee;
 use Zend\Validator\Date;
 use Zend\Math\Rand;

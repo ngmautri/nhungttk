@@ -12,7 +12,7 @@ namespace Procurement\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\I18n\Validator\Int;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use Procurement\Model\PurchaseRequest;
 use Procurement\Model\PurchaseRequestTable;
@@ -381,7 +381,7 @@ class DeliveryController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getPRItemsToDeliver ( $department_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsToDeliver ( $department_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -524,7 +524,7 @@ class DeliveryController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$cart_items = $this->deliveryCartTable->getDNCartItems ($department_id,$vendor_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$cart_items = $this->deliveryCartTable->getDNCartItems ($department_id,$vendor_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -679,7 +679,7 @@ class DeliveryController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getAllSubmittedPRItems ( $last_status, $user_id, $department_id, 1, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getAllSubmittedPRItems ( $last_status, $user_id, $department_id, 1, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (

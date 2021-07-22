@@ -21,7 +21,7 @@ if ($total_spareparts <= 0) {
 } else {
     
     if (! is_null($paginator)) {
-        echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_spareparts . ' members found! </h5>';
+        echo '<h5>Result ' . $paginator->getMinInPage() . ' to ' . $paginator->getMaxInPage() . ' | ' . $total_spareparts . ' members found! </h5>';
         ;
     } else {
         echo '<h5>' . $total_spareparts . ' spare parts found! </h5>';

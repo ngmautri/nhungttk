@@ -17,7 +17,7 @@ use Inventory\Application\Command\Contracts\CmdHandlerAbstractFactory;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Service\Contracts\TrxServiceInterface;
 use Inventory\Application\Service\Upload\Transaction\UploadFactory;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Procure\Domain\DocSnapshot;
 use Zend\View\Model\ViewModel;
 
@@ -1147,8 +1147,8 @@ abstract class TrxCRUDController extends AbstractGenericController
 
                 if ($total_records > $pq_rPP) {
                     $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                    $offset = $paginator->minInPage - 1;
-                    $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+                    $offset = $paginator->getMinInPage() - 1;
+                    $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
                 }
             }
             $rootEntity = $this->getTrxService()->getLazyDocOutputByTokenId($entity_id, $entity_token, $offset, $limit, $outputStrategy);

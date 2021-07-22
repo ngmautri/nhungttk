@@ -11,7 +11,7 @@ if ($total_spareparts <= 0) {
 } else {
 
 	if (! is_null ( $paginator )) {
-		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_spareparts . ' spare parts found!';
+		echo 'Result '. $paginator->getMinInPage(). ' to '.$paginator->getMaxInPage(). ' | ' .$total_spareparts . ' spare parts found!';
 	}else{	
 		echo $total_spareparts . ' spare parts found!';
 	}
@@ -63,22 +63,22 @@ if ($total_spareparts <= 0) {
 	
 	if (! is_null ( $paginator )) {
 		
-		$last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->getTotalPages() . '&perPage=' . $paginator->getResultsPerPage();;
 		
-		$first = $this->baseUrl . '/inventory/spareparts/list' . '?page=1&perPage=' . $paginator->resultsPerPage;
+		$first = $this->baseUrl . '/inventory/spareparts/list' . '?page=1&perPage=' . $paginator->getResultsPerPage();;
 		
 		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+		for($i = $paginator->getMinInPageSet(); $i <= $paginator->getMaxInPageSet(); $i ++) {
 			
-			$url = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			$url = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $i . '&perPage=' . $paginator->getResultsPerPage();;
 			
-			$last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+			$last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->getTotalPages() . '&perPage=' . $paginator->getResultsPerPage();;
 			
 			?>
 
 <?php
 			
-			if ($i == $paginator->page) {
+			if ($i == $paginator->getPage()) {
 				echo $i;
 			} else {
 				?>

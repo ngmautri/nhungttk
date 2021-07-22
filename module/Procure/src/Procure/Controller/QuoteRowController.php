@@ -7,7 +7,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtProcureQo;
 use Application\Entity\NmtProcureQoRow;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;

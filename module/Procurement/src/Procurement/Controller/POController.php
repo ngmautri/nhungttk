@@ -12,7 +12,7 @@ namespace Procurement\Controller;
 use Application\Model\DepartmentTable;
 use Inventory\Model\ArticleLastDNTable;
 use Inventory\Model\ArticleMovementTable;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Procurement\Model\DeliveryCartTable;
 use Procurement\Model\DeliveryItemTable;
 use Procurement\Model\DeliveryItemWorkFlowTable;
@@ -325,7 +325,7 @@ class POController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$po_items = $this->purchaseRequestItemTable->getPOItems ($department_id, $balance, $payment_method,$currency, $vendor_id,$sort_by,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$po_items = $this->purchaseRequestItemTable->getPOItems ($department_id, $balance, $payment_method,$currency, $vendor_id,$sort_by,($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 	
 		return new ViewModel ( array (

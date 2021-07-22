@@ -34,7 +34,7 @@ if (count($list) > 0) {
     $result_msg = sprintf("%s records found!", $total_records);
 
     if ($paginator !== null) {
-        $tmp = sprintf('Records %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $tmp = sprintf('Records %s to %s of %s found!', $paginator->getMinInPage(), $paginator->getMaxInPage(), $total_records);
         $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
     }
     foreach ($list as $a) {

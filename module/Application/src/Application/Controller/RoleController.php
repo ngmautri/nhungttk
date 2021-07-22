@@ -4,7 +4,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Model\AclRoleTable;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Service\AclService;
 use Application\Entity\NmtApplicationAclRole;
 use Doctrine\ORM\EntityManager;
@@ -384,7 +384,7 @@ class RoleController extends AbstractActionController
         $paginator = null;
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $resources = $this->aclRoleTable->getNoneResourcesOfRole($role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $resources = $this->aclRoleTable->getNoneResourcesOfRole($role_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

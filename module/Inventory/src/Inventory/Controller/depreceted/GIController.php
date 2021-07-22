@@ -28,7 +28,7 @@ use Inventory\Application\Service\Transaction\TrxService;
 use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
 use Inventory\Application\Service\Upload\Transaction\UploadFactory;
 use Inventory\Domain\Transaction\Contracts\TrxType;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
@@ -427,8 +427,8 @@ class GIController extends AbstractGenericController
 
                 if ($total_records > $pq_rPP) {
                     $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                    $offset = $paginator->minInPage - 1;
-                    $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+                    $offset = $paginator->getMinInPage() - 1;
+                    $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
                 }
             }
             $rootEntity = $this->getTrxService()->getLazyDocOutputByTokenId($entity_id, $entity_token, $offset, $limit, $outputStrategy);

@@ -16,7 +16,7 @@ use Zend\Barcode\Barcode;
 use Application\Entity\NmtInventoryItem;
 use Application\Entity\NmtInventoryItemPicture;
 use User\Model\UserTable;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtInventoryItemCategoryMember;
 use Application\Entity\NmtInventoryItemDepartment;
 use Inventory\Service\ItemSearchService;
@@ -373,7 +373,7 @@ class ItemAssignmentController extends AbstractActionController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemAttachment')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemAttachment')->findBy($criteria, $sort_criteria, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();

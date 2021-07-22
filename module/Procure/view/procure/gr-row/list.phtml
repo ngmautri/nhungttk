@@ -29,7 +29,7 @@ if ($total_records <= 0) {
 		$count ++;
 		?>
 	<tr>
-			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><?php echo ($paginator===null)? $count:$paginator->getMinInPage() -1+ $count;?></td>
 			<td><?php echo $a->getItem()->getItemName(); ?></td>
 			<td><?php echo $a->getUnit(); ?></td>
 			<td><?php echo $a->getQuantity(); ?></td>

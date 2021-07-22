@@ -54,7 +54,7 @@ $total_confirmed_balance=0
 		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 		?>
 		<tr>
-			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><?php echo ($paginator===null)? $count:$paginator->getMinInPage() -1+ $count;?></td>
 			<td><a href="/procurement/pr/show?pr_id=<?php echo $item->purchase_request_id;?>"
 				target="_blank">PR#<?php echo $item->purchase_request_id;?></a></td>
 

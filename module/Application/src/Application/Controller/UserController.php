@@ -4,7 +4,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 
 /**
  *
@@ -49,7 +49,7 @@ class UserController extends AbstractActionController
 
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $resources = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findBy($criteria, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $resources = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findBy($criteria, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

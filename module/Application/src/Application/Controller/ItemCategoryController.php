@@ -593,7 +593,7 @@ class ItemCategoryController extends AbstractActionController
         $paginator = null;
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $resources = $this->aclRoleTable->getNoneResourcesOfRole($role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $resources = $this->aclRoleTable->getNoneResourcesOfRole($role_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(
@@ -663,7 +663,7 @@ class ItemCategoryController extends AbstractActionController
         $paginator = null;
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $resources = $this->aclResourceTable->getNoneResourcesOfRole($role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $resources = $this->aclResourceTable->getNoneResourcesOfRole($role_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(
@@ -732,7 +732,7 @@ class ItemCategoryController extends AbstractActionController
         $paginator = null;
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $resources = $this->aclResourceTable->getNoneResourcesOfRole($role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $resources = $this->aclResourceTable->getNoneResourcesOfRole($role_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
         }
 
         return new ViewModel(array(

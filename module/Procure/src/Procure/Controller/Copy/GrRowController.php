@@ -7,7 +7,7 @@ use zend\mvc\controller\abstractactioncontroller;
 use zend\validator\date;
 use zend\view\model\viewmodel;
 use doctrine\orm\entitymanager;
-use mla\paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use application\entity\nmtprocuregr;
 use application\entity\nmtprocuregrrow;
 use application\entity\nmtprocurepo;

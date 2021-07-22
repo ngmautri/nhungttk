@@ -14,7 +14,7 @@ use Zend\View\Model\ViewModel;
 use Zend\I18n\Validator\Int;
 use Zend\Validator\Date;
 
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use Procurement\Model\PurchaseRequest;
 use Procurement\Model\PurchaseRequestTable;
@@ -272,7 +272,7 @@ class GRController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$receipts = $this->deliveryItemTable->getGRItems_V1 ( $balance, $notified, $notified_quantity, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$receipts = $this->deliveryItemTable->getGRItems_V1 ( $balance, $notified, $notified_quantity, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (

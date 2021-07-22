@@ -13,7 +13,7 @@ if (count($list) > 0) {
     $result_msg = sprintf("%s records found!", $total_records);
 
     if ($paginator !== null) {
-        $result_msg = sprintf("Recored %s to %s | %s records found!", $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $result_msg = sprintf("Recored %s to %s | %s records found!", $paginator->getMinInPage(), $paginator->getMaxInPage(), $total_records);
     }
 
     foreach ($list as $a) {
@@ -23,7 +23,7 @@ if (count($list) > 0) {
         $n ++;
 
         if ($paginator !== null) {
-            $count = $paginator->minInPage - 1 + $n;
+            $count = $paginator->getMinInPage() - 1 + $n;
         } else {
             $count = $n;
         }

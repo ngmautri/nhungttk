@@ -15,7 +15,7 @@ use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use MLA\Files;
 use User\Service\Acl;
 use User\Model\AclRole;
@@ -265,7 +265,7 @@ class RoleController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -333,7 +333,7 @@ class RoleController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1 );
 		}
 		
 		return new ViewModel ( array (

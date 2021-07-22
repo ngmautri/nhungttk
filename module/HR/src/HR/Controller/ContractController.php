@@ -5,7 +5,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\NmtHrEmployee;
 use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Zend\Http\Headers;
 use Zend\Validator\Date;
 use Zend\Math\Rand;

@@ -289,32 +289,32 @@ if ($total_records <= 0) {
 						<?php
 
         echo ucwords(substr($this->escapeHtml($a['item_name']), 0, 100));
-        ?></a>	
+        ?></a>
 							<?php
 
         if ($a['item_type'] == "SERVICE") :
-            ?>			
+            ?>
 							<span style="font-size: 8pt;" class="badge">S</span>
 							<?php endif;
 
         ?>
-							
+
 								<?php
 
         if ($a['is_fixed_asset'] == "1") :
-            ?>			
+            ?>
 							<span style="font-size: 6pt;" class="badge">A</span>
 							<?php endif;
 
         ?>
-							
+
 								</span>
                      <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-size: 8pt;">
                         <br><?php
 
         echo $this->escapeHtml(($a['item_sku']));
         ?>
-						
+
 			<br><?php
 
         echo $this->escapeHtml($a['sys_number']);
@@ -327,7 +327,7 @@ if ($total_records <= 0) {
 
         echo substr($this->escapeHtml($a['manufacturer_model']), 0, 30);
         ?>
-						
+
 						<div style="margin: 2px; font-size: 9pt">
                            <div class="dropdown">
                               <button style="color: black; padding: 2pt 2pt 2pt 2pt; color: navy; font-size: 8.5pt" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -428,14 +428,14 @@ if ($total_records <= 0) {
                                  </li>
                               </ul>
                            </div>
-						
-	
+
+
 		<?php
 
         ?>
-	
+
 					<tr>
-            
+
             </table>
          </div>
 
@@ -447,8 +447,8 @@ if ($total_records <= 0) {
             echo '</div><hr style="margin: 5pt 1pt 5pt 1pt;">';
         }
         ?>
-        
-    	
+
+
 <?php
     endforeach
     ;
@@ -463,7 +463,7 @@ if ($total_records <= 0) {
 
     // ===============================
 
-    echo FormHelper::createPaginator($base, $paginator, "&");
+    echo FormHelper::createNewPaginator($base, $paginator, "&");
 }
 // ===============================
 ?>

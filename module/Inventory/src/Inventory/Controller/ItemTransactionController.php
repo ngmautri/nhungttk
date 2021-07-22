@@ -1,10 +1,10 @@
 <?php
 namespace Inventory\Controller;
 
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtInventoryTrx;
 use Doctrine\ORM\EntityManager;
 use Inventory\Service\ItemSearchService;
-use MLA\Paginator;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
@@ -13,7 +13,7 @@ use Zend\View\Model\ViewModel;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemTransactionController extends AbstractActionController
 {
@@ -1267,10 +1267,14 @@ class ItemTransactionController extends AbstractActionController
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
+        $limit = null;
+        $offset = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findBy($criteria, $sort_criteria, $limit, $offset);
         }
 
         return new ViewModel(array(

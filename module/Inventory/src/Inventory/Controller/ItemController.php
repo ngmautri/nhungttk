@@ -601,13 +601,16 @@ class ItemController extends AbstractGenericController
 
         $paginator = null;
         $list = null;
+        $limit = null;
+        $offset = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1, $paginator->getMinInPage() - 1);
-        } else {
-            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
+
+        $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, $limit, $offset);
 
         $viewModel = new ViewModel(array(
             'list' => $list,

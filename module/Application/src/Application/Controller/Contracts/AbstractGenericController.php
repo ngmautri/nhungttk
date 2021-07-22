@@ -4,6 +4,7 @@ namespace Application\Controller\Contracts;
 use Application\Application\Service\Contracts\FormOptionCollectionInterface;
 use Application\Domain\Company\Factory\CompanyFactory;
 use Application\Domain\EventBus\EventBusServiceInterface;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Mapper\CompanyMapper;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
@@ -31,6 +32,13 @@ class AbstractGenericController extends AbstractActionController
     protected $company;
 
     protected $formOptionCollection;
+
+    protected $paginatorLimit;
+
+    protected $paginatorOffset;
+
+    protected function setPaginatorParams(Paginator $paginator = null)
+    {}
 
     protected function getGETparam($name, $default = null)
     {
@@ -269,5 +277,31 @@ class AbstractGenericController extends AbstractActionController
     public function setCompany($company)
     {
         $this->company = $company;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPaginatorLimit($paginator = null)
+    {
+        if ($paginator == null) {
+            return null;
+        }
+        $this->paginatorLimit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+        return $this->paginatorLimit;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPaginatorOffset($paginator = null)
+    {
+        if ($paginator == null) {
+            return null;
+        }
+        $this->paginatorOffset = $paginator->getMinInPage() - 1;
+        return $this->paginatorOffset;
     }
 }

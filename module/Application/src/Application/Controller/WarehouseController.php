@@ -959,8 +959,8 @@ class WarehouseController extends EntityCRUDController
         if ($total_records > 0) {
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
-                $offset = $paginator->getMinInPage() - 1;
+                $limit = $this->getPaginatorLimit($paginator);
+                $offset = $this->getPaginatorOffset($paginator);
             }
         }
 

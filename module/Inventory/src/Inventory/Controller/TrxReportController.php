@@ -4,13 +4,13 @@ namespace Inventory\Controller;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Util\JsonErrors;
+use Application\Domain\Util\Pagination\Paginator;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Reporting\Transaction\TrxReporter;
 use Inventory\Infrastructure\Persistence\Filter\BeginGrGiEndSqlFilter;
 use Inventory\Infrastructure\Persistence\Filter\CostIssueForSqlFilter;
 use Inventory\Infrastructure\Persistence\Filter\TrxReportSqlFilter;
 use Inventory\Infrastructure\Persistence\Filter\TrxRowReportSqlFilter;
-use MLA\Paginator;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\View\Model\ViewModel;
 use DateTime;
@@ -18,7 +18,7 @@ use DateTime;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxReportController extends AbstractGenericController
 {
@@ -80,8 +80,8 @@ class TrxReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
@@ -158,8 +158,8 @@ class TrxReportController extends AbstractGenericController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
@@ -227,8 +227,8 @@ class TrxReportController extends AbstractGenericController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         $result = $this->getTrxReporter()->getBeginGrGiEnd($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -320,8 +320,8 @@ class TrxReportController extends AbstractGenericController
 
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-                $offset = $paginator->minInPage - 1;
+                $limit = $this->getPaginatorLimit($paginator);
+                $offset = $this->getPaginatorOffset($paginator);
             }
         }
         $result = $this->getTrxReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -395,8 +395,8 @@ class TrxReportController extends AbstractGenericController
 
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-                $offset = $paginator->minInPage - 1;
+                $limit = $this->getPaginatorLimit($paginator);
+                $offset = $this->getPaginatorOffset($paginator);
             }
         }
         $result = $this->getTrxReporter()->getBeginGrGiEnd($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -468,8 +468,8 @@ class TrxReportController extends AbstractGenericController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         $result = $this->getTrxReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);

@@ -96,7 +96,7 @@ include (ROOT . '/module/Procure/view/procure/po-report/dto_list_declare.phtml')
 
                         echo $docStatus == 'posted' ? "selected='selected'" : "";
                         ?> value="posted">Posted</option>
-                        
+
                          <option <?php
 
                         echo $docStatus == 'amending' ? "selected='selected'" : "";
@@ -208,17 +208,17 @@ include (ROOT . '/module/Procure/view/procure/po-report/dto_list_declare.phtml')
                   </div>
                </div>
                           <hr style="margin: 5pt 1pt 10pt 1pt;">
-  
+
             </form>
          </div>
       </div>
-      
+
         <div style="color: gray; font-size: 9pt; margin-top: 8px">
       <?php
     echo $filter_msg;
     ?>
        </div>
-      
+
       <hr style="margin: 1pt 1pt 5pt 1pt;">
 <?php
 echo $result_msg;
@@ -237,7 +237,7 @@ echo $result_msg;
                   <td style="width: 30pt; font-size: 8pt">
                   <b>AP %</b>
                </td>
-               
+
                <td>
                   <b>Doc.Status</b>
                </td>
@@ -276,7 +276,7 @@ echo $table_body;
 
 <?php
 // ===============================
-echo FormHelper::createPaginator($base, $paginator, "&");
+echo FormHelper::createNewPaginator($base, $paginator, "&");
 // =================================
 ?>
 

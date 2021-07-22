@@ -6,6 +6,7 @@ use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Util\Pagination\Paginator;
 use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
 use Inventory\Application\Command\Association\CreateCmdHandler;
@@ -15,13 +16,12 @@ use Inventory\Application\Command\Item\Options\UpdateItemOptions;
 use Inventory\Application\DTO\Association\AssociationDTO;
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Application\Service\Association\AssociationService;
-use MLA\Paginator;
 use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class AssociationItemController extends AbstractGenericController
 {
@@ -305,8 +305,8 @@ class AssociationItemController extends AbstractGenericController
         $paginator = null;
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         $result = $this->getAssociationService()->getAssociationOf($entity_id, $limit, $offset);

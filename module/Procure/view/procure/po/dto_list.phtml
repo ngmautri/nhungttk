@@ -31,7 +31,7 @@ if (count($list) > 0) {
     $result_msg = sprintf("%s records found!", $total_records);
 
     if ($paginator !== null) {
-        $tmp = sprintf('Recored %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $tmp = sprintf('Recored %s to %s of %s found!', $paginator->getMinInPage(), $paginator->getMaxInPage(), $total_records);
         $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
     }
 
@@ -40,7 +40,7 @@ if (count($list) > 0) {
         $n ++;
 
         if ($paginator !== null) {
-            $count = $paginator->minInPage - 1 + $n;
+            $count = $paginator->getMinInPage() - 1 + $n;
         } else {
             $count = $n;
         }
@@ -160,7 +160,7 @@ $filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus
 
                         echo $docStatus == 'posted' ? "selected='selected'" : "";
                         ?> value="posted">Posted</option>
-                        
+
                          <option <?php
 
                         echo $docStatus == 'amending' ? "selected='selected'" : "";
@@ -272,17 +272,17 @@ $filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus
                   </div>
                </div>
                           <hr style="margin: 5pt 1pt 10pt 1pt;">
-  
+
             </form>
          </div>
       </div>
-      
+
         <div style="color: gray; font-size: 9pt; margin-top: 8px">
       <?php
     echo $filter_msg;
     ?>
        </div>
-      
+
       <hr style="margin: 1pt 1pt 5pt 1pt;">
 <?php
 echo $result_msg;
@@ -332,7 +332,7 @@ echo $table_body;
 
 <?php
 // ===============================
-echo FormHelper::createPaginator($base, $paginator, "&");
+echo FormHelper::createNewPaginator($base, $paginator, "&");
 // ===============================
 ?>
 

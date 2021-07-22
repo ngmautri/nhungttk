@@ -94,8 +94,8 @@ class ApReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
-            $offset = $paginator->getMinInPage() - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         $list = $this->getApReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -183,8 +183,8 @@ class ApReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
-            $offset = $paginator->getMinInPage() - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
@@ -277,9 +277,8 @@ class ApReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-
-            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
-            $offset = $paginator->getMinInPage() - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
@@ -378,8 +377,8 @@ class ApReportController extends AbstractGenericController
 
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-                $offset = $paginator->minInPage - 1;
+                $limit = $this->getPaginatorLimit($paginator);
+                $offset = $this->getPaginatorOffset($paginator);
             }
         }
         $result = $this->getApReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);

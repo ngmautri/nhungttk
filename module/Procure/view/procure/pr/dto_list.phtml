@@ -33,7 +33,7 @@ if (count($list) > 0) {
     $result_msg = sprintf("%s records found!", $total_records);
 
     if ($paginator !== null) {
-        $tmp = sprintf('Records %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $tmp = sprintf('Records %s to %s of %s found!', $paginator->getMinInPage(), $paginator->getMaxInPage(), $total_records);
         $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
     }
 
@@ -42,7 +42,7 @@ if (count($list) > 0) {
         $n ++;
 
         if ($paginator !== null) {
-            $count = $paginator->minInPage - 1 + $n;
+            $count = $paginator->getMinInPage() - 1 + $n;
         } else {
             $count = $n;
         }
@@ -341,7 +341,7 @@ echo $table_body;
 
 <?php
 // ===============================
-echo FormHelper::createPaginator($base, $paginator, "&");
+echo FormHelper::createNewPaginator($base, $paginator, "&");
 // ===============================
 ?>
 

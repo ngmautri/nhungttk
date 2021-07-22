@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Controller;
 
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Procure\Application\Reporting\GR\GrReporter;
 use Procure\Controller\Contracts\ProcureCRUDController;
 use Procure\Infrastructure\Persistence\Filter\GrReportSqlFilter;
@@ -103,8 +103,8 @@ class GrController extends ProcureCRUDController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = $this->getPaginatorLimit($paginator);
+            $offset = $this->getPaginatorOffset($paginator);
         }
 
         $list = $this->getGrReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);

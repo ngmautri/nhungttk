@@ -274,7 +274,7 @@ endif;
 <?php
 if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) :
     echo $result;
-    echo FormHelper::createPaginator($base, $paginator, "&");
+    echo FormHelper::createNewPaginator($base, $paginator, "&");
 endif;
 
 ?>

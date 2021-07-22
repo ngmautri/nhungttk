@@ -1,24 +1,22 @@
 <?php
 namespace Procure\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
-use MLA\Paginator;
 use Procure\Service\PrSearchService;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QuoteSearchController extends AbstractActionController
 {
 
     protected $doctrineEM;
-    protected $prSearchService;
 
-  
+    protected $prSearchService;
 
     /**
      *
@@ -29,17 +27,17 @@ class QuoteSearchController extends AbstractActionController
         /* retrieve the search term that autocomplete sends */
         $q = trim(strip_tags($_GET['term']));
         // $q = $this->params ()->fromQuery ( 'q' );
-        
+
         $a_json = array();
         $a_json_row = array();
-        
+
         if ($q !== "") {
             $results = $this->prSearchService->search($q);
-            
+
             if (count($results) > 0) {
                 foreach ($results['hits'] as $a) {
                     $a_json_row["value"] = $a->pr_number . ' | ' . $a->item_name;
-                    
+
                     $a_json_row["pr_id"] = $a->pr_id;
                     $a_json_row["pr_token"] = $a->pr_token;
                     $a_json_row["pr_checksum"] = $a->pr_checksum;
@@ -47,20 +45,20 @@ class QuoteSearchController extends AbstractActionController
                     $a_json_row["pr_row_id"] = $a->pr_row_id;
                     $a_json_row["token"] = $a->token;
                     $a_json_row["checksum"] = $a->checksum;
-                    
+
                     $a_json_row["item_id"] = $a->item_id;
                     $a_json_row["item_token"] = $a->item_token;
                     $a_json_row["item_checksum"] = $a->item_checksum;
-                    
+
                     $a_json_row["item_name"] = $a->item_name;
                     $a_json_row["item_sku_key"] = $a->item_sku_key;
                     $a_json_row["manufacturer_code"] = $a->manufacturer_code;
                     $a_json_row["row_quantity"] = $a->row_quantity;
                     $a_json_row["row_unit"] = $a->row_unit;
                     $a_json_row["row_name"] = $a->row_name;
-                    
+
                     $a_json_row["row_conversion_factor"] = $a->row_conversion_factor;
-                    
+
                     $a_json[] = $a_json_row;
                 }
             }
@@ -79,7 +77,7 @@ class QuoteSearchController extends AbstractActionController
     public function doAction()
     {
         $q = $this->params()->fromQuery('q');
-        
+
         if ($q !== "") {
             $results = $this->prSearchService->search($q);
         } else {
@@ -88,7 +86,7 @@ class QuoteSearchController extends AbstractActionController
                 "hits" => null
             ];
         }
-        
+
         // var_dump($results);
         return new ViewModel(array(
             'message' => $results["message"],
@@ -103,20 +101,20 @@ class QuoteSearchController extends AbstractActionController
     public function do1Action()
     {
         $request = $this->getRequest();
-        
+
         // accepted only ajax request
-        
+
         if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $this->layout("layout/user/ajax");
-        
+
         $q = $this->params()->fromQuery('q');
         $context = $this->params()->fromQuery('context');
         $target_id = $this->params()->fromQuery('target_id');
         $target_name = $this->params()->fromQuery('target_name');
-        
+
         $results = [
             "message" => "",
             "hits" => null,
@@ -124,13 +122,13 @@ class QuoteSearchController extends AbstractActionController
             'target_id' => $target_id,
             'target_name' => $target_name
         ];
-        
+
         if ($q !== null) {
             if ($q !== "") {
                 $results = $this->prSearchService->search($q);
             }
         }
-        
+
         // var_dump($results);
         return new ViewModel(array(
             'message' => $results["message"],
@@ -138,7 +136,6 @@ class QuoteSearchController extends AbstractActionController
             'context' => $context,
             'target_id' => $target_id,
             'target_name' => $target_name
-        
         ));
     }
 
@@ -177,9 +174,9 @@ class QuoteSearchController extends AbstractActionController
         return $this->prSearchService;
     }
 
-    public function setPrSearchService(PrSearchService $prSearchService) {
-		$this->prSearchService = $prSearchService;
-		return $this;
-	}
-	
+    public function setPrSearchService(PrSearchService $prSearchService)
+    {
+        $this->prSearchService = $prSearchService;
+        return $this;
+    }
 }

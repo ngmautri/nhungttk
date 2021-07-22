@@ -2,7 +2,7 @@
 namespace Procure\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
-use MLA\Paginator;
+use Application\Domain\Util\Pagination\Paginator;
 use Procure\Application\Reporting\AP\ApReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -94,8 +94,8 @@ class ApReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+            $offset = $paginator->getMinInPage() - 1;
         }
 
         $list = $this->getApReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -183,8 +183,8 @@ class ApReportController extends AbstractGenericController
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+            $offset = $paginator->getMinInPage() - 1;
         }
 
         if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
@@ -278,8 +278,8 @@ class ApReportController extends AbstractGenericController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
+            $limit = ($paginator->getMaxInPage() - $paginator->getMinInPage()) + 1;
+            $offset = $paginator->getMinInPage() - 1;
         }
 
         if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {

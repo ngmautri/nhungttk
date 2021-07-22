@@ -6,6 +6,7 @@
  *         ===========================================
  */
 use Application\Application\Helper\OptionList;
+use Application\Domain\Util\Pagination\Paginator;
 use Inventory\Domain\Item\Contracts\ItemType;
 use Procure\Application\Helper\FormHelper;
 
@@ -15,6 +16,7 @@ $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record foun
 /**
  *
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ * @var Paginator $paginator ;
  */
 $format = $this->baseUrl . '/inventory/item/list2?layout=%s&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s';
 $base = sprintf($format, $layout, $is_active, $item_type, $sort_by, $sort, $is_fixed_asset);
@@ -38,7 +40,7 @@ if (count($list) > 0) {
     $result_msg = sprintf("%s records found!", $total_records);
 
     if ($paginator !== null) {
-        $tmp = sprintf('Records %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $tmp = sprintf('Records %s to %s of %s found!', $paginator->getMaxInPage(), $paginator->getMaxInPage(), $total_records);
         $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
     }
     foreach ($list as $a) {
@@ -172,7 +174,7 @@ $filter_msg = sprintf("Active=%s |Sorted by = %s - %s", $is_active, $sort_by, $s
                            <div class="col-sm-3">
                               <select class="form-control input-sm" name="item_model">
                                  <option value="All">All</option>
-                                 <option value="1">Item Model</option>                                
+                                 <option value="1">Item Model</option>
                               </select>
                            </div>
                            <div class="col-sm-4"></div>

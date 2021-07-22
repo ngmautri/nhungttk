@@ -8,7 +8,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri
- *        
+ *
  */
 class APReporterRepositoryImplFactory implements FactoryInterface
 {
@@ -23,9 +23,8 @@ class APReporterRepositoryImplFactory implements FactoryInterface
     {
         $container = $serviceLocator;
         $sv = $container->get('doctrine.entitymanager.orm_default');
-        
+
         $service = new APReportRepositoryImpl($sv);
         return $service;
-	}	
-	
+    }
 }

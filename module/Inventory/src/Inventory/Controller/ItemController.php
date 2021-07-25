@@ -31,7 +31,7 @@ use Exception;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ItemController extends AbstractGenericController
 {
@@ -100,7 +100,6 @@ class ItemController extends AbstractGenericController
 
     public function show3Action()
     {
-        $u = $this->getUser();
         $request = $this->getRequest();
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -139,8 +138,7 @@ class ItemController extends AbstractGenericController
             'sharedCollection' => $this->getSharedCollection()
         ));
         $viewModel->setTemplate($viewTemplete);
-
-        $this->getLogger()->info(\sprintf("AP #%s viewed by #%s", $id, $u->getId()));
+        $this->getLogger()->info(\sprintf("AP #%s viewed by #%s", $id, $this->getUserId()));
         return $viewModel;
     }
 
@@ -607,7 +605,7 @@ class ItemController extends AbstractGenericController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             $limit = $paginator->getLimit();
-            $offset =$paginator->getOffset();
+            $offset = $paginator->getOffset();
         }
 
         $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, $limit, $offset);

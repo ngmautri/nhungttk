@@ -106,7 +106,7 @@ class GRFromPO extends GenericGoodsReceipt
                 continue;
             }
 
-            $grRow = GrRow::createFromPoRow($r, $options);
+            $grRow = GRRow::createFromPoRow($r, $options);
             // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
             $instance->addRow($grRow);
 

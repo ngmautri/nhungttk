@@ -269,7 +269,7 @@ abstract class GenericGR extends BaseDoc
         $createdBy = $options->getUserId();
         $snapshot->markAsChange($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = GrRow::createFromSnapshot($this, $snapshot);
+        $row = GRRow::createFromSnapshot($this, $snapshot);
 
         $validationService = ValidatorFactory::create($this->getDocType(), $sharedService);
 

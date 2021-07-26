@@ -97,7 +97,7 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
              * @var APRow $r ;
              */
 
-            $grRow = GrRow::copyFromApRowReserval($instance, $r, $options);
+            $grRow = GRRow::copyFromApRowReserval($instance, $r, $options);
             $grRow->markRowAsReversed($instance, $options);
             $instance->addRow($grRow);
         }

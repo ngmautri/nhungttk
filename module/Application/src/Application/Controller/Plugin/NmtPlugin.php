@@ -74,6 +74,7 @@ class NmtPlugin extends AbstractPlugin
 
             $format = 'http://localhost:81/inventory/item-picture/get?token=%s&entity_id=%s&checksum=%s';
             $thumbnail_file = \sprintf($format, $pic->getToken(), $pic->getId(), $pic->getChecksum());
+            $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
 
             return $thumbnail_file;
         }

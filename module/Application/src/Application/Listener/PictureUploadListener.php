@@ -138,6 +138,8 @@ class PictureUploadListener implements ListenerAggregateInterface
             // created thumbail.
             $thumbnail_public_folder = getcwd() . "/public/thumbnail/item/" . $relavite_folder;
 
+            $thumbnail_public_folder = str_replace('\\', '/', $thumbnail_public_folder); // important
+
             if (! is_dir($thumbnail_public_folder)) {
                 mkdir($thumbnail_public_folder, 0777, true); // important
             }

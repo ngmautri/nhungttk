@@ -9,8 +9,8 @@
  */
 namespace Inventory\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class ItemPictureController extends AbstractActionController
@@ -59,6 +59,10 @@ class ItemPictureController extends AbstractActionController
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
                 ->addHeaderLine('Content-Type', $pic->getFiletype());
+
+            /**
+             * Important! can cause for UBUNTU
+             */
             // ->addHeaderLine('Content-Length', mb_strlen($imageContent));
             return $response;
         } else {

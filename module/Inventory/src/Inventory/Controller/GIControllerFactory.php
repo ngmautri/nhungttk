@@ -25,7 +25,7 @@ class GIControllerFactory implements FactoryInterface
     {
         $sm = $serviceLocator->getServiceLocator();
 
-        $controller = new GiController();
+        $controller = new GIController();
 
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);

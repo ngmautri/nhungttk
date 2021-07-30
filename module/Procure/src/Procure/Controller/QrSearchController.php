@@ -198,6 +198,8 @@ class QrSearchController extends AbstractGenericController
      */
     public function createIndexAction()
     {
+        ini_set('memory_limit', '2048M');
+
         $rep = new QrReportRepositoryImpl($this->getDoctrineEM());
         $sort_by = Null;
         $sort = null;

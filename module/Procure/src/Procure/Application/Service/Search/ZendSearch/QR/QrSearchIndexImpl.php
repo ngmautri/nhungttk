@@ -92,7 +92,7 @@ class QrSearchIndexImpl extends AbstractService implements QrSearchIndexInterfac
             // take long time
 
             set_time_limit(5500);
-            ini_set('memory_limit', '512M');
+            ini_set('memory_limit', '2048M');
 
             $index = Lucene::create(getcwd() . QrSearch::INDEX_PATH);
             Analyzer::setDefault(new CaseInsensitive());
@@ -117,6 +117,7 @@ class QrSearchIndexImpl extends AbstractService implements QrSearchIndexInterfac
             $indexResult->setMessage($message);
         }
 
+        ini_set('memory_limit', '256M');
         return $indexResult;
     }
 

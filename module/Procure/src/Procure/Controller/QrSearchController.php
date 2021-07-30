@@ -4,11 +4,13 @@ namespace Procure\Controller;
 use Application\Application\Service\Search\Contracts\SearchResult;
 use Application\Controller\Contracts\AbstractGenericController;
 use Procure\Application\Service\Search\ZendSearch\PR\Filter\PrQueryFilter;
+use Procure\Application\Service\Search\ZendSearch\QR\QrSearchIndexImpl;
 use Procure\Application\Service\Search\ZendSearch\QR\Filter\QrQueryFilter;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\QuotationRequest\QRRowSnapshotAssembler;
-use Procure\Domain\Service\Search\PrSearchQueryInterface;
 use Procure\Domain\Service\Search\QrSearchQueryInterface;
+use Procure\Infrastructure\Persistence\Doctrine\QrReportRepositoryImpl;
+use Procure\Infrastructure\Persistence\Filter\QrReportSqlFilter;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -191,12 +193,26 @@ class QrSearchController extends AbstractGenericController
     }
 
     /**
+     *
+     * @return \Zend\View\Model\ViewModel
      */
     public function createIndexAction()
     {
-        $result = $this->prSearchService->createIndex();
+        $rep = new QrReportRepositoryImpl($this->getDoctrineEM());
+        $sort_by = Null;
+        $sort = null;
+        $limit = null;
+        $offset = null;
+        $filter = new QrReportSqlFilter();
+        $filter->setIsActive(1);
+        $results = $rep->getAllRow($filter, $sort_by, $sort, $limit, $offset);
+        $indexer = new QrSearchIndexImpl();
+
+        $r = $indexer->createIndex($results);
+        $r = $indexer->optimizeIndex();
+
         return new ViewModel(array(
-            'result' => $result
+            'result' => $r
         ));
     }
 

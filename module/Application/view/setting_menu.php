@@ -109,6 +109,14 @@ echo $this->baseUrl?>/inventory/item-search/create-index"><small><i
 
     echo $this->translate("Update Item Index")?></a></li>
 
+    <li><a
+      href="<?php
+
+    echo $this->baseUrl?>/procure/qr-search/create-index"><small><i
+            class="fa fa-refresh" aria-hidden="true"></i></small>&nbsp;&nbsp;<?php
+
+            echo $this->translate("Update Quotation Index")?></a></li>
+
 	<li><a
 		href="<?php
 

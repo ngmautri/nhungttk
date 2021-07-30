@@ -71,7 +71,7 @@ class QRRowSnapshotAssembler
             return;
         }
 
-        $snapshort = new QrRowSnapshot();
+        $snapshort = new QRRowSnapshot();
         $reflectionClass = new \ReflectionClass($snapshort);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {

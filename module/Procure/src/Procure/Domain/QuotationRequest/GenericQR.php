@@ -35,7 +35,7 @@ abstract class GenericQR extends AbstractQR
      * @param QrRow $row
      * @param CommandOptions $options
      * @param SharedService $sharedService
-     * @return \Procure\Domain\QuotationRequest\QrRowSnapshot
+     * @return \Procure\Domain\QuotationRequest\QRRowSnapshot
      */
     public function removeRow(QrRow $row, CommandOptions $options, SharedService $sharedService)
     {
@@ -44,7 +44,7 @@ abstract class GenericQR extends AbstractQR
 
         /**
          *
-         * @var QrRowSnapshot $localSnapshot
+         * @var QRRowSnapshot $localSnapshot
          * @var QRCmdRepositoryInterface $rep ;
          */
 

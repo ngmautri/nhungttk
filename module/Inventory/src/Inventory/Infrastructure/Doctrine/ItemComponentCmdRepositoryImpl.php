@@ -10,6 +10,7 @@ use Inventory\Domain\Item\Component\BaseComponent;
 use Inventory\Domain\Item\Component\ComponentSnapshot;
 use Inventory\Domain\Item\Repository\ItemComponentCmdRepositoryInterface;
 use Inventory\Infrastructure\Mapper\ItemMapper;
+use Exception;
 use InvalidArgumentException;
 
 /**
@@ -30,8 +31,17 @@ class ItemComponentCmdRepositoryImpl extends AbstractDoctrineRepository implemen
      * |
      * |=============================
      */
-    public function storeComponentCollection(ComponentItem $rootEntity, $generateSysNumber = True)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\Repository\ItemComponentCmdRepositoryInterface::storeComponentCollection()
+     */
+    public function storeComponentCollection(GenericItem $rootEntity, $generateSysNumber = True)
     {
+        if (! $rootEntity instanceof ComponentItem) {
+            throw new Exception("Component Item expected");
+        }
+
         $collection = $rootEntity->getComponentCollection();
         if ($collection->isEmpty()) {
             return;

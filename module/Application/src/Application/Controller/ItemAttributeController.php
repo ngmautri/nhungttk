@@ -291,17 +291,11 @@ class ItemAttributeController extends EntityCRUDController
 
             /**
              *
-             * @var GenericWarehouse $rootEntity
+             * @var GenericAttributeGroup $rootEntity
              */
             $rootEntity = $this->getEntityService()->getRootEntityById($rootId);
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
-            }
-
-            if ($rootEntity->getIsDefault()) {
-                $this->flashMessenger()->addMessage("Default Warehouse can not be changed!");
-                $redirectUrl = \sprintf("/application/warehouse/view?id=%s", $rootId);
-                return $this->redirect()->toUrl($redirectUrl);
             }
 
             $snapshot = $rootEntity->makeSnapshot();
@@ -952,7 +946,7 @@ class ItemAttributeController extends EntityCRUDController
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
                 $limit = $paginator->getLimit();
-                $offset =$paginator->getOffset();
+                $offset = $paginator->getOffset();
             }
         }
 

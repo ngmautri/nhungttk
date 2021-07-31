@@ -1,6 +1,9 @@
 <?php
 namespace Application\Domain\Service;
 
+use Application\Domain\Company\ItemAttribute\Validator\Contracts\ItemAttributeGroupValidatorCollection;
+use Application\Domain\Company\ItemAttribute\Validator\Contracts\ItemAttributeValidatorCollection;
+use Application\Domain\Service\Contracts\ItemAttributeValidationServiceInterface;
 use InvalidArgumentException;
 
 /**
@@ -16,15 +19,15 @@ class ItemAttributeValidationService implements ItemAttributeValidationServiceIn
 
     private $attributeValidators;
 
-    public function $validators(ItemAttributeGroupValidatorCollection $attributeGroupValidators, ItemAttributeValidatorCollection $attributeValidators = null)
+    public function __construct(ItemAttributeGroupValidatorCollection $attributeGroupValidators, ItemAttributeValidatorCollection $attributeValidators = null)
     {
-    if ($attributeGroupValidators == null) {
-        throw new InvalidArgumentException("Att Group Validator(s) is required");
-    }
+        if ($attributeGroupValidators == null) {
+            throw new InvalidArgumentException("Att Group Validator(s) is required");
+        }
 
-    $this->attributeGroupValidators = $attributeGroupValidators;
-    $this->attributeValidators = $attributeValidators;
-}
+        $this->attributeGroupValidators = $attributeGroupValidators;
+        $this->attributeValidators = $attributeValidators;
+    }
 
     public function getAttributeGroupValidators()
     {

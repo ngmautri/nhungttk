@@ -366,11 +366,13 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
 
 
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+
 
 
 
@@ -1113,7 +1115,7 @@ echo sprintf('var review_url="%s";', $review_url)?>
 
     echo $hoverMode;
     ?>',
-    		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
+    		   	pageModel: { type: "remote", rPP: 200, strRpp: "{0}" },
     		  	editModel: {
                     allowInvalid: true,
                     saveKey: $.ui.keyCode.ENTER

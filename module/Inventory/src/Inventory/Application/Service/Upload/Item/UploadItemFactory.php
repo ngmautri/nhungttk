@@ -27,7 +27,7 @@ class UploadItemFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
 
-        $sv = $container->get('AppLogger');
+        $sv = $container->get('InventoryLogger');
         $service->setLogger($sv);
 
         $sv = $container->get('AppCache');

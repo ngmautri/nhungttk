@@ -3,6 +3,7 @@ namespace Inventory\Controller;
 
 use Inventory\Application\EventBus\EventBusService;
 use Inventory\Application\Service\Item\ItemService;
+use Inventory\Application\Service\Upload\Item\UploadItem;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -52,6 +53,10 @@ class ItemControllerFactory implements FactoryInterface
 
         $sv = $container->get(EventBusService::class);
         $controller->setEventBusService($sv);
+        
+        $sv = $container->get(UploadItem::class);
+        $controller->setItemUploadService($sv);
+        
         return $controller;
     }
 }

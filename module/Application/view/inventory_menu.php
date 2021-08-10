@@ -19,6 +19,14 @@
         ?></a>
    </li>
    <li>
+      <a href="/inventory/item/create-from-file">
+         <small>
+            <i class="glyphicon glyphicon-plus"></i>
+         </small>&nbsp;<?php
+        echo $this->translate('Create item from file');
+        ?></a>
+   </li>
+   <li>
       <a href="/inventory/item/list2">
          <small>
             <i class="glyphicon glyphicon-list"></i>

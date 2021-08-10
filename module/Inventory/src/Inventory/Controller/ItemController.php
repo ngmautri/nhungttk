@@ -3,8 +3,10 @@ namespace Inventory\Controller;
 
 use Application\Notification;
 use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Contracts\FormActions;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Util\FileExtension;
 use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtInventoryItem;
 use Application\Entity\NmtInventoryItemCategoryMember;
@@ -20,10 +22,12 @@ use Inventory\Application\Command\Item\Options\UpdateItemOptions;
 use Inventory\Application\DTO\Item\ItemAssembler;
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Application\Service\Item\ItemService;
+use Inventory\Application\Service\Upload\Item\Contracts\AbstractItemUpload;
 use Inventory\Infrastructure\Persistence\DoctrineItemListRepository;
 use Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository;
 use Zend\Barcode\Barcode;
 use Zend\Cache\Storage\StorageInterface;
+use Zend\Http\Headers;
 use Zend\Math\Rand;
 use Zend\View\Model\ViewModel;
 use Exception;
@@ -46,7 +50,142 @@ class ItemController extends AbstractGenericController
 
     protected $itemService;
 
+    protected $itemUploadService;
+
     const BASE_URL = '/inventory/item/%s';
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function createFromFileAction()
+    {
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         */
+        $this->layout("Inventory/layout-fullscreen");
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/inventory/item/create-from-file";
+
+        $form_title = "Upload";
+        $action = FormActions::UPLOAD;
+        $viewTemplete = "/inventory/item/create-from-file";
+
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            $notify = new Notification();
+
+            try {
+
+                $file_name = null;
+                $file_size = null;
+                $file_tmp = null;
+                $file_ext = null;
+                $file_type = null;
+
+                if (isset($_FILES['uploaded_file'])) {
+                    $file_name = $_FILES['uploaded_file']['name'];
+                    $file_size = $_FILES['uploaded_file']['size'];
+                    $file_tmp = $_FILES['uploaded_file']['tmp_name'];
+                    $file_type = $_FILES['uploaded_file']['type'];
+                    $file_ext1 = (explode('.', $file_name));
+                    $file_ext = end($file_ext1);
+                }
+
+                $ext = FileExtension::get($file_type);
+                if ($ext == null) {
+                    $ext = \strtolower($file_ext);
+                }
+                $expensions = array(
+                    "xlsx",
+                    "xls",
+                    "csv"
+                );
+
+                if (in_array($ext, $expensions) == false) {
+                    $notify->addError("File not supported or empty! " . $file_name);
+                }
+
+                if ($notify->hasErrors()) {
+                    $viewModel = new ViewModel(array(
+                        'errors' => $notify->getErrors(),
+                        'redirectUrl' => null,
+                        'nmtPlugin' => $nmtPlugin,
+                        'form_action' => $form_action,
+                        'form_title' => $form_title,
+                        'action' => $action,
+                        'companyVO' => $this->getCompanyVO()
+                    ));
+                    $viewModel->setTemplate($viewTemplete);
+                    return $viewModel;
+                }
+                $folder = ROOT . "/temp";
+                if (! is_dir($folder)) {
+                    mkdir($folder, 0777, true); // important
+                }
+                move_uploaded_file($file_tmp, "$folder/$file_name");
+
+                $uploader = $this->getItemUploadService();
+                $uploader->setCompanyId($this->getCompanyId());
+                $uploader->setUserId($this->getUserId());
+                $uploader->run("$folder/$file_name");
+            } catch (\Exception $e) {
+                $this->logException($e, false);
+                $notify->addError($e->getMessage());
+
+                $viewModel = new ViewModel(array(
+                    'errors' => $notify->getErrors(),
+                    'redirectUrl' => null,
+                    'nmtPlugin' => $nmtPlugin,
+                    'form_action' => $form_action,
+                    'form_title' => $form_title,
+                    'action' => $action,
+                    'companyVO' => $this->getCompanyVO()
+                ));
+                $viewModel->setTemplate($viewTemplete);
+                return $viewModel;
+            }
+
+            $this->logInfo(\sprintf('Items uploaded!, (%s-%s)', $file_name, $file_size));
+            $this->flashMessenger()->addMessage("uploaded");
+            $redirectUrl = '/inventory/item/list2';
+            \unlink("$folder/$file_name");
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        // NO Posting
+        // =========================
+
+        $viewModel = new ViewModel(array(
+            'errors' => null,
+            'redirectUrl' => null,
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'action' => $action
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
+
+    public function getTemplateAction()
+    {
+        $f = ROOT.'/public/templates/ItemUpload.xlsx';
+        $output = file_get_contents($f);
+        $response = $this->getResponse();
+        $headers = new Headers();
+        $headers->addHeaderLine('Content-Type: xlsx');
+        $headers->addHeaderLine('Content-Disposition: attachment; filename="ItemUpload.xlsx"');
+        $headers->addHeaderLine('Content-Description: File Transfer');
+        $headers->addHeaderLine('Content-Transfer-Encoding: binary');
+        $headers->addHeaderLine('Content-Encoding: UTF-8');
+        $response->setHeaders($headers);
+        $response->setContent($output);
+        return $response;
+    }
 
     public function viewAction()
     {
@@ -2808,5 +2947,23 @@ class ItemController extends AbstractGenericController
     public function setItemService(ItemService $itemService)
     {
         $this->itemService = $itemService;
+    }
+
+    /**
+     *
+     * @return \Inventory\Application\Service\Upload\Item\Contracts\AbstractItemUpload
+     */
+    public function getItemUploadService()
+    {
+        return $this->itemUploadService;
+    }
+
+    /**
+     *
+     * @param AbstractItemUpload $itemUploadService
+     */
+    public function setItemUploadService(AbstractItemUpload $itemUploadService)
+    {
+        $this->itemUploadService = $itemUploadService;
     }
 }

@@ -1,0 +1,94 @@
+<?php
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+use Application\Domain\Contracts\FormActions;
+use Procure\Application\Helper\ErrorMessage;
+use Procure\Application\Helper\FormHelper;
+use Procure\Application\Helper\OptionList;
+use Procure\Application\Helper\Toolbar;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Domain\Contracts\ProcureDocStatus;
+use Procure\Domain\Shared\Constants;
+
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
+
+// ============================
+?>
+<div id="wrapper" class="toggled">
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+		<a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt"
+			class="btn btn-default btn-sm"
+			href="/procure/po-report/header-status"> <small> <i
+				class="fa fa-chevron-left" aria-hidden="true"></i>
+		</small>&nbsp;&nbsp;&nbsp;&nbsp;<?php
+echo $this->translate("Create item from file");
+?></a>
+
+	</div>
+	<!-- /#sidebar-wrapper -->
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle">
+				<span title="Hide Menu"> <i class="fa fa-chevron-left"
+					aria-hidden="true"></i> Menu <span>
+			
+			</a>
+			<div id="tabs" style="font-size: 9.5pt">
+				<ul>
+					<li><a href="#general"> <small> <i class="fa fa-calculator"
+								aria-hidden="true"></i>
+						</small>&nbsp;<?php
+
+    echo $form_title;
+    ?></a></li>
+				</ul>
+				<div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+					<!-- Tab1 -->
+
+
+    <?php
+    // ================================
+    echo $error_msg;
+    // ===============================
+    ?>
+    
+    
+    <form id="upload_form" class="form-horizontal"
+						action="/inventory/item/create-from-file" method="post"
+						enctype="multipart/form-data">
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag"></label>
+							<div class="col-sm-3">
+								<input style="" type="file" id="uploaded_file"
+									name="uploaded_file" />
+							</div>
+						</div>
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag"></label>
+							<div class="col-sm-3">
+								<button type="submit" onclick="submitForm('upload_form');"
+									class="btn btn-default btn-sm">
+									<i class="glyphicon glyphicon-upload"> </i> Upload
+								</button>
+							</div>
+						</div>
+					</form>
+					<hr>
+<small><i class="glyphicon glyphicon-download-alt"></i></small>&nbsp;<a href="/inventory/item/get-template">Download template</a>
+
+					<!-- end tab -->
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->

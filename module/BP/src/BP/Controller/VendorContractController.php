@@ -166,7 +166,7 @@ class VendorContractController extends AbstractActionController
                     }
                 }
 
-                if ($file_size > 2097152) {
+                if ($file_size > 10485760) {
                     $errors[] = 'File size must be excately 2 MB';
                 }
 
@@ -415,7 +415,7 @@ class VendorContractController extends AbstractActionController
                     // Change Attachment
                     if (! $file_tmp == '') {
 
-                        if ($file_size > 2097152) {
+                        if ($file_size > 10485760) {
                             $errors[] = 'File size must be excately 2 MB';
                         }
 

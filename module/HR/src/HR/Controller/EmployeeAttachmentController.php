@@ -301,7 +301,7 @@ class EmployeeAttachmentController extends AbstractActionController
                             $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg","jpg","png","pdf","xlsx","xlx", "docx"!';
                         }
 
-                        if ($file_size > 2097152) {
+                        if ($file_size > 10485760) {
                             $errors[] = 'File size must be excately 2 MB';
                         }
 
@@ -884,7 +884,7 @@ class EmployeeAttachmentController extends AbstractActionController
                             $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg","jpg","png","pdf","xlsx","xlx", "docx"!';
                         }
 
-                        if ($file_size > 2097152) {
+                        if ($file_size > 10485760) {
                             $errors[] = 'File size must be  2 MB';
                         }
 
@@ -1211,7 +1211,7 @@ class EmployeeAttachmentController extends AbstractActionController
                             $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg","jpg","png","gif"!';
                         }
 
-                        if ($file_size > 2097152) {
+                        if ($file_size > 10485760) {
                             $errors[] = 'File size must be  2 MB';
                         }
 

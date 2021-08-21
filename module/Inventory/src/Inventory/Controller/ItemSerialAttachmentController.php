@@ -300,8 +300,8 @@ class ItemSerialAttachmentController extends AbstractGenericController
                             $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg","jpg","png","pdf","xlsx","xlx", "docx"!';
                         }
 
-                        if ($file_size > 2097152) {
-                            $errors[] = 'File size must be excately 2 MB';
+                        if ($file_size > 10485760) {
+                            $errors[] = 'File size must be excately 10 MB';
                         }
 
                         $checksum = md5_file($file_tmp);
@@ -1047,8 +1047,8 @@ class ItemSerialAttachmentController extends AbstractGenericController
                             $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg","jpg","png","pdf","xlsx","xlx", "docx"!';
                         }
 
-                        if ($file_size > 2097152) {
-                            $errors[] = 'File size must be  2 MB';
+                        if ($file_size > 10485760) {
+                            $errors[] = 'File size must be  10 MB';
                         }
 
                         $checksum = md5_file($file_tmp);

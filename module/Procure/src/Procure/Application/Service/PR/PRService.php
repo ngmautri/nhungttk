@@ -108,11 +108,13 @@ class PRService extends AbstractService implements ProcureServiceInterface
                 $builder = new ExcelBuilder();
                 $formatter = new RowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsExcel($builder);
+                $factory->setDoctrineEM($this->getDoctrineEM());
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new OpenOfficeBuilder();
                 $formatter = new RowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsOpenOffice($builder);
+                $factory->setDoctrineEM($this->getDoctrineEM());
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_PDF:
@@ -187,11 +189,15 @@ class PRService extends AbstractService implements ProcureServiceInterface
                 $builder = new ExcelBuilder();
                 $formatter = new RowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsExcel($builder);
+                $factory->setDoctrineEM($this->getDoctrineEM());
+                
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new OpenOfficeBuilder();
                 $formatter = new RowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsOpenOffice($builder);
+                $factory->setDoctrineEM($this->getDoctrineEM());
+                
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_PDF:

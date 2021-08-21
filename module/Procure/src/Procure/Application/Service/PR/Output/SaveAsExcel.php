@@ -39,6 +39,14 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
         $objPHPExcel = $this->getBuilder()->getPhpSpreadsheet();
 
+        $objPHPExcel->setActiveSheetIndex(0)
+            ->getRowDimension(1)
+            ->setRowHeight(80);
+
+        $objPHPExcel->setActiveSheetIndex(0)
+            ->getColumnDimension('B')
+            ->setWidth(30);
+
         $header = 7;
         $i = 0;
 
@@ -46,6 +54,7 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
         $headerValues = array(
             "#",
+            "Picture",
             "Vendor",
             "PO#",
             "Item",
@@ -71,8 +80,11 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
             /**
              *
-             * @var PRRowSnapshot $row ;
+             * @var PRRowSnapshot $r ;
              */
+
+            $item_thumbnail = $this->getItemPic($r->getItem());
+
             $row = $formatter->format($r->makeSnapshot());
 
             $i ++;
@@ -96,10 +108,27 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
                 $row->prNumber
             );
 
+            $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+
+            $drawing->setName('Logo');
+            $drawing->setDescription('Logo');
+            $drawing->setCoordinates('B' . $l);
+            $drawing->setPath(ROOT . '/public/' . $item_thumbnail);
+            $drawing->setOffsetX(2);
+            $drawing->setOffsetY(2);
+            //$drawing->setWidth(150);
+            $drawing->setHeight(100);
+        
+            $drawing->setWorksheet($objPHPExcel->getActiveSheet());
+
             $n = 0;
             foreach ($columnValues as $v) {
 
+                $objPHPExcel->setActiveSheetIndex(0)
+                    ->getRowDimension($l)
+                    ->setRowHeight(100);
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue($cols[$n] . $l, $v);
+
                 $n ++;
             }
         }

@@ -79,11 +79,21 @@ class ExcelBuilder extends AbstractBuilder
 
         $drawing->setName('Logo');
         $drawing->setDescription('Logo');
+        $drawing->setCoordinates('B1');
+        //$drawing->setWidthAndHeight(80, 80);
         $drawing->setPath(ROOT . '/public/images/mascot.gif');
         $drawing->setHeight(80);
-
         $drawing->setWorksheet($this->getPhpSpreadsheet()
             ->getActiveSheet());
+        
+        //$drawing->setOffsetX(110);
+        //$drawing->setOffsetY(10);
+         
+        //$drawing->setOffsetX(($spreadsheet->getActiveSheet()->getColumnDimension('A1')->getWidth()-$drawing->getWidth())/2);
+        //$drawing->setOffsetY(($spreadsheet->getActiveSheet()->getColumnDimension('A1')->getHeight()-$drawing->getHeight())/2);
+        
+
+       
 
         // Set document properties
         $this->getPhpSpreadsheet()

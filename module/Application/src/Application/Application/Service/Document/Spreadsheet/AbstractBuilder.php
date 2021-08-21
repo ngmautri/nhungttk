@@ -2,6 +2,8 @@
 namespace Application\Application\Service\Document\Spreadsheet;
 
 use Application\Application\Service\Document\DocumentBuilderInterface;
+use Application\Entity\NmtInventoryItemPicture;
+use Doctrine\ORM\EntityManager;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 /**
@@ -15,6 +17,26 @@ abstract class AbstractBuilder implements DocumentBuilderInterface
     protected $fileName;
 
     protected $phpSpreadSheet;
+    
+
+    
+    /**
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+    
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     */
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+    }
 
     public function __construct()
     {
@@ -47,4 +69,6 @@ abstract class AbstractBuilder implements DocumentBuilderInterface
     {
         $this->fileName = $fileName;
     }
+    
+   
 }

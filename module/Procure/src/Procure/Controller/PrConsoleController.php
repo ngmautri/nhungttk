@@ -111,7 +111,7 @@ EOT;
         $message->setEncoding("UTF-8");
 
         // send message
-        $dbConfig = $nmtPlugin->getStmpOutlook()->send($message);
+        //$dbConfig = $nmtPlugin->getStmpOutlook()->send($message);
         
         sleep(20);
         

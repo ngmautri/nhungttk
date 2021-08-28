@@ -3,6 +3,7 @@ namespace Inventory\Domain\Item;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Company\Repository\CompanyCmdRepositoryInterface;
+use Application\Domain\Service\Contracts\SharedServiceInterface;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Warehouse\WhLocationCreated;
 use Inventory\Domain\Item\Component\ComponentSnapshot;
@@ -18,7 +19,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class CompositeItem extends GenericItem
 {
@@ -27,9 +28,9 @@ class CompositeItem extends GenericItem
 
     private $componentCollectionRef;
 
-    public function addComponentFrom(ComponentSnapshot $snapshot, CommandOptions $options, \Application\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    public function addComponentFrom(ComponentSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService)
     {
-        Assert::notNull($snapshot, "LocationSnapshot not founds");
+        Assert::notNull($snapshot, "ComponentSnapshot not founds");
         Assert::notNull($options, "Options not founds");
         Assert::notNull($sharedService, "SharedService not found");
 

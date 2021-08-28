@@ -10,7 +10,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class CompositeItemValidator extends AbstractItemValidator implements ItemValidatorInterface
 {

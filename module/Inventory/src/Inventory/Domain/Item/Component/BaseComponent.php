@@ -2,8 +2,6 @@
 namespace Inventory\Domain\Item\Component;
 
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
-use Inventory\Domain\Item\Composite\AbstractComposite;
-use Inventory\Domain\Item\Composite\BaseComposite;
 use Inventory\Domain\Warehouse\Location\BaseLocationSnapshot;
 
 /**
@@ -11,7 +9,7 @@ use Inventory\Domain\Warehouse\Location\BaseLocationSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class BaseComponent extends AbstractComposite
+class BaseComponent extends AbstractComponent
 {
 
     public function equals(BaseComponent $other)
@@ -20,16 +18,17 @@ class BaseComponent extends AbstractComposite
             return false;
         }
 
-        return \strtolower(trim($this->getLocationCode())) == \strtolower(trim($other->getLocationCode()));
+        return \strtolower(trim($this->getId())) == \strtolower(trim($other->getId()));
     }
 
+  
     /**
-     *
-     * @return \Inventory\Domain\Warehouse\Location\BaseLocationSnapshot
+     * 
+     * @return \Inventory\Domain\Item\Component\BaseComponentSnapshot
      */
     public function makeSnapshot()
     {
-        $snapshot = new BaseLocationSnapshot();
+        $snapshot = new BaseComponentSnapshot();
         GenericObjectAssembler::updateAllFieldsFrom($snapshot, $this);
         return $snapshot;
     }

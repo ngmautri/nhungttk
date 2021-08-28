@@ -6,6 +6,7 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Item\ItemCreated;
 use Inventory\Domain\Event\Item\ItemUpdated;
+use Inventory\Domain\Item\ComponentItem;
 use Inventory\Domain\Item\FixedAssetItem;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\GenericItemSnapshot;
@@ -21,12 +22,11 @@ use Inventory\Domain\Service\SharedService;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use RuntimeException;
-use Inventory\Domain\Item\CompositeItem;
 
 /**
  *
- * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ * @author Nguyen Mau Tri - Ngmautri@gmail.com
+ *        
  */
 class ItemFactory
 {
@@ -227,7 +227,7 @@ class ItemFactory
                 break;
 
             case ItemType::COMPOSITE_ITEM:
-                $item = new CompositeItem();
+                $item = new ComponentItem();
                 break;
             default:
                 $item = new InventoryItem();

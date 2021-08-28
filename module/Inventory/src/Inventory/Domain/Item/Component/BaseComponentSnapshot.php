@@ -16,7 +16,6 @@ class BaseComponentSnapshot extends ComponentSnapshot
     {
         $this->setCreatedOn($createdDate);
         $this->setCreatedBy($createdBy);
-        $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
         $this->setRevisionNo(0);
         $this->setUuid(Uuid::uuid4()->toString());
         $this->setToken($this->getUuid());

@@ -8,6 +8,7 @@ use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\Component\BaseComponent;
 use Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface;
+use Inventory\Domain\Item\Repository\ItemComponentCmdRepositoryInterface;
 use Inventory\Domain\Item\Repository\ItemVariantCmdRepositoryInterface;
 use Inventory\Domain\Item\Variant\BaseVariant;
 use Inventory\Domain\Item\Variant\BaseVariantAttribute;
@@ -18,7 +19,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCmdRepositoryInterface
 {
@@ -118,7 +119,7 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
         /**
          *
          * @var \Application\Entity\NmtInventoryItem $entity ;
-         *
+         *     
          */
         if ($rootEntity->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
@@ -263,9 +264,9 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
 
     /**
      *
-     * @param ItemComponentCmdRepositoryImpl $itemComponentRepository
+     * @param ItemComponentCmdRepositoryInterface $itemComponentRepository
      */
-    public function setItemComponentRepository(ItemComponentCmdRepositoryImpl $itemComponentRepository)
+    public function setItemComponentRepository(ItemComponentCmdRepositoryInterface $itemComponentRepository)
     {
         $this->itemComponentRepository = $itemComponentRepository;
     }

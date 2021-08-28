@@ -72,7 +72,7 @@ class SharedServiceFactory
         Assert::notNull($doctrineEM, "EntityManager not found!");
         $sharedSpecsFactory = new ZendSpecificationFactory($doctrineEM);
 
-        $companyCmdRepository = new ItemCmdRepositoryImpl($doctrineEM);
+        $CmdRepository = new ItemCmdRepositoryImpl($doctrineEM);
 
         /*
          * |=============================
@@ -80,13 +80,13 @@ class SharedServiceFactory
          * |
          * |=============================
          */
-        $companyCmdRepository->setItemVariantRepository(new ItemVariantCmdRepositoryImpl($doctrineEM));
-        $companyCmdRepository->setItemComponentRepository(new ItemComponentCmdRepositoryImpl($doctrineEM));
+        $CmdRepository->setItemVariantRepository(new ItemVariantCmdRepositoryImpl($doctrineEM));
+        $CmdRepository->setItemComponentRepository(new ItemComponentCmdRepositoryImpl($doctrineEM));
 
         $fxService = new FXServiceImpl();
         $fxService->setDoctrineEM($doctrineEM);
 
-        $postingService = new ItemPostingService($companyCmdRepository);
+        $postingService = new ItemPostingService($CmdRepository);
         $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
 
         return $sharedService;

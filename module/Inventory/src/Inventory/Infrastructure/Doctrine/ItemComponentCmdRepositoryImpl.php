@@ -4,7 +4,7 @@ namespace Inventory\Infrastructure\Doctrine;
 use Application\Entity\NmtInventoryItem;
 use Application\Entity\NmtInventoryItemComponent;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Inventory\Domain\Item\ComponentItem;
+use Inventory\Domain\Item\CompositeItem;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\Component\BaseComponent;
 use Inventory\Domain\Item\Component\ComponentSnapshot;
@@ -38,8 +38,8 @@ class ItemComponentCmdRepositoryImpl extends AbstractDoctrineRepository implemen
      */
     public function storeComponentCollection(GenericItem $rootEntity, $generateSysNumber = True)
     {
-        if (! $rootEntity instanceof ComponentItem) {
-            throw new Exception("Component Item expected");
+        if (! $rootEntity instanceof CompositeItem) {
+            throw new Exception("Composite Item expected");
         }
 
         $collection = $rootEntity->getComponentCollection();

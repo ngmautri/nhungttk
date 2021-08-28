@@ -9,7 +9,7 @@ use Inventory\Domain\Item\GenericItem;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-Interface ItemCmdRepositoryInterface extends CmdRepositoryInterface, ItemVariantCmdRepositoryInterface
+Interface ItemCmdRepositoryInterface extends CmdRepositoryInterface, ItemVariantCmdRepositoryInterface, ItemComponentCmdRepositoryInterface
 {
 
     public function getItemComponentRepository();

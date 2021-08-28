@@ -20,7 +20,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class ComponentItem extends GenericItem
+class CompositeItem extends GenericItem
 {
 
     private $componentCollection;

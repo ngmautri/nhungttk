@@ -6,6 +6,7 @@ use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Inventory\Domain\Item\BaseItem;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Domain\Item\Component\BaseComponent;
 use Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface;
 use Inventory\Domain\Item\Repository\ItemVariantCmdRepositoryInterface;
 use Inventory\Domain\Item\Variant\BaseVariant;
@@ -34,6 +35,27 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
      * |
      * |=============================
      */
+
+    // +++++++++++++++++++++
+    // Component
+    // +++++++++++++++++++++
+    public function storeComponentCollection(GenericItem $rootEntity, $generateSysNumber = True)
+    {
+        $this->assertItemComponentRepository();
+        return $this->getItemComponentRepository()->storeComponentCollection($rootEntity, $generateSysNumber);
+    }
+
+    public function storeComponenent(GenericItem $rootEntity, BaseComponent $localEntity, $generateSysNumber = True)
+    {
+        $this->assertItemComponentRepository();
+        return $this->getItemComponentRepository()->storeComponenent($rootEntity, $localEntity, $generateSysNumber);
+    }
+
+    public function removeComponent(GenericItem $rootEntity, BaseComponent $localEntity, $isPosting = false)
+    {
+        $this->assertItemComponentRepository();
+        return $this->getItemComponentRepository()->removeComponent($rootEntity, $localEntity);
+    }
 
     // +++++++++++++++++++++
     // Variant
@@ -150,14 +172,22 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
         }
     }
 
+    private function assertItemComponentRepository()
+    {
+        if ($this->getItemComponentRepository() == null) {
+            throw new InvalidArgumentException("Item Component repository is not found!");
+        }
+    }
+
     /**
      *
-     * @return \Inventory\Infrastructure\Doctrine\ItemComponentCmdRepositoryImpl
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\Repository\ItemCmdRepositoryInterface::getItemComponentRepository()
      */
     public function getItemComponentRepository()
     {
         if ($this->itemComponentRepository == null) {
-            throw new InvalidArgumentException("Item Variant repository is not found!");
+            throw new InvalidArgumentException("Item Component repository is not found!");
         }
         return $this->itemComponentRepository;
     }

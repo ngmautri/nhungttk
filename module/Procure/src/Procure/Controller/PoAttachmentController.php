@@ -1288,17 +1288,70 @@ class PoAttachmentController extends AbstractGenericController
                 $f = ROOT . $attachment->getAttachmentFolder() . $attachment->getFilename();
                 $f = $this->modifyPath($f);
                 $this->logInfo(sprintf('uri: %s', $f));
+                
+                if (is_file($f))
+                {
+                    header('Content-Type: ' . $attachment->getFiletype());
+                    header("Content-Transfer-Encoding: Binary");
+                    header('Content-Disposition: attachment; filename="' . $attachment->getFilenameOriginal() . '"');
+                    readfile($f);
+                    //$this->logInfo(sprintf('length: %s', strlen($output)));
+                    exit(); 
+                }
+        
+                
+            } catch (Exception $e) {
+                $this->logException($e);
+                return $this->redirect()->toRoute('not_found');
+            }
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+    }
+    
+    public function downloadTmp()
+    {
+        $request = $this->getRequest();
+        
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity_id = (int) $this->params()->fromQuery('entity_id');
+        $checksum = $this->params()->fromQuery('checksum');
+        $token = $this->params()->fromQuery('token');
+        
+        if ($token == '') {
+            $token = null;
+        }
+        
+        $criteria = array(
+            'id' => $entity_id,
+            'checksum' => $checksum,
+            'token' => $token
+            // 'markedForDeletion' => 0,
+        );
+        
+        $attachment = new NmtApplicationAttachment();
+        $tmp_attachment = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
+        $attachment = $tmp_attachment;
+        
+        if ($attachment !== null) {
+            try {
+                $f = ROOT . $attachment->getAttachmentFolder() . $attachment->getFilename();
+                $f = $this->modifyPath($f);
+                $this->logInfo(sprintf('uri: %s', $f));
                 $output = file_get_contents($f);
-
+                
                 $response = $this->getResponse();
                 $headers = new Headers();
-
+                
                 $headers->addHeaderLine('Content-Type: ' . $attachment->getFiletype());
                 $headers->addHeaderLine('Content-Disposition: attachment; filename="' . $attachment->getFilenameOriginal() . '"');
                 $headers->addHeaderLine('Content-Description: File Transfer');
                 $headers->addHeaderLine('Content-Transfer-Encoding: binary');
                 $headers->addHeaderLine('Content-Encoding: UTF-8');
-
+                
                 $response->setHeaders($headers);
                 $response->setContent($output);
                 $this->logInfo(sprintf('length: %s', strlen($output)));

@@ -7,8 +7,9 @@ use Inventory\Model\ArticlePictureTable;
 use Inventory\Model\AssetPictureTable;
 use Inventory\Model\SparepartPictureTable;
 use Doctrine\ORM\EntityManager;
+use Application\Controller\Contracts\AbstractGenericController;
 
-class ImageController extends AbstractActionController
+class ImageController extends AbstractGenericController
 {
 
     public $userTable;
@@ -23,7 +24,6 @@ class ImageController extends AbstractActionController
 
     public $articlePictureTable;
 
-    protected $doctrineEM;
 
     /*
      * Defaul Action
@@ -36,7 +36,7 @@ class ImageController extends AbstractActionController
 
         $response = $this->getResponse();
 
-        $imageContent = file_get_contents($pic->url);
+        $imageContent = file_get_contents($this->modifyPath($pic->url));
         $response->setContent($imageContent);
         $response->getHeaders()
             ->addHeaderLine('Content-Transfer-Encoding', 'binary')
@@ -67,7 +67,7 @@ class ImageController extends AbstractActionController
             $pic = new \Application\Entity\NmtInventoryItemPicture();
             $pic = $entity;
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . $pic->getFileName();
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath$pic_folder));
 
             $response = $this->getResponse();
 
@@ -104,7 +104,7 @@ class ImageController extends AbstractActionController
             $pic = new \Application\Entity\NmtInventoryItemPicture();
             $pic = $entity;
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -130,7 +130,7 @@ class ImageController extends AbstractActionController
 
         $response = $this->getResponse();
 
-        $imageContent = file_get_contents($pic->url);
+        $imageContent = file_get_contents($this->modifyPath(pic->url));
 
         $response->setContent($imageContent);
         $response->getHeaders()
@@ -152,7 +152,7 @@ class ImageController extends AbstractActionController
 
         $response = $this->getResponse();
 
-        $imageContent = file_get_contents($pic->url);
+        $imageContent = file_get_contents($this->modifyPath($pic->url));
         $response->setContent($imageContent);
         $response->getHeaders()
             ->addHeaderLine('Content-Transfer-Encoding', 'binary')
@@ -170,7 +170,7 @@ class ImageController extends AbstractActionController
         $id = (int) $this->params()->fromQuery('id');
         $pic = $this->getAssetPictureTable()->get($id);
         $response = $this->getResponse();
-        $imageContent = file_get_contents($pic->folder . DIRECTORY_SEPARATOR . 'thumbnail_200_' . $pic->filename);
+        $imageContent = file_get_contents($this->modifyPath($pic->folder . DIRECTORY_SEPARATOR . 'thumbnail_200_' . $pic->filename));
         $response->setContent($imageContent);
         $response->getHeaders()
             ->addHeaderLine('Content-Transfer-Encoding', 'binary')
@@ -216,7 +216,7 @@ class ImageController extends AbstractActionController
          *
          */
 
-        $imageContent = file_get_contents($pic->folder . DIRECTORY_SEPARATOR . 'thumbnail_200_' . $pic->filename);
+        $imageContent = file_get_contents($this->modifyPath($pic->folder . DIRECTORY_SEPARATOR . 'thumbnail_200_' . $pic->filename));
 
         $response->setContent($imageContent);
         $response->getHeaders()
@@ -242,7 +242,7 @@ class ImageController extends AbstractActionController
 
         $response = $this->getResponse();
 
-        $imageContent = file_get_contents($pic->folder . DIRECTORY_SEPARATOR . 'thumbnail_200_' . $pic->filename);
+        $imageContent = file_get_contents($this->modifyPath($this->modifyPath($pic->folder . DIRECTORY_SEPARATOR . 'thumbnail_200_' . $pic->filename)));
         $response->setContent($imageContent);
         $response->getHeaders()
             ->addHeaderLine('Content-Transfer-Encoding', 'binary')
@@ -271,7 +271,7 @@ class ImageController extends AbstractActionController
         $id = (int) $this->params()->fromQuery('id');
         $pic = $this->getArticlePictureTable()->get($id);
         $response = $this->getResponse();
-        $imageContent = file_get_contents($pic->folder . DIRECTORY_SEPARATOR . 'thumbnail_150_' . $pic->filename);
+        $imageContent = file_get_contents($this->modifyPath($pic->folder . DIRECTORY_SEPARATOR . 'thumbnail_150_' . $pic->filename));
         $response->setContent($imageContent);
         $response->getHeaders()
             ->addHeaderLine('Content-Transfer-Encoding', 'binary')
@@ -452,16 +452,7 @@ class ImageController extends AbstractActionController
         return $this;
     }
 
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
+  
 }
 
 

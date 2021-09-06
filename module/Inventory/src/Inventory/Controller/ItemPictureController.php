@@ -12,8 +12,9 @@ namespace Inventory\Controller;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Controller\Contracts\AbstractGenericController;
 
-class ItemPictureController extends AbstractActionController
+class ItemPictureController extends AbstractGenericController
 {
 
     protected $doctrineEM;
@@ -51,7 +52,7 @@ class ItemPictureController extends AbstractActionController
              */
             $pic_folder = str_replace('\\', '/', $pic_folder);
 
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -93,12 +94,7 @@ class ItemPictureController extends AbstractActionController
             $pic = $entity;
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
 
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 

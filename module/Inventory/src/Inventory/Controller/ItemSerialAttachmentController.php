@@ -607,12 +607,7 @@ class ItemSerialAttachmentController extends AbstractGenericController
         if ($pic !== null) {
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . $pic->getFileName();
 
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -652,13 +647,8 @@ class ItemSerialAttachmentController extends AbstractGenericController
 
         if ($pic !== null) {
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
-
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+         
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -699,12 +689,8 @@ class ItemSerialAttachmentController extends AbstractGenericController
         if ($pic !== null) {
 
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+         
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -1474,7 +1460,7 @@ class ItemSerialAttachmentController extends AbstractGenericController
 
         if ($attachment !== null) {
             $f = ROOT . $attachment->getAttachmentFolder() . DIRECTORY_SEPARATOR . $attachment->getFilename();
-            $output = file_get_contents($f);
+            $output = file_get_contents($this->modifyPath($f));
 
             $response = $this->getResponse();
             $headers = new Headers();

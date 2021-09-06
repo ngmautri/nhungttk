@@ -9,13 +9,14 @@ use Application\Entity\NmtApplicationAttachment;
 use Zend\Http\Headers;
 use Zend\Validator\Date;
 use Zend\Math\Rand;
+use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemAttachmentController extends AbstractActionController
+class ItemAttachmentController extends AbstractGenericController
 {
 
     /**
@@ -30,8 +31,7 @@ class ItemAttachmentController extends AbstractActionController
 
     const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
-    protected $doctrineEM;
-
+   
     /*
      * Defaul Action
      */
@@ -671,12 +671,7 @@ class ItemAttachmentController extends AbstractActionController
         if ($pic !== null) {
             $pic_folder = getcwd() . $pic->getAttachmentFolder() . $pic->getFileName();
 
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -718,12 +713,8 @@ class ItemAttachmentController extends AbstractActionController
         if ($pic !== null) {
             $pic_folder = getcwd() . $pic->getAttachmentFolder() . $pic->getFileName();
 
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+           
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -763,13 +754,7 @@ class ItemAttachmentController extends AbstractActionController
         if ($pic !== null) {
 
             $pic_folder = getcwd() . $pic->getAttachmentFolder() . $pic->getFileName();
-
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -1758,18 +1743,5 @@ class ItemAttachmentController extends AbstractActionController
      * @return \Zend\View\Model\ViewModel
      */
 
-    /**
-     *
-     * @return \Zend\Stdlib\ResponseInterface
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
+   
 }

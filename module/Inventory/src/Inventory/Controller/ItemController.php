@@ -2543,7 +2543,7 @@ class ItemController extends AbstractGenericController
              */
             $pic_folder = str_replace('\\', '/', $pic_folder);
 
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
             $response->setContent($imageContent);
@@ -2556,7 +2556,7 @@ class ItemController extends AbstractGenericController
             return $response;
         } else {
             $pic_folder = getcwd() . "/public/images/no-pic1.jpg";
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 

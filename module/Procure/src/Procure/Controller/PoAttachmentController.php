@@ -1286,6 +1286,11 @@ class PoAttachmentController extends AbstractGenericController
                 $this->logInfo(sprintf('uri: %s', $f));
                 $output = file_get_contents($f);
                 
+                if($output==false){
+                    throw new Exception(sprintf("can not open file %s",  $f ));
+                }
+                
+                
                 $response = $this->getResponse();
                 $headers = new Headers();
                 

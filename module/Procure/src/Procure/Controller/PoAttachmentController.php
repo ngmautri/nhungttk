@@ -1,12 +1,4 @@
 <?php
-
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace Procure\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
@@ -18,9 +10,9 @@ use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - Ngmautri@gmail.com
  *
- * @author nmt
- *        
  */
 class PoAttachmentController extends AbstractGenericController
 {
@@ -1295,7 +1287,9 @@ class PoAttachmentController extends AbstractGenericController
 
         if ($attachment !== null) {
             $f = ROOT . $attachment->getAttachmentFolder() . DIRECTORY_SEPARATOR . $attachment->getFilename();
-              $output = file_get_contents($this->modifyPath($f));
+            $f= $this->modifyPath($f);
+            $this->logInfo(sprintf('uri: %s',$f));
+            $output = file_get_contents($f);
 
             $response = $this->getResponse();
             $headers = new Headers();

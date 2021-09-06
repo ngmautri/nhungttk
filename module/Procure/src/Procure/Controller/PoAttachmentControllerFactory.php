@@ -29,6 +29,10 @@ class PoAttachmentControllerFactory implements FactoryInterface{
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
 		
+		$sv =  $container->get('ProcureLogger');
+		$controller->setLogger($sv);
+		
+		
 		return $controller;
 	}	
 	

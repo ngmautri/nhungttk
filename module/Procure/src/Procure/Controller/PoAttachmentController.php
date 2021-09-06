@@ -1286,7 +1286,7 @@ class PoAttachmentController extends AbstractGenericController
         $attachment = $tmp_attachment;
 
         if ($attachment !== null) {
-            $f = ROOT . $attachment->getAttachmentFolder() . DIRECTORY_SEPARATOR . $attachment->getFilename();
+            $f = ROOT . $attachment->getAttachmentFolder().$attachment->getFilename();
             $f= $this->modifyPath($f);
             $this->logInfo(sprintf('uri: %s',$f));
             $output = file_get_contents($f);

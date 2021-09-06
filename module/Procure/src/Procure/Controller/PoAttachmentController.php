@@ -1300,9 +1300,11 @@ class PoAttachmentController extends AbstractGenericController
                 $headers->addHeaderLine('Content-Encoding: UTF-8');
 
                 $response->setHeaders($headers);
-
                 $response->setContent($output);
+                $this->logInfo(sprintf('length: %s', strlen($output)));
+                
                 return $response;
+                
             } catch (Exception $e) {
                 $this->logException($e);
                 return $this->redirect()->toRoute('not_found');

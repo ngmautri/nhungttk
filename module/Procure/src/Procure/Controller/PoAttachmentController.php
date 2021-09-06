@@ -3,16 +3,16 @@ namespace Procure\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Entity\NmtApplicationAttachment;
-use Doctrine\ORM\EntityManager;
 use Zend\Http\Headers;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
+use Exception;
 
 /**
- * 
- * @author Nguyen Mau Tri - Ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - Ngmautri@gmail.com
+ *        
  */
 class PoAttachmentController extends AbstractGenericController
 {
@@ -29,7 +29,6 @@ class PoAttachmentController extends AbstractGenericController
 
     const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ___";
 
-  
     /*
      * Defaul Action
      */
@@ -694,11 +693,9 @@ class PoAttachmentController extends AbstractGenericController
         ini_set('upload_max_filesize', '10M');
         ini_set('post_max_size', '10M');
         ini_set('max_execution_time', 300);
-        
 
         if ($request->isPost()) {
 
-        
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
             $target_id = $request->getPost('target_id');
@@ -832,13 +829,14 @@ class PoAttachmentController extends AbstractGenericController
                 $file_size = $_FILES['attachments']['size'];
                 $file_tmp = $_FILES['attachments']['tmp_name'];
                 $file_type = $_FILES['attachments']['type'];
-                
+
                 /**
-                 * @todo: Strict Standards: Only variables should be passed by reference                 
+                 *
+                 * @todo: Strict Standards: Only variables should be passed by reference
                  */
                 $file_ext_tmp = explode('.', $file_name);
                 $file_ext = strtolower(end($file_ext_tmp));
-                
+
                 // attachement required?
                 if ($file_tmp == "" or $file_tmp === null) {
 
@@ -1286,30 +1284,36 @@ class PoAttachmentController extends AbstractGenericController
         $attachment = $tmp_attachment;
 
         if ($attachment !== null) {
-            $f = ROOT . $attachment->getAttachmentFolder().$attachment->getFilename();
-            $f= $this->modifyPath($f);
-            $this->logInfo(sprintf('uri: %s',$f));
-            $output = file_get_contents($f);
+            try {
+                $f = ROOT . $attachment->getAttachmentFolder() . $attachment->getFilename();
+                $f = $this->modifyPath($f);
+                $this->logInfo(sprintf('uri: %s', $f));
+                $output = file_get_contents($f);
 
-            $response = $this->getResponse();
-            $headers = new Headers();
+                $response = $this->getResponse();
+                $headers = new Headers();
 
-            $headers->addHeaderLine('Content-Type: ' . $attachment->getFiletype());
-            $headers->addHeaderLine('Content-Disposition: attachment; filename="' . $attachment->getFilenameOriginal() . '"');
-            $headers->addHeaderLine('Content-Description: File Transfer');
-            $headers->addHeaderLine('Content-Transfer-Encoding: binary');
-            $headers->addHeaderLine('Content-Encoding: UTF-8');
+                $headers->addHeaderLine('Content-Type: ' . $attachment->getFiletype());
+                $headers->addHeaderLine('Content-Disposition: attachment; filename="' . $attachment->getFilenameOriginal() . '"');
+                $headers->addHeaderLine('Content-Description: File Transfer');
+                $headers->addHeaderLine('Content-Transfer-Encoding: binary');
+                $headers->addHeaderLine('Content-Encoding: UTF-8');
 
-            $response->setHeaders($headers);
+                $response->setHeaders($headers);
 
-            $response->setContent($output);
-            return $response;
+                $response->setContent($output);
+                return $response;
+            } catch (Exception $e) {
+                $this->logException($e);
+                return $this->redirect()->toRoute('not_found');
+            }
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
     }
 
     /**
+     *
      * @deprecated
      * @return \Zend\View\Model\ViewModel
      */

@@ -1251,65 +1251,8 @@ class PoAttachmentController extends AbstractGenericController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function downloadAction()
-    {
-        $request = $this->getRequest();
-
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $entity_id = (int) $this->params()->fromQuery('entity_id');
-        $checksum = $this->params()->fromQuery('checksum');
-        $token = $this->params()->fromQuery('token');
-
-        if ($token == '') {
-            $token = null;
-        }
-
-        $criteria = array(
-            'id' => $entity_id,
-            'checksum' => $checksum,
-            'token' => $token
-            // 'markedForDeletion' => 0,
-        );
-
-        $attachment = new NmtApplicationAttachment();
-        $tmp_attachment = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
-        $attachment = $tmp_attachment;
-
-        if ($attachment !== null) {
-            try {
-                $f = ROOT . $attachment->getAttachmentFolder() . $attachment->getFilename();
-                $f = $this->modifyPath($f);
-                $this->logInfo(sprintf('uri: %s', $f));
-                
-                if (is_file($f))
-                {
-                    header('Content-Type: ' . $attachment->getFiletype());
-                    header("Content-Transfer-Encoding: Binary");
-                    header('Content-Disposition: attachment; filename="' . $attachment->getFilenameOriginal() . '"');
-                    readfile($f);
-                    //$this->logInfo(sprintf('length: %s', strlen($output)));
-                    exit(); 
-                }
-        
-                
-            } catch (Exception $e) {
-                $this->logException($e);
-                return $this->redirect()->toRoute('not_found');
-            }
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
-    }
     
-    public function downloadTmp()
+    public function downloadAction()
     {
         $request = $this->getRequest();
         
@@ -1366,7 +1309,66 @@ class PoAttachmentController extends AbstractGenericController
             return $this->redirect()->toRoute('access_denied');
         }
     }
+    
 
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function download1Action()
+    {
+        $request = $this->getRequest();
+
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $entity_id = (int) $this->params()->fromQuery('entity_id');
+        $checksum = $this->params()->fromQuery('checksum');
+        $token = $this->params()->fromQuery('token');
+
+        if ($token == '') {
+            $token = null;
+        }
+
+        $criteria = array(
+            'id' => $entity_id,
+            'checksum' => $checksum,
+            'token' => $token
+            // 'markedForDeletion' => 0,
+        );
+
+        $attachment = new NmtApplicationAttachment();
+        $tmp_attachment = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
+        $attachment = $tmp_attachment;
+
+        if ($attachment !== null) {
+            try {
+                $f = ROOT . $attachment->getAttachmentFolder() . $attachment->getFilename();
+                $f = $this->modifyPath($f);
+                $this->logInfo(sprintf('uri: %s', $f));
+                
+                if (is_file($f))
+                {
+                    header('Content-Type: ' . $attachment->getFiletype());
+                    header("Content-Transfer-Encoding: Binary");
+                    header('Content-Disposition: attachment; filename="' . $attachment->getFilenameOriginal() . '"');
+                    readfile($f);
+                    //$this->logInfo(sprintf('length: %s', strlen($output)));
+                    exit(); 
+                }
+        
+                
+            } catch (Exception $e) {
+                $this->logException($e);
+                return $this->redirect()->toRoute('not_found');
+            }
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+    }
+    
+   
     /**
      *
      * @deprecated

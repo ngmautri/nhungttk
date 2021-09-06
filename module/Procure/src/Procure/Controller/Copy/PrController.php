@@ -1691,6 +1691,12 @@ class PrController extends AbstractGenericController
                 return;
             }
             // echo $folder;
+            
+            /**
+             * Important! for UBUNTU
+             */
+            $folder = str_replace('\\', '/', $folder);
+            
 
             $imageContent = file_get_contents($folder);
             $response = $this->getResponse();

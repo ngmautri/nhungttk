@@ -9,13 +9,14 @@ use Application\Entity\NmtApplicationAttachment;
 use Zend\Http\Headers;
 use Zend\Validator\Date;
 use Zend\Math\Rand;
+use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GrAttachmentController extends AbstractActionController {
+class GrAttachmentController extends AbstractGenericController {
 	
 	/**
 	 *
@@ -568,7 +569,10 @@ class GrAttachmentController extends AbstractActionController {
 		$pic = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
 		if ($pic !== null) {
 			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . $pic->getFileName ();
-			$imageContent = file_get_contents ( $pic_folder );
+			
+			
+			
+			$imageContent = file_get_contents ( $this->modifyPath(mo$pic_folder) );
 			
 			$response = $this->getResponse ();
 			
@@ -606,7 +610,7 @@ class GrAttachmentController extends AbstractActionController {
 		
 		if ($pic !== null) {
 			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . "thumbnail_200_" . $pic->getFileName ();
-			$imageContent = file_get_contents ( $pic_folder );
+			$imageContent = file_get_contents ( $this->modifyPath($pic_folder ));
 			
 			$response = $this->getResponse ();
 			
@@ -1549,7 +1553,7 @@ class GrAttachmentController extends AbstractActionController {
 		
 		if ($attachment !== null) {
 			$f = ROOT . $attachment->getAttachmentFolder() . DIRECTORY_SEPARATOR . $attachment->getFilename ();
-			$output = file_get_contents ( $f );
+			$output = file_get_contents ( $this->modifyPath($f) );
 			
 			$response = $this->getResponse ();
 			$headers = new Headers ();

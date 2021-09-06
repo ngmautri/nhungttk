@@ -9,21 +9,20 @@
  */
 namespace Procure\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
-use Application\Domain\Util\Pagination\Paginator;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Entity\NmtApplicationAttachment;
+use Doctrine\ORM\EntityManager;
 use Zend\Http\Headers;
-use Zend\Validator\Date;
 use Zend\Math\Rand;
+use Zend\Validator\Date;
+use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author nmt
  *        
  */
-class PoAttachmentController extends AbstractActionController
+class PoAttachmentController extends AbstractGenericController
 {
 
     /**
@@ -38,8 +37,7 @@ class PoAttachmentController extends AbstractActionController
 
     const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ___";
 
-    protected $doctrineEM;
-
+  
     /*
      * Defaul Action
      */
@@ -597,7 +595,7 @@ class PoAttachmentController extends AbstractActionController
         $pic = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
         if ($pic !== null) {
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . $pic->getFileName();
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -679,7 +677,7 @@ class PoAttachmentController extends AbstractActionController
         if ($pic !== null) {
 
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -1297,7 +1295,7 @@ class PoAttachmentController extends AbstractActionController
 
         if ($attachment !== null) {
             $f = ROOT . $attachment->getAttachmentFolder() . DIRECTORY_SEPARATOR . $attachment->getFilename();
-            $output = file_get_contents($f);
+              $output = file_get_contents($this->modifyPath($f));
 
             $response = $this->getResponse();
             $headers = new Headers();
@@ -1318,7 +1316,7 @@ class PoAttachmentController extends AbstractActionController
     }
 
     /**
-     *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function updateTokenAction()
@@ -1353,23 +1351,6 @@ class PoAttachmentController extends AbstractActionController
         ));
     }
 
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-
-    /**
-     *
-     * @return \Zend\Stdlib\ResponseInterface
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
+    
+    
 }

@@ -9,13 +9,14 @@ use Application\Entity\NmtApplicationAttachment;
 use Zend\Http\Headers;
 use Zend\Validator\Date;
 use Zend\Math\Rand;
+use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class QuoteAttachmentController extends AbstractActionController
+class QuoteAttachmentController extends AbstractGenericController
 {
 
     /**
@@ -608,7 +609,7 @@ class QuoteAttachmentController extends AbstractActionController
              */
             $pic_folder = str_replace('\\', '/', $pic_folder);
             
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
             
             $response = $this->getResponse();
             
@@ -655,7 +656,7 @@ class QuoteAttachmentController extends AbstractActionController
              */
             $pic_folder = str_replace('\\', '/', $pic_folder);
             
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
             
             $response = $this->getResponse();
             
@@ -701,7 +702,7 @@ class QuoteAttachmentController extends AbstractActionController
              */
             $pic_folder = str_replace('\\', '/', $pic_folder);
             
-            $imageContent = file_get_contents($pic_folder);
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
             
             $response = $this->getResponse();
             
@@ -1641,7 +1642,7 @@ class QuoteAttachmentController extends AbstractActionController
         
         if ($attachment !== null) {
             $f = ROOT . $attachment->getAttachmentFolder() . DIRECTORY_SEPARATOR . $attachment->getFilename();
-            $output = file_get_contents($f);
+            $output = file_get_contents($this->modifyPath($f));
             
             $response = $this->getResponse();
             $headers = new Headers();

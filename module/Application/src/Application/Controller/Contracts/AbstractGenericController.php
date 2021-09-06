@@ -31,6 +31,17 @@ class AbstractGenericController extends AbstractActionController
     protected $company;
 
     protected $formOptionCollection;
+    
+    
+    protected function modifyPath($path)
+    {
+        if($path==null){
+            return null;
+        }
+       
+        return str_replace('\\', '/', $path);
+        
+    }
 
     protected function getGETparam($name, $default = null)
     {

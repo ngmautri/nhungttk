@@ -67,7 +67,7 @@ class RepTest extends PHPUnit_Framework_TestCase
             // \var_dump($result);
             var_dump($result1);
         } catch (InvalidArgumentException $e) {
-            var_dump($e->getMessage());
+            var_dump($e);
         }
     }
 }

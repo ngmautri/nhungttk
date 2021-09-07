@@ -11,6 +11,10 @@ use Procure\Domain\RowSnapshot;
 class PRRowSnapshot extends RowSnapshot
 {
 
+    public $draftQoQuantity;
+    
+    public $postedQouantity;    
+    
     public $draftPoQuantity;
 
     public $postedPoQuantity;
@@ -52,6 +56,38 @@ class PRRowSnapshot extends RowSnapshot
     public $edt;
 
     public $project;
+
+    /**
+     * @return mixed
+     */
+    public function getDraftQoQuantity()
+    {
+        return $this->draftQoQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostedQouantity()
+    {
+        return $this->postedQouantity;
+    }
+
+    /**
+     * @param mixed $draftQoQuantity
+     */
+    public function setDraftQoQuantity($draftQoQuantity)
+    {
+        $this->draftQoQuantity = $draftQoQuantity;
+    }
+
+    /**
+     * @param mixed $postedQouantity
+     */
+    public function setPostedQouantity($postedQouantity)
+    {
+        $this->postedQouantity = $postedQouantity;
+    }
 
     /**
      *

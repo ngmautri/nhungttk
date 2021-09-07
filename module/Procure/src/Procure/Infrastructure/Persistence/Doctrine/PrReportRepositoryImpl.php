@@ -181,7 +181,10 @@ WHERE 1
             }
 
             // $localSnapshot = new PRRowSnapshot();
-
+            
+            $localSnapshot->draftQoQuantity = $r["qo_qty"];
+            $localSnapshot->postedQoQuantity = $r["posted_qo_qty"];
+            
             $localSnapshot->draftPoQuantity = $r["po_qty"];
             $localSnapshot->postedPoQuantity = $r["posted_po_qty"];
 

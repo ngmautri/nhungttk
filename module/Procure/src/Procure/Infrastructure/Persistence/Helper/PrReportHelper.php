@@ -219,7 +219,7 @@ WHERE 1
             return null;
         }
 
-        $sql = PrSQL::PR_ROW_SQL;
+        $sql = PrSQL::PR_ROW_SQL_V1;
 
         $sql_tmp1 = '';
         if ($filter->getIsActive() == 1) {
@@ -268,7 +268,7 @@ WHERE 1
         $sql = sprintf($sql, $sql_tmp1);
         $sql = $sql . ";";
 
-        // echo $sql;
+        //echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
@@ -276,6 +276,9 @@ WHERE 1
 
             $rsm->addScalarResult("pr_qty", "pr_qty");
 
+            $rsm->addScalarResult("qo_qty", "qo_qty");
+            $rsm->addScalarResult("posted_qo_qty", "posted_qo_qty");
+            
             $rsm->addScalarResult("po_qty", "po_qty");
             $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
 
@@ -310,7 +313,7 @@ WHERE 1
             return null;
         }
 
-        $sql = PrSQL::PR_ROW_SQL;
+        $sql = PrSQL::PR_ROW_SQL_V1;
 
         $sql_tmp1 = '';
 

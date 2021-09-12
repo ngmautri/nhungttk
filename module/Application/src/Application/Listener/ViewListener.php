@@ -60,7 +60,8 @@ class ViewListener implements ListenerAggregateInterface
          * );
          */
         $body = $e->getResponse()->getContent();
-        $html = ' <a target="_blank" href="https://github.com/ngmautri/nhungttk" style="font-size:8.5pt; color:gray;">(Github)</a>';
+        $html = ' <a target="_blank" href="https://github.com/ngmautri/nhungttk" style="font-size:8.5pt; color:gray;">(Github)</a>';        
+        $html .= ' - <a target="_blank" href="https://www.youtube.com/channel/UCU3pVFp25_88dwwt71d6gOA" style="font-size:8.5pt; color:gray;">Demo on Youtube</a>';        
         $html .= '<br><span style="font-size:8.5pt; color:gray;">Page loaded in: ';
         $html .= round(microtime(true) - TIMESTAMP_START, 5) * 1000 . 'ms';
         $html .= '</span>';

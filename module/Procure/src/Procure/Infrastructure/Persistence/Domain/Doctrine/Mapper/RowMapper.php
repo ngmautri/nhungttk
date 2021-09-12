@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Infrastructure\Mapper;
+namespace Procure\Infrastructure\Persistence\Domain\Doctrine\Mapper;
 
 use Application\Entity\FinAccount;
 use Application\Entity\FinCostCenter;

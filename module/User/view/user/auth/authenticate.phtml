@@ -1,3 +1,4 @@
+       
 	
 <h3>Login <i class="fa fa-lock" aria-hidden="true"></i>
 </h3>
@@ -17,7 +18,8 @@ if (! $messages == null) {
 ?>
 
 
-
+<div style="border: 1px; border-color:graytext ; border-style:solid;padding-top: 30px; height:150pt; font-size: 10pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+      
 <form class="form-horizontal"
 	action="<?php echo $this->baseUrl ?>/user/auth/authenticate"
 	method="post" enctype="multipart/form-data" id="authentication">
@@ -45,10 +47,14 @@ if (! $messages == null) {
 		</div>
 	</div>
 </form>
-<hr>
 
+
+<!-- 
+<hr>
 <div class="alert alert-warning">
 	<Strong>Info: </Strong>If you're new user, please <a
 		href="<?php echo $this->baseUrl ?>/user/index/register">click here</a>
 	to register.
 </div>
+ -->
+ </div>

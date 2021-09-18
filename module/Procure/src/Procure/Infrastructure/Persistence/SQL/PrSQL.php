@@ -288,18 +288,28 @@ SELECT
 
     IFNULL(nmt_procure_qo_row.qo_qty,0) AS qo_qty,
     IFNULL(nmt_procure_qo_row.posted_qo_qty,0) AS posted_qo_qty,
+    IFNULL(nmt_procure_qo_row.standard_qo_qty,0) AS standard_qo_qty,
+    IFNULL(nmt_procure_qo_row.posted_standard_qo_qty,0) AS posted_standard_qo_qty,
 
     IFNULL(nmt_procure_po_row.po_qty,0) AS po_qty,
     IFNULL(nmt_procure_po_row.posted_po_qty,0) AS posted_po_qty,
+    IFNULL(nmt_procure_po_row.standard_po_qty,0) AS standard_po_qty,
+    IFNULL(nmt_procure_po_row.posted_standard_po_qty,0) AS posted_standard_po_qty,
         
     IFNULL(nmt_procure_gr_row.gr_qty,0) AS gr_qty,
     IFNULL(nmt_procure_gr_row.posted_gr_qty,0) AS posted_gr_qty,
+    IFNULL(nmt_procure_gr_row.standard_gr_qty,0) AS standard_gr_qty,
+    IFNULL(nmt_procure_gr_row.posted_standard_po_qty,0) AS posted_standard_gr_qty,
         
     IFNULL(nmt_inventory_trx.stock_gr_qty,0) AS stock_gr_qty,
     IFNULL(nmt_inventory_trx.posted_stock_gr_qty,0) AS posted_stock_gr_qty,
-        
+    IFNULL(nmt_inventory_trx.standard_stock_gr_qty,0) AS standard_stock_gr_qty,
+    IFNULL(nmt_inventory_trx.posted_standard_stock_gr_qty,0) AS posted_standard_stock_gr_qty,
+       
     IFNULL(fin_vendor_invoice_row.ap_qty,0) AS ap_qty,
     IFNULL(fin_vendor_invoice_row.posted_ap_qty,0) AS posted_ap_qty,
+    IFNULL(fin_vendor_invoice_row.standard_ap_qty,0) AS standard_ap_qty,
+    IFNULL(fin_vendor_invoice_row.posted_standard_ap_qty,0) AS posted_standard_ap_qty,
         
     last_ap.vendor_name as last_vendor_name,
     last_ap.unit_price as last_unit_price,

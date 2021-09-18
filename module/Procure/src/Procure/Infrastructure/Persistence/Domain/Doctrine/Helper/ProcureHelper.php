@@ -9,6 +9,8 @@ namespace Procure\Infrastructure\Persistence\Domain\Doctrine\Helper;
  */
 class ProcureHelper
 {
+   
+        
 
  
 }

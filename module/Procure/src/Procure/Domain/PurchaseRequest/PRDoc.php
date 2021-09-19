@@ -3,13 +3,11 @@ namespace Procure\Domain\PurchaseRequest;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Constants;
-use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Pr\PrHeaderCreated;
-use Procure\Domain\Event\Pr\PrHeaderUpdated;
 use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
 use Procure\Domain\PurchaseRequest\Validator\ValidatorFactory;
@@ -22,7 +20,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 final class PRDoc extends GenericPR
 {
@@ -30,7 +28,9 @@ final class PRDoc extends GenericPR
     private static $instance = null;
 
     private function __construct()
-    {}
+    {
+        // left bank
+    }
 
     protected function cloneDoc(CommandOptions $options)
     {
@@ -57,6 +57,25 @@ final class PRDoc extends GenericPR
         $this->setLocalCurrency($c->getDefaultCurrency());
         $this->prName = \sprintf("%s (copied)", $this->prName);
         $this->prNumber = \sprintf("%s (copied)", $this->prNumber);
+    }
+
+    /**
+     *
+     * @return \Procure\Domain\PurchaseRequest\PRDoc
+     */
+    public static function getInstance()
+    {
+        if (self::$instance == null) {
+            self::$instance = new PRDoc();
+        }
+        return self::$instance;
+    }
+
+    public function specify()
+    {
+        $this->setDocType(ProcureDocType::PR);
+        $this->setDocNumber($this->getPrNumber());
+        $this->setPrName($this->getPrNumber());
     }
 
     public function cloneAndSave(CommandOptions $options, SharedService $sharedService)
@@ -136,189 +155,6 @@ final class PRDoc extends GenericPR
     public function makeSnapshot()
     {
         return GenericObjectAssembler::updateAllFieldsFrom(new PRSnapshot(), $this);
-    }
-
-    public function makeDetailsSnapshot()
-    {
-        $snapshot = new PRSnapshot();
-        $snapshot = SnapshotAssembler::createSnapshotFrom($this, $snapshot);
-        return $snapshot;
-    }
-
-    /**
-     *
-     * @param PRSnapshot $snapshot
-     * @return void|\Procure\Domain\GoodsReceipt\GRDoc
-     */
-    public static function makeFromSnapshot(PRSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof PRSnapshot)
-            return;
-
-        if ($snapshot->uuid == null) {
-            $snapshot->uuid = Uuid::uuid4()->toString();
-        }
-
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
-    }
-
-    /**
-     *
-     * @return \Procure\Domain\PurchaseRequest\PRDoc
-     */
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new PRDoc();
-        }
-        return self::$instance;
-    }
-
-    public static function createFrom(PRSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
-    {
-        Assert::notNull($snapshot, "PO snapshot not found");
-        Assert::notNull($options, "command options not found");
-        $validationService = ValidatorFactory::create($sharedService);
-
-        $snapshot->initDoc($options);
-
-        $instance = new self();
-        PRSnapshotAssembler::updateEntityAllFieldsFrom($instance, $snapshot);
-        $instance->setDocType(ProcureDocType::PR);
-        $instance->setDocNumber($instance->getPrNumber());
-        $instance->setPrName($instance->getPrNumber());
-
-        $instance->validateHeader($validationService->getHeaderValidators());
-
-        if ($instance->hasErrors()) {
-            throw new \RuntimeException($instance->getNotification()->errorMessage());
-        }
-
-        $instance->clearEvents();
-
-        /**
-         *
-         * @var PRSnapshot $rootSnapshot
-         * @var PrCmdRepositoryInterface $rep ;
-         */
-
-        $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->storeHeader($instance);
-
-        if ($rootSnapshot == null) {
-            throw new \RuntimeException(sprintf("Error orcured when creating PR #%s", $instance->getId()));
-        }
-
-        $instance->updateIdentityFrom($rootSnapshot);
-
-        $target = $rootSnapshot;
-        $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
-        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
-        $defaultParams->setTriggeredBy($options->getTriggeredBy());
-        $defaultParams->setUserId($options->getUserId());
-        $params = null;
-
-        $event = new PrHeaderCreated($target, $defaultParams, $params);
-        $instance->addEvent($event);
-
-        return $instance;
-    }
-
-    /**
-     *
-     * @param GenericPR $rootEntity
-     * @param PRSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param array $params
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
-     * @return \Procure\Domain\PurchaseRequest\GenericPR
-     */
-    public static function updateFrom(GenericPR $rootEntity, PRSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
-    {
-        Assert::notEq($rootEntity->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is already posted! %s", $rootEntity->getId()));
-        Assert::notNull($snapshot, "PR snapshot not found");
-        Assert::notNull($options, "Command options not found");
-        $validationService = ValidatorFactory::create($sharedService);
-
-        $snapshot->prName = $snapshot->prNumber;
-
-        PRSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);
-
-        $rootEntity->validateHeader($validationService->getHeaderValidators());
-
-        if ($rootEntity->hasErrors()) {
-            throw new \RuntimeException(sprintf("%s-%s", $rootEntity->getNotification()->errorMessage(), __FUNCTION__));
-        }
-
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $rootEntity->markDocAsChanged($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-
-        $rootEntity->clearEvents();
-
-        /**
-         *
-         * @var PRSnapshot $rootSnapshot
-         * @var PrCmdRepositoryInterface $rep ;
-         */
-
-        $rep = $sharedService->getPostingService()->getCmdRepository();
-
-        $rootSnapshot = $rep->storeHeader($rootEntity, false);
-        $target = $rootSnapshot;
-        $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
-        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
-        $defaultParams->setTriggeredBy($options->getTriggeredBy());
-        $defaultParams->setUserId($options->getUserId());
-        $params = null;
-
-        $event = new PrHeaderUpdated($target, $defaultParams, $params);
-        $rootEntity->addEvent($event);
-        return $rootEntity;
-    }
-
-    /**
-     *
-     * @param PRSnapshot $snapshot
-     * @return void|\Procure\Domain\PurchaseRequest\PRDoc
-     */
-    public static function constructFromDetailsSnapshot(PRSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof PRSnapshot) {
-            return;
-        }
-
-        if ($snapshot->uuid == null) {
-            $snapshot->uuid = Uuid::uuid4()->toString();
-        }
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
-    }
-
-    public static function constructFromSnapshot(PRSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof PRSnapshot) {
-            return;
-        }
-
-        if ($snapshot->uuid == null) {
-            $snapshot->uuid = Uuid::uuid4()->toString();
-            $snapshot->token = $snapshot->uuid;
-        }
-
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
     }
 
     /**

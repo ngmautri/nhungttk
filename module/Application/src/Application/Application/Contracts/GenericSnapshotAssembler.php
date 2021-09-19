@@ -7,7 +7,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GenericSnapshotAssembler
 {
@@ -174,9 +174,80 @@ class GenericSnapshotAssembler
         Assert::notNull($className);
         $reflectionClass = new \ReflectionClass($className);
         $itemProperites = $reflectionClass->getProperties();
+
+        $currentClz = '';
+
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
+
+            /**
+             *
+             * @var \ReflectionProperty $property ;
+             */
+
+            if ($property->getDeclaringClass()->getName() != $currentClz) {
+                $f = "                
+                /*
+                 * |=============================
+                 * | %s
+                 * |
+                 * |=============================
+                 */\n
+                ";
+                print sprintf($f, $property->getDeclaringClass()->getName());
+                $currentClz = $property->getDeclaringClass()->getName();
+            }
+
+            print "\n" . "public $" . $propertyName . ";";
+        }
+    }
+
+    public static function createAllSnapshotPropsExclude($className, $excludeClassName1)
+    {
+        Assert::notNull($className);
+        Assert::notNull($excludeClassName1);
+
+        $reflectionClass = new \ReflectionClass($excludeClassName1);
+        $itemProperites = $reflectionClass->getProperties();
+
+        $excludeFields = [];
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $excludeFields[] = $property->getName();
+        }
+
+        $reflectionClass = new \ReflectionClass($className);
+        $itemProperites = $reflectionClass->getProperties();
+
+        $currentClz = '';
+
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (in_array($propertyName, $excludeFields)) {
+                continue;
+            }
+
+            /**
+             *
+             * @var \ReflectionProperty $property ;
+             */
+
+            if ($property->getDeclaringClass()->getName() != $currentClz) {
+                $f = "
+                /*
+                 * |=============================
+                 * | %s
+                 * |
+                 * |=============================
+                 */\n
+                ";
+                print sprintf($f, $property->getDeclaringClass()->getName());
+                $currentClz = $property->getDeclaringClass()->getName();
+            }
+
             print "\n" . "public $" . $propertyName . ";";
         }
     }
@@ -190,6 +261,13 @@ class GenericSnapshotAssembler
         $result = "[%s]";
         $tmp = '';
         foreach ($itemProperites as $property) {
+
+            /**
+             *
+             * @var \ReflectionProperty $property ;
+             */
+
+            $property->getDeclaringClass()->getName();
             $property->setAccessible(true);
             $propertyName = $property->getName();
             $tmp = $tmp . "\n\"" . $propertyName . "\",";
@@ -205,10 +283,25 @@ class GenericSnapshotAssembler
         $reflectionClass = new \ReflectionClass($className);
 
         $props = $reflectionClass->getProperties();
+        $currentClz = '';
 
         foreach ($props as $property) {
             // echo $property->class . "\n";
             if ($property->class == $reflectionClass->getName() || $property->class != $baseClass) {
+
+                if ($property->getDeclaringClass()->getName() != $currentClz) {
+                    $f = "
+                /*
+                 * |=============================
+                 * | %s
+                 * |
+                 * |=============================
+                 */\n
+                ";
+                    print sprintf($f, $property->getDeclaringClass()->getName());
+                    $currentClz = $property->getDeclaringClass()->getName();
+                }
+
                 $property->setAccessible(true);
                 $propertyName = $property->getName();
                 print "\n" . "public $" . $propertyName . ";";

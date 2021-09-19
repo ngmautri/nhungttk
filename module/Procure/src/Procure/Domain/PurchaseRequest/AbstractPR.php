@@ -10,4 +10,197 @@ use Procure\Domain\GenericDoc;
  */
 abstract class AbstractPR extends GenericDoc
 {
+
+    /*
+     * |=============================
+     * | Specific Attributes
+     * |
+     * |=============================
+     */
+    protected $prAutoNumber;
+
+    protected $prNumber;
+
+    protected $prName;
+
+    protected $keywords;
+
+    protected $status;
+
+    protected $checksum;
+
+    protected $submittedOn;
+
+    protected $totalRowManual;
+
+    protected $department;
+
+    /*
+     * |=============================
+     * | Setter and Getter
+     * |
+     * |=============================
+     */
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrAutoNumber()
+    {
+        return $this->prAutoNumber;
+    }
+
+    /**
+     *
+     * @param mixed $prAutoNumber
+     */
+    protected function setPrAutoNumber($prAutoNumber)
+    {
+        $this->prAutoNumber = $prAutoNumber;
+    }
+
+    /**
+     *
+     * @param mixed $prNumber
+     */
+    protected function setPrNumber($prNumber)
+    {
+        $this->prNumber = $prNumber;
+    }
+
+    /**
+     *
+     * @param mixed $prName
+     */
+    protected function setPrName($prName)
+    {
+        $this->prName = $prName;
+    }
+
+    /**
+     *
+     * @param mixed $keywords
+     */
+    protected function setKeywords($keywords)
+    {
+        $this->keywords = $keywords;
+    }
+
+    /**
+     *
+     * @param mixed $status
+     */
+    protected function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     *
+     * @param mixed $checksum
+     */
+    protected function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+    }
+
+    /**
+     *
+     * @param mixed $submittedOn
+     */
+    protected function setSubmittedOn($submittedOn)
+    {
+        $this->submittedOn = $submittedOn;
+    }
+
+    /**
+     *
+     * @param mixed $totalRowManual
+     */
+    protected function setTotalRowManual($totalRowManual)
+    {
+        $this->totalRowManual = $totalRowManual;
+    }
+
+    /**
+     *
+     * @param mixed $department
+     */
+    protected function setDepartment($department)
+    {
+        $this->department = $department;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrNumber()
+    {
+        return $this->prNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrName()
+    {
+        return $this->prName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getKeywords()
+    {
+        return $this->keywords;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSubmittedOn()
+    {
+        return $this->submittedOn;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalRowManual()
+    {
+        return $this->totalRowManual;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
 }

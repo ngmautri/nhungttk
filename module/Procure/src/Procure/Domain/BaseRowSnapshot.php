@@ -7,10 +7,80 @@ use Application\Domain\Shared\AbstractDTO;
  * Row Snapshot
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class BaseRowSnapshot extends AbstractDTO
 {
+
+    /*
+     * |=============================
+     * | Procure\Domain\GenericRow
+     * |
+     * |=============================
+     */
+    public $exculdedProps;
+
+    public $docUomVO;
+
+    public $itemStandardUomVO;
+
+    public $uomPairVO;
+
+    public $docQuantityVO;
+
+    public $itemStandardQuantityVO;
+
+    public $docCurrencyVO;
+
+    public $localCurrencyVO;
+
+    public $currencyPair;
+
+    public $docUnitPriceVO;
+
+    public $docItemStandardUnitPriceVO;
+
+    public $docNetAmountVO;
+
+    public $docTaxAmountVO;
+
+    public $docGrossAmountVO;
+
+    public $localUnitPriceVO;
+
+    public $localItemStandardUnitPriceVO;
+
+    public $LocalNetAmountVO;
+
+    public $localTaxAmountVO;
+
+    public $localGrossAmountVO;
+
+    /*
+     * |=============================
+     * | Procure\Domain\BaseRow
+     * |
+     * |=============================
+     */
+    public $standardQuantity;
+
+    public $standardUnitPriceInDocCurrency;
+
+    public $standardUnitPriceInLocCurrency;
+
+    public $docQuantityObject;
+
+    public $baseUomPair;
+
+    public $docUnitPriceObject;
+
+    public $baseDocUnitPriceObject;
+
+    public $localUnitPriceObject;
+
+    public $baseLocalUnitPriceObject;
+
+    public $localStandardUnitPrice;
 
     public $createdByName;
 
@@ -178,6 +248,12 @@ class BaseRowSnapshot extends AbstractDTO
 
     public $prWarehouseName;
 
+    /*
+     * |=============================
+     * | Procure\Domain\AbstractRow
+     * |
+     * |=============================
+     */
     public $id;
 
     public $rowNumber;
@@ -319,6 +395,267 @@ class BaseRowSnapshot extends AbstractDTO
     public $clearingDocId;
 
     public $brand;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getExculdedProps()
+    {
+        return $this->exculdedProps;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocUomVO()
+    {
+        return $this->docUomVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemStandardUomVO()
+    {
+        return $this->itemStandardUomVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUomPairVO()
+    {
+        return $this->uomPairVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocQuantityVO()
+    {
+        return $this->docQuantityVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemStandardQuantityVO()
+    {
+        return $this->itemStandardQuantityVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocCurrencyVO()
+    {
+        return $this->docCurrencyVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalCurrencyVO()
+    {
+        return $this->localCurrencyVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCurrencyPair()
+    {
+        return $this->currencyPair;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocUnitPriceVO()
+    {
+        return $this->docUnitPriceVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocItemStandardUnitPriceVO()
+    {
+        return $this->docItemStandardUnitPriceVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocNetAmountVO()
+    {
+        return $this->docNetAmountVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocTaxAmountVO()
+    {
+        return $this->docTaxAmountVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocGrossAmountVO()
+    {
+        return $this->docGrossAmountVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalUnitPriceVO()
+    {
+        return $this->localUnitPriceVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalItemStandardUnitPriceVO()
+    {
+        return $this->localItemStandardUnitPriceVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalNetAmountVO()
+    {
+        return $this->LocalNetAmountVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalTaxAmountVO()
+    {
+        return $this->localTaxAmountVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalGrossAmountVO()
+    {
+        return $this->localGrossAmountVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardQuantity()
+    {
+        return $this->standardQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardUnitPriceInDocCurrency()
+    {
+        return $this->standardUnitPriceInDocCurrency;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardUnitPriceInLocCurrency()
+    {
+        return $this->standardUnitPriceInLocCurrency;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocQuantityObject()
+    {
+        return $this->docQuantityObject;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBaseUomPair()
+    {
+        return $this->baseUomPair;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocUnitPriceObject()
+    {
+        return $this->docUnitPriceObject;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBaseDocUnitPriceObject()
+    {
+        return $this->baseDocUnitPriceObject;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalUnitPriceObject()
+    {
+        return $this->localUnitPriceObject;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBaseLocalUnitPriceObject()
+    {
+        return $this->baseLocalUnitPriceObject;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalStandardUnitPrice()
+    {
+        return $this->localStandardUnitPrice;
+    }
 
     /**
      *
@@ -1699,6 +2036,276 @@ class BaseRowSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     *
+     * @param mixed $exculdedProps
+     */
+    public function setExculdedProps($exculdedProps)
+    {
+        $this->exculdedProps = $exculdedProps;
+    }
+
+    /**
+     *
+     * @param mixed $docUomVO
+     */
+    public function setDocUomVO($docUomVO)
+    {
+        $this->docUomVO = $docUomVO;
+    }
+
+    /**
+     *
+     * @param mixed $itemStandardUomVO
+     */
+    public function setItemStandardUomVO($itemStandardUomVO)
+    {
+        $this->itemStandardUomVO = $itemStandardUomVO;
+    }
+
+    /**
+     *
+     * @param mixed $uomPairVO
+     */
+    public function setUomPairVO($uomPairVO)
+    {
+        $this->uomPairVO = $uomPairVO;
+    }
+
+    /**
+     *
+     * @param mixed $docQuantityVO
+     */
+    public function setDocQuantityVO($docQuantityVO)
+    {
+        $this->docQuantityVO = $docQuantityVO;
+    }
+
+    /**
+     *
+     * @param mixed $itemStandardQuantityVO
+     */
+    public function setItemStandardQuantityVO($itemStandardQuantityVO)
+    {
+        $this->itemStandardQuantityVO = $itemStandardQuantityVO;
+    }
+
+    /**
+     *
+     * @param mixed $docCurrencyVO
+     */
+    public function setDocCurrencyVO($docCurrencyVO)
+    {
+        $this->docCurrencyVO = $docCurrencyVO;
+    }
+
+    /**
+     *
+     * @param mixed $localCurrencyVO
+     */
+    public function setLocalCurrencyVO($localCurrencyVO)
+    {
+        $this->localCurrencyVO = $localCurrencyVO;
+    }
+
+    /**
+     *
+     * @param mixed $currencyPair
+     */
+    public function setCurrencyPair($currencyPair)
+    {
+        $this->currencyPair = $currencyPair;
+    }
+
+    /**
+     *
+     * @param mixed $docUnitPriceVO
+     */
+    public function setDocUnitPriceVO($docUnitPriceVO)
+    {
+        $this->docUnitPriceVO = $docUnitPriceVO;
+    }
+
+    /**
+     *
+     * @param mixed $docItemStandardUnitPriceVO
+     */
+    public function setDocItemStandardUnitPriceVO($docItemStandardUnitPriceVO)
+    {
+        $this->docItemStandardUnitPriceVO = $docItemStandardUnitPriceVO;
+    }
+
+    /**
+     *
+     * @param mixed $docNetAmountVO
+     */
+    public function setDocNetAmountVO($docNetAmountVO)
+    {
+        $this->docNetAmountVO = $docNetAmountVO;
+    }
+
+    /**
+     *
+     * @param mixed $docTaxAmountVO
+     */
+    public function setDocTaxAmountVO($docTaxAmountVO)
+    {
+        $this->docTaxAmountVO = $docTaxAmountVO;
+    }
+
+    /**
+     *
+     * @param mixed $docGrossAmountVO
+     */
+    public function setDocGrossAmountVO($docGrossAmountVO)
+    {
+        $this->docGrossAmountVO = $docGrossAmountVO;
+    }
+
+    /**
+     *
+     * @param mixed $localUnitPriceVO
+     */
+    public function setLocalUnitPriceVO($localUnitPriceVO)
+    {
+        $this->localUnitPriceVO = $localUnitPriceVO;
+    }
+
+    /**
+     *
+     * @param mixed $localItemStandardUnitPriceVO
+     */
+    public function setLocalItemStandardUnitPriceVO($localItemStandardUnitPriceVO)
+    {
+        $this->localItemStandardUnitPriceVO = $localItemStandardUnitPriceVO;
+    }
+
+    /**
+     *
+     * @param mixed $LocalNetAmountVO
+     */
+    public function setLocalNetAmountVO($LocalNetAmountVO)
+    {
+        $this->LocalNetAmountVO = $LocalNetAmountVO;
+    }
+
+    /**
+     *
+     * @param mixed $localTaxAmountVO
+     */
+    public function setLocalTaxAmountVO($localTaxAmountVO)
+    {
+        $this->localTaxAmountVO = $localTaxAmountVO;
+    }
+
+    /**
+     *
+     * @param mixed $localGrossAmountVO
+     */
+    public function setLocalGrossAmountVO($localGrossAmountVO)
+    {
+        $this->localGrossAmountVO = $localGrossAmountVO;
+    }
+
+    /**
+     *
+     * @param mixed $standardQuantity
+     */
+    public function setStandardQuantity($standardQuantity)
+    {
+        $this->standardQuantity = $standardQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardUnitPriceInDocCurrency
+     */
+    public function setStandardUnitPriceInDocCurrency($standardUnitPriceInDocCurrency)
+    {
+        $this->standardUnitPriceInDocCurrency = $standardUnitPriceInDocCurrency;
+    }
+
+    /**
+     *
+     * @param mixed $standardUnitPriceInLocCurrency
+     */
+    public function setStandardUnitPriceInLocCurrency($standardUnitPriceInLocCurrency)
+    {
+        $this->standardUnitPriceInLocCurrency = $standardUnitPriceInLocCurrency;
+    }
+
+    /**
+     *
+     * @param mixed $docQuantityObject
+     */
+    public function setDocQuantityObject($docQuantityObject)
+    {
+        $this->docQuantityObject = $docQuantityObject;
+    }
+
+    /**
+     *
+     * @param mixed $baseUomPair
+     */
+    public function setBaseUomPair($baseUomPair)
+    {
+        $this->baseUomPair = $baseUomPair;
+    }
+
+    /**
+     *
+     * @param mixed $docUnitPriceObject
+     */
+    public function setDocUnitPriceObject($docUnitPriceObject)
+    {
+        $this->docUnitPriceObject = $docUnitPriceObject;
+    }
+
+    /**
+     *
+     * @param mixed $baseDocUnitPriceObject
+     */
+    public function setBaseDocUnitPriceObject($baseDocUnitPriceObject)
+    {
+        $this->baseDocUnitPriceObject = $baseDocUnitPriceObject;
+    }
+
+    /**
+     *
+     * @param mixed $localUnitPriceObject
+     */
+    public function setLocalUnitPriceObject($localUnitPriceObject)
+    {
+        $this->localUnitPriceObject = $localUnitPriceObject;
+    }
+
+    /**
+     *
+     * @param mixed $baseLocalUnitPriceObject
+     */
+    public function setBaseLocalUnitPriceObject($baseLocalUnitPriceObject)
+    {
+        $this->baseLocalUnitPriceObject = $baseLocalUnitPriceObject;
+    }
+
+    /**
+     *
+     * @param mixed $localStandardUnitPrice
+     */
+    public function setLocalStandardUnitPrice($localStandardUnitPrice)
+    {
+        $this->localStandardUnitPrice = $localStandardUnitPrice;
+    }
+
+    /**
+     *
      * @param mixed $createdByName
      */
     public function setCreatedByName($createdByName)
@@ -3072,15 +3679,6 @@ class BaseRowSnapshot extends AbstractDTO
     public function setClearingDocId($clearingDocId)
     {
         $this->clearingDocId = $clearingDocId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getBrand()
-    {
-        return $this->brand;
     }
 
     /**

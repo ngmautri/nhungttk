@@ -3,18 +3,19 @@ namespace Procure\Application\Command\Doctrine\PR;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
-use Procure\Domain\PurchaseRequest\PRSnapshotAssembler;
+use Procure\Domain\PurchaseRequest\Factory\PrFactory;
 use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class CreateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -47,11 +48,13 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
              */
 
             $snapshot = new PRSnapshot();
-            PRSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            GenericObjectAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
             $this->setOutput($snapshot); // important;
 
             $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
-            $rootEntity = PRDoc::createFrom($snapshot, $options, $sharedService);
+            // $rootEntity = PRDoc::createFrom($snapshot, $options, $sharedService);
+
+            $rootEntity = PrFactory::createFrom($snapshot, $options, $sharedService);
 
             // event dispatch
             // ================

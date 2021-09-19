@@ -11,12 +11,13 @@ use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Domain\PurchaseRequest\PRSnapshotAssembler;
+use Procure\Domain\PurchaseRequest\Factory\PrFactory;
 use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UpdateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -35,7 +36,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
          * @var PRDoc $rootEntity ;
          * @var PRSnapshot $snapshot ;
          * @var UpdateHeaderCmdOptions $options ;
-         *
+         *     
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
         Assert::notNull($cmd->getData(), 'Input data in emty');
@@ -68,19 +69,27 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
-            $newRootEntity = PRDoc::updateFrom($rootEntity, $newSnapshot, $options, $params, $sharedService);
+            // $newRootEntity = PRDoc::updateFrom($rootEntity, $newSnapshot, $options, $params, $sharedService);
+            $newRootEntity = PrFactory::updateFrom($rootEntity, $newSnapshot, $options, $params, $sharedService);
 
-            // event dispatch
-            // ================
+            /*
+             * |=============================
+             * | Event dispatch
+             * |
+             * |=============================
+             */
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($newRootEntity->getRecordedEvents());
             }
-            // ================
 
-            // Check Version
-            // ==============
+            /*
+             * |=============================
+             * | Check Version
+             * |
+             * |=============================
+             */
             VersionChecker::checkPRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
-            // ===============
+
             $m = sprintf("PR #%s updated", $newRootEntity->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {

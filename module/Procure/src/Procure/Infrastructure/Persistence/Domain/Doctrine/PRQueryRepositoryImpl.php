@@ -4,8 +4,8 @@ namespace Procure\Infrastructure\Persistence\Domain\Doctrine;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
+use Procure\Domain\PurchaseRequest\Factory\PrFactory;
 use Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Infrastructure\Doctrine\SQL\PrSQL;
@@ -162,7 +162,7 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
             return null;
         }
 
-        return PRDoc::makeFromSnapshot($snapshot);
+        return PrFactory::constructFromDB($snapshot);
     }
 
     /**
@@ -219,7 +219,7 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
         $rows = $this->getRowsById($id);
 
         if (count($rows) == 0) {
-            $rootEntity = PRDoc::makeFromSnapshot($rootSnapshot);
+            $rootEntity = PrFactory::constructFromDB($rootSnapshot);
             return $rootEntity;
         }
 
@@ -278,7 +278,7 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
         $rootSnapshot->taxAmount = $taxAmount;
         $rootSnapshot->grossAmount = $grossAmount;
 
-        $rootEntity = PRDoc::makeFromSnapshot($rootSnapshot);
+        $rootEntity = PrFactory::constructFromDB($rootSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);
         return $rootEntity;

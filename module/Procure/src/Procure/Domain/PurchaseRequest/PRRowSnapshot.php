@@ -6,30 +6,62 @@ use Procure\Domain\RowSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PRRowSnapshot extends RowSnapshot
 {
 
-    public $draftQoQuantity;
-    
-    public $postedQouantity;    
-    
+    /*
+     * |=============================
+     * | Procure\Domain\PurchaseRequest\PRRow
+     * |
+     * |=============================
+     */
+    public $instance;
+
+    public $prId;
+
+    public $prQuantity;
+
+    public $qoQuantity;
+
+    public $standardQoQuantity;
+
+    public $postedQoQuantity;
+
+    public $postedStandardQoQuantity;
+
     public $draftPoQuantity;
+
+    public $standardPoQuantity;
 
     public $postedPoQuantity;
 
+    public $postedStandardPoQuantity;
+
     public $draftGrQuantity;
+
+    public $standardGrQuantity;
 
     public $postedGrQuantity;
 
-    public $draftApQuantity;
-
-    public $postedApQuantity;
+    public $postedStandardGrQuantity;
 
     public $draftStockQrQuantity;
 
+    public $standardStockQrQuantity;
+
     public $postedStockQrQuantity;
+
+    public $postedStandardStockQrQuantity;
+
+    public $draftApQuantity;
+
+    public $standardApQuantity;
+
+    public $postedApQuantity;
+
+    public $postedStandardApQuantity;
 
     public $lastVendorId;
 
@@ -37,8 +69,18 @@ class PRRowSnapshot extends RowSnapshot
 
     public $lastUnitPrice;
 
+    public $lastStandardUnitPrice;
+
+    public $lastStandardConvertFactor;
+
     public $lastCurrency;
 
+    /*
+     * |=============================
+     * | Procure\Domain\PurchaseRequest\BasePrRow
+     * |
+     * |=============================
+     */
     public $checksum;
 
     public $priority;
@@ -55,38 +97,78 @@ class PRRowSnapshot extends RowSnapshot
 
     public $edt;
 
+    public $variantId;
+
     public $project;
 
+    /*
+     * |=============================
+     * |Setter Getter
+     * |
+     * |=============================
+     */
+
     /**
+     *
      * @return mixed
      */
-    public function getDraftQoQuantity()
+    public function getInstance()
     {
-        return $this->draftQoQuantity;
+        return $this->instance;
     }
 
     /**
+     *
      * @return mixed
      */
-    public function getPostedQouantity()
+    public function getPrId()
     {
-        return $this->postedQouantity;
+        return $this->prId;
     }
 
     /**
-     * @param mixed $draftQoQuantity
+     *
+     * @return mixed
      */
-    public function setDraftQoQuantity($draftQoQuantity)
+    public function getPrQuantity()
     {
-        $this->draftQoQuantity = $draftQoQuantity;
+        return $this->prQuantity;
     }
 
     /**
-     * @param mixed $postedQouantity
+     *
+     * @return mixed
      */
-    public function setPostedQouantity($postedQouantity)
+    public function getQoQuantity()
     {
-        $this->postedQouantity = $postedQouantity;
+        return $this->qoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardQoQuantity()
+    {
+        return $this->standardQoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedQoQuantity()
+    {
+        return $this->postedQoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedStandardQoQuantity()
+    {
+        return $this->postedStandardQoQuantity;
     }
 
     /**
@@ -102,9 +184,27 @@ class PRRowSnapshot extends RowSnapshot
      *
      * @return mixed
      */
+    public function getStandardPoQuantity()
+    {
+        return $this->standardPoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getPostedPoQuantity()
     {
         return $this->postedPoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedStandardPoQuantity()
+    {
+        return $this->postedStandardPoQuantity;
     }
 
     /**
@@ -120,6 +220,15 @@ class PRRowSnapshot extends RowSnapshot
      *
      * @return mixed
      */
+    public function getStandardGrQuantity()
+    {
+        return $this->standardGrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getPostedGrQuantity()
     {
         return $this->postedGrQuantity;
@@ -129,18 +238,9 @@ class PRRowSnapshot extends RowSnapshot
      *
      * @return mixed
      */
-    public function getDraftApQuantity()
+    public function getPostedStandardGrQuantity()
     {
-        return $this->draftApQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedApQuantity()
-    {
-        return $this->postedApQuantity;
+        return $this->postedStandardGrQuantity;
     }
 
     /**
@@ -156,9 +256,63 @@ class PRRowSnapshot extends RowSnapshot
      *
      * @return mixed
      */
+    public function getStandardStockQrQuantity()
+    {
+        return $this->standardStockQrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getPostedStockQrQuantity()
     {
         return $this->postedStockQrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedStandardStockQrQuantity()
+    {
+        return $this->postedStandardStockQrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDraftApQuantity()
+    {
+        return $this->draftApQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardApQuantity()
+    {
+        return $this->standardApQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedApQuantity()
+    {
+        return $this->postedApQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedStandardApQuantity()
+    {
+        return $this->postedStandardApQuantity;
     }
 
     /**
@@ -186,6 +340,24 @@ class PRRowSnapshot extends RowSnapshot
     public function getLastUnitPrice()
     {
         return $this->lastUnitPrice;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastStandardUnitPrice()
+    {
+        return $this->lastStandardUnitPrice;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastStandardConvertFactor()
+    {
+        return $this->lastStandardConvertFactor;
     }
 
     /**
@@ -273,9 +445,9 @@ class PRRowSnapshot extends RowSnapshot
      *
      * @return mixed
      */
-    public function getConvertedStandardQuantiy()
+    public function getVariantId()
     {
-        return $this->convertedStandardQuantiy;
+        return $this->variantId;
     }
 
     /**
@@ -289,11 +461,83 @@ class PRRowSnapshot extends RowSnapshot
 
     /**
      *
+     * @param mixed $instance
+     */
+    public function setInstance($instance)
+    {
+        $this->instance = $instance;
+    }
+
+    /**
+     *
+     * @param mixed $prId
+     */
+    public function setPrId($prId)
+    {
+        $this->prId = $prId;
+    }
+
+    /**
+     *
+     * @param mixed $prQuantity
+     */
+    public function setPrQuantity($prQuantity)
+    {
+        $this->prQuantity = $prQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $qoQuantity
+     */
+    public function setQoQuantity($qoQuantity)
+    {
+        $this->qoQuantity = $qoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardQoQuantity
+     */
+    public function setStandardQoQuantity($standardQoQuantity)
+    {
+        $this->standardQoQuantity = $standardQoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedQoQuantity
+     */
+    public function setPostedQoQuantity($postedQoQuantity)
+    {
+        $this->postedQoQuantity = $postedQoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedStandardQoQuantity
+     */
+    public function setPostedStandardQoQuantity($postedStandardQoQuantity)
+    {
+        $this->postedStandardQoQuantity = $postedStandardQoQuantity;
+    }
+
+    /**
+     *
      * @param mixed $draftPoQuantity
      */
     public function setDraftPoQuantity($draftPoQuantity)
     {
         $this->draftPoQuantity = $draftPoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardPoQuantity
+     */
+    public function setStandardPoQuantity($standardPoQuantity)
+    {
+        $this->standardPoQuantity = $standardPoQuantity;
     }
 
     /**
@@ -307,11 +551,29 @@ class PRRowSnapshot extends RowSnapshot
 
     /**
      *
+     * @param mixed $postedStandardPoQuantity
+     */
+    public function setPostedStandardPoQuantity($postedStandardPoQuantity)
+    {
+        $this->postedStandardPoQuantity = $postedStandardPoQuantity;
+    }
+
+    /**
+     *
      * @param mixed $draftGrQuantity
      */
     public function setDraftGrQuantity($draftGrQuantity)
     {
         $this->draftGrQuantity = $draftGrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardGrQuantity
+     */
+    public function setStandardGrQuantity($standardGrQuantity)
+    {
+        $this->standardGrQuantity = $standardGrQuantity;
     }
 
     /**
@@ -325,20 +587,11 @@ class PRRowSnapshot extends RowSnapshot
 
     /**
      *
-     * @param mixed $draftApQuantity
+     * @param mixed $postedStandardGrQuantity
      */
-    public function setDraftApQuantity($draftApQuantity)
+    public function setPostedStandardGrQuantity($postedStandardGrQuantity)
     {
-        $this->draftApQuantity = $draftApQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedApQuantity
-     */
-    public function setPostedApQuantity($postedApQuantity)
-    {
-        $this->postedApQuantity = $postedApQuantity;
+        $this->postedStandardGrQuantity = $postedStandardGrQuantity;
     }
 
     /**
@@ -352,11 +605,65 @@ class PRRowSnapshot extends RowSnapshot
 
     /**
      *
+     * @param mixed $standardStockQrQuantity
+     */
+    public function setStandardStockQrQuantity($standardStockQrQuantity)
+    {
+        $this->standardStockQrQuantity = $standardStockQrQuantity;
+    }
+
+    /**
+     *
      * @param mixed $postedStockQrQuantity
      */
     public function setPostedStockQrQuantity($postedStockQrQuantity)
     {
         $this->postedStockQrQuantity = $postedStockQrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedStandardStockQrQuantity
+     */
+    public function setPostedStandardStockQrQuantity($postedStandardStockQrQuantity)
+    {
+        $this->postedStandardStockQrQuantity = $postedStandardStockQrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $draftApQuantity
+     */
+    public function setDraftApQuantity($draftApQuantity)
+    {
+        $this->draftApQuantity = $draftApQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardApQuantity
+     */
+    public function setStandardApQuantity($standardApQuantity)
+    {
+        $this->standardApQuantity = $standardApQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedApQuantity
+     */
+    public function setPostedApQuantity($postedApQuantity)
+    {
+        $this->postedApQuantity = $postedApQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedStandardApQuantity
+     */
+    public function setPostedStandardApQuantity($postedStandardApQuantity)
+    {
+        $this->postedStandardApQuantity = $postedStandardApQuantity;
     }
 
     /**
@@ -384,6 +691,24 @@ class PRRowSnapshot extends RowSnapshot
     public function setLastUnitPrice($lastUnitPrice)
     {
         $this->lastUnitPrice = $lastUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $lastStandardUnitPrice
+     */
+    public function setLastStandardUnitPrice($lastStandardUnitPrice)
+    {
+        $this->lastStandardUnitPrice = $lastStandardUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $lastStandardConvertFactor
+     */
+    public function setLastStandardConvertFactor($lastStandardConvertFactor)
+    {
+        $this->lastStandardConvertFactor = $lastStandardConvertFactor;
     }
 
     /**
@@ -469,11 +794,11 @@ class PRRowSnapshot extends RowSnapshot
 
     /**
      *
-     * @param mixed $convertedStandardQuantiy
+     * @param mixed $variantId
      */
-    public function setConvertedStandardQuantiy($convertedStandardQuantiy)
+    public function setVariantId($variantId)
     {
-        $this->convertedStandardQuantiy = $convertedStandardQuantiy;
+        $this->variantId = $variantId;
     }
 
     /**

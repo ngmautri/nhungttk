@@ -2,7 +2,7 @@
 namespace Procure\Domain\AccountPayable\Factory;
 
 use Application\Application\Event\DefaultParameter;
-use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APFromPO;
@@ -24,7 +24,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class APFactory
 {
@@ -53,7 +53,7 @@ class APFactory
 
         $docType = $snapshot->getDocType();
         $instance = self::createDoc($docType);
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
 
         $instance->specify(); // important
         return $instance;

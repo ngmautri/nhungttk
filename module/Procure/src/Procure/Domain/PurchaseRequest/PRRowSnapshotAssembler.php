@@ -1,108 +1,100 @@
 <?php
 namespace Procure\Domain\PurchaseRequest;
 
+use Application\Application\Contracts\GenericDTOAssembler;
 use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
+use Procure\Domain\PurchaseRequest\Definition\PrRowDefinition;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PRRowSnapshotAssembler
 {
 
-    private static $defaultExcludedFields = array(
-        "id",
-        "uuid",
-        "token",
-        "checksum",
-        "createdBy",
-        "createdOn",
-        "lastChangeOn",
-        "lastChangeBy",
-        "sysNumber",
-        "company",
-        "itemType",
-        "revisionNo",
-        "currencyIso3",
-        "vendorName",
-        "docStatus",
-        "workflowStatus",
-        "transactionStatus",
-        "paymentStatus"
-    );
-
-    private static $defaultIncludedFields = array(
-        "isActive",
-        "remarks",
-        "rowNumber",
-        "item",
-        "vendorItemCode",
-        "vendorItemName",
-        "docQuantity",
-        "docUnit",
-        "docUnitPrice",
-        "conversionFactor",
-        "standardConvertFactor",
-        "descriptionText",
-        "taxRate",
-        "remarks",
-        "edt"
-    );
-
-    public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)
+    /*
+     * |=============================
+     * | Update Snapshot from Array
+     * |
+     * |=============================
+     */
+    public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $target, $source)
     {
-        return GenericObjectAssembler::updateAllFieldsFromArray($snapShot, $data);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, PrRowDefinition::$defaultIncludedFields);
     }
 
-    public static function updateIncludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
+    public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $target, $source)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, PrRowDefinition::$defaultExcludedFields);
     }
 
-    public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    /*
+     * |=============================
+     * | Update Snapshot from OBject
+     * |
+     * |=============================
+     */
+    public static function updateDefaultFieldsFrom($target, AbstractDTO $source)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($target, $source, PrRowDefinition::$defaultIncludedFields);
     }
 
-    public static function updateExcludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
+    public static function updateDefaultExcludedFieldsFrom($target, AbstractDTO $source)
     {
-        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
+        return GenericObjectAssembler::updateExcludedFieldsFrom($target, $source, PrRowDefinition::$defaultExcludedFields);
     }
 
-    public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    /*
+     * |=============================
+     * | For Form Element
+     * |
+     * |=============================
+     */
+    public static function createFormElementsExclude($className, $properties = null)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultExcludedFields);
+        if ($properties == null) {
+            $properties = PrRowDefinition::$defaultExcludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsExclude($className, $properties);
     }
 
-    // from Object
-    // =============================
-    public static function updateAllFieldsFrom(AbstractDTO $snapShot, $data)
+    public static function createFormElementsFor($className, $properties = null)
     {
-        return GenericObjectAssembler::updateAllFieldsFrom($snapShot, $data);
+        if ($properties == null) {
+            $properties = PrRowDefinition::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFor($className, $properties);
     }
 
-    public static function updateIncludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
+    /*
+     * |=============================
+     * | For Form Get Function
+     * |
+     * |=============================
+     */
+    public static function createFormElementsFunctionExclude($className, $properties = null)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
+        if ($properties == null) {
+            $properties = PrRowDefinition::$defaultExcludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionExclude($className, $properties);
     }
 
-    public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
+    public static function createFormElementsFunctionFor($className, $properties = null)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
+        if ($properties == null) {
+            $properties = PrRowDefinition::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionFor($className, $properties);
     }
 
-    public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
-    {
-        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
-    }
-
-    public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
-    {
-        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
-    }
-
+    /**
+     *
+     * @param object $hit
+     * @return void|\Procure\Domain\PurchaseRequest\PRRowSnapshot
+     */
     public static function createFromQueryHit($hit)
     {
         if ($hit == null) {

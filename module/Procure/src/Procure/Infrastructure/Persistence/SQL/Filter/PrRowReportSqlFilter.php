@@ -1,8 +1,7 @@
 <?php
 namespace Procure\Infrastructure\Persistence\SQL\Filter;
 
-use Procure\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
-use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\ProcureQuerySqlFilter;
+
 
 
 /**

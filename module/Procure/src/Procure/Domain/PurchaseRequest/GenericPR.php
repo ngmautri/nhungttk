@@ -22,11 +22,18 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-abstract class GenericPR extends BaseDoc
+abstract class GenericPR extends BasePR
 {
 
+    /**
+     *
+     * @param PRRow $row
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @return \Procure\Domain\PurchaseRequest\PRRowSnapshot
+     */
     public function removeRow(PRRow $row, CommandOptions $options, SharedService $sharedService)
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted already! %s", $this->getId()));
@@ -39,7 +46,7 @@ abstract class GenericPR extends BaseDoc
          * @var PrCmdRepositoryInterface $rep ;
          */
 
-        $this->logInfo("GenericPR will delete " . $row->getId());
+        $this->logInfo("GenericPR will be deleted " . $row->getId());
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
 
@@ -65,6 +72,13 @@ abstract class GenericPR extends BaseDoc
         return $localSnapshot;
     }
 
+    /**
+     *
+     * @param SharedService $sharedService
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return \Procure\Domain\PurchaseRequest\GenericPR
+     */
     public function store(SharedService $sharedService)
     {
         Assert::notNull($sharedService, Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
@@ -292,6 +306,7 @@ abstract class GenericPR extends BaseDoc
 
     /**
      *
+     * @deprecated
      * @return NULL|object
      */
     public function makeDetailsDTO()

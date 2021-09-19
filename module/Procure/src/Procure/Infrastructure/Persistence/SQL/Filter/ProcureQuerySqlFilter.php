@@ -1,5 +1,5 @@
 <?php
-namespace Application\Infrastructure\Persistence\Domain\Doctrine\Filter;
+namespace Procure\Infrastructure\Persistence\SQL\Filter;
 
 use Procure\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
 

@@ -25,16 +25,18 @@ class DocSaveAsArray implements DocSaveAsInterface
             throw new \InvalidArgumentException(sprintf("Invalid input %s", "doc."));
         }
 
-        if (count($doc->getDocRows()) == null) {
+        if (count($doc->getRowsGenerator()) == null) {
             return;
         }
 
         $output = array();
-        foreach ($doc->getDocRows() as $row) {
+        foreach ($doc->getRowsGenerator() as $row) {
+
             /**
              *
              * @var GenericRow $row ;
              */
+            $row->updateRowStatus();
             $output[] = $formatter->format($row->makeSnapshot());
         }
         return $output;

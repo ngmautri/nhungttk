@@ -6,7 +6,7 @@ use Application\Entity\MessageStore;
 use Procure\Domain\Event\Pr\PrRowUpdated;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
-use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -44,7 +44,7 @@ class PrRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
             throw new OperationFailedException(" RootSnapshot not give at ApRowAddedHandler");
         }
 
-        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
 
         // time to check version - concurency
         $verArray = $rep->getVersionArray($rootSnapshot->getId());

@@ -16,13 +16,13 @@ use Procure\Application\Service\PR\Output\Spreadsheet\ExcelBuilder;
 use Procure\Application\Service\PR\Output\Spreadsheet\OpenOfficeBuilder;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
-use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
 
 /**
  * PR Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PRService extends AbstractService implements ProcureServiceInterface
 {
@@ -36,7 +36,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
      */
     public function getDocHeaderByTokenId($id, $token, $locale = 'en_EN')
     {
-        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
         return $rep->getHeaderById($id, $token);
     }
 
@@ -49,7 +49,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
     {
 
         // Not in Cache.
-        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityById($id);
 
         if (! $rootEntity instanceof PRDoc) {
@@ -80,7 +80,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
         } else {
 
             // Not in Cache.
-            $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+            $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
             if (! $rootEntity instanceof PRDoc) {
@@ -141,7 +141,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
     {
 
         // Not in Cache.
-        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
         if (! $rootEntity instanceof PRDoc) {
@@ -161,7 +161,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
     {
 
         // Not in Cache.
-        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityById($id);
 
         if (! $rootEntity instanceof PRDoc) {
@@ -190,14 +190,14 @@ class PRService extends AbstractService implements ProcureServiceInterface
                 $formatter = new RowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsExcel($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
-                
+
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new OpenOfficeBuilder();
                 $formatter = new RowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsOpenOffice($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
-                
+
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_PDF:
@@ -228,7 +228,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
      */
     public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $locale = 'en_EN')
     {
-        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
 
         $rootEntity = null;
         $localEntity = null;

@@ -6,8 +6,8 @@ use Procure\Domain\Service\Contracts\SharedQueryServiceInterface;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
-use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
 
 /**
  * AP Service.
@@ -45,7 +45,7 @@ class SharedQueryServiceImpl extends AbstractService implements SharedQueryServi
      */
     public function getPRQueryRepository()
     {
-        return new PRQueryRepositoryImpl($this->getDoctrineEM());
+        return new PRQueryRepositoryImplV1($this->getDoctrineEM());
     }
 
     /**

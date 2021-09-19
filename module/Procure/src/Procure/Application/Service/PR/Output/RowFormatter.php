@@ -3,6 +3,7 @@ namespace Procure\Application\Service\PR\Output;
 
 use Procure\Application\Service\Output\Formatter\RowFormatterDecorator;
 use Procure\Domain\RowSnapshot;
+use Procure\Domain\Contracts\ProcureTrxStatus;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 
 /**
@@ -47,12 +48,23 @@ class RowFormatter extends RowFormatterDecorator
                 $row->transactionStatus = \sprintf('&nbsp;<span  class="label label-warning">.</span><span style="font-weight: normal;"> %s</span>', $row->transactionStatus);
             } elseif ($row->transactionStatus == "completed") {
                 $row->transactionStatus = \sprintf('&nbsp;<span style="color:graytext;">%s</span> ', "Done");
+            } elseif ($row->transactionStatus == ProcureTrxStatus::COMMITTED) {
+                $row->transactionStatus = \sprintf('&nbsp;<span style="color:green;">%s</span> ', "Committed");
             }
 
+            $row->postedStandardQoQuantity = ($row->getPostedStandardQoQuantity() > 0 ? number_format($row->getPostedStandardQoQuantity(), 0) : $zero);
+
             $row->postedPoQuantity = ($row->getPostedPoQuantity() > 0 ? number_format($row->getPostedPoQuantity(), 0) : $zero);
+            $row->postedStandardPoQuantity = ($row->getPostedStandardPoQuantity() > 0 ? number_format($row->getPostedStandardPoQuantity(), 0) : $zero);
+
             $row->postedGrQuantity = ($row->getPostedGrQuantity() > 0 ? number_format($row->getPostedGrQuantity(), 0) : $zero);
+            $row->postedStandardGrQuantity = ($row->getPostedStandardGrQuantity() > 0 ? number_format($row->getPostedStandardGrQuantity(), 0) : $zero);
+
             $row->postedStockQrQuantity = ($row->getPostedStockQrQuantity() > 0 ? number_format($row->getPostedStockQrQuantity(), 0) : $zero);
+            $row->postedStandardStockQrQuantity = ($row->getPostedStandardStockQrQuantity() > 0 ? number_format($row->getPostedStandardStockQrQuantity(), 0) : $zero);
+
             $row->postedApQuantity = ($row->getPostedApQuantity() > 0 ? number_format($row->getPostedApQuantity(), 0) : $zero);
+            $row->postedStandardApQuantity = ($row->getPostedStandardApQuantity() > 0 ? number_format($row->getPostedStandardApQuantity(), 0) : $zero);
         }
 
         return $row;

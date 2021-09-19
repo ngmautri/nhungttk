@@ -12,12 +12,12 @@ use Procure\Domain\GoodsReceipt\GRRowSnapshot;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
-use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GenericRowSnapshotModifier
 {
@@ -76,7 +76,7 @@ class GenericRowSnapshotModifier
         }
 
         if ($snapshot->getPrRow() > 0) {
-            $rep = new PRQueryRepositoryImpl($doctrineEM);
+            $rep = new PRQueryRepositoryImplV1($doctrineEM);
 
             $prSnapshot = $rep->getHeaderSnapshotByRowId($snapshot->getPrRow());
 

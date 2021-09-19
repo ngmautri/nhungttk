@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Domain;
 
-use Application\Domain\Shared\SnapshotAssembler;
+use Application\Application\Contracts\GenericSnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Shared\Money\MoneyParser;
 use Application\Domain\Shared\Number\NumberFormatter;
@@ -18,7 +18,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
  * Generic Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class GenericRow extends BaseRow
 {
@@ -525,7 +525,7 @@ abstract class GenericRow extends BaseRow
      */
     public function makeSnapshot()
     {
-        return SnapshotAssembler::createSnapshotFrom($this, new RowSnapshot());
+        return GenericSnapshotAssembler::createSnapshotFrom($this, new RowSnapshot());
     }
 
     /**

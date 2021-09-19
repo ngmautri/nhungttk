@@ -6,13 +6,13 @@ use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
-use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class VersionChecker
 {
@@ -46,7 +46,7 @@ class VersionChecker
 
     public static function checkPRVersion(EntityManager $doctrineEM, $entityId, $version)
     {
-        $queryRep = new PRQueryRepositoryImpl($doctrineEM);
+        $queryRep = new PRQueryRepositoryImplV1($doctrineEM);
         $currentVersion = $queryRep->getVersion($entityId) - 1;
         if ($version != $currentVersion) {
             throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));

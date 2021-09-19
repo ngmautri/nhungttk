@@ -39,7 +39,7 @@ class PrRowHelper
 
         $sql . self::createSortBy($filter) . self::createLimitOffset($filter);
 
-        echo $sql;
+        // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);

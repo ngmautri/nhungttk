@@ -5,7 +5,7 @@ use Doctrine\ORM\EntityManager;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
-use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
 
 class RowSnapshotReference
 {
@@ -29,7 +29,7 @@ class RowSnapshotReference
         }
 
         if ($snapshot->getPrRow() > 0) {
-            $poQuery = new PRQueryRepositoryImpl($doctrineEM);
+            $poQuery = new PRQueryRepositoryImplV1($doctrineEM);
             $snapshot->pr = $poQuery->getHeaderIdByRowId($snapshot->getPrRow());
         }
 
@@ -37,8 +37,7 @@ class RowSnapshotReference
             $apQuery = new APQueryRepositoryImpl($doctrineEM);
             $snapshot->invoice = $apQuery->getHeaderIdByRowId($snapshot->getApInvoiceRow());
         }
-        
-       
+
         return $snapshot;
     }
 }

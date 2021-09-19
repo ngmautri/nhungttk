@@ -7,14 +7,34 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Abstract Procure Document.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class BaseDoc extends AbstractDoc
 {
 
+    protected $rowsGenerator;
+
     protected $lazyRowSnapshotCollection;
 
     protected $lazyRowSnapshotCollectionReference;
+
+    /**
+     *
+     * @return \Generator
+     */
+    public function getRowsGenerator()
+    {
+        return $this->rowsGenerator;
+    }
+
+    /**
+     *
+     * @param \Generator $rowsGenerator
+     */
+    public function setRowsGenerator(\Generator $rowsGenerator = null)
+    {
+        $this->rowsGenerator = $rowsGenerator;
+    }
 
     public function setLazyRowSnapshotCollectionReference($lazyRowSnapshotCollectionReference)
     {

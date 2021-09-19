@@ -6,7 +6,7 @@ use Application\Entity\MessageStore;
 use Procure\Domain\Event\Pr\PrRowAdded;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
-use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -44,7 +44,7 @@ class PrRowAddedHandler extends AbstractEventHandler implements EventSubscriberI
             throw new OperationFailedException("PRSnapshot not give at ApRowAddedHandler");
         }
 
-        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
 
         $class = new \ReflectionClass($rootSnapshot);
         $className = null;

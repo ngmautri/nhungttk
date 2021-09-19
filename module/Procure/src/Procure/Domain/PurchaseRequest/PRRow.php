@@ -7,6 +7,7 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Pr\PrRowDTO;
 use Procure\Domain\GenericDoc;
+use Procure\Domain\Contracts\ProcureTrxStatus;
 use Webmozart\Assert\Assert;
 use DateTime;
 
@@ -96,138 +97,23 @@ class PRRow extends BasePrRow
 
     protected $lastCurrency;
 
-    /**
-     *
-     * @param mixed $qoQuantity
-     */
-    public function setQoQuantity($qoQuantity)
-    {
-        $this->qoQuantity = $qoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardQoQuantity
-     */
-    public function setStandardQoQuantity($standardQoQuantity)
-    {
-        $this->standardQoQuantity = $standardQoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedQoQuantity
-     */
-    public function setPostedQoQuantity($postedQoQuantity)
-    {
-        $this->postedQoQuantity = $postedQoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardQoQuantity
-     */
-    public function setPostedStandardQoQuantity($postedStandardQoQuantity)
-    {
-        $this->postedStandardQoQuantity = $postedStandardQoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardPoQuantity
-     */
-    public function setStandardPoQuantity($standardPoQuantity)
-    {
-        $this->standardPoQuantity = $standardPoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardPoQuantity
-     */
-    public function setPostedStandardPoQuantity($postedStandardPoQuantity)
-    {
-        $this->postedStandardPoQuantity = $postedStandardPoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardGrQuantity
-     */
-    public function setStandardGrQuantity($standardGrQuantity)
-    {
-        $this->standardGrQuantity = $standardGrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardGrQuantity
-     */
-    public function setPostedStandardGrQuantity($postedStandardGrQuantity)
-    {
-        $this->postedStandardGrQuantity = $postedStandardGrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardStockQrQuantity
-     */
-    public function setStandardStockQrQuantity($standardStockQrQuantity)
-    {
-        $this->standardStockQrQuantity = $standardStockQrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardStockQrQuantity
-     */
-    public function setPostedStandardStockQrQuantity($postedStandardStockQrQuantity)
-    {
-        $this->postedStandardStockQrQuantity = $postedStandardStockQrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardApQuantity
-     */
-    public function setStandardApQuantity($standardApQuantity)
-    {
-        $this->standardApQuantity = $standardApQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardApQuantity
-     */
-    public function setPostedStandardApQuantity($postedStandardApQuantity)
-    {
-        $this->postedStandardApQuantity = $postedStandardApQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $lastStandardUnitPrice
-     */
-    public function setLastStandardUnitPrice($lastStandardUnitPrice)
-    {
-        $this->lastStandardUnitPrice = $lastStandardUnitPrice;
-    }
-
-    /**
-     *
-     * @param mixed $lastStandardConvertFactor
-     */
-    public function setLastStandardConvertFactor($lastStandardConvertFactor)
-    {
-        $this->lastStandardConvertFactor = $lastStandardConvertFactor;
-    }
-
     /*
      * |=============================
      * | Methods
      * |
      * |=============================
      */
+    public function updateRowStatus()
+    {
+        if ($this->getConvertedStandardQuantity() <= $this->getPostedStandardPoQuantity()) {
+            $this->setTransactionStatus(ProcureTrxStatus::COMMITTED);
+        }
+
+        if ($this->getConvertedStandardQuantity() <= $this->getPostedStandardGrQuantity()) {
+            $this->setTransactionStatus(ProcureTrxStatus::COMPLETED);
+        }
+    }
+
     protected function createVO(GenericDoc $rootDoc)
     {
         $this->createUomVO();
@@ -578,5 +464,275 @@ class PRRow extends BasePrRow
     protected function setPostedStockQrQuantity($postedStockQrQuantity)
     {
         $this->postedStockQrQuantity = $postedStockQrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrId()
+    {
+        return $this->prId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrQuantity()
+    {
+        return $this->prQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getQoQuantity()
+    {
+        return $this->qoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardQoQuantity()
+    {
+        return $this->standardQoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedQoQuantity()
+    {
+        return $this->postedQoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedStandardQoQuantity()
+    {
+        return $this->postedStandardQoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardPoQuantity()
+    {
+        return $this->standardPoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedStandardPoQuantity()
+    {
+        return $this->postedStandardPoQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardGrQuantity()
+    {
+        return $this->standardGrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedStandardGrQuantity()
+    {
+        return $this->postedStandardGrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardStockQrQuantity()
+    {
+        return $this->standardStockQrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedStandardStockQrQuantity()
+    {
+        return $this->postedStandardStockQrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardApQuantity()
+    {
+        return $this->standardApQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedStandardApQuantity()
+    {
+        return $this->postedStandardApQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastStandardUnitPrice()
+    {
+        return $this->lastStandardUnitPrice;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastStandardConvertFactor()
+    {
+        return $this->lastStandardConvertFactor;
+    }
+
+    /**
+     *
+     * @param mixed $qoQuantity
+     */
+    public function setQoQuantity($qoQuantity)
+    {
+        $this->qoQuantity = $qoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardQoQuantity
+     */
+    public function setStandardQoQuantity($standardQoQuantity)
+    {
+        $this->standardQoQuantity = $standardQoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedQoQuantity
+     */
+    public function setPostedQoQuantity($postedQoQuantity)
+    {
+        $this->postedQoQuantity = $postedQoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedStandardQoQuantity
+     */
+    public function setPostedStandardQoQuantity($postedStandardQoQuantity)
+    {
+        $this->postedStandardQoQuantity = $postedStandardQoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardPoQuantity
+     */
+    public function setStandardPoQuantity($standardPoQuantity)
+    {
+        $this->standardPoQuantity = $standardPoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedStandardPoQuantity
+     */
+    public function setPostedStandardPoQuantity($postedStandardPoQuantity)
+    {
+        $this->postedStandardPoQuantity = $postedStandardPoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardGrQuantity
+     */
+    public function setStandardGrQuantity($standardGrQuantity)
+    {
+        $this->standardGrQuantity = $standardGrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedStandardGrQuantity
+     */
+    public function setPostedStandardGrQuantity($postedStandardGrQuantity)
+    {
+        $this->postedStandardGrQuantity = $postedStandardGrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardStockQrQuantity
+     */
+    public function setStandardStockQrQuantity($standardStockQrQuantity)
+    {
+        $this->standardStockQrQuantity = $standardStockQrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedStandardStockQrQuantity
+     */
+    public function setPostedStandardStockQrQuantity($postedStandardStockQrQuantity)
+    {
+        $this->postedStandardStockQrQuantity = $postedStandardStockQrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $standardApQuantity
+     */
+    public function setStandardApQuantity($standardApQuantity)
+    {
+        $this->standardApQuantity = $standardApQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedStandardApQuantity
+     */
+    public function setPostedStandardApQuantity($postedStandardApQuantity)
+    {
+        $this->postedStandardApQuantity = $postedStandardApQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $lastStandardUnitPrice
+     */
+    public function setLastStandardUnitPrice($lastStandardUnitPrice)
+    {
+        $this->lastStandardUnitPrice = $lastStandardUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $lastStandardConvertFactor
+     */
+    public function setLastStandardConvertFactor($lastStandardConvertFactor)
+    {
+        $this->lastStandardConvertFactor = $lastStandardConvertFactor;
     }
 }

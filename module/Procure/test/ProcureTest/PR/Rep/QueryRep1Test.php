@@ -26,11 +26,11 @@ class QueryRep1Test extends PHPUnit_Framework_TestCase
             $id = 1165;
             $token = "e35fCqL7Be_JewXNMm_fZsseg93ehgYN";
 
-            $id = 1455;
-            $token = "d74985c4-3033-46b9-90a1-edbc2b4c0b9c";
+            $id = 1454;
+            $token = "4a600b5e-d6bc-43be-86c6-978308aaf746";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            var_dump(count($rootEntity));
+            var_dump($rootEntity->getRowsGenerator()->current());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

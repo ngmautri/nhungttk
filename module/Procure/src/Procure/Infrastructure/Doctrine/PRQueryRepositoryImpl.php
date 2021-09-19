@@ -13,6 +13,7 @@ use Procure\Infrastructure\Mapper\PrMapper;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

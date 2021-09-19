@@ -11,8 +11,9 @@ use Procure\Infrastructure\Mapper\QrMapper;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class QRQueryRepositoryImpl extends AbstractDoctrineRepository implements QrQueryRepositoryInterface
 {

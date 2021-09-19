@@ -112,6 +112,13 @@ WHERE 1 %s
 		SUM(CASE WHEN nmt_procure_qo_row.is_active =1 AND  nmt_procure_qo_row.is_posted =1 THEN  nmt_procure_qo_row.converted_standard_quantity ELSE 0 END) AS posted_standard_qo_qty
 	FROM nmt_procure_pr_row
 
+    LEFT JOIN nmt_procure_pr
+    ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+
+    LEFT JOIN nmt_inventory_item
+    ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
+
+
 	JOIN nmt_procure_qo_row
 	ON nmt_procure_qo_row.pr_row_id = nmt_procure_pr_row.id
 	WHERE 1 %s
@@ -126,6 +133,13 @@ WHERE 1 %s
 		SUM(CASE WHEN nmt_procure_po_row.is_active =1 THEN  nmt_procure_po_row.converted_standard_quantity ELSE 0 END) AS standard_po_qty,
 		SUM(CASE WHEN nmt_procure_po_row.is_active =1 AND  nmt_procure_po_row.is_posted =1 THEN  nmt_procure_po_row.converted_standard_quantity ELSE 0 END) AS posted_standard_po_qty
 	FROM nmt_procure_pr_row
+
+    LEFT JOIN nmt_procure_pr
+    ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+    
+    LEFT JOIN nmt_inventory_item
+    ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
+
 
 	JOIN nmt_procure_po_row
 	ON nmt_procure_po_row.pr_row_id = nmt_procure_pr_row.id
@@ -142,6 +156,13 @@ WHERE 1 %s
 		SUM(CASE WHEN nmt_procure_gr_row.is_active =1 AND  nmt_procure_gr_row.is_posted =1 THEN  nmt_procure_gr_row.converted_standard_quantity ELSE 0 END) AS posted_standard_gr_qty
 	FROM nmt_procure_pr_row
 
+    LEFT JOIN nmt_procure_pr
+    ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+    
+    LEFT JOIN nmt_inventory_item
+    ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
+
+
 	JOIN nmt_procure_gr_row
 	ON nmt_procure_gr_row.pr_row_id = nmt_procure_pr_row.id
 	WHERE 1 %s
@@ -157,6 +178,12 @@ WHERE 1 %s
 		SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 AND  fin_vendor_invoice_row.is_posted =1 THEN  fin_vendor_invoice_row.converted_standard_quantity ELSE 0 END) AS posted_standard_ap_qty
 	
  FROM nmt_procure_pr_row
+    
+    LEFT JOIN nmt_procure_pr
+    ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+
+    LEFT JOIN nmt_inventory_item
+    ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
         
 	JOIN fin_vendor_invoice_row
 	ON fin_vendor_invoice_row.pr_row_id = nmt_procure_pr_row.id
@@ -172,6 +199,12 @@ WHERE 1 %s
 		SUM(CASE WHEN nmt_inventory_trx.is_active =1 THEN  nmt_inventory_trx.converted_standard_quantity ELSE 0 END) AS standard_stock_gr_qty,
 		SUM(CASE WHEN nmt_inventory_trx.is_active =1 AND  nmt_inventory_trx.is_posted =1 THEN  nmt_inventory_trx.converted_standard_quantity ELSE 0 END) AS posted_standard_stock_gr_qty
 	FROM nmt_procure_pr_row
+
+    LEFT JOIN nmt_procure_pr
+    ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+
+    LEFT JOIN nmt_inventory_item
+    ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
 
 	JOIN nmt_inventory_trx
 	ON nmt_inventory_trx.pr_row_id = nmt_procure_pr_row.id

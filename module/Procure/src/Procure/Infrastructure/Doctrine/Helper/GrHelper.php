@@ -9,8 +9,9 @@ use Procure\Infrastructure\Doctrine\SQL\GrSQL;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GrHelper
 {

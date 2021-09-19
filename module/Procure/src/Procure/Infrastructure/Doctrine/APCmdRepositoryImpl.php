@@ -14,8 +14,9 @@ use InvalidArgumentException;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRepositoryInterface
 {
@@ -260,7 +261,7 @@ class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRep
         /**
          *
          * @var \Application\Entity\FinVendorInvoice $entity ;
-         *
+         *     
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());

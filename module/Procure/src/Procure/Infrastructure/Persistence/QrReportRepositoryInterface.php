@@ -4,8 +4,9 @@ namespace Procure\Infrastructure\Persistence;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
 
 /**
- * Quotation Report
  *
+ * @deprecated Quotation Report
+ *            
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

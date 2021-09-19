@@ -10,13 +10,12 @@ use Procure\Infrastructure\Persistence\SQL\PrSQL;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PrReportHelper
 {
-
-  
 
     /**
      *
@@ -83,7 +82,7 @@ class PrReportHelper
         $sql = sprintf($sql, $sql_tmp1);
         $sql = $sql . ";";
 
-        //echo $sql;
+        // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
@@ -93,7 +92,7 @@ class PrReportHelper
 
             $rsm->addScalarResult("qo_qty", "qo_qty");
             $rsm->addScalarResult("posted_qo_qty", "posted_qo_qty");
-            
+
             $rsm->addScalarResult("po_qty", "po_qty");
             $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
 

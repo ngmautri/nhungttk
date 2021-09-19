@@ -11,8 +11,9 @@ use Procure\Infrastructure\Mapper\ApMapper;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQueryRepositoryInterface
 {

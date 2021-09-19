@@ -3,6 +3,7 @@ namespace Procure\Infrastructure\Doctrine\SQL;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
@@ -35,7 +36,4 @@ GROUP BY nmt_procure_gr_row.id
 
     const SQL_ROW_GR_PO = "
     ";
-    
-    
-    
 }

@@ -8,12 +8,13 @@ use Procure\Application\Reporting\PR\PrReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 use Procure\Infrastructure\Persistence\Reporting\Filter\PrGrReportSqlFilter;
+use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PrReportController extends AbstractGenericController
 {
@@ -264,7 +265,7 @@ class PrReportController extends AbstractGenericController
         // $this->layout("layout/fluid");
         $isActive = (int) $this->params()->fromQuery('is_active');
         $file_type = (int) $this->params()->fromQuery('file_type');
-        $sort_by = $this->params()->fromQuery('sort_by');
+        $sortBy = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $balance = $this->params()->fromQuery('balance');
         $prYear = $this->params()->fromQuery('pr_year');
@@ -289,8 +290,8 @@ class PrReportController extends AbstractGenericController
             $balance = 1;
         }
 
-        if ($sort_by == null) :
-            $sort_by = "itemName";
+        if ($sortBy == null) :
+            $sortBy = "itemName";
          endif;
 
         if ($prYear == null) :
@@ -308,14 +309,16 @@ class PrReportController extends AbstractGenericController
         $offset = null;
         $total_records = null;
 
-        $filter = new PrReportSqlFilter();
+        $filter = new PrRowReportSqlFilter();
         $filter->setIsActive($isActive);
         $filter->setBalance($balance);
         $filter->setDocYear($prYear);
+        $filter->setSort($sort);
+        $filter->setSortBy($sortBy);
 
         $total_records = $this->getPrReporter()->getAllRowTotal($filter);
         if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
-            return $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
+            return $this->getPrReporter()->getAllRow($filter, $file_type);
         }
 
         if ($total_records > $resultsPerPage) {
@@ -323,16 +326,19 @@ class PrReportController extends AbstractGenericController
 
             $limit = $paginator->getLimit();
             $offset = $paginator->getOffset();
+
+            $filter->setLimit($limit);
+            $filter->setOffset($offset);
         }
 
         if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
-            $result = $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
+            $result = $this->getPrReporter()->getAllRow($filter, $file_type);
         } else {
             $result = null;
         }
 
         return new ViewModel(array(
-            'sort_by' => $sort_by,
+            'sort_by' => $sortBy,
             'sort' => $sort,
             'is_active' => $isActive,
             'per_pape' => $resultsPerPage,
@@ -351,9 +357,9 @@ class PrReportController extends AbstractGenericController
     public function rowStatusGirdAction()
     {
         if (isset($_GET['sort_by'])) {
-            $sort_by = $_GET['sort_by'];
+            $sortBy = $_GET['sort_by'];
         } else {
-            $sort_by = "itemName";
+            $sortBy = "itemName";
         }
 
         if (isset($_GET['sort'])) {
@@ -395,10 +401,12 @@ class PrReportController extends AbstractGenericController
         $limit = null;
         $offset = null;
 
-        $filter = new PrReportSqlFilter();
+        $filter = new PrRowReportSqlFilter();
         $filter->setIsActive($isActive);
         $filter->setBalance($balance);
         $filter->setDocYear($prYear);
+        $filter->setSort($sort);
+        $filter->setSortBy($sortBy);
 
         $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
 
@@ -412,10 +420,12 @@ class PrReportController extends AbstractGenericController
 
                 $limit = $paginator->getLimit();
                 $offset = $paginator->getOffset();
+                $filter->setLimit($limit);
+                $filter->setOffset($offset);
             }
         }
 
-        $result = $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        $result = $this->getPrReporter()->getAllRow($filter, $file_type);
 
         $a_json_final['data'] = $result;
         $a_json_final['totalRecords'] = $total_records;

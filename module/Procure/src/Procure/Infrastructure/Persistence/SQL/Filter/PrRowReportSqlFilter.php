@@ -1,9 +1,6 @@
 <?php
 namespace Procure\Infrastructure\Persistence\SQL\Filter;
 
-
-
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -11,7 +8,7 @@ namespace Procure\Infrastructure\Persistence\SQL\Filter;
  */
 class PrRowReportSqlFilter extends ProcureQuerySqlFilter
 {
- 
+
     public $docYear;
 
     public $docMonth;
@@ -23,19 +20,23 @@ class PrRowReportSqlFilter extends ProcureQuerySqlFilter
     public $balance;
 
     public $itemId;
-    
+
     public $prId;
-    
+
     public $rowId;
-    
+
+    public $isActive;
+
     public function __toString()
     {
-        $f= \sprintf("PrRowSqlFilter_%s_%s_%s_%s_%s_%s_%s_%s");
-        return \sprintf($f, $this->prId, $this->rowId, $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance, $this->itemId);
+        // $f = \sprintf("PrRowSqlFilter_%s_%s_%s_%s_%s_%s_%s");
+        // return \sprintf($f, $this->prId, $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance, $this->itemId);
+        $f = "PrRowSqlFilter_%s_%s_%s_%s_%s_%s";
+        return \sprintf($f, $this->prId, $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance, $this->itemId);
     }
-    
 
     /**
+     *
      * @return mixed
      */
     public function getPrId()
@@ -44,6 +45,7 @@ class PrRowReportSqlFilter extends ProcureQuerySqlFilter
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowId()
@@ -52,6 +54,7 @@ class PrRowReportSqlFilter extends ProcureQuerySqlFilter
     }
 
     /**
+     *
      * @param mixed $prId
      */
     public function setPrId($prId)
@@ -60,6 +63,7 @@ class PrRowReportSqlFilter extends ProcureQuerySqlFilter
     }
 
     /**
+     *
      * @param mixed $rowId
      */
     public function setRowId($rowId)
@@ -85,7 +89,6 @@ class PrRowReportSqlFilter extends ProcureQuerySqlFilter
         $this->itemId = $itemId;
     }
 
-  
     /**
      *
      * @return mixed

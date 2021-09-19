@@ -55,18 +55,18 @@ use Procure\Infrastructure\Doctrine\Factory\POQueryRepositoryFactory;
 use Procure\Infrastructure\Logging\LoggerFactory;
 use Procure\Infrastructure\Persistence\Doctrine\GrReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl;
-use Procure\Infrastructure\Persistence\Doctrine\PrReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\ProcureReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\QrReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\GrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\PoReporterRepositoryImplFactory;
-use Procure\Infrastructure\Persistence\Doctrine\Factory\PrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Reporting\Doctrine\PoApReportImpl;
 use Procure\Infrastructure\Persistence\Reporting\Doctrine\PrGrReportImpl;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\PrReportImplV1;
 use Procure\Infrastructure\Persistence\Reporting\Doctrine\Factory\PoApReportImplFactory;
 use Procure\Infrastructure\Persistence\Reporting\Doctrine\Factory\PrGrReportImplFactory;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\Factory\PrReportImplFactory;
 
 return array(
     'navigation' => array(
@@ -294,7 +294,7 @@ return array(
 
             QrReportRepositoryImpl::class => QrReporterRepositoryImplFactory::class,
             GrReportRepositoryImpl::class => GrReporterRepositoryImplFactory::class,
-            PrReportRepositoryImpl::class => PrReporterRepositoryImplFactory::class,
+            PrReportImplV1::class => PrReportImplFactory::class,
             PoReportRepositoryImpl::class => PoReporterRepositoryImplFactory::class,
             ProcureReportRepositoryImpl::class => ProcureReporterRepositoryImplFactory::class,
             PoApReportImpl::class => PoApReportImplFactory::class,

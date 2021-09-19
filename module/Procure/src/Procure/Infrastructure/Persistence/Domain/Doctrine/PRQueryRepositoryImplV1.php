@@ -2,7 +2,6 @@
 namespace Procure\Infrastructure\Persistence\Domain\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\Factory\PrFactory;
 use Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface;
 use Procure\Infrastructure\Mapper\PrMapper;
@@ -232,56 +231,6 @@ class PRQueryRepositoryImplV1 extends AbstractDoctrineRepository implements PrQu
         $filter->setSortBy('itemName');
         $filter->setSort('desc');
         $rows = PrRowHelper::getRowsByPrId($this->getDoctrineEM(), $filter);
-
-        if ($rows == null) {
-            yield null;
-        }
-
-        foreach ($rows as $r) {
-
-            /**@var \Application\Entity\NmtProcurePrRow $localEnityDoctrine ;*/
-            $localEnityDoctrine = $r[0];
-
-            $localSnapshot = PrMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
-
-            if ($localSnapshot == null) {
-                continue;
-            }
-
-            $localSnapshot->qoQuantity = $r["qo_qty"];
-            $localSnapshot->standardQoQuantity = $r["standard_qo_qty"];
-            $localSnapshot->postedQoQuantity = $r["posted_qo_qty"];
-            $localSnapshot->postedStandardQoQuantity = $r["posted_standard_qo_qty"];
-
-            $localSnapshot->draftPoQuantity = $r["po_qty"];
-            $localSnapshot->standardPoQuantity = $r["standard_po_qty"];
-            $localSnapshot->postedPoQuantity = $r["posted_po_qty"];
-            $localSnapshot->postedStandardPoQuantity = $r["posted_standard_po_qty"];
-
-            $localSnapshot->draftGrQuantity = $r["gr_qty"];
-            $localSnapshot->standardGrQuantity = $r["standard_gr_qty"];
-            $localSnapshot->postedGrQuantity = $r["posted_gr_qty"];
-            $localSnapshot->postedStandardGrQuantity = $r["posted_standard_gr_qty"];
-
-            $localSnapshot->draftApQuantity = $r["ap_qty"];
-            $localSnapshot->standardApQuantity = $r["standard_ap_qty"];
-            $localSnapshot->postedApQuantity = $r["posted_ap_qty"];
-            $localSnapshot->postedStandardApQuantity = $r["posted_standard_ap_qty"];
-
-            $localSnapshot->draftStockQrQuantity = $r["stock_gr_qty"];
-            $localSnapshot->standardStockQrQuantity = $r["standard_stock_gr_qty"];
-            $localSnapshot->postedStockQrQuantity = $r["posted_stock_gr_qty"];
-            $localSnapshot->postedStandardStockQrQuantity = $r["posted_standard_stock_gr_qty"];
-
-            $localSnapshot->setLastVendorName($r["last_vendor_name"]);
-            $localSnapshot->setLastUnitPrice($r["last_unit_price"]);
-            $localSnapshot->setLastStandardUnitPrice($r["last_standard_unit_price"]);
-            $localSnapshot->setLastStandardConvertFactor($r["last_standard_convert_factor"]);
-
-            $localSnapshot->setLastCurrency($r["last_currency_iso3"]);
-            $localEntity = PRRow::makeFromSnapshot($localSnapshot);
-
-            yield $localEntity;
-        }
+        return PrRowHelper::createRowsGenerator($this->getDoctrineEM(), $rows);
     }
 }

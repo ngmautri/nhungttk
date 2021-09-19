@@ -20,16 +20,17 @@ use Procure\Application\Service\Output\Formatter\NullRowFormatter;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
 use Procure\Application\Service\Output\Formatter\Header\DefaultHeaderFormatter;
 use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
-use Procure\Infrastructure\Contract\SqlFilterInterface;
-use Procure\Infrastructure\Persistence\PrReportRepositoryInterface;
+use Procure\Infrastructure\Persistence\Reporting\PrReportRepositoryInterface;
 use Procure\Infrastructure\Persistence\Reporting\Contracts\PrGrReportInterface;
 use Procure\Infrastructure\Persistence\Reporting\Contracts\ProcureAppSqlFilterInterface;
+use Procure\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
+use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 
 /**
  * PR Reporter
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PrReporter extends AbstractService
 {
@@ -229,18 +230,21 @@ class PrReporter extends AbstractService
         return $total;
     }
 
-    public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $file_type)
+    public function getAllRow(SqlFilterInterface $filter, $file_type)
     {
-        if (! $filter instanceof SqlFilterInterface) {
+        if (! $filter instanceof PrRowReportSqlFilter) {
             throw new \InvalidArgumentException("Invalid filter object.");
         }
 
         if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
             $limit = null;
             $offset = null;
+
+            $filter->setLimit($limit);
+            $filter->setOffset($offset);
         }
 
-        $results = $this->getReporterRespository()->getAllRow($filter, $sort_by, $sort, $limit, $offset);
+        $results = $this->getReporterRespository()->getAllRow($filter);
 
         // var_dump($results);
 
@@ -310,7 +314,7 @@ class PrReporter extends AbstractService
 
     /**
      *
-     * @return \Procure\Infrastructure\Persistence\PrReportRepositoryInterface
+     * @return \Procure\Infrastructure\Persistence\Reporting\PrReportRepositoryInterface
      */
     public function getReporterRespository()
     {

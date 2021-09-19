@@ -5,8 +5,9 @@ use Procure\Infrastructure\Contract\SqlFilterInterface;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 Interface PrGrRepositoryInterface
 {

@@ -4,6 +4,7 @@ namespace Procure\Application\Service\Output;
 use Procure\Application\Service\Output\Contract\RowsSaveAsInterface;
 use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
 use Procure\Application\Service\Output\Formatter\NullRowFormatter;
+use Procure\Domain\GenericRow;
 
 /**
  *
@@ -32,7 +33,14 @@ class RowsSaveAsArray implements RowsSaveAsInterface
 
             $output = array();
             foreach ($rows as $row) {
-                $output[] = $formatter->format($row);
+
+                /**
+                 *
+                 * @var GenericRow $row ;
+                 */
+
+                $row->updateRowStatus(); // important
+                $output[] = $formatter->format($row->makeSnapshot());
             }
 
             return $output;

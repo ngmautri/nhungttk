@@ -18,8 +18,9 @@ use Procure\Infrastructure\Mapper\GrMapper;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQueryRepositoryInterface
 {

@@ -1,15 +1,15 @@
 <?php
 namespace Procure\Application\Reporting\PR;
 
-use Procure\Infrastructure\Persistence\Doctrine\PrReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Reporting\Doctrine\PrGrReportImpl;
+use Procure\Infrastructure\Persistence\Reporting\Doctrine\PrReportImplV1;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PrReporterFactory implements FactoryInterface
 {
@@ -35,7 +35,7 @@ class PrReporterFactory implements FactoryInterface
         $sv = $container->get("AppCache");
         $service->setCache($sv);
 
-        $sv = $container->get(PrReportRepositoryImpl::class);
+        $sv = $container->get(PrReportImplV1::class);
         $service->setReporterRespository($sv);
 
         $sv = $container->get(PrGrReportImpl::class);

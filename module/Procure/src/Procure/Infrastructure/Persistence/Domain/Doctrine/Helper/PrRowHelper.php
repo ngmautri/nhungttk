@@ -4,8 +4,11 @@ namespace Procure\Infrastructure\Persistence\Domain\Doctrine\Helper;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Procure\Domain\PurchaseRequest\PRRow;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\Mapper\PrMapper;
 use Procure\Infrastructure\Persistence\SQL\PrRowSQL;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
+use Generator;
 
 /**
  *
@@ -15,6 +18,12 @@ use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 class PrRowHelper
 {
 
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param PrRowReportSqlFilter $filter
+     * @return NULL|NULL|array|mixed|\Doctrine\DBAL\Driver\Statement
+     */
     public static function getRowsByPrId(EntityManager $doctrineEM, PrRowReportSqlFilter $filter)
     {
         if (! $filter instanceof PrRowReportSqlFilter) {
@@ -36,11 +45,184 @@ class PrRowHelper
         }
 
         $sql = self::createSQL($tmp1, $tmp2);
-
         $sql . self::createSortBy($filter) . self::createLimitOffset($filter);
 
-        // echo $sql;
+        return self::exeQuery($doctrineEM, $sql);
+    }
 
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param PrRowReportSqlFilter $filter
+     * @return NULL|NULL|array|mixed|\Doctrine\DBAL\Driver\Statement
+     */
+    public static function getRows(EntityManager $doctrineEM, PrRowReportSqlFilter $filter)
+    {
+        if (! $filter instanceof PrRowReportSqlFilter) {
+            return null;
+        }
+
+        $tmp1 = '';
+
+        if ($filter->getIsActive() == 1) {
+            $tmp1 = $tmp1 . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
+        } elseif ($filter->getIsActive() == - 1) {
+            $tmp1 = $tmp1 . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
+        }
+
+        if ($filter->getDocYear() > 0) {
+            $tmp1 = $tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
+        }
+
+        if ($filter->getItemId() > 0) {
+            $tmp1 = $tmp1 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
+        }
+
+        $tmp2 = '';
+
+        if ($filter->getDocYear() > 0) {
+            $tmp2 = $tmp2 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
+        }
+
+        if ($filter->getItemId() > 0) {
+            $tmp2 = $tmp2 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
+        }
+
+        if ($filter->getBalance() == 0) {
+            $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity <=  posted_standard_gr_qty";
+        } elseif ($filter->getBalance() == 1) {
+            $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity >  posted_standard_gr_qty";
+        }
+
+        $sql = self::createSQL($tmp1, $tmp2);
+        $sql = $sql . self::createSortBy($filter) . self::createLimitOffset($filter);
+
+        return self::exeQuery($doctrineEM, $sql);
+    }
+
+    public static function getTotalRows(EntityManager $doctrineEM, PrRowReportSqlFilter $filter)
+    {
+        if (! $filter instanceof PrRowReportSqlFilter) {
+            return null;
+        }
+
+        $tmp1 = '';
+
+        if ($filter->getIsActive() == 1) {
+            $tmp1 = $tmp1 . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
+        } elseif ($filter->getIsActive() == - 1) {
+            $tmp1 = $tmp1 . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
+        }
+
+        if ($filter->getDocYear() > 0) {
+            $tmp1 = $tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
+        }
+
+        if ($filter->getItemId() > 0) {
+            $tmp1 = $tmp1 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
+        }
+
+        $tmp2 = '';
+
+        if ($filter->getDocYear() > 0) {
+            $tmp2 = $tmp2 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
+        }
+
+        if ($filter->getItemId() > 0) {
+            $tmp2 = $tmp2 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
+        }
+
+        if ($filter->getBalance() == 0) {
+            $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity <=  posted_standard_gr_qty";
+        } elseif ($filter->getBalance() == 1) {
+            $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity >  posted_standard_gr_qty";
+        }
+
+        $sql = self::createSQL($tmp1, $tmp2);
+
+        $f = "select count(*) as total_row from (%s) as t ";
+        $sql = sprintf($f, $sql);
+        // echo $sql;
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            $rsm->addScalarResult("total_row", "total_row");
+            return $query->getSingleScalarResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param array $rows
+     * @return Generator
+     */
+    public static function createRowsGenerator(EntityManager $doctrineEM, $rows)
+    {
+        if ($rows == null) {
+            yield null;
+        }
+
+        foreach ($rows as $r) {
+
+            /**@var \Application\Entity\NmtProcurePrRow $localEnityDoctrine ;*/
+            $localEnityDoctrine = $r[0];
+
+            $localSnapshot = PrMapper::createRowSnapshot($doctrineEM, $localEnityDoctrine);
+
+            if ($localSnapshot == null) {
+                continue;
+            }
+
+            $localSnapshot->qoQuantity = $r["qo_qty"];
+            $localSnapshot->standardQoQuantity = $r["standard_qo_qty"];
+            $localSnapshot->postedQoQuantity = $r["posted_qo_qty"];
+            $localSnapshot->postedStandardQoQuantity = $r["posted_standard_qo_qty"];
+
+            $localSnapshot->draftPoQuantity = $r["po_qty"];
+            $localSnapshot->standardPoQuantity = $r["standard_po_qty"];
+            $localSnapshot->postedPoQuantity = $r["posted_po_qty"];
+            $localSnapshot->postedStandardPoQuantity = $r["posted_standard_po_qty"];
+
+            $localSnapshot->draftGrQuantity = $r["gr_qty"];
+            $localSnapshot->standardGrQuantity = $r["standard_gr_qty"];
+            $localSnapshot->postedGrQuantity = $r["posted_gr_qty"];
+            $localSnapshot->postedStandardGrQuantity = $r["posted_standard_gr_qty"];
+
+            $localSnapshot->draftApQuantity = $r["ap_qty"];
+            $localSnapshot->standardApQuantity = $r["standard_ap_qty"];
+            $localSnapshot->postedApQuantity = $r["posted_ap_qty"];
+            $localSnapshot->postedStandardApQuantity = $r["posted_standard_ap_qty"];
+
+            $localSnapshot->draftStockQrQuantity = $r["stock_gr_qty"];
+            $localSnapshot->standardStockQrQuantity = $r["standard_stock_gr_qty"];
+            $localSnapshot->postedStockQrQuantity = $r["posted_stock_gr_qty"];
+            $localSnapshot->postedStandardStockQrQuantity = $r["posted_standard_stock_gr_qty"];
+
+            $localSnapshot->setLastVendorName($r["last_vendor_name"]);
+            $localSnapshot->setLastUnitPrice($r["last_unit_price"]);
+            $localSnapshot->setLastStandardUnitPrice($r["last_standard_unit_price"]);
+            $localSnapshot->setLastStandardConvertFactor($r["last_standard_convert_factor"]);
+
+            $localSnapshot->setLastCurrency($r["last_currency_iso3"]);
+            $localEntity = PRRow::makeFromSnapshot($localSnapshot);
+
+            yield $localEntity;
+        }
+    }
+
+    /*
+     * |=============================
+     * | Exe Query
+     * |
+     * |=============================
+     */
+    private static function exeQuery(EntityManager $doctrineEM, $sql)
+    {
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
@@ -90,6 +272,20 @@ class PrRowHelper
         }
     }
 
+    private static function exeCountQuery(EntityManager $doctrineEM, $sql)
+    {
+        // echo $sql;
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     /*
      * |=============================
      * | Create sql parts.
@@ -108,6 +304,18 @@ class PrRowHelper
         return sprintf($sql, $sql1, $sql2, $sql3, $sql4, $sql5, $sql6, $tmp2);
     }
 
+    private static function createCountTotalSQL($tmp1, $tmp2)
+    {
+        $sql = PrRowSQL::PR_ROW_SQL;
+        $sql1 = "";
+        $sql2 = sprintf(PrRowSQL::PR_PO_SQL, $tmp1);
+        $sql3 = sprintf(PrRowSQL::PR_POGR_SQL, $tmp1);
+        $sql4 = sprintf(PrRowSQL::PR_STOCK_GR_SQL, $tmp1);
+        $sql5 = sprintf(PrRowSQL::PR_AP_SQL, $tmp1);
+        $sql6 = "";
+        return sprintf($sql, $sql1, $sql2, $sql3, $sql4, $sql5, $sql6, $tmp2);
+    }
+
     private static function createSortBy(PrRowReportSqlFilter $filter)
     {
         $tmp = '';
@@ -118,6 +326,10 @@ class PrRowHelper
 
             case "prNumber":
                 $tmp = $tmp . " ORDER BY nmt_procure_pr.pr_number " . $filter->getSort();
+                break;
+
+            case "prSubmitted":
+                $tmp = $tmp . " ORDER BY nmt_procure_pr.submitted_on " . $filter->getSort();
                 break;
 
             case "balance":

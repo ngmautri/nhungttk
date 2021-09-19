@@ -13,8 +13,9 @@ use Procure\Infrastructure\Mapper\PoMapper;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQueryRepositoryInterface
 {

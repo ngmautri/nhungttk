@@ -289,6 +289,8 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
 <script>
 
     var columns = [
+    		 { title: "SKU", dataType: "string", dataIndx: "transactionStatus", align: 'left',minWidth: 50,editable: true},
+          
             { title: "SKU", dataType: "string", dataIndx: "itemSKU", align: 'left',minWidth: 50,editable: true},
             { title: "Item No.", dataType: "string", dataIndx: "itemSysNumber", width: 80,editable: false },
             { title: "Item Name", dataType: "string", dataIndx: "itemName", width: 200,editable: false },
@@ -299,14 +301,19 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
             { title: "PR date", dataType: "integer", dataIndx: "docDate", width: 100,align: 'left',hidden: false,editable: false},
             { title: "Row", dataType: "string", dataIndx: "rowIdentifer", width:100, align: 'left',editable: false},
             { title: "Unit", dataType: "string", dataIndx: "docUnit", width:70, align: 'center',editable: false},
-            { title: "Qty", dataType: "string", dataIndx: "docQuantity", width:70, align: 'right',editable: false},
+                 { title: "Qty", dataType: "string", dataIndx: "docQuantity", width:70, align: 'right',editable: false},
+      
+            { title: "Std Qty", dataType: "string", dataIndx: "convertedStandardQuantity", width:70, align: 'right',editable: false},
             { title: "QO", dataType: "string", dataIndx: "draftQoQuantity", width:70, align: 'right',editable: false},
-            { title: "QO posted", dataType: "string", dataIndx: "postedQoQuantity", width:70, align: 'right',editable: false},
+            { title: "QO posted", dataType: "string", dataIndx: "postedStanardQoQuantity", width:70, align: 'right',editable: false},
      
+     		{ title: "Std GR Post", dataType: "string", dataIndx: "postedStandardGrQuantity", align: 'right',minWidth: 70,editable: false},
+            
             { title: "PO", dataType: "string", dataIndx: "draftPoQuantity", width:70, align: 'right',editable: false},
-            { title: "PO posted", dataType: "string", dataIndx: "postedPoQuantity", width:70, align: 'right',editable: false},
+            { title: "PO posted", dataType: "string", dataIndx: "postedStandardPoQuantity", width:70, align: 'right',editable: false},
+            
             { title: "AP", dataType: "string", dataIndx: "draftApQuantity", align: 'right',minWidth: 70,editable: false},
-            { title: "AP Post", dataType: "string", dataIndx: "postedApQuantity", align: 'right',minWidth: 70,editable: false},
+            { title: "AP Post", dataType: "string", dataIndx: "postedStandardApQuantity", align: 'right',minWidth: 70,editable: false},
             { title: "Vendor", dataType: "string", dataIndx: "lastVendorName", align: 'left',minWidth: 150,editable: false},
             { title: "UP", dataType: "string", dataIndx: "lastUnitPrice", align: 'right',minWidth: 100,editable: false},
             { title: "Cur", dataType: "string", dataIndx: "lastCurrency", align: 'right',minWidth: 70,editable: false}

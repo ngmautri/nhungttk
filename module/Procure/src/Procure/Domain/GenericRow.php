@@ -39,6 +39,9 @@ abstract class GenericRow extends BaseRow
 
     abstract protected function createVO(GenericDoc $rootDoc);
 
+    public function updateRowStatus()
+    {}
+
     // Uom VO
     // ====================
     protected $docUomVO;

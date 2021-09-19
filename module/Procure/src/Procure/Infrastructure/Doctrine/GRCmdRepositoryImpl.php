@@ -14,8 +14,9 @@ use Procure\Infrastructure\Mapper\GrMapper;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRepositoryInterface
 {
@@ -257,7 +258,7 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
         /**
          *
          * @var \Application\Entity\NmtProcureGr $entity ;
-         *
+         *     
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());

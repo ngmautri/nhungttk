@@ -2,6 +2,7 @@
 namespace Procure\Infrastructure\Doctrine;
 
 use Application\Entity\NmtProcurePr;
+use Application\Entity\NmtProcurePrRow;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseRequest\GenericPR;
@@ -10,12 +11,12 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
 use Procure\Infrastructure\Mapper\PrMapper;
-use Application\Entity\NmtProcurePrRow;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRepositoryInterface
 {
@@ -271,7 +272,7 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
         /**
          *
          * @var \Application\Entity\NmtProcurePr $entity ;
-         *
+         *     
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());

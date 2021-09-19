@@ -15,8 +15,9 @@ use Webmozart\Assert\Assert;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRepositoryInterface
 {
@@ -231,7 +232,7 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
         /**
          *
          * @var \Application\Entity\NmtProcurePo $entity ;
-         *
+         *     
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());

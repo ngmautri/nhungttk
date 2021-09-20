@@ -6,8 +6,8 @@ use Application\Domain\Util\Pagination\Paginator;
 use Application\Infrastructure\Persistence\Contracts\SqlKeyWords;
 use Procure\Application\Reporting\PR\PrReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
-use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 use Procure\Infrastructure\Persistence\Reporting\Filter\PrGrReportSqlFilter;
+use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 use Zend\View\Model\ViewModel;
 
@@ -217,13 +217,20 @@ class PrReportController extends AbstractGenericController
             $sort = "DESC";
         endif;
 
-        $filter = new PrReportSqlFilter();
-        $filter->setIsActive($isActive);
-        $filter->setDocYear($prYear);
-        $filter->setBalance($balance);
-        $filter->setDocStatus($docStatus);
+        $filterHeader = new PrHeaderReportSqlFilter();
+        $filterHeader->setIsActive($isActive);
+        $filterHeader->setDocYear($prYear);
+        $filterHeader->setBalance($balance);
+        $filterHeader->setDocStatus($docStatus);
+        $filterHeader->setSort($sort);
+        $filterHeader->setSortBy($sort_by);
 
-        $total_records = $this->getPrReporter()->getAllRowTotal($filter);
+        $filterRows = new PrRowReportSqlFilter();
+        $filterRows->setIsActive($isActive);
+        $filterRows->setDocYear($prYear);
+        $filterRows->setDocStatus($docStatus);
+
+        $total_records = $this->getPrReporter()->getListTotal($filterHeader, $filterRows);
 
         $limit = null;
         $offset = null;
@@ -234,10 +241,12 @@ class PrReportController extends AbstractGenericController
 
             $limit = $paginator->getLimit();
             $offset = $paginator->getOffset();
+            $filterHeader->setLimit($limit);
+            $filterHeader->setOffset($offset);
         }
 
         if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
-            $list = $this->getPrReporter()->getListWithCustomDTO($filter, $sort_by, $sort, $limit, $offset, $file_type);
+            $list = $this->getPrReporter()->getList($filterHeader, $filterRows);
         } else {
             $list = null;
         }
@@ -249,7 +258,7 @@ class PrReportController extends AbstractGenericController
             'sort_by' => $sort_by,
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
-            'filter' => $filter
+            'filter' => $filterHeader
         ));
 
         $viewModel->setTemplate("procure/pr-report/dto_list");

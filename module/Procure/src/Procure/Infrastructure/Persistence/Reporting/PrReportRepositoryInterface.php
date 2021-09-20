@@ -11,9 +11,9 @@ use Procure\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
 Interface PrReportRepositoryInterface
 {
 
-    public function getList(SqlFilterInterface $filter);
+    public function getList(SqlFilterInterface $filterHeader, SqlFilterInterface $filterRows);
 
-    public function getListTotal(SqlFilterInterface $filter);
+    public function getListTotal(SqlFilterInterface $filterHeader, SqlFilterInterface $filterRows);
 
     public function getOfItem($item_id, $item_token);
 

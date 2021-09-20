@@ -107,9 +107,13 @@ class PrReporter extends AbstractService
         return $total;
     }
 
-    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $outputStrategy = null)
+    public function getList(SqlFilterInterface $filterHeader, SqlFilterInterface $filterRows, $outputStrategy = null)
     {
-        if (! $filter instanceof SqlFilterInterface) {
+        if (! $filterHeader instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
+        if (! $filterRows instanceof SqlFilterInterface) {
             throw new \InvalidArgumentException("Invalid filter object.");
         }
 
@@ -118,14 +122,14 @@ class PrReporter extends AbstractService
             $offset = null;
         }
 
-        $keyResult = \sprintf("result_%s", $filter->__toString());
+        $keyResult = \sprintf("result_%s", $filterHeader->__toString());
 
         if ($this->getCache()->hasItem($keyResult)) {
             $results = $this->getCache()
                 ->getItem($keyResult)
                 ->get();
         } else {
-            $results = $this->getReporterRespository()->getList($filter, $sort_by, $sort, $limit, $offset);
+            $results = $this->getReporterRespository()->getList($filterHeader, $filterRows);
             $resultCache = $this->getCache()->getItem($keyResult);
             $resultCache->set($results);
             $this->getCache()->save($resultCache);
@@ -212,13 +216,13 @@ class PrReporter extends AbstractService
         return $factory->saveAs($results, $formatter);
     }
 
-    public function getListTotal(SqlFilterInterface $filter)
+    public function getListTotal(SqlFilterInterface $filterHeader, SqlFilterInterface $filterRows)
     {
-        $key = \sprintf("total_list_%s", $filter->__toString());
+        $key = \sprintf("total_list_%s", $filterHeader->__toString());
 
         $resultCache = $this->getCache()->getItem($key);
         if (! $resultCache->isHit()) {
-            $total = $this->getReporterRespository()->getListTotal($filter);
+            $total = $this->getReporterRespository()->getListTotal($filterHeader, $filterRows);
             $resultCache->set($total);
             $this->getCache()->save($resultCache);
         } else {

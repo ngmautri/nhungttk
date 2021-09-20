@@ -2,6 +2,7 @@
 namespace Procure\Infrastructure\Persistence\Reporting\Doctrine;
 
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\Helper\PrHeaderHelper;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\Helper\PrRowHelper;
 use Procure\Infrastructure\Persistence\Reporting\PrReportRepositoryInterface;
 use Procure\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
@@ -17,11 +18,21 @@ class PrReportImplV1 extends AbstractDoctrineRepository implements PrReportRepos
     public function getOfItem($itemId, $itemToken)
     {}
 
-    public function getList(SqlFilterInterface $filter)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Infrastructure\Persistence\Reporting\PrReportRepositoryInterface::getList()
+     */
+    public function getList(SqlFilterInterface $filterHeader, SqlFilterInterface $filterRows)
+    {
+        $results = PrHeaderHelper::getPRList($this->getDoctrineEM(), $filterHeader, $filterRows);
+        return PrHeaderHelper::createGenerator($this->getDoctrineEM(), $results);
+    }
 
-    public function getListTotal(SqlFilterInterface $filter)
-    {}
+    public function getListTotal(SqlFilterInterface $filterHeader, SqlFilterInterface $filterRows)
+    {
+        return PrHeaderHelper::getPRListTotal($this->getDoctrineEM(), $filterHeader, $filterRows);
+    }
 
     public function getAllRowTotal(SqlFilterInterface $filter)
     {

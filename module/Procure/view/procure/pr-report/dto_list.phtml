@@ -4,7 +4,7 @@ use Procure\Application\DTO\Pr\PrHeaderDetailDTO;
 use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
 use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
-use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
+use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
 
 /**
  *
@@ -16,7 +16,7 @@ use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 /**
  *
- * @var PrReportSqlFilter $filter ;
+ * @var PrHeaderReportSqlFilter $filter ;
  * @var Paginator $paginator ;
  */
 // echo $total_records;
@@ -30,13 +30,13 @@ $createUrl = $this->baseUrl . "/procure/pr/create";
 $filterUrl = $this->baseUrl . "/procure/pr-report/header-status";
 $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
 $f = '/procure/pr-report/header-status?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&yy=%s&balance=%s';
-$base = sprintf($f, $filter->getIsActive(), $filter->getCurrentState(), $filter->getDocStatus(), $sort_by, $sort, $filter->getDocYear(), $filter->getBalance());
+$base = sprintf($f, $filter->getIsActive(), $filter->getCurrentState(), $filter->getDocStatus(), $filter->getSortBy(), $filter->getSort(), $filter->getDocYear(), $filter->getBalance());
 
 $f = '/procure/pr-report/header-status?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s';
-$save_as_excel = sprintf($f, $filter->getIsActive(), $filter->getCurrentState(), $filter->getDocStatus(), $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL);
+$save_as_excel = sprintf($f, $filter->getIsActive(), $filter->getCurrentState(), $filter->getDocStatus(), $filter->getSortBy(), $filter->getSort(), HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL);
 
 $f = '/procure/pr-report/header-status?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s';
-$save_as_openoffice = sprintf($f, $filter->getIsActive(), $filter->getCurrentState(), $filter->getDocStatus(), $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$save_as_openoffice = sprintf($f, $filter->getIsActive(), $filter->getCurrentState(), $filter->getDocStatus(), $filter->getSortBy(), $filter->getSort(), HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 if (count($list) > 0) {
 
@@ -92,7 +92,7 @@ if (count($list) > 0) {
 }
 
 $f = "Year=%s | Active=%s | Balance=%s |Sorted by = %s - %s";
-$filter_msg = sprintf($f, $filter->getDocYear(), $filter->getIsActive(), $filter->getBalance(), $sort_by, $sort);
+$filter_msg = sprintf($f, $filter->getDocYear(), $filter->getIsActive(), $filter->getBalance(), $filter->getSortBy(), $filter->getSort());
 
 // =================================== ?>
 <div id="tabs" style="font-size: 9.5pt">

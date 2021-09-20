@@ -62,39 +62,7 @@ class PrRowHelper
             return null;
         }
 
-        $tmp1 = '';
-
-        if ($filter->getIsActive() == 1) {
-            $tmp1 = $tmp1 . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
-        } elseif ($filter->getIsActive() == - 1) {
-            $tmp1 = $tmp1 . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
-        }
-
-        if ($filter->getDocYear() > 0) {
-            $tmp1 = $tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
-        }
-
-        if ($filter->getItemId() > 0) {
-            $tmp1 = $tmp1 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
-        }
-
-        $tmp2 = '';
-
-        if ($filter->getDocYear() > 0) {
-            $tmp2 = $tmp2 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
-        }
-
-        if ($filter->getItemId() > 0) {
-            $tmp2 = $tmp2 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
-        }
-
-        if ($filter->getBalance() == 0) {
-            $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity <=  posted_standard_gr_qty";
-        } elseif ($filter->getBalance() == 1) {
-            $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity >  posted_standard_gr_qty";
-        }
-
-        $sql = self::createSQL($tmp1, $tmp2);
+        $sql = self::createPrRowsSQL($filter);
         $sql = $sql . self::createSortBy($filter) . self::createLimitOffset($filter);
 
         return self::exeQuery($doctrineEM, $sql);
@@ -106,6 +74,34 @@ class PrRowHelper
             return null;
         }
 
+        $sql = self::createPrRowsSQL($filter);
+        $f = "select count(*) as total_row from (%s) as t ";
+        $sql = sprintf($f, $sql);
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            $rsm->addScalarResult("total_row", "total_row");
+            return $query->getSingleScalarResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /*
+     * |=============================
+     * | Exe Query
+     * |
+     * |=============================
+     */
+    /**
+     * Helper
+     *
+     * @param PrRowReportSqlFilter $filter
+     * @return string
+     */
+    public static function createPrRowsSQL(PrRowReportSqlFilter $filter)
+    {
         $tmp1 = '';
 
         if ($filter->getIsActive() == 1) {
@@ -138,20 +134,7 @@ class PrRowHelper
             $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity >  posted_standard_gr_qty";
         }
 
-        $sql = self::createSQL($tmp1, $tmp2);
-
-        $f = "select count(*) as total_row from (%s) as t ";
-        $sql = sprintf($f, $sql);
-        // echo $sql;
-        try {
-            $rsm = new ResultSetMappingBuilder($doctrineEM);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-            $query = $doctrineEM->createNativeQuery($sql, $rsm);
-            $rsm->addScalarResult("total_row", "total_row");
-            return $query->getSingleScalarResult();
-        } catch (NoResultException $e) {
-            return null;
-        }
+        return self::createSQL($tmp1, $tmp2);
     }
 
     /**

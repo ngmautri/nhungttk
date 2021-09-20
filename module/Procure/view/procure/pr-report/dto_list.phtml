@@ -80,7 +80,6 @@ if (count($list) > 0) {
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getPrAutoNumber());
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getPrNumber());
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getSubmittedOn());
-        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocDate());
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getTotalRows());
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getGrCompletedRows());
         $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getGrPartialCompletedRows());
@@ -327,12 +326,9 @@ echo $result_msg;
                   <b>Ref.No.</b>
                </td>
                <td>
-                  <b>Vendor</b>
+                  <b>PR</b>
                </td>
-               <td>
-                  <b>Doc No</b>
-               </td>
-               <td>
+                  <td>
                   <b>Doc Date</b>
                </td>
                <td>

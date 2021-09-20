@@ -25,14 +25,12 @@ class QueryRep2Test extends PHPUnit_Framework_TestCase
             $rep = new PrReportImplV1($doctrineEM);
 
             $filter = new PrRowReportSqlFilter();
-            $filter->setDocYear(2021);
-            $filter->setLimit(100);
-            $filter->setOffset(50);
+            $filter->setItemId(5954);
             $filter->setSortBy('prSubmitted');
             $filter->setSort('desc');
+            $filter->setBalance(100);
             // $filter->setItemId(1010);
             $result = $rep->getAllRow($filter);
-            var_dump($result);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

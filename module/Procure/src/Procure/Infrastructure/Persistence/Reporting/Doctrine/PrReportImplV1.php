@@ -15,7 +15,12 @@ use Procure\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
 class PrReportImplV1 extends AbstractDoctrineRepository implements PrReportRepositoryInterface
 {
 
-    public function getOfItem($itemId, $itemToken)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Infrastructure\Persistence\Reporting\PrReportRepositoryInterface::getOfItem()
+     */
+    public function getOfItem(SqlFilterInterface $filterHeader)
     {}
 
     /**

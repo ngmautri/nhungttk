@@ -289,6 +289,61 @@ class PrReporter extends AbstractService
         return $factory->saveAs($results, $formatter);
     }
 
+    public function getOfItem(SqlFilterInterface $filter, $file_type)
+    {
+        if (! $filter instanceof PrRowReportSqlFilter) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            $limit = null;
+            $offset = null;
+
+            $filter->setLimit($limit);
+            $filter->setOffset($offset);
+        }
+
+        $results = $this->getReporterRespository()->getAllRow($filter);
+
+        // var_dump($results);
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($file_type) {
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new RowNumberFormatter();
+                $factory = new RowsSaveAsArray();
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new ExcelBuilder();
+                $formatter = new NullRowFormatter();
+                $factory = new SaveAsExcel($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new OpenOfficeBuilder();
+                $formatter = new NullRowFormatter();
+                $factory = new SaveAsOpenOffice($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE:
+                $formatter = new RowNumberFormatter();
+                $factory = new SaveAsHTML();
+                $factory->setOffset($offset);
+                $factory->setLimit($limit);
+                break;
+
+            default:
+                $formatter = new RowNumberFormatter();
+                $factory = new RowsSaveAsArray();
+                break;
+        }
+
+        return $factory->saveAs($results, $formatter);
+    }
+
     public function getAllRowTotal(SqlFilterInterface $filter)
     {
         $key = \sprintf("total_rows_%s", $filter->__toString());

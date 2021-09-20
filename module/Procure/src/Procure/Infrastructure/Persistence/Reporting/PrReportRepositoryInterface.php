@@ -15,7 +15,7 @@ Interface PrReportRepositoryInterface
 
     public function getListTotal(SqlFilterInterface $filterHeader, SqlFilterInterface $filterRows);
 
-    public function getOfItem($item_id, $item_token);
+    public function getOfItem(SqlFilterInterface $filter);
 
     public function getAllRow(SqlFilterInterface $filter);
 

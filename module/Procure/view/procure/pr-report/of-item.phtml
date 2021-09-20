@@ -1,0 +1,125 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+use Procure\Application\Helper\FormHelper;
+use Procure\Application\Helper\OptionList;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+
+$toogleFileType = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+$toggleViewTitle = "Gird View";
+$icon = 'fa fa-th';
+
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
+    $toogleFileType = SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
+    $toggleViewTitle = "HTML View";
+    $icon = 'fa fa-list';
+
+endif;
+
+$link = "/procure/pr-report/of-item?item_id=%s";
+$base = $this->baseUrl . sprintf($link, $item_id);
+
+$toggleUrl = $this->baseUrl . sprintf($link, $item_id);
+
+$link1 = "/procure/pr-report/of-item-gird?item_id=%s";
+$girdUrl = $this->baseUrl . sprintf($link1, $item_id);
+
+
+$url_excel = $this->baseUrl . sprintf($link, $item_id, SaveAsSupportedType::OUTPUT_IN_EXCEL);
+$url_oo = $this->baseUrl . sprintf($link, $item_id, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+
+// ===============================================================================
+?>
+
+
+<?php
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) :
+    echo $result;
+    echo FormHelper::createNewPaginator($base, $paginator, "&");
+endif;
+
+?>
+
+
+<?php
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
+    ?>
+
+<div id="gird_div_item_pr" style="margin: 1px; font-size: 9pt"></div>
+
+<script>
+	
+	
+    var columns = [
+    		{ title: "Status", dataType: "string", dataIndx: "transactionStatus", align: 'left',minWidth: 80,editable: false},
+            { title: "SKU", dataType: "string", dataIndx: "itemSKU", align: 'left',minWidth: 50,editable: true},
+           	{ title: "PR", dataType: "string", dataIndx: "docNumber", width: 100,editable: false },
+            { title: "PR date", dataType: "integer", dataIndx: "docDate", width: 100,align: 'left',hidden: false,editable: false},
+            { title: "Row", dataType: "string", dataIndx: "rowIdentifer", width:100, align: 'left',editable: false},
+            { title: "Unit", dataType: "string", dataIndx: "docUnit", width:70, align: 'center',editable: false},
+            { title: "Qty", dataType: "string", dataIndx: "docQuantity", width:70, align: 'right',editable: false},
+            { title: "Std Qty", dataType: "string", dataIndx: "convertedStandardQuantity", width:70, align: 'right',editable: false},
+            { title: "Std QO draft", dataType: "string", dataIndx: "standardQoQuantity", width:70, align: 'right',editable: false},
+            { title: "Std QO posted", dataType: "string", dataIndx: "postedStandardQoQuantity", width:70, align: 'right',editable: false},
+       		{ title: "Std PO draft", dataType: "string", dataIndx: "standardPoQuantity", width:70, align: 'right',editable: false},
+       		{ title: "Std PO posted", dataType: "string", dataIndx: "postedStandardPoQuantity", width:70, align: 'right',editable: false},
+       		{ title: "Std GR Post", dataType: "string", dataIndx: "postedStandardGrQuantity", align: 'right',minWidth: 70,editable: false},
+            { title: "Std AP Post", dataType: "string", dataIndx: "postedStandardApQuantity", align: 'right',minWidth: 70,editable: false},
+            { title: "Vendor", dataType: "string", dataIndx: "lastVendorName", align: 'left',minWidth: 150,editable: false},
+            { title: "UP", dataType: "string", dataIndx: "lastUnitPrice", align: 'right',minWidth: 100,editable: false},
+            { title: "Cur", dataType: "string", dataIndx: "lastCurrency", align: 'right',minWidth: 70,editable: false}
+   ];
+
+    var url = "<?php
+    echo $girdUrl;
+    ?>";
+    var dataModel = {
+    		  dataType: "JSON",
+              location: "remote",
+              method: "GET",
+              recIndx: "row_id",
+              url: url,
+              getData: function (response) {
+           	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
+             },
+    };
+
+	var obj = { width: "auto", height: $(window).height()-400, showTitle : true,			
+			resizable:true,
+			wrap:false,
+			//draggable:true,
+			sortable: true,
+			hoverMode: 'cell',
+			pageModel: { type: "remote", rPP:100, strRpp: "{0}" },
+			columnBorders: true,
+			dataModel: dataModel,
+			colModel: columns,
+		    numberCell: {show:true, resizable: true, width: 40, title: "#", minWidth: 25 },
+	        resizable: true,
+	        editModel: {
+                allowInvalid: true,
+                saveKey: $.ui.keyCode.ENTER
+            },
+            editor: {
+                select: true
+            },
+ 	};
+
+    var $grid = $("#gird_div_item_pr").pqGrid(obj);
+
+    function refreshItemPrGird(){
+    	$( "#gird_div_item_pr" ).pqGrid( "refreshDataAndView" )
+	}
+	
+	refreshItemPrGird();
+
+</script>
+<?php
+endif;
+
+?>
+

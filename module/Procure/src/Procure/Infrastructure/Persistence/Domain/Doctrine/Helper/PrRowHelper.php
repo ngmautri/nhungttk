@@ -115,7 +115,7 @@ class PrRowHelper
         }
 
         if ($filter->getItemId() > 0) {
-            $tmp1 = $tmp1 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
+            $tmp1 = $tmp1 . \sprintf(" AND nmt_inventory_item.id =%s", $filter->getItemId());
         }
 
         $tmp2 = '';

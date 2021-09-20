@@ -184,7 +184,7 @@ class PrReportController extends AbstractGenericController
         }
 
         if ($balance == null) {
-            $balance = 1;
+            $balance = 2;
         }
 
         if (is_null($this->params()->fromQuery('perPage'))) {

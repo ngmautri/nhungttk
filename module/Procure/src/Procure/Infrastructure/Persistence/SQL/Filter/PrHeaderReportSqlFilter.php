@@ -26,7 +26,7 @@ class PrHeaderReportSqlFilter extends ProcureQuerySqlFilter
     public function __toString()
     {
         $f = "PrHeaderSqlFilter_%s_%s_%s_%s_%s";
-        return \sprintf($f, $this->prId, $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance);
+        return \sprintf($f, $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance);
     }
 
     /**

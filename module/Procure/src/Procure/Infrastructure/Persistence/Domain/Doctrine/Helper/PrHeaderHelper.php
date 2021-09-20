@@ -102,7 +102,7 @@ class PrHeaderHelper
     {
         $sql = PrHeaderSQL::PR_SQL;
 
-        $filterRows->setBalance(2); // take all rows.
+        $filterRows->setBalance(100); // take all rows.
         $sql1 = PrRowHelper::createPrRowsSQL($filterRows);
 
         $sql = \sprintf($sql, $sql1);
@@ -124,9 +124,9 @@ class PrHeaderHelper
         $sql = $sql . " GROUP BY nmt_procure_pr.id";
 
         // fullfiled
-        if ($filterHeader->getBalance() == 0) {
+        if ($filterHeader->getBalance() == 1) {
             $sql = $sql . " HAVING total_row <=  std_gr_completed";
-        } elseif ($filterHeader->getBalance() == 1) {
+        } elseif ($filterHeader->getBalance() == 2) {
             $sql = $sql . " HAVING total_row >  std_gr_completed";
         }
         return $sql;

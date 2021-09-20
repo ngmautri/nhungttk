@@ -167,15 +167,15 @@ $filter_msg = sprintf($f, $filter->getDocYear(), $filter->getIsActive(), $filter
                   <label class="control-label col-sm-2" for="inputTag">PR Row Balance</label>
                   <div class="col-sm-3">
                      <select name="balance" class="form-control input-sm">
-                        <option value="2">All</option>
-                        <option <?php
-
-                        echo $filter->getBalance() == 0 ? "selected='selected'" : "";
-                        ?> value="0">Balance=0 (Fulfilled PR)</option>
+                        <option value="-1">All</option>
                         <option <?php
 
                         echo $filter->getBalance() == 1 ? "selected='selected'" : "";
-                        ?> value="1">Balance>0 (Pending PR)</option>
+                        ?> value="1">Balance=0 (Fulfilled PR)</option>
+                        <option <?php
+
+                        echo $filter->getBalance() == 2 ? "selected='selected'" : "";
+                        ?> value="2">Balance>0 (Pending PR)</option>
                      </select>
                   </div>
                </div>

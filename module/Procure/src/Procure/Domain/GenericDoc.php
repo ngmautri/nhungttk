@@ -16,10 +16,42 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class GenericDoc extends BaseDoc
 {
+
+    protected $refreshed;
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getRefreshed()
+    {
+        return $this->refreshed;
+    }
+
+    /**
+     *
+     * @param mixed $refreshed
+     */
+    protected function setRefreshed($refreshed)
+    {
+        $this->refreshed = $refreshed;
+    }
+
+    /**
+     *
+     * @param multitype:string $exculdedProps
+     */
+    protected function setExculdedProps($exculdedProps)
+    {
+        $this->exculdedProps = $exculdedProps;
+    }
+
+    public function refreshDoc()
+    {}
 
     public function markDocAsChanged($postedBy, $postedDate)
     {

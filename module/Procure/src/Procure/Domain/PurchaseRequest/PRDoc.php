@@ -5,8 +5,10 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
+use Doctrine\Common\Collections\ArrayCollection;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Contracts\ProcureDocType;
+use Procure\Domain\Contracts\ProcureTrxStatus;
 use Procure\Domain\Event\Pr\PrHeaderCreated;
 use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
@@ -24,6 +26,72 @@ use Webmozart\Assert\Assert;
  */
 final class PRDoc extends GenericPR
 {
+
+    public function refreshDoc()
+    {
+        // no need, if refreshed.
+        if ($this->getRefreshed()) {
+            return;
+        }
+
+        if ($this->getRowsGenerator() == null) {
+            return;
+        }
+
+        if (! $this->getRowsGenerator()->valid()) {
+            return;
+        }
+
+        $rowCollection = new ArrayCollection();
+
+        // refreshing.
+        $totalRows = 0;
+        $totalPending = 0;
+        $totalQuoted = 0;
+        $totalCommitted = 0;
+        $totalPartialCompleted = 0;
+        $totalCompleted = 0;
+
+        foreach ($this->getRowsGenerator() as $row) {
+
+            /**
+             *
+             * @var PRRow $row ;
+             */
+            $row->updateRowStatus();
+            $status = $row->getTransactionStatus();
+
+            $totalRows ++;
+
+            switch ($status) {
+                case ProcureTrxStatus::PENDING:
+                    $totalPending ++;
+                case ProcureTrxStatus::HAS_QUOTATION:
+                    $totalQuoted ++;
+                    break;
+                case ProcureTrxStatus::COMMITTED:
+                    $totalCommitted ++;
+
+                case ProcureTrxStatus::COMPLETED:
+                    $totalCompleted ++;
+
+                case ProcureTrxStatus::PARTIAL_COMPLETED:
+                    $totalPartialCompleted ++;
+            }
+
+            // add row collection
+            $rowCollection->add($row);
+        }
+
+        $this->setTotalRows($totalRows);
+        $this->setCompletedGRRows($totalCompleted);
+        $this->setCompletedRows($totalCompleted);
+
+        $this->setRowCollection($rowCollection);
+
+        // marked as refreshed.
+        $this->setRefreshed(TRUE);
+    }
 
     private static $instance = null;
 

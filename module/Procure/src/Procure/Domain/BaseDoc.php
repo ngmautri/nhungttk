@@ -18,6 +18,29 @@ abstract class BaseDoc extends AbstractDoc
 
     protected $lazyRowSnapshotCollectionReference;
 
+    protected $rowCollection;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowCollection()
+    {
+        if ($this->rowCollection == null) {
+            $this->rowCollection = new ArrayCollection();
+        }
+        return $this->rowCollection;
+    }
+
+    /**
+     *
+     * @param mixed $rowCollection
+     */
+    protected function setRowCollection($rowCollection)
+    {
+        $this->rowCollection = $rowCollection;
+    }
+
     /**
      *
      * @return \Generator

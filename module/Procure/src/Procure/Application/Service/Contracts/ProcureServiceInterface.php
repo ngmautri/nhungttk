@@ -4,7 +4,7 @@ namespace Procure\Application\Service\Contracts;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 interface ProcureServiceInterface
 {
@@ -18,4 +18,6 @@ interface ProcureServiceInterface
     public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null, $locale = 'en_EN');
 
     public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN');
+
+    public function getDocGirdByTokenId($id, $token, $offset = null, $limit = null, $locale = 'en_EN');
 }

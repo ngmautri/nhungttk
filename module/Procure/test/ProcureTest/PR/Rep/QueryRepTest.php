@@ -26,11 +26,11 @@ class RepTest extends PHPUnit_Framework_TestCase
             $id = 1165;
             $token = "e35fCqL7Be_JewXNMm_fZsseg93ehgYN";
 
-            $id = 1123;
-            $token = "kKXsCBJre__Re87TdMH6tyZH_T7FatqR";
+            $id = 1435;
+            $token = "bea192eb-cadb-47a0-8f8f-443dea3b0176";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            // var_dump($rootEntity->getDocRows());
+            var_dump($rootEntity->getCompletedRows());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

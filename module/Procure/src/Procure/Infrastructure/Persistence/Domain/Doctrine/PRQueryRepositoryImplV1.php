@@ -5,7 +5,9 @@ use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Procure\Domain\PurchaseRequest\Factory\PrFactory;
 use Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface;
 use Procure\Infrastructure\Mapper\PrMapper;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\Helper\PrHeaderHelper;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\Helper\PrRowHelper;
+use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 use Generator;
 
@@ -144,22 +146,17 @@ class PRQueryRepositoryImplV1 extends AbstractDoctrineRepository implements PrQu
      */
     public function getHeaderById($id, $token = null)
     {
-        $criteria = array(
-            'id' => $id,
-            'token' => $token
-        );
 
         /**
          *
          * @var \Application\Entity\NmtProcurePr $entity ;
          */
-        $entity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePr')->findOneBy($criteria);
-        $snapshot = PrMapper::createSnapshot($this->doctrineEM, $entity);
+        $filterHeader = new PrHeaderReportSqlFilter();
+        $filterHeader->setPrId($id);
 
-        if ($snapshot == null) {
-            return null;
-        }
+        $filterRows = new PrRowReportSqlFilter();
 
+        $snapshot = PrHeaderHelper::getPRSnapshot($this->getDoctrineEM(), $filterHeader, $filterRows);
         return PrFactory::constructFromDB($snapshot);
     }
 
@@ -215,7 +212,7 @@ class PRQueryRepositoryImplV1 extends AbstractDoctrineRepository implements PrQu
         }
 
         $rootEntity = PrFactory::constructFromDB($rootSnapshot);
-        $rootEntity->setRowsGenerator($this->getRowsById($id));
+        $rootEntity->setRowsGenerator($this->getRowsById($id)); // Important
         return $rootEntity;
     }
 

@@ -3,16 +3,15 @@ namespace Procure\Application\Service\Output;
 
 use Application\Application\Service\Document\Pdf\AbstractBuilder;
 use Doctrine\ORM\EntityManager;
-use Procure\Application\Service\Output\Contract\DocSaveAsInterface;
+use Procure\Application\Service\Output\Contract\ProcureDocSaveAsInterface;
 
 /**
+ * Director in Builder Pattern.
  *
- * @deprecated Director in Builder Pattern.
- *            
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractDocSaveAsPdf implements DocSaveAsInterface
+abstract class AbstractProcureDocSaveAsPdf implements ProcureDocSaveAsInterface
 {
 
     protected $builder;

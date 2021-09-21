@@ -83,7 +83,7 @@ if (! $headerDTO == null) {
 
     $add_row_url = sprintf($this->baseUrl . $base_url . "add-row?target_id=%s&target_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
-    $save_as_pdf = sprintf($this->baseUrl . $base_url . "save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $headerDTO->getId(), $headerDTO->getToken());
+    $save_as_pdf = sprintf($this->base . $base_url . "save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_excel = sprintf($this->baseUrl . $base_url . "save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . $base_url . "save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
@@ -142,11 +142,11 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
 // ============================
 ?>
-<div id="wrapper" class="toggled">
-   <!-- Sidebar -->
-   <div id="sidebar-wrapper" style="font-size: 9.5pt;">
+    <div id="wrapper" class="toggled">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper" style="font-size: 9.5pt;">
 
-<?php
+            <?php
 if ($action == Constants::FORM_ACTION_REVIEW) :
     $current_step = "STEP3";
     include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
@@ -155,104 +155,100 @@ endif;
 include (ROOT . '/module/Inventory/view/inventory/trx_summary.php');
 ?>
 
-	<?php
+                <?php
 if ($action == Constants::FORM_ACTION_REVIEW) :
     ?>
-		<div class="alert alert-warning" role="alert" style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt; color: graytext;">
-         <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
-			<?php
+                    <div class="alert alert-warning" role="alert" style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt; color: graytext;">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
+                        <?php
 
     echo $this->translate('Document can\'t be changed anymore when posted! <br> ');
     ?>
-		</div>
-	<?php endif;
+                    </div>
+                    <?php endif;
 
 ?>
-	</div>
-   <!-- /#sidebar-wrapper -->
-   <!-- Page Content -->
-   <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-      <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-         <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle">
-            <span title="Hide Menu">
-               <i class="fa fa-chevron-left" aria-hidden="true"></i>
-               Menu
-               <span>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+            <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;" ;>
+                <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle">
+                    <span title="Hide Menu">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                    Menu
+                    <span>
 
-         </a>
-         <div id="tabs" style="font-size: 9.5pt">
-            <ul>
-               <li>
-                  <a href="#general">
-                     <small>
-                        <i class="fa fa-calculator" aria-hidden="true"></i>
-                     </small>&nbsp;<?php
+            </a>
+            <div id="tabs" style="font-size: 9.5pt">
+                <ul>
+                    <li>
+                        <a href="#general">
+                            <small>
+                                <i class="fa fa-calculator" aria-hidden="true"></i>
+                            </small>&nbsp;<?php
 
                     echo $form_title;
                     ?></a>
-               </li>
-               <li>
-                  <a href="<?php
+                    </li>
+                    <li>
+                        <a href="<?php
 
                 echo $picture_url;
                 ?>">
-                     <span class="glyphicon glyphicon-picture"></span>
-                     </span>
-                     &nbsp;Picture
-                  </a>
-               </li>
-               <li>
-                  <a href="#logistic">
-                     <small>
-                        <i class="fa fa-calculator" aria-hidden="true"></i>
-                     </small>
-                     &nbsp;Logistic
-                  </a>
-               </li>
-               <li>
-                  <a href="#accounting">
-                     <small>
-                        <i class="fa fa-calculator" aria-hidden="true"></i>
-                     </small>
-                     &nbsp;Accounting
-                  </a>
-               </li>
-               <li>
-                  <a href="<?php
+                            <span class="glyphicon glyphicon-picture"></span>
+                    </span>
+                    &nbsp;Picture
+                </a>
+                </li>
+                <li>
+                    <a href="#logistic">
+                        <small>
+                                <i class="fa fa-calculator" aria-hidden="true"></i>
+                            </small> &nbsp;Logistic
+                    </a>
+                </li>
+                <li>
+                    <a href="#accounting">
+                        <small>
+                                <i class="fa fa-calculator" aria-hidden="true"></i>
+                            </small> &nbsp;Accounting
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php
 
                 echo $status_url;
                 ?>">
-                     <span class="glyphicon glyphicon-picture"></span>
-                     </span>
-                     &nbsp;Status
-                  </a>
-               </li>
-               <li>
-                  <a href="<?php
+                        <span class="glyphicon glyphicon-picture"></span>
+                        </span>
+                        &nbsp;Status
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php
 
                 echo $attachment_url;
                 ?>">
-                     <small>
-                        <span class="glyphicon glyphicon-paperclip"></span>
-                     </small>
-                     &nbsp;Attachment
-                  </a>
-               </li>
-               <li>
-                  <a href="<?php
+                        <small>
+                                <span class="glyphicon glyphicon-paperclip"></span>
+                            </small> &nbsp;Attachment
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php
 
                 echo $log_url;
                 ?>">
-                     <span class="glyphicon glyphicon-list"></span>
-                     &nbsp;Log
-                  </a>
-               </li>
-            </ul>
-            <div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
-               <!-- Tab1 -->
+                        <span class="glyphicon glyphicon-list"></span> &nbsp;Log
+                    </a>
+                </li>
+                </ul>
+                <div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+                    <!-- Tab1 -->
 
 
-<?php
+                    <?php
 // ================================
 echo $error_msg;
 // ===============================
@@ -265,118 +261,117 @@ endif;
 
 
 
-<?php
+                        <?php
 if ($action == Constants::FORM_ACTION_REVERSE) :
     ?>
-    <form id="REVERSAL_FORM" class="form-horizontal" action="<?php
+                            <form id="REVERSAL_FORM" class="form-horizontal" action="<?php
 
     echo $form_action;
     ?>" method="post" enctype="multipart/form-data">
-                  <input type="hidden" name="entity_id" value="<?php
+                                <input type="hidden" name="entity_id" value="<?php
 
-    echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+    echo (! $headerDTO == null) ? $headerDTO->getId() : " ";
     ?>" />
-                  <input type="hidden" name="entity_token" value="<?php
-    echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+                                <input type="hidden" name="entity_token" value="<?php
+    echo (! $headerDTO == null) ? $headerDTO->getToken() : " ";
     ?>" />
-                  <input type="hidden" name="version" value="<?php
+                                <input type="hidden" name="version" value="<?php
     echo $version;
     ?>" />
-                  <fieldset>
-                     <legend style="font-size: 9.5pt; color: gray;">
-                        <small>
-                           <span class="glyphicon glyphicon-triangle-right"></span>
-                        </small>
-                        &nbsp;
-                        <a href="#reserval_header" class="" data-toggle="collapse"><?php
+                                <fieldset>
+                                    <legend style="font-size: 9.5pt; color: gray;">
+                                        <small>
+                                    <span class="glyphicon glyphicon-triangle-right"></span>
+                                </small> &nbsp;
+                                        <a href="#reserval_header" class="" data-toggle="collapse"><?php
     echo $this->translate("Reserval Header");
     ?>:</a>
-                     </legend>
-                     <div id="reserval_header" class="collapse in">
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2 required"><?php
+                                    </legend>
+                                    <div id="reserval_header" class="collapse in">
+                                        <div class="form-group margin-bottom required">
+                                            <label class="control-label col-sm-2 required"><?php
 
     echo $this->translate("Reversal Date");
     ?> :</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" id="reversalDate" name="reversalDate" value="" placeholder=" please select" />
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom">
-                           <label class="control-label col-sm-2">Description</label>
-                           <div class="col-sm-8">
-                              <input class="form-control input-sm" type="text" placeholder="" name="reversalReason" value="<?php
+                                            <div class="col-sm-3">
+                                                <input class="form-control input-sm" type="text" id="reversalDate" name="reversalDate" value="" placeholder=" please select" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group margin-bottom">
+                                            <label class="control-label col-sm-2">Description</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control input-sm" type="text" placeholder="" name="reversalReason" value="<?php
 
-    echo (! $headerDTO == null) ? '[Reversal] ' . $headerDTO->getRemarks() : "";
+    echo (! $headerDTO == null) ? '[Reversal] ' . $headerDTO->getRemarks() : " ";
     ?>">
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom">
-                           <label class="control-label col-sm-2" for="inputTag"></label>
-                           <div class="col-sm-3">
-                              <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmReserval();" href="javascript:;">
-                                 <i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php
+                                            </div>
+                                        </div>
+                                        <div class="form-group margin-bottom">
+                                            <label class="control-label col-sm-2" for="inputTag"></label>
+                                            <div class="col-sm-3">
+                                                <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmReserval();" href="javascript:;">
+                                                    <i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;
+                                                    <?php
 
     echo $this->translate('Post');
-    ?></a>
-                              <a tabindex="11" class="btn btn-default btn-sm" href="<?php
+    ?>
+                                                </a>
+                                                <a tabindex="11" class="btn btn-default btn-sm" href="<?php
     echo $view_url;
     ?>">
-                                 <small>
-                                    <i class="glyphicon glyphicon-remove"></i>
-                                 </small>
-                                 &nbsp;Cancel
-                              </a>
-                           </div>
-                           <div class="col-sm-3"></div>
-                        </div>
-                     </div>
-                  </fieldset>
-               </form>
-               <hr style="margin: 20pt 1pt 5pt 1pt;">
-<?php endif;
+                                                    <small>
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </small> &nbsp;Cancel
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-3"></div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                            <hr style="margin: 20pt 1pt 5pt 1pt;">
+                            <?php endif;
 
 ?>
 
 
-<!-- ================ TOOL BAR ======================-->
-               <div style="position: relative; float: right;">
-               <?php
+                            <!-- ================ TOOL BAR ======================-->
+                            <div style="position: relative; float: right;">
+                                <?php
             echo Toolbar::showToolbarGR($headerDTO, $action, $this);
             ?>
-               </div>
-               <!-- ================== TOOL BAR ===================-->
-               <FORM id="HEADER_FORM" class="form-horizontal" action="<?php
+                            </div>
+                            <!-- ================== TOOL BAR ===================-->
+                            <FORM id="HEADER_FORM" class="form-horizontal" action="<?php
             echo $form_action;
             ?>" method="post" enctype="multipart/form-data">
-                  <input type="hidden" name="redirectUrl" value="<?php
+                                <input type="hidden" name="redirectUrl" value="<?php
                 echo $redirectUrl?>" />
-                  <input type="hidden" id="entity_id" name="entity_id" value="<?php
+                                <input type="hidden" id="entity_id" name="entity_id" value="<?php
                 echo $entity_id;
                 ?>" />
-                  <input type="hidden" id="entity_token" name="entity_token" value="<?php
+                                <input type="hidden" id="entity_token" name="entity_token" value="<?php
                 echo $entity_token;
                 ?>" />
-                  <input type="hidden" name="version" value="<?php
+                                <input type="hidden" name="version" value="<?php
                 echo $version;
                 ?>" />
-                  <fieldset>
-                     <legend style="font-size: 9.5pt; color: gray;">
-                        <small>
-                           <span class="glyphicon glyphicon-triangle-right"></span>
-                        </small>
-                        &nbsp;
-                        <a href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php
+                                <fieldset>
+                                    <legend style="font-size: 9.5pt; color: gray;">
+                                        <small>
+                                    <span class="glyphicon glyphicon-triangle-right"></span>
+                                </small> &nbsp;
+                                        <a href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php
                         echo "Version " . $version;
                         ?>):</a>
-                     </legend>
-                     <div id="invoice_header" class="collapse">
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2">Movement Type:</label>
-                           <div class="col-sm-3">
-                              <select name="movementType" class="form-control input-sm">
-                                 <option value="">Select Movement</option>
-                              <?php
+                                    </legend>
+                                    <div id="invoice_header" class="collapse">
+                                        <div class="form-group margin-bottom required">
+                                            <label class="control-label col-sm-2">Movement Type:</label>
+                                            <div class="col-sm-3">
+                                                <select name="movementType" class="form-control input-sm">
+                                            <option value="">Select Movement</option>
+                                            <?php
                             if ($transactionType !== null) :
                                 foreach ($transactionType as $k => $v) :
                                     if ($headerDTO !== null) :
@@ -393,228 +388,241 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                               endif;
 
                             ?>
-                  </select>
-                           </div>
-                           <div class="col-sm-3">
-                              <input
-                                 <?php
-
-                                if (! $headerDTO == null) :
-                                    echo ($headerDTO->isActive == "1") ? "checked" : "";
-                                else :
-                                    echo "checked";
-                                endif;
-                                ?>
-                                 type="checkbox" name="isActive" value="1">
-                              &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2">Movement Date:</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" id="movementDate" name="movementDate" value="<?php
+                                        </select>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input <?php if (! $headerDTO==null) : echo ($headerDTO->isActive == "1") ? "checked" : ""; else : echo "checked"; endif; ?> type="checkbox" name="isActive" value="1"> &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </div>
+                                        </div>
+                                        <div class="form-group margin-bottom required">
+                                            <label class="control-label col-sm-2">Movement Date:</label>
+                                            <div class="col-sm-3">
+                                                <input class="form-control input-sm" type="text" id="movementDate" name="movementDate" value="<?php
 
                             if (! $headerDTO == null) :
                                 echo $headerDTO->movementDate; endif;
 
-                            ?>"
-                                 placeholder=" please select" />
-                           </div>
-                           <label class="control-label col-sm-2"><?php
+                            ?>" placeholder=" please select" />
+                                            </div>
+                                            <label class="control-label col-sm-2"><?php
 
                         echo $this->translate("Source Warehouse");
                         ?></label>
-                           <div class="col-sm-3">
-                              <select name="warehouse" id="standardUom_id" class="form-control input-sm">
-                                 <option value=""><?php
+                                            <div class="col-sm-3">
+                                                <select name="warehouse" id="standardUom_id" class="form-control input-sm">
+                                            <option value=""><?php
 
                                 echo $this->translate("Select Warehouse");
                                 ?></option>
-            <?php
+                                            <?php
             echo $wh_option;
             ?>
-                  </select>
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom">
-                           <label class="control-label col-sm-2">Description</label>
-                           <div class="col-sm-8">
-                              <input class="form-control input-sm" type="text" placeholder="" name="remarks" value="<?php
+                                        </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group margin-bottom">
+                                            <label class="control-label col-sm-2">Description</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control input-sm" type="text" placeholder="" name="remarks" value="<?php
 
-                            echo (! $headerDTO == null) ? $headerDTO->remarks : "";
+                            echo (! $headerDTO == null) ? $headerDTO->remarks : " ";
                             ?>">
-                           </div>
-                        </div>
-                        <hr>
-                     </div>
-                  </fieldset>
-               </form>
-               <!-- HEADER END -->
-               <!-- ROW -->
-               <form action="">
-                  <fieldset>
-                     <legend style="font-size: 9pt; color: gray;">
-                        <small>
-                           <span class="glyphicon glyphicon-triangle-right"></span>
-                        </small>
-                        &nbsp;
-                        <a href="#rows" class="" data-toggle="collapse">ROWS:</a>
-                     </legend>
-                     <div id="rows" class="collapse in">
-                        <!-- button -->
-                        <div style="font-size: 9pt">
-                           <div class="dropdown">
-                              <!-- button -->
-                              <button style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                 <i class="fa fa-download" aria-hidden="true"></i>
-                                 <span class="caret"></span>
-                              </button>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                </fieldset>
+                            </form>
+                            <!-- HEADER END -->
+                            <!-- ROW -->
+                            <form action="">
+                                <fieldset>
+                                    <legend style="font-size: 9pt; color: gray;">
+                                        <small>
+                                    <span class="glyphicon glyphicon-triangle-right"></span>
+                                </small> &nbsp;
+                                        <a href="#rows" class="" data-toggle="collapse">ROWS:</a>
+                                    </legend>
+                                    <div id="rows" class="collapse in">
+                                        <!-- button -->
+                                        <div style="font-size: 9pt">
+                                            <div class="dropdown">
+                                                <!-- button -->
+                                                <button style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <i class="fa fa-download" aria-hidden="true"></i>
+                                            <span class="caret"></span>
+                                        </button>
 
-                            <?php
+                                                <?php
                             echo $refresh_btn;
                             echo $fullscreen;
                             echo $upload_btn;
                             echo $summary_txt;
                             echo $dropDownMenu;
                             ?>
-                        </div>
-                           <!-- button -->
-                        </div>
-                        <div id="pr_row_gird" style="font-size: 8pt;"></div>
+                                            </div>
+                                            <!-- button -->
+                                        </div>
+                                        <div id="pr_row_gird" style="font-size: 8pt;"></div>
 
-                  </fieldset>
-               </form>
+                                </fieldset>
+                            </form>
+                            </div>
+                            <div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
+                            <div id="accounting" style="font-size: 9pt">Payment Term, Payment method etc.</div>
+                            <!-- end tab -->
+                </div>
             </div>
-            <div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
-            <div id="accounting" style="font-size: 9pt">Payment Term, Payment method etc.</div>
-            <!-- end tab -->
-         </div>
-      </div>
-   </div>
-   <!-- /#page-content-wrapper -->
-</div>
-<!-- /#wrapper -->
-<!-- Modal -->
-<div class="modal" id="confirm_modal_sm" role="dialog">
-   <div class="modal-dialog modal-md">
-      <div class="modal-content">
-         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-         </div>
-         <div class="modal-body" id="b_modal_sm_body">
-            <h5>#<?php
+        </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+    <!-- Modal -->
+    <div class="modal" id="confirm_modal_sm" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="b_modal_sm_body">
+                    <h5>#
+                        <?php
 
             echo $this->translate('PO will be posted!');
-            ?></h5>
-            <div class="alert alert-warning">
-               <strong>[Info]</strong> <?php
+            ?>
+                    </h5>
+                    <div class="alert alert-warning">
+                        <strong>[Info]</strong>
+                        <?php
 
             echo $this->translate('Document can\'t be changed anymore when posted!');
             ?>
-					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
+                            <!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
-            </div>
-            <p><?php
+                    </div>
+                    <p>
+                        <?php
 
             echo $this->translate('Do you want to continue?');
-            ?></p>
-         </div>
-         <div class="modal-footer">
-            <button onclick="doPosting();" type="button" class="btn btn-primary btn-sm">YES</button>
-            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
-         </div>
-      </div>
-   </div>
-</div>
-<!-- RESERVAL MODAL -->
-<div class="modal" id="reversal_confirm_modal_sm" role="dialog">
-   <div class="modal-dialog modal-md">
-      <div class="modal-content">
-         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-         </div>
-         <div class="modal-body" id="b_modal_sm_body">
-            <h5>#<?php
+            ?>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="doPosting();" type="button" class="btn btn-primary btn-sm">YES</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- RESERVAL MODAL -->
+    <div class="modal" id="reversal_confirm_modal_sm" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="b_modal_sm_body">
+                    <h5>#
+                        <?php
 
             echo $this->translate('Invoice will be reversed!');
-            ?></h5>
-            <div class="alert alert-warning">
-               <strong>[Info]</strong> <?php
+            ?>
+                    </h5>
+                    <div class="alert alert-warning">
+                        <strong>[Info]</strong>
+                        <?php
 
             echo $this->translate('Document can\'t be changed anymore when posted!');
             ?>
-					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
+                            <!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
-            </div>
-            <p><?php
+                    </div>
+                    <p>
+                        <?php
 
             echo $this->translate('Do you want to continue?');
-            ?></p>
-         </div>
-         <div class="modal-footer">
-            <button onclick="doReserval();" type="button" class="btn btn-primary btn-sm">YES</button>
-            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
-         </div>
-      </div>
-   </div>
-</div>
-<!-- Modal -->
-<div class="modal" id="update_header_confirm_modal_sm" role="dialog">
-   <div class="modal-dialog modal-md">
-      <div class="modal-content">
-         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-         </div>
-         <div class="modal-body" id="b_modal_sm_body">
-            <h5>#<?php
+            ?>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="doReserval();" type="button" class="btn btn-primary btn-sm">YES</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal" id="update_header_confirm_modal_sm" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="b_modal_sm_body">
+                    <h5>#
+                        <?php
 
             echo $this->translate('Document header amendment will be posted!');
-            ?></h5>
-            <div class="alert alert-warning">
-               <strong>[Info]</strong> <?php
+            ?>
+                    </h5>
+                    <div class="alert alert-warning">
+                        <strong>[Info]</strong>
+                        <?php
 
             echo $this->translate('Document can\'t be changed anymore when posted!');
             ?>
-				</div>
-            <p><?php
+                    </div>
+                    <p>
+                        <?php
 
             echo $this->translate('Do you want to continue?');
-            ?></p>
-         </div>
-         <div class="modal-footer">
-            <button onclick="doPostAmendment();" type="button" class="btn btn-primary btn-sm">YES</button>
-            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
-         </div>
-      </div>
-   </div>
-</div>
-<script>
+            ?>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="doPostAmendment();" type="button" class="btn btn-primary btn-sm">YES</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("input[id='contractDate']").datepicker({
+            firstDay: 1,
+            dateFormat: 'yy-mm-dd',
+            closeText: 'X',
+            changeMonth: true,
+            changeYear: true
+        });
+        $("input[id='reversalDate']").datepicker({
+            firstDay: 1,
+            dateFormat: 'yy-mm-dd',
+            closeText: 'X',
+            changeMonth: true,
+            changeYear: true
+        });
 
-$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-$( "input[id='reversalDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-
-<?php
+        <?php
 
 if (! $canPost) :
     ?>
-$("#HEADER_FORM :input").attr("disabled", "disabled");
-<?php endif;
+        $("#HEADER_FORM :input").attr("disabled", "disabled");
+        <?php endif;
 
 ?>
 
-function confirmPost() {
- 	$('#confirm_modal_sm').modal();
-}
+        function confirmPost() {
+            $('#confirm_modal_sm').modal();
+        }
 
-function doPosting() {
-   $('#confirm_modal_sm').modal('hide');
-   $('#b_modal_no_header').modal();
-   submitForm('HEADER_FORM');
-}
-
-</script>
-<?php
+        function doPosting() {
+            $('#confirm_modal_sm').modal('hide');
+            $('#b_modal_no_header').modal();
+            submitForm('HEADER_FORM');
+        }
+    </script>
+    <?php
 include (ROOT . '/module/Inventory/view/inventory/trx_gird.php');
 ?>

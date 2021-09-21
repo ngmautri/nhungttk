@@ -15,7 +15,7 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
+class SaveAsExcelWithPic extends AbstractDocSaveAsSpreadsheet
 {
 
     public function saveAs(GenericDoc $doc, AbstractRowFormatter $formatter)
@@ -26,6 +26,10 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
         if (! $doc instanceof GenericDoc) {
             throw new \InvalidArgumentException(sprintf("Invalid input %s", "doc."));
+        }
+
+        if (count($doc->getDocRows()) == null) {
+            return;
         }
 
         // Set Header
@@ -74,7 +78,7 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
             $n ++;
         }
 
-        foreach ($doc->getRowsGenerator() as $r) {
+        foreach ($doc->getDocRows() as $r) {
 
             /**
              *
@@ -92,7 +96,6 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
             $columnValues = array(
                 $i,
-                '',
                 $row->getTransactionStatus(),
                 $row->getVendorName(),
                 $row->getDocNumber(),

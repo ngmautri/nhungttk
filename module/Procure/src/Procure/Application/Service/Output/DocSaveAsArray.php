@@ -8,6 +8,7 @@ use Procure\Domain\GenericRow;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

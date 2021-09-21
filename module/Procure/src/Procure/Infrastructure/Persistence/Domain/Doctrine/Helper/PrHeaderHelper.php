@@ -5,6 +5,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Application\DTO\Pr\PrHeaderDetailDTO;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\Mapper\PrMapper;
 use Procure\Infrastructure\Persistence\SQL\PrHeaderSQL;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
@@ -18,6 +19,56 @@ use Generator;
  */
 class PrHeaderHelper
 {
+
+    public static function getPRHeader(EntityManager $doctrineEM, PrHeaderReportSqlFilter $filterHeader, PrRowReportSqlFilter $filterRows)
+    {
+        if (! $doctrineEM instanceof EntityManager) {
+            return null;
+        }
+
+        if (! $filterHeader instanceof PrHeaderReportSqlFilter) {
+            return null;
+        }
+
+        if (! $filterRows instanceof PrRowReportSqlFilter) {
+            return null;
+        }
+
+        $sql = self::createPRSQL($filterHeader, $filterRows);
+
+        $sql = $sql . ";";
+
+        echo $sql;
+
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("std_gr_completed", "std_gr_completed");
+            $rsm->addScalarResult("std_gr_partial", "std_gr_partial");
+            $rsm->addScalarResult("std_ap_completed", "std_ap_completed");
+            $rsm->addScalarResult("std_ap_partial", "std_ap_partial");
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            $result = $query->getSingleResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    public static function createPRSQL(PrHeaderReportSqlFilter $filterHeader, PrRowReportSqlFilter $filterRows)
+    {
+        $sql = PrHeaderSQL::PR_SQL;
+        $filterRows->setPrId($filterHeader->getPrId());
+        $filterRows->setIsActive(1);
+        $filterRows->setBalance(100);
+        $sql1 = PrRowHelper::createPrRowsSQL($filterRows, false);
+        $sql = \sprintf($sql, $sql1);
+
+        $sql = $sql . " AND nmt_procure_pr.id = " . $filterHeader->getPrId();
+        // $sql = $sql . " GROUP BY nmt_procure_pr.id";
+        return $sql;
+    }
 
     /**
      *
@@ -41,26 +92,6 @@ class PrHeaderHelper
 
         $sql = self::createListSQL($filterHeader, $filterRows);
 
-        switch ($filterHeader->getSortBy()) {
-            case "sysNumber":
-                $sql = $sql . " ORDER BY nmt_procure_pr.pr_auto_number " . $filterHeader->getSort();
-                break;
-
-            case "docDate":
-                $sql = $sql . " ORDER BY nmt_procure_pr.doc_date " . $filterHeader->getSort();
-                break;
-            case "createdOn":
-                $sql = $sql . " ORDER BY nmt_procure_pr.submitted_on " . $filterHeader->getSort();
-                break;
-        }
-
-        if ($filterHeader->getLimit() > 0) {
-            $sql = $sql . " LIMIT " . $filterHeader->getLimit();
-        }
-
-        if ($filterHeader->getOffset() > 0) {
-            $sql = $sql . " OFFSET " . $filterHeader->getOffset();
-        }
         $sql = $sql . ";";
 
         // echo $sql;
@@ -165,5 +196,32 @@ class PrHeaderHelper
             $dto->apPartialCompletedRows = $r["std_ap_partial"];
             yield $dto;
         }
+    }
+
+    public static function getPRSnapshot(EntityManager $doctrineEM, PrHeaderReportSqlFilter $filterHeader, PrRowReportSqlFilter $filterRows)
+    {
+        $result = self::getPRHeader($doctrineEM, $filterHeader, $filterRows);
+
+        if ($result == null) {
+            return null;
+        }
+
+        $doctrineRootEntity = $result[0];
+
+        /**
+         *
+         * @var PRSnapshot $snapshot ;
+         */
+        $snapshot = PrMapper::createSnapshot($doctrineEM, $doctrineRootEntity);
+        if ($snapshot == null) {
+            return null;
+        }
+
+        $snapshot->totalRows = $result["total_row"];
+        $snapshot->grCompletedRows = $result["std_gr_completed"];
+        $snapshot->apCompletedRows = $result["std_ap_completed"];
+        $snapshot->grPartialCompletedRows = $result["std_gr_partial"];
+        $snapshot->apPartialCompletedRows = $result["std_ap_partial"];
+        return $snapshot;
     }
 }

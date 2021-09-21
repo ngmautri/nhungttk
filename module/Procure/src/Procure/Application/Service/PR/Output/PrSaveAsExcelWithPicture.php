@@ -2,23 +2,27 @@
 namespace Procure\Application\Service\PR\Output;
 
 use Application\Domain\Util\ExcelColumnMap;
-use Procure\Application\Service\Output\AbstractDocSaveAsSpreadsheet;
+use Procure\Application\Service\Output\AbstractProcureDocSaveAsSpreadsheet;
 use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
 use Procure\Domain\GenericDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 
 /**
+ * Director in builder pattern.
  *
- * @deprecated Director in builder pattern.
- *            
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
+class PrSaveAsExcelWithPicture extends AbstractProcureDocSaveAsSpreadsheet
 {
 
-    public function saveAs(GenericDoc $doc, AbstractRowFormatter $formatter)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Output\Contract\ProcureDocSaveAsInterface::saveAs()
+     */
+    public function saveAs(GenericDoc $doc, AbstractRowFormatter $formatter, $offset = null, $limit = null)
     {
         if ($this->getBuilder() == null) {
             return null;
@@ -26,6 +30,12 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
         if (! $doc instanceof GenericDoc) {
             throw new \InvalidArgumentException(sprintf("Invalid input %s", "doc."));
+        }
+
+        $doc->refreshDoc(); // important
+
+        if ($doc->getRowCollection()->count() == 0) {
+            return;
         }
 
         // Set Header
@@ -74,7 +84,7 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
             $n ++;
         }
 
-        foreach ($doc->getRowsGenerator() as $r) {
+        foreach ($doc->getRowCollection() as $r) {
 
             /**
              *

@@ -103,6 +103,89 @@ on last_ap.item_id = nmt_procure_pr_row.item_id
 WHERE 1 %s
 ";
 
+    const PR_ROW_SQL_1 = "
+SELECT
+	nmt_procure_pr_row.*,
+        
+	nmt_procure_pr.pr_name,
+    nmt_procure_pr.created_on as pr_created_on,
+    year(nmt_procure_pr.submitted_on) as pr_year,
+    nmt_inventory_item.item_name,
+	IFNULL(nmt_procure_pr_row.quantity,0) AS pr_qty,
+        
+    IFNULL(nmt_procure_qo_row.qo_qty,0) AS qo_qty,
+    IFNULL(nmt_procure_qo_row.posted_qo_qty,0) AS posted_qo_qty,
+    IFNULL(nmt_procure_qo_row.standard_qo_qty,0) AS standard_qo_qty,
+    IFNULL(nmt_procure_qo_row.posted_standard_qo_qty,0) AS posted_standard_qo_qty,
+        
+    IFNULL(nmt_procure_po_row.po_qty,0) AS po_qty,
+    IFNULL(nmt_procure_po_row.posted_po_qty,0) AS posted_po_qty,
+    IFNULL(nmt_procure_po_row.standard_po_qty,0) AS standard_po_qty,
+    IFNULL(nmt_procure_po_row.posted_standard_po_qty,0) AS posted_standard_po_qty,
+        
+    IFNULL(nmt_procure_gr_row.gr_qty,0) AS gr_qty,
+    IFNULL(nmt_procure_gr_row.posted_gr_qty,0) AS posted_gr_qty,
+    IFNULL(nmt_procure_gr_row.standard_gr_qty,0) AS standard_gr_qty,
+    IFNULL(nmt_procure_gr_row.posted_standard_gr_qty,0) AS posted_standard_gr_qty,
+        
+    IFNULL(nmt_inventory_trx.stock_gr_qty,0) AS stock_gr_qty,
+    IFNULL(nmt_inventory_trx.posted_stock_gr_qty,0) AS posted_stock_gr_qty,
+    IFNULL(nmt_inventory_trx.standard_stock_gr_qty,0) AS standard_stock_gr_qty,
+    IFNULL(nmt_inventory_trx.posted_standard_stock_gr_qty,0) AS posted_standard_stock_gr_qty,
+        
+    IFNULL(fin_vendor_invoice_row.ap_qty,0) AS ap_qty,
+    IFNULL(fin_vendor_invoice_row.posted_ap_qty,0) AS posted_ap_qty,
+    IFNULL(fin_vendor_invoice_row.standard_ap_qty,0) AS standard_ap_qty,
+    IFNULL(fin_vendor_invoice_row.posted_standard_ap_qty,0) AS posted_standard_ap_qty
+        
+         
+FROM nmt_procure_pr_row
+        
+LEFT JOIN nmt_procure_pr
+ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+        
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
+        
+LEFT JOIN
+(
+%s
+)
+AS nmt_procure_qo_row
+ON nmt_procure_qo_row.pr_row_id = nmt_procure_pr_row.id
+        
+LEFT JOIN
+(
+%s
+)
+AS nmt_procure_po_row
+ON nmt_procure_po_row.pr_row_id = nmt_procure_pr_row.id
+        
+LEFT JOIN
+(
+%s
+)
+AS nmt_procure_gr_row
+ON nmt_procure_gr_row.pr_row_id = nmt_procure_pr_row.id
+        
+LEFT JOIN
+(
+%s
+)
+AS nmt_inventory_trx
+ON nmt_inventory_trx.pr_row_id = nmt_procure_pr_row.id
+        
+LEFT JOIN
+(
+%s
+)
+AS fin_vendor_invoice_row
+ON fin_vendor_invoice_row.pr_row_id = nmt_procure_pr_row.id
+
+        
+WHERE 1 %s
+";
+
     const PR_QO_SQL = "
     SELECT
 		nmt_procure_pr_row.id AS pr_row_id,

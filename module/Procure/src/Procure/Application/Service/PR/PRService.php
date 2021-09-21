@@ -7,6 +7,7 @@ use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
 use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
+use Procure\Application\Service\PR\Output\PrRowFormatter;
 use Procure\Application\Service\PR\Output\RowFormatter;
 use Procure\Application\Service\PR\Output\SaveAsExcel;
 use Procure\Application\Service\PR\Output\SaveAsOpenOffice;
@@ -106,20 +107,20 @@ class PRService extends AbstractService implements ProcureServiceInterface
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
-                $formatter = new RowFormatter(new RowNumberFormatter());
+                $formatter = new PrRowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsExcel($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new OpenOfficeBuilder();
-                $formatter = new RowFormatter(new RowNumberFormatter());
+                $formatter = new PrRowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsOpenOffice($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_PDF:
                 $builder = new PdfBuilder();
-                $formatter = new RowFormatter(new RowNumberFormatter());
+                $formatter = new PrRowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsPdf($builder);
                 break;
         }
@@ -187,14 +188,14 @@ class PRService extends AbstractService implements ProcureServiceInterface
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
-                $formatter = new RowFormatter(new RowNumberFormatter());
+                $formatter = new RowNumberFormatter();
                 $factory = new SaveAsExcel($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
 
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new OpenOfficeBuilder();
-                $formatter = new RowFormatter(new RowNumberFormatter());
+                $formatter = new RowNumberFormatter();
                 $factory = new SaveAsOpenOffice($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
 
@@ -202,13 +203,13 @@ class PRService extends AbstractService implements ProcureServiceInterface
 
             case SaveAsSupportedType::OUTPUT_IN_PDF:
                 $builder = new PdfBuilder();
-                $formatter = new RowFormatter(new RowNumberFormatter());
+                $formatter = new RowNumberFormatter();
                 $factory = new SaveAsPdf($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
                 break;
             default:
                 // always save array.
-                $formatter = new RowFormatter(new RowTextAndNumberFormatter());
+                $formatter = new PrRowFormatter(new RowTextAndNumberFormatter());
                 $factory = new DocSaveAsArray();
                 break;
         }

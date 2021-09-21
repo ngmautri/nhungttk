@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\Service\PR\Output;
 
-use Procure\Application\Service\Output\AbstractDocSaveAsPdf;
+use Procure\Application\Service\Output\AbstractProcureDocSaveAsPdf;
 use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
 use Procure\Domain\GenericDoc;
 use Procure\Domain\PurchaseRequest\PRDoc;
@@ -13,15 +13,15 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SaveAsPdfDefault extends AbstractDocSaveAsPdf
+class DefaultPrSaveAsPdf extends AbstractProcureDocSaveAsPdf
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\Contract\DocSaveAsInterface::saveAs()
+     * @see \Procure\Application\Service\Output\Contract\ProcureDocSaveAsInterface::saveAs()
      */
-    public function saveAs(GenericDoc $doc, AbstractRowFormatter $formatter)
+    public function saveAs(GenericDoc $doc, AbstractRowFormatter $formatter, $offset = null, $limit = null)
     {
         if ($this->getBuilder() == null) {
             return null;
@@ -31,6 +31,8 @@ class SaveAsPdfDefault extends AbstractDocSaveAsPdf
             throw new \InvalidArgumentException(sprintf("Invalid input %s", "doc."));
         }
 
+        $doc->refreshDoc();
+
         // Set Header
         $params = [
             "docNumber" => $doc->getSysNumber(),
@@ -38,14 +40,14 @@ class SaveAsPdfDefault extends AbstractDocSaveAsPdf
         ];
         $this->getBuilder()->buildHeader($params);
 
-        $html = <<<EOF
+        $html = "
         <!-- EXAMPLE OF CSS STYLE -->
         <style>
         
          .docType{
                 color: black;
                 font-family: times;
-                font-weight: 200;  
+                font-weight: 200;
                 font-size: 16pt;
                 text-decoration: underline;
                 margin-bottom:20pt;
@@ -129,7 +131,7 @@ class SaveAsPdfDefault extends AbstractDocSaveAsPdf
           font-size:10pt;
           border-bottom: 1px solid #C1C3D1;
                font-family: times;
-        
+               
         }
         
         td:last-child {
@@ -168,9 +170,9 @@ class SaveAsPdfDefault extends AbstractDocSaveAsPdf
              font-weight:normal;
          color: black;
                font-family: times;
-        
+               
         font-style: italic;
-         
+        
         }
         
         .itemDetail{
@@ -180,13 +182,13 @@ class SaveAsPdfDefault extends AbstractDocSaveAsPdf
              font-family: monospace;
              font-style: italic;
              margin-left:9.5pt;
-         
+             
         }
         
         
         </style>
         
-        EOF;
+        "; // END
 
         $header = $html . '<div class="docType">Purchase Request</div><br>';
         $header = $header . \sprintf('<span class="docDetail">No.         : %s - Date: %s</span><br>', ucfirst($doc->getDocNumber()), $doc->getSubmittedOn());
@@ -210,7 +212,7 @@ class SaveAsPdfDefault extends AbstractDocSaveAsPdf
             "THB",
             "EUR"
         );
-        foreach ($doc->getRowsGenerator() as $r) {
+        foreach ($doc->getRowCollection() as $r) {
 
             $n ++;
 
@@ -219,7 +221,6 @@ class SaveAsPdfDefault extends AbstractDocSaveAsPdf
              * @var PRRow $r ;
              * @var PRRowSnapshot $row ;
              */
-            $r->updateRowStatus();
             $row = $formatter->format($r->makeSnapshot());
 
             $format = '<img alt="" height="" src="/inventory/item/barcode?barcode=%s">';

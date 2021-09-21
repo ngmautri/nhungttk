@@ -105,12 +105,24 @@ class PRRow extends BasePrRow
      */
     public function updateRowStatus()
     {
-        if ($this->getConvertedStandardQuantity() <= $this->getPostedStandardPoQuantity()) {
-            $this->setTransactionStatus(ProcureTrxStatus::COMMITTED);
+        if ($this->getPostedStandardQoQuantity() > 0) {
+            $this->setTransactionStatus(ProcureTrxStatus::HAS_QUOTATION);
         }
 
-        if ($this->getConvertedStandardQuantity() <= $this->getPostedStandardGrQuantity()) {
+        if ($this->getPostedStandardPoQuantity() > 0) {
+            $this->setTransactionStatus(ProcureTrxStatus::COMMITTED);
+
+            if ($this->getConvertedStandardQuantity() - $this->getPostedStandardPoQuantity() > 0) {
+                $this->setTransactionStatus(ProcureTrxStatus::PARTIAL_COMMITTED);
+            }
+        }
+
+        if ($this->getPostedStandardGrQuantity() > 0) {
             $this->setTransactionStatus(ProcureTrxStatus::COMPLETED);
+
+            if ($this->getConvertedStandardQuantity() - $this->getPostedStandardGrQuantity() > 0) {
+                $this->setTransactionStatus(ProcureTrxStatus::PARTIAL_COMPLETED);
+            }
         }
     }
 
@@ -173,6 +185,30 @@ class PRRow extends BasePrRow
         if ($instance->standardConvertFactor == null) {
             $instance->standardConvertFactor = 1;
         }
+        return $instance;
+    }
+
+    public static function constructFromDB(PRRowSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PRRowSnapshot) {
+            return null;
+        }
+
+        $instance = new self();
+
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        return $instance;
+    }
+
+    public static function makeFromSnapshot(PRRowSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PRRowSnapshot) {
+            return null;
+        }
+
+        $instance = new self();
+
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         return $instance;
     }
 
@@ -263,17 +299,6 @@ class PRRow extends BasePrRow
      * @param PRRowSnapshot $snapshot
      * @return NULL|\Procure\Domain\AccountPayable\APRow
      */
-    public static function makeFromSnapshot(PRRowSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof PRRowSnapshot) {
-            return null;
-        }
-
-        $instance = new self();
-
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
-    }
 
     /**
      *

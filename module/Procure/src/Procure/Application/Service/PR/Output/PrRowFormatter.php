@@ -12,7 +12,7 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class RowFormatter extends RowFormatterDecorator
+class PrRowFormatter extends RowFormatterDecorator
 {
 
     /**
@@ -44,12 +44,31 @@ class RowFormatter extends RowFormatterDecorator
         // then decorate
         if ($row instanceof PRRowSnapshot) {
 
-            if ($row->transactionStatus == "uncompleted") {
-                $row->transactionStatus = \sprintf('&nbsp;<span  class="label label-warning">.</span><span style="font-weight: normal;"> %s</span>', 'pending');
-            } elseif ($row->transactionStatus == "completed") {
-                $row->transactionStatus = \sprintf('&nbsp;<span style="color:graytext;">%s</span> ', "Done");
-            } elseif ($row->transactionStatus == ProcureTrxStatus::COMMITTED) {
-                $row->transactionStatus = \sprintf('&nbsp;<span style="color:green;">%s</span> ', "Committed");
+            switch ($row->getTransactionStatus()) {
+                case ProcureTrxStatus::UNCOMPLETED:
+                    $row->transactionStatus = \sprintf('&nbsp;<span  class="label label-warning">.</span><span style="font-weight: normal;"> %s</span>', 'pending');
+                    break;
+
+                case ProcureTrxStatus::HAS_QUOTATION:
+                    $row->transactionStatus = \sprintf('&nbsp;<span style="color:navy;">%s</span> ', "Quoted");
+                    break;
+
+                case ProcureTrxStatus::COMPLETED:
+                    $row->transactionStatus = \sprintf('&nbsp;<span style="color:graytext;">%s</span> ', "Done");
+                    break;
+                case ProcureTrxStatus::COMMITTED:
+                    $row->transactionStatus = \sprintf('&nbsp;<span style="color:green;">%s</span> ', "Committed");
+                    break;
+                case ProcureTrxStatus::PARTIAL_COMMITTED:
+                    $row->transactionStatus = \sprintf('&nbsp;<span style="color:green;">%s</span> ', "Parial committed");
+                    break;
+            }
+            $f = '<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>';
+
+            $link = sprintf($f, $row->rowIdentifer, $row->prToken, $row->pr, $row->prChecksum);
+
+            if ($row->docNumber !== null) {
+                $row->docNumber = sprintf('<span style="font-size:8pt; color: graytext">%s %s</span', $row->docNumber, $link);
             }
 
             $row->convertedStandardQuantity = ($row->getConvertedStandardQuantity() > 0 ? number_format($row->getConvertedStandardQuantity(), 0) : $zero);

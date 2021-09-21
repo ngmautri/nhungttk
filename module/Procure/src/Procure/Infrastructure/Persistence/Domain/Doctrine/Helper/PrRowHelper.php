@@ -35,12 +35,6 @@ class PrRowHelper
 
         if ($filter->getPrId() > 0) {
             $tmp1 .= sprintf(" AND nmt_procure_pr_row.pr_id=%s", $filter->getPrId());
-        }
-        if ($filter->getItemId() > 0) {
-            $tmp1 .= sprintf(" AND nmt_procure_pr_row.item_id=%s", $filter->getItemId());
-        }
-
-        if ($filter->getPrId() > 0) {
             $tmp2 .= sprintf(" AND nmt_procure_pr.id=%s", $filter->getPrId());
         }
 
@@ -100,7 +94,7 @@ class PrRowHelper
      * @param PrRowReportSqlFilter $filter
      * @return string
      */
-    public static function createPrRowsSQL(PrRowReportSqlFilter $filter)
+    public static function createPrRowsSQL(PrRowReportSqlFilter $filter, $includeLastAP = true)
     {
         $tmp1 = '';
 
@@ -116,6 +110,10 @@ class PrRowHelper
 
         if ($filter->getItemId() > 0) {
             $tmp1 = $tmp1 . \sprintf(" AND nmt_inventory_item.id =%s", $filter->getItemId());
+        }
+
+        if ($filter->getPrId() > 0) {
+            $tmp1 = $tmp1 . \sprintf(" AND nmt_procure_pr_row.pr_id =%s", $filter->getPrId());
         }
 
         $tmp2 = '';
@@ -134,7 +132,15 @@ class PrRowHelper
             $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity >  posted_standard_gr_qty";
         }
 
-        return self::createSQL($tmp1, $tmp2);
+        if ($filter->getPrId() > 0) {
+            $tmp2 = $tmp2 . \sprintf(" AND nmt_procure_pr_row.pr_id =%s", $filter->getPrId());
+        }
+
+        if ($includeLastAP) {
+            return self::createSQL($tmp1, $tmp2);
+        }
+
+        return self::createSQL1($tmp1, $tmp2);
     }
 
     /**
@@ -189,9 +195,9 @@ class PrRowHelper
             $localSnapshot->setLastUnitPrice($r["last_unit_price"]);
             $localSnapshot->setLastStandardUnitPrice($r["last_standard_unit_price"]);
             $localSnapshot->setLastStandardConvertFactor($r["last_standard_convert_factor"]);
-
             $localSnapshot->setLastCurrency($r["last_currency_iso3"]);
-            $localEntity = PRRow::makeFromSnapshot($localSnapshot);
+
+            $localEntity = PRRow::constructFromDB($localSnapshot);
 
             yield $localEntity;
         }
@@ -285,6 +291,17 @@ class PrRowHelper
         $sql5 = sprintf(PrRowSQL::PR_AP_SQL, $tmp1);
         $sql6 = sprintf(PrRowSQL::ITEM_LAST_AP_SQL, $tmp1);
         return sprintf($sql, $sql1, $sql2, $sql3, $sql4, $sql5, $sql6, $tmp2);
+    }
+
+    private static function createSQL1($tmp1, $tmp2)
+    {
+        $sql = PrRowSQL::PR_ROW_SQL_1;
+        $sql1 = sprintf(PrRowSQL::PR_QO_SQL, $tmp1);
+        $sql2 = sprintf(PrRowSQL::PR_PO_SQL, $tmp1);
+        $sql3 = sprintf(PrRowSQL::PR_POGR_SQL, $tmp1);
+        $sql4 = sprintf(PrRowSQL::PR_STOCK_GR_SQL, $tmp1);
+        $sql5 = sprintf(PrRowSQL::PR_AP_SQL, $tmp1);
+        return sprintf($sql, $sql1, $sql2, $sql3, $sql4, $sql5, $tmp2);
     }
 
     private static function createCountTotalSQL($tmp1, $tmp2)

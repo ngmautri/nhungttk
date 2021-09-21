@@ -30,7 +30,16 @@ class QueryRep1Test extends PHPUnit_Framework_TestCase
             $token = "4a600b5e-d6bc-43be-86c6-978308aaf746";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            var_dump($rootEntity->getRowsGenerator()->current());
+            var_dump($rootEntity->getTotalRows());
+
+            $rootEntity->refreshDoc();
+
+            var_dump($rootEntity->getTotalRows());
+
+            $rootEntity->refreshDoc();
+            var_dump($rootEntity->getCompletedRows());
+
+            var_dump($rootEntity->getRowCollection()->slice(null, null));
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

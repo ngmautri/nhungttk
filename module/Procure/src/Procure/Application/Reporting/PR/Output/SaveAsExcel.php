@@ -4,6 +4,7 @@ namespace Procure\Application\Reporting\PR\Output;
 use Application\Domain\Util\ExcelColumnMap;
 use Procure\Application\Service\Output\AbstractRowsSaveAsSpreadsheet;
 use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
+use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 
 /**
@@ -43,6 +44,7 @@ class SaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 
         $headerValues = array(
             "#",
+            "Status",
             "SKU",
             "Sys No.",
             "Item",
@@ -55,7 +57,7 @@ class SaveAsExcel extends AbstractRowsSaveAsSpreadsheet
             "Unit",
             "PR Qty",
             "QO",
-            "Posted QO",            
+            "Posted QO",
             "PO",
             "Posted PO",
             "AP",
@@ -72,7 +74,12 @@ class SaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 
         foreach ($rows as $row) {
 
-            $formatter->format($row);
+            /**
+             *
+             * @var PRRow $row ;
+             */
+            $row->updateRowStatus(); // important
+            $formatter->format($row->makeSnapshot());
 
             /**
              *
@@ -84,26 +91,26 @@ class SaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 
             $columnValues = array(
                 $i,
-                $row->itemSKU,
-                $row->itemSysNumber,
-                $row->itemName,
-                $row->vendorItemName,
-                $row->vendorItemCode,
-                $row->itemManufacturerCode,
-                $row->docNumber,
-                $row->docDate,
-                $row->rowIdentifer,
-                $row->docUnit,
-                $row->docQuantity,
-                $row->draftQoQuantity,
-                $row->postedQoQuantity,                
-                $row->draftPoQuantity,
-                $row->postedPoQuantity,
-                $row->draftApQuantity,
-                $row->postedApQuantity,
-                $row->lastVendorName,
-                $row->lastUnitPrice,
-                $row->lastCurrency
+                $row->getTransactionStatus(),
+                $row->getItemSKU(),
+                $row->getItemSysNumber(),
+                $row->getItemName(),
+                $row->getVendorItemName(),
+                $row->getVendorItemCode(),
+                $row->getItemManufacturerCode(),
+                $row->getDocNumber(),
+                $row->getDocDate(),
+                $row->getRowIdentifer(),
+                $row->getDocUnit(),
+                $row->getDocQuantity(),
+                $row->getConvertedStandardQuantity(),
+                $row->getPostedStandardQoQuantity(),
+                $row->getPostedStandardPoQuantity(),
+                $row->getPostedStandardGrQuantity(),
+                $row->getPostedStandardApQuantity(),
+                $row->getLastVendorName(),
+                $row->getLastStandardUnitPrice(),
+                $row->getLastCurrency()
             );
 
             $n = 0;

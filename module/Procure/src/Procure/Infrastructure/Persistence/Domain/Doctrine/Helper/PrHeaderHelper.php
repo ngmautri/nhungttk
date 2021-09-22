@@ -91,7 +91,7 @@ class PrHeaderHelper
         }
 
         $sql = self::createListSQL($filterHeader, $filterRows);
-
+        $sql = $sql . self::createSortBy($filterHeader) . self::createLimitOffset($filterHeader);
         $sql = $sql . ";";
 
         // echo $sql;
@@ -114,7 +114,7 @@ class PrHeaderHelper
 
     public static function getPRListTotal(EntityManager $doctrineEM, PrHeaderReportSqlFilter $filterHeader, PrRowReportSqlFilter $filterRows)
     {
-        $sql = self::createListSQL($filterHeader, $filterRows);
+        $sql = self::createListTotalSQL($filterHeader, $filterRows);
 
         $f = "select count(*) as total_row from (%s) as t ";
         $sql = sprintf($f, $sql);
@@ -134,7 +134,41 @@ class PrHeaderHelper
         $sql = PrHeaderSQL::PR_SQL;
 
         $filterRows->setBalance(100); // take all rows.
-        $sql1 = PrRowHelper::createPrRowsSQL($filterRows);
+        $sql1 = PrRowHelper::createSQLWihoutLastAP($filterRows);
+
+        $sql = \sprintf($sql, $sql1);
+
+        if ($filterHeader->getDocStatus() == "all") {
+            $filterHeader->docStatus = null;
+        }
+
+        if ($filterHeader->getIsActive() == 1) {
+            $sql = $sql . " AND nmt_procure_pr.is_active=  1";
+        } elseif ($filterHeader->getIsActive() == - 1) {
+            $sql = $sql . " AND nmt_procure_pr.is_active = 0";
+        }
+
+        if ($filterHeader->getDocYear() > 0) {
+            $sql = $sql . \sprintf(" AND year(nmt_procure_pr.submitted_on) = %s", $filterHeader->getDocYear());
+        }
+
+        $sql = $sql . " GROUP BY nmt_procure_pr.id";
+
+        // fullfiled
+        if ($filterHeader->getBalance() == 1) {
+            $sql = $sql . " HAVING total_row <=  std_gr_completed";
+        } elseif ($filterHeader->getBalance() == 2) {
+            $sql = $sql . " HAVING total_row >  std_gr_completed";
+        }
+        return $sql;
+    }
+
+    public static function createListTotalSQL(PrHeaderReportSqlFilter $filterHeader, PrRowReportSqlFilter $filterRows)
+    {
+        $sql = PrHeaderSQL::PR_SQL;
+
+        $filterRows->setBalance(100); // take all rows.
+        $sql1 = PrRowHelper::createSQLWihoutLastAP($filterRows);
 
         $sql = \sprintf($sql, $sql1);
 
@@ -223,5 +257,40 @@ class PrHeaderHelper
         $snapshot->grPartialCompletedRows = $result["std_gr_partial"];
         $snapshot->apPartialCompletedRows = $result["std_ap_partial"];
         return $snapshot;
+    }
+
+    private static function createSortBy(PrHeaderReportSqlFilter $filter)
+    {
+        $tmp = '';
+        switch ($filter->getSortBy()) {
+
+            case "sysNumber":
+                $tmp = $tmp . " ORDER BY nmt_procure_pr.pr_auto_number " . $filter->getSort();
+                break;
+
+            case "docDate":
+                $tmp = $tmp . " ORDER BY nmt_procure_pr.doc_date " . $filter->getSort();
+                break;
+            case "createdOn":
+                $tmp = $tmp . " ORDER BY nmt_procure_pr.submitted_on " . $filter->getSort();
+                break;
+        }
+
+        return $tmp;
+    }
+
+    private static function createLimitOffset(PrHeaderReportSqlFilter $filter)
+    {
+        $tmp = '';
+
+        if ($filter->getLimit() > 0) {
+            $tmp = $tmp . " LIMIT " . $filter->getLimit();
+        }
+
+        if ($filter->getOffset() > 0) {
+            $tmp = $tmp . " OFFSET " . $filter->getOffset();
+        }
+
+        return $tmp;
     }
 }

@@ -19,5 +19,5 @@ interface ProcureServiceInterface
 
     public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN');
 
-    public function getDocGirdByTokenId($id, $token, $offset = null, $limit = null, $locale = 'en_EN');
+    // public function getDocGirdByTokenId($id, $token, $offset = null, $limit = null, $locale = 'en_EN');
 }

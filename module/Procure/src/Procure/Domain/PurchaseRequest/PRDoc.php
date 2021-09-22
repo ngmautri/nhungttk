@@ -90,7 +90,7 @@ final class PRDoc extends GenericPR
         $this->setRowCollection($rowCollection);
 
         // marked as refreshed.
-        $this->setRefreshed(TRUE);
+        $this->refreshed = TRUE;
     }
 
     private static $instance = null;

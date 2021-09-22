@@ -2,20 +2,19 @@
 namespace Procure\Application\Service\PR;
 
 use Application\Service\AbstractService;
-use Procure\Application\Service\Contracts\ProcureServiceInterface;
-use Procure\Application\Service\Output\DocSaveAsArray;
-use Procure\Application\Service\Output\PrDocSaveAsArray;
+use Procure\Application\Service\Contracts\PrServiceInterface;
+use Procure\Application\Service\Output\DefaultProcureDocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
 use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
+use Procure\Application\Service\PR\Output\DefaultPrSaveAsExcel;
+use Procure\Application\Service\PR\Output\DefaultPrSaveAsOpenOffice;
+use Procure\Application\Service\PR\Output\DefaultPrSaveAsPdf;
 use Procure\Application\Service\PR\Output\PrRowFormatter;
-use Procure\Application\Service\PR\Output\RowFormatter;
-use Procure\Application\Service\PR\Output\SaveAsExcel;
-use Procure\Application\Service\PR\Output\SaveAsOpenOffice;
-use Procure\Application\Service\PR\Output\SaveAsPdf;
 use Procure\Application\Service\PR\Output\Pdf\PdfBuilder;
 use Procure\Application\Service\PR\Output\Spreadsheet\ExcelBuilder;
 use Procure\Application\Service\PR\Output\Spreadsheet\OpenOfficeBuilder;
+use Procure\Domain\GenericDoc;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
@@ -26,7 +25,7 @@ use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PRService extends AbstractService implements ProcureServiceInterface
+class PRServiceV1 extends AbstractService implements PrServiceInterface
 {
 
     const PR_KEY_CACHE = "pr_%s";
@@ -59,79 +58,6 @@ class PRService extends AbstractService implements ProcureServiceInterface
         }
 
         return $this->_getRootEntity($rootEntity, $outputStrategy);
-    }
-
-    public function getDocDetailsByTokenId1($id, $token, $outputStrategy = null, $locale = 'en_EN')
-    {
-        $key = \sprintf(self::PR_KEY_CACHE, $id);
-
-        $resultCache = $this->getCache()->getItem($key);
-
-        /**
-         *
-         * @var PRDoc $rootEntity ;
-         */
-        $rootEntity = null;
-        if ($resultCache->isHit()) {
-
-            $cachedRootEntity = $this->getCache()
-                ->getItem($key)
-                ->get();
-            $rootEntity = \unserialize($cachedRootEntity);
-            $this->getLogger()->info(\sprintf("PR#%s (%s) got from cache!", $id, $key));
-        } else {
-
-            // Not in Cache.
-            $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
-            $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-
-            if (! $rootEntity instanceof PRDoc) {
-                return null;
-            }
-
-            // always save array.
-            $formatter = new RowFormatter(new RowTextAndNumberFormatter());
-            $factory = new DocSaveAsArray();
-
-            $output = $factory->saveAs($rootEntity, $formatter);
-            $rootEntity->setRowsOutput($output);
-            $resultCache->set(\serialize($rootEntity));
-            $this->getCache()->save($resultCache);
-            $this->getLogger()->info(\sprintf("PR#%s (%s) saved into cache!", $id, $key));
-        }
-
-        // FOR PDF and Excel.
-
-        $factory = null;
-        $formatter = null;
-
-        switch ($outputStrategy) {
-            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
-                $builder = new ExcelBuilder();
-                $formatter = new PrRowFormatter(new RowNumberFormatter());
-                $factory = new SaveAsExcel($builder);
-                $factory->setDoctrineEM($this->getDoctrineEM());
-                break;
-            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
-                $builder = new OpenOfficeBuilder();
-                $formatter = new PrRowFormatter(new RowNumberFormatter());
-                $factory = new SaveAsOpenOffice($builder);
-                $factory->setDoctrineEM($this->getDoctrineEM());
-                break;
-
-            case SaveAsSupportedType::OUTPUT_IN_PDF:
-                $builder = new PdfBuilder();
-                $formatter = new PrRowFormatter(new RowNumberFormatter());
-                $factory = new SaveAsPdf($builder);
-                break;
-        }
-
-        if ($factory !== null && $formatter !== null) {
-            $output = $factory->saveAs($rootEntity, $formatter);
-            $rootEntity->setRowsOutput($output);
-        }
-
-        return $rootEntity;
     }
 
     /**
@@ -173,6 +99,26 @@ class PRService extends AbstractService implements ProcureServiceInterface
         return $this->_getRootEntity($rootEntity, $outputStrategy);
     }
 
+    public function getDocGirdByTokenId($id, $token, $offset = null, $limit = null, $locale = 'en_EN')
+    {
+        $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
+        $rootEntity = $rep->getRootEntityByTokenId($id, $token);
+
+        if (! $rootEntity instanceof GenericDoc) {
+            return null;
+        }
+        $rootEntity->setRowsOutput(null);
+
+        $formatter = new PrRowFormatter(new RowTextAndNumberFormatter());
+        $factory = new DefaultProcureDocSaveAsArray();
+        $factory->setLogger($this->getLogger());
+
+        $output = $factory->saveAs($rootEntity, $formatter, $offset, $limit);
+        $rootEntity->setRowsOutput($output);
+
+        return $rootEntity;
+    }
+
     /**
      *
      * @param object $rootEntity
@@ -190,14 +136,14 @@ class PRService extends AbstractService implements ProcureServiceInterface
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
                 $formatter = new RowNumberFormatter();
-                $factory = new SaveAsExcel($builder);
+                $factory = new DefaultPrSaveAsExcel($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
 
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new OpenOfficeBuilder();
                 $formatter = new RowNumberFormatter();
-                $factory = new SaveAsOpenOffice($builder);
+                $factory = new DefaultPrSaveAsOpenOffice($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
 
                 break;
@@ -205,13 +151,13 @@ class PRService extends AbstractService implements ProcureServiceInterface
             case SaveAsSupportedType::OUTPUT_IN_PDF:
                 $builder = new PdfBuilder();
                 $formatter = new RowNumberFormatter();
-                $factory = new SaveAsPdf($builder);
+                $factory = new DefaultPrSaveAsPdf($builder);
                 $factory->setDoctrineEM($this->getDoctrineEM());
                 break;
             default:
                 // always save array.
                 $formatter = new PrRowFormatter(new RowTextAndNumberFormatter());
-                $factory = new PrDocSaveAsArray();
+                $factory = new DefaultProcureDocSaveAsArray();
                 break;
         }
 
@@ -221,6 +167,29 @@ class PRService extends AbstractService implements ProcureServiceInterface
         }
 
         return $rootEntity;
+    }
+
+    public function getTotalRows($id, $token)
+    {
+        $key = \sprintf("total_row_%s_%s", $id, $token);
+
+        $resultCache = $this->getCache()->getItem($key);
+
+        if (! $resultCache->isHit()) {
+
+            $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
+            $trx = $rep->getTotl($id, $token);
+
+            $total = $trx->getTotalRows();
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
+        return $total;
     }
 
     /**

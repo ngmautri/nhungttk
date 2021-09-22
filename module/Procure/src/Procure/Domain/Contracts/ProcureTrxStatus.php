@@ -2,7 +2,7 @@
 namespace Procure\Domain\Contracts;
 
 /**
- * Document Status
+ * Transation Status
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -14,11 +14,19 @@ class ProcureTrxStatus
 
     const CLOSED = 'closed';
 
-    const COMMITTED = 'commited';
+    const HAS_QUOTATION = 'quoted';
+
+    const COMMITTED = 'committed';
+
+    const PARTIAL_COMMITTED = 'parial committed';
 
     const NEED_ACTION = 'acction needed';
 
     const COMPLETED = 'completed';
+
+    const PARTIAL_COMPLETED = 'partial completed';
+
+    const PENDING = 'pending';
 
     const UNCOMPLETED = 'uncompleted';
 }

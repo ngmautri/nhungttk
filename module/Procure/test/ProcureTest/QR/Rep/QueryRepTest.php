@@ -24,8 +24,8 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new QRQueryRepositoryImpl($doctrineEM);
 
-            $id = 348;
-            $token = "50ac6f5e-7a3c-4f09-a8bf-42acf7b7cbba";
+            $id = 555;
+            $token = "17cefb6b-2146-4a0b-845d-a42c50a6480e";
 
             /**
              *
@@ -36,7 +36,7 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
             // $rowId = 2102;
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
-            var_dump($rootEntity);
+            var_dump($rootEntity->getTotalRows());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

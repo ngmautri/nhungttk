@@ -20,6 +20,7 @@ use Procure\Application\Service\Output\Formatter\NullRowFormatter;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
 use Procure\Application\Service\Output\Formatter\Header\DefaultHeaderFormatter;
 use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
+use Procure\Application\Service\PR\Output\PrRowFormatter;
 use Procure\Infrastructure\Persistence\Reporting\PrReportRepositoryInterface;
 use Procure\Infrastructure\Persistence\Reporting\Contracts\PrGrReportInterface;
 use Procure\Infrastructure\Persistence\Reporting\Contracts\ProcureAppSqlFilterInterface;
@@ -257,7 +258,8 @@ class PrReporter extends AbstractService
 
         switch ($file_type) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new RowNumberFormatter();
+                $formatter = new PrRowFormatter(new RowNumberFormatter());
+
                 $factory = new RowsSaveAsArray();
                 break;
 
@@ -281,7 +283,7 @@ class PrReporter extends AbstractService
                 break;
 
             default:
-                $formatter = new RowNumberFormatter();
+                $formatter = new PrRowFormatter(new RowNumberFormatter());
                 $factory = new RowsSaveAsArray();
                 break;
         }

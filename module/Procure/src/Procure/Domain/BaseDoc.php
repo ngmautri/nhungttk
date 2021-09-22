@@ -20,6 +20,26 @@ abstract class BaseDoc extends AbstractDoc
 
     protected $rowCollection;
 
+    private $generatorInjected;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGeneratorInjected()
+    {
+        return $this->generatorInjected;
+    }
+
+    /**
+     *
+     * @param mixed $generatorInjected
+     */
+    private function setGeneratorInjected($generatorInjected)
+    {
+        $this->generatorInjected = $generatorInjected;
+    }
+
     /**
      *
      * @return mixed
@@ -56,7 +76,12 @@ abstract class BaseDoc extends AbstractDoc
      */
     public function setRowsGenerator(\Generator $rowsGenerator = null)
     {
+        if ($this->getGeneratorInjected()) {
+            throw new \InvalidArgumentException("Rows generator can be set only one time!");
+        }
         $this->rowsGenerator = $rowsGenerator;
+
+        $this->generatorInjected = true;
     }
 
     public function setLazyRowSnapshotCollectionReference($lazyRowSnapshotCollectionReference)

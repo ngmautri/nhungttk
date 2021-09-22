@@ -225,6 +225,7 @@ class PRQueryRepositoryImplV1 extends AbstractDoctrineRepository implements PrQu
     {
         $filter = new PrRowReportSqlFilter();
         $filter->setPrId($id);
+        $filter->setBalance(1000);
         $filter->setSortBy('itemName');
         $filter->setSort('desc');
         $rows = PrRowHelper::getRowsByPrId($this->getDoctrineEM(), $filter);

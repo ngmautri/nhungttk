@@ -21,13 +21,13 @@ use InvalidArgumentException;
 abstract class GenericDoc extends BaseDoc
 {
 
-    protected $refreshed;
+    protected $refreshed = false;
 
     /**
      *
      * @return mixed
      */
-    protected function getRefreshed()
+    public function getRefreshed()
     {
         return $this->refreshed;
     }

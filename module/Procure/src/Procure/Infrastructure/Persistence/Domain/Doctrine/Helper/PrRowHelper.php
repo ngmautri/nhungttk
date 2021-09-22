@@ -341,10 +341,10 @@ class PrRowHelper
 
     private static function mapLastApResult(EntityManager $doctrineEM, $rsm)
     {
-        $rsm->addScalarResult("ap_qty", "ap_qty");
-        $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
-        $rsm->addScalarResult("standard_ap_qty", "standard_ap_qty");
-        $rsm->addScalarResult("posted_standard_ap_qty", "posted_standard_ap_qty");
+        $rsm->addScalarResult("last_vendor_name", "last_vendor_name");
+        $rsm->addScalarResult("last_unit_price", "last_unit_price");
+        $rsm->addScalarResult("last_standard_unit_price", "last_standard_unit_price");
+        $rsm->addScalarResult("last_currency_iso3", "last_currency_iso3");
         return $rsm;
     }
 

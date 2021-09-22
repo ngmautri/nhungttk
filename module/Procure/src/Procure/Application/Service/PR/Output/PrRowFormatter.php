@@ -89,7 +89,13 @@ class PrRowFormatter extends RowFormatterDecorator
             $row->postedApQuantity = ($row->getPostedApQuantity() > 0 ? number_format($row->getPostedApQuantity(), 0) : $zero);
             $row->postedStandardApQuantity = ($row->getPostedStandardApQuantity() > 0 ? number_format($row->getPostedStandardApQuantity(), 0) : $zero);
 
-            $row->lastStandardUnitPrice = ($row->getLastStandardUnitPrice() !== null ? number_format($row->getLastStandardUnitPrice(), $decimalNo) : 0);
+            $decimalNo1 = 2;
+
+            if (in_array($row->getLastCurrency(), $curency)) {
+                $decimalNo1 = 2;
+            }
+
+            $row->lastStandardUnitPrice = ($row->getLastStandardUnitPrice() !== null ? number_format($row->getLastStandardUnitPrice(), $decimalNo1) : 0);
         }
 
         return $row;

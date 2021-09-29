@@ -61,6 +61,10 @@ class PRService extends AbstractService implements ProcureServiceInterface
         return $this->_getRootEntity($rootEntity, $outputStrategy);
     }
 
+    /**
+     *
+     * @deprecated
+     */
     public function getDocDetailsByTokenId1($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {
         $key = \sprintf(self::PR_KEY_CACHE, $id);

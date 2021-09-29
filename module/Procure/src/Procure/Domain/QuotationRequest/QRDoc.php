@@ -19,7 +19,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 final class QRDoc extends GenericQR
 {
@@ -146,7 +146,9 @@ final class QRDoc extends GenericQR
     public static function getInstance()
     {
         if (self::$instance == null) {
-            self::$instance = new QRDoc();
+            $o = new QRDoc();
+            $o->setDocType(ProcureDocType::QUOTE);
+            self::$instance = $o;
         }
         return self::$instance;
     }

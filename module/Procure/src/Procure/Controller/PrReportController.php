@@ -300,7 +300,7 @@ class PrReportController extends AbstractGenericController
         }
 
         if ($sortBy == null) :
-            $sortBy = "itemName";
+            $sortBy = "prSubmitted";
          endif;
 
         if ($prYear == null) :
@@ -308,7 +308,7 @@ class PrReportController extends AbstractGenericController
          endif;
 
         if ($sort == null) :
-            $sort = "ASC";
+            $sort = "DESC";
          endif;
 
         $paginator = null;

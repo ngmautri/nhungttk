@@ -80,7 +80,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
         $form_title = "Upload";
         $action = FormActions::UPLOAD;
-        $viewTemplete = $this->getBaseUrl() . "/review-v1";
+        $viewTemplete = $this->getViewTemplate();
 
         $request = $this->getRequest();
 

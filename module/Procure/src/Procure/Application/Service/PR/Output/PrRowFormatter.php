@@ -63,13 +63,25 @@ class PrRowFormatter extends RowFormatterDecorator
                     $row->transactionStatus = \sprintf('&nbsp;<span style="color:green;">%s</span> ', "Parial committed");
                     break;
             }
-            $f = '<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>';
 
-            $link = sprintf($f, $row->rowIdentifer, $row->prToken, $row->pr, $row->prChecksum);
+            /*
+             * $escaper = new Escaper();
+             *
+             * $onclick = null;
+             * if ($row->itemName !== null) {
+             * $item_detail = sprintf("/inventory/item/show1?token=%s&entity_id=%s", $row->getItemToken(), $row->getItem());
+             * $onclick = sprintf("showJqueryDialog('Detail of Item: %s','1600',$(window).height()-50,'%s','j_loaded_data', true);", $escaper->escapeJs($row->getItemName()), $item_detail);
+             * }
+             */
 
-            if ($row->docNumber !== null) {
-                $row->docNumber = sprintf('<span style="font-size:8pt; color: graytext">%s %s</span', $row->docNumber, $link);
-            }
+            /*
+             * if (strlen($row->getItemName()) < 35) {
+             * $row->itemName = sprintf('%s <a style="cursor:pointer;color:#337ab7" item-pic="" id="%s" item_name="%s" title="%s" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', $row->itemName, $row->item, $row->itemName, $row->itemName, $onclick);
+             * } else {
+             *
+             * $row->itemName = sprintf('%s <a style="cursor:pointer;color:#337ab7" item-pic="" id="%s" item_name="%s" title="%s" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', substr($row->itemName, 0, 30), $row->item, $row->itemName, $row->itemName, $onclick);
+             * }
+             */
 
             $row->convertedStandardQuantity = ($row->getConvertedStandardQuantity() > 0 ? number_format($row->getConvertedStandardQuantity(), 0) : $zero);
 

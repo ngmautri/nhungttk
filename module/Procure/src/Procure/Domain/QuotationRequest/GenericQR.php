@@ -4,6 +4,7 @@ namespace Procure\Domain\QuotationRequest;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
+use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Qr\QrPosted;
@@ -17,15 +18,47 @@ use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
+use Procure\Infrastructure\Doctrine\QRCmdRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class GenericQR extends AbstractQR
 {
+
+    /**
+     *
+     * @param SharedService $sharedService
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return \Procure\Domain\QuotationRequest\GenericQR
+     */
+    public function store(SharedService $sharedService)
+    {
+        Assert::notNull($sharedService, Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+
+        if (! $rep instanceof QRCmdRepositoryImpl) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("QRCmdRepositoryImpl not set! %s", __FUNCTION__)));
+        }
+
+        $this->setLogger($sharedService->getLogger());
+        $validationService = ValidatorFactory::create($sharedService, true);
+
+        $this->validate($validationService);
+        if ($this->hasErrors()) {
+            throw new \RuntimeException($this->getErrorMessage());
+        }
+
+        $rep->store($this);
+
+        $this->logInfo(\sprintf("Quotation saved %s", __METHOD__));
+        return $this;
+    }
 
     public function deactivateRow(QRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {}
@@ -79,7 +112,7 @@ abstract class GenericQR extends AbstractQR
      * @throws \RuntimeException
      * @return \Procure\Domain\QuotationRequest\QRRowSnapshot
      */
-    public function createRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService)
+    public function createRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, SharedServiceInterface $sharedService, $storeNow = true)
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("QR is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
@@ -102,6 +135,11 @@ abstract class GenericQR extends AbstractQR
         }
 
         $this->clearEvents();
+        $this->addRow($row);
+
+        if (! $storeNow) {
+            return $this;
+        }
 
         /**
          *

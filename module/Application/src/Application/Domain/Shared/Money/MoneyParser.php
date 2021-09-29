@@ -9,7 +9,7 @@ use Money\Parser\IntlLocalizedDecimalParser;
 /**
  *
  * @author nguyen mau tri - ngmautri@gmail.com
- *
+ *        
  */
 final class MoneyParser
 {

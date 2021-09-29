@@ -8,7 +8,7 @@ use Zend\Escaper\Escaper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class RowTextAndNumberFormatter extends AbstractRowFormatter
 {
@@ -87,6 +87,14 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
 
         if ($row->prNumber != null) {
             $row->prNumber = sprintf('<span style="font-size:8pt; color: graytext">%s %s</span>', $row->prNumber, $link);
+        }
+
+        $f = '<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>';
+
+        $link = sprintf($f, $row->rowIdentifer, $row->prToken, $row->pr, $row->prChecksum);
+
+        if ($row->docNumber !== null) {
+            $row->docNumber = sprintf('<span style="font-size:8pt; color: graytext">%s %s</span', $row->docNumber, $link);
         }
 
         /*

@@ -3,6 +3,7 @@ namespace Procure\Domain\QuotationRequest\Factory;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Qr\QrHeaderCreated;
 use Procure\Domain\Event\Qr\QrHeaderUpdated;
 use Procure\Domain\QuotationRequest\GenericQR;
@@ -18,7 +19,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class QRFactory
 {
@@ -58,6 +59,7 @@ class QRFactory
         $instance = self::createDoc($docType);
 
         $snapshot->initDoc($options);
+        $snapshot->docType = ProcureDocType::QUOTE; // Important
 
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $snapshot->setExchangeRate($fxRate);
@@ -106,6 +108,7 @@ class QRFactory
 
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $snapshot->setExchangeRate($fxRate);
+        $snapshot->docType = ProcureDocType::QUOTE; // Important
 
         // SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         QRSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);

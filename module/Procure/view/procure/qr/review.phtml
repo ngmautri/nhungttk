@@ -4,6 +4,7 @@
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===================================
  */
+use Application\Domain\Contracts\FormActions;
 use Application\Domain\Shared\Constants;
 use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\OptionList;
@@ -25,6 +26,11 @@ $picture_url = null;
 $attachment_url = null;
 $status_url = null;
 $log_url = null;
+
+$upload_btn = "";
+$rows_upload_url = "/procure/qr/upload-rows";
+$update_header_url = null;
+
 $view_url = null;
 
 $hoverMode = "row";
@@ -88,6 +94,11 @@ if (! $headerDTO == null) {
     $pmtTermId = $headerDTO->getPmtTerm();
     $currencyId = $headerDTO->getDocCurrency();
     $incotermId = $headerDTO->getIncoterm();
+
+    $upload_url = sprintf('/procure/qr/upload-rows?target_id=%s&target_token=%s', $headerDTO->getId(), $headerDTO->getToken());
+    $format = '<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="%s">
+  &nbsp;Upload <i class="fa fa-upload" aria-hidden="true"></i>&nbsp;</a>&nbsp;';
+    $upload_btn = sprintf($format, $upload_url);
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -292,6 +303,11 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
 // ================================
 echo $error_msg;
 // ===============================
+
+if ($action == FormActions::UPLOAD) :
+    include (ROOT . '/module/Procure/view/procure/procure_rows_upload.php');
+endif;
+
 ?>
 
 <?php
@@ -647,6 +663,13 @@ echo $paymentTerm_option;
                                  &nbsp;
                                  <i class="fa fa-refresh" aria-hidden="true"></i>
                                  &nbsp;
+                              </a>
+
+                              <a>
+                                 <?php
+
+                                echo $upload_btn;
+                                ?>
                               </a>
                               <a <?php
 

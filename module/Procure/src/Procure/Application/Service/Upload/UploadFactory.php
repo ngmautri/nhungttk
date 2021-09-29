@@ -7,7 +7,7 @@ use Procure\Domain\Contracts\ProcureDocType;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UploadFactory
 {
@@ -25,6 +25,9 @@ class UploadFactory
             case ProcureDocType::PR:
                 $uploader = new UploadPrRows($doctrineEM);
                 break;
+            case ProcureDocType::QUOTE:
+                $uploader = new UploadQuoteRows($doctrineEM);
+                break;
             case ProcureDocType::PO:
                 $uploader = new UploadPoRows($doctrineEM);
                 break;
@@ -34,7 +37,7 @@ class UploadFactory
         }
 
         if ($uploader == null) {
-            throw new \RuntimeException("Can not create Procure Uploader");
+            throw new \RuntimeException("Can not create Procure Uploader" . $docType);
         }
 
         return $uploader;

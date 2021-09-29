@@ -12,7 +12,7 @@ use Procure\Domain\Shared\ProcureDocStatus;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class Toolbar
 {
@@ -146,6 +146,10 @@ class Toolbar
 
                 if ($action == FormActions::REVIEW) {
                     $toolbar = $postBtn;
+                }
+
+                if ($action == FormActions::UPLOAD) {
+                    $toolbar = "";
                 }
                 break;
 

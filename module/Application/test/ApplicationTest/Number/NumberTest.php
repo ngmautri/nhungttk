@@ -24,7 +24,7 @@ class NumberTest extends PHPUnit_Framework_TestCase
 
     public function testFormatToEN()
     {
-        $p = NumberParser::parseAndFormatEN('150,000.34', 'en_EN');
+        $p = NumberParser::parseAndConvertToEN('150,000.34', 'en_EN');
         $this->assertEquals(150000.34, $p);
         echo ($p);
     }
@@ -40,7 +40,7 @@ class NumberTest extends PHPUnit_Framework_TestCase
 
     public function testNumber()
     {
-        $p = NumberParser::parseAndFormatEN('150,000.34', 'en_EN');
+        $p = NumberParser::parseAndConvertToEN('150,000.34', 'en_EN');
         echo $p;
         $this->assertTrue(\is_numeric($p));
     }

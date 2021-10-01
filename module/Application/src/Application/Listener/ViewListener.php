@@ -59,12 +59,32 @@ class ViewListener implements ListenerAggregateInterface
          * str_replace('</footer>', $html . '</footer>', $body)
          * );
          */
+        $t = '<br/>
+<ul style="font-size:9pt;
+        color:
+        gray;
+        ">
+<li>Source code on %s</li>
+<li>Demo videos on %s</li>
+<li>Outside of Mascot VPN, please connect to %s</li>
+<li>Please use %s, if you are on Mascot VPN. It is faster.</li>
+</ul >';
+
+        $github = ' <a target="_blank" href="https://github.com/ngmautri/nhungttk" style="font-size:8.5pt; color:black;">Github</a>';
+        $vpn = ' <a target="_blank" href="http://10.102.1.107" style="font-size:8.5pt; color:black;">http://10.102.1.107</a>';
+
+        $youtube = '<a target="_blank" href="https://www.youtube.com/channel/UCU3pVFp25_88dwwt71d6gOA" style="font-size:8.5pt; color:black;">Youtube</a>';
+        $mla_amp = '<a target="_blank" href="http://mla-app.com" style="font-size:8.5pt; color:black;">mla-app.com</a>';
+
+        $info = sprintf($t, $github, $youtube, $mla_amp, $vpn);
+
+        $t1 = '<span style="font-size:8.5pt; color:gray;">Page loaded in %s</span>';
+        $load_time = sprintf($t1, round(microtime(true) - TIMESTAMP_START, 5) * 1000 . 'ms');
+
         $body = $e->getResponse()->getContent();
-        $html = ' <a target="_blank" href="https://github.com/ngmautri/nhungttk" style="font-size:8.5pt; color:gray;">(Github)</a>';        
-        $html .= ' - <a target="_blank" href="https://www.youtube.com/channel/UCU3pVFp25_88dwwt71d6gOA" style="font-size:8.5pt; color:gray;">Demo videos on Youtube</a>';        
-        $html .= '<br><span style="font-size:8.5pt; color:gray;">Page loaded in: ';
-        $html .= round(microtime(true) - TIMESTAMP_START, 5) * 1000 . 'ms';
-        $html .= '</span>';
+
+        $html = $info;
+        $html .= $load_time;
 
         $e->getResponse()->setContent(str_replace('</footer>', $html . '</footer>', $body));
     }

@@ -67,7 +67,7 @@ class ViewListener implements ListenerAggregateInterface
 <li>Source code on %s</li>
 <li>Demo videos on %s</li>
 <li>Outside of Mascot VPN, please connect to %s</li>
-<li>Please use %s, if you are on Mascot VPN. It is faster.</li>
+<li>Please connect to %s, if you are on Mascot VPN. It is faster.</li>
 </ul >';
 
         $github = ' <a target="_blank" href="https://github.com/ngmautri/nhungttk" style="font-size:8.5pt; color:black;">Github</a>';

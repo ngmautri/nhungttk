@@ -60,14 +60,15 @@ class ViewListener implements ListenerAggregateInterface
          * );
          */
         $t = '<br/>
-<ul style="font-size:9pt;
+<ul style="font-size:8.5pt;
         color:
         gray;
         ">
 <li>Source code on %s</li>
 <li>Demo videos on %s</li>
 <li>Outside of Mascot VPN, please connect to %s</li>
-<li>Please connect to %s, if you are on Mascot VPN. It is faster.</li>
+<li>If you are on Mascot VPN, please connect to %s. It is faster.</li>
+<li>If you found any issues, please help to report them on github (%s). </li>
 </ul >';
 
         $github = ' <a target="_blank" href="https://github.com/ngmautri/nhungttk" style="font-size:8.5pt; color:black;">Github</a>';
@@ -75,8 +76,9 @@ class ViewListener implements ListenerAggregateInterface
 
         $youtube = '<a target="_blank" href="https://www.youtube.com/channel/UCU3pVFp25_88dwwt71d6gOA" style="font-size:8.5pt; color:black;">Youtube</a>';
         $mla_amp = '<a target="_blank" href="http://mla-app.com" style="font-size:8.5pt; color:black;">mla-app.com</a>';
+        $git_hub_issuse = '<a target="_blank" href="https://github.com/ngmautri/nhungttk/issues" style="font-size:8.5pt; color:black;">here</a>';
 
-        $info = sprintf($t, $github, $youtube, $mla_amp, $vpn);
+        $info = sprintf($t, $github, $youtube, $mla_amp, $vpn, $git_hub_issuse);
 
         $t1 = '<span style="font-size:8.5pt; color:gray;">Page loaded in %s</span>';
         $load_time = sprintf($t1, round(microtime(true) - TIMESTAMP_START, 5) * 1000 . 'ms');

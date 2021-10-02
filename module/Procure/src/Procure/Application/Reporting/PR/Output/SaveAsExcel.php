@@ -55,15 +55,19 @@ class SaveAsExcel extends AbstractRowsSaveAsSpreadsheet
             "PR Date",
             "Row#",
             "Unit",
-            "PR Qty",
+            "PR Doc Qty",
+            "PR Std Qty",
             "QO",
             "Posted QO",
             "PO",
             "Posted PO",
+            "GR",
+            "Posted GR",
             "AP",
             "Posted AP",
             "last Vendor",
-            "last UP"
+            "last Std UP",
+            "last Curr"
         );
 
         $n = 0;
@@ -104,9 +108,15 @@ class SaveAsExcel extends AbstractRowsSaveAsSpreadsheet
                 $row->getDocUnit(),
                 $row->getDocQuantity(),
                 $row->getConvertedStandardQuantity(),
+                $row->getStandardQoQuantity(),
                 $row->getPostedStandardQoQuantity(),
+                $row->getStandardPoQuantity(),
                 $row->getPostedStandardPoQuantity(),
+
+                $row->getStandardGrQuantity(),
                 $row->getPostedStandardGrQuantity(),
+
+                $row->getStandardApQuantity(),
                 $row->getPostedStandardApQuantity(),
                 $row->getLastVendorName(),
                 $row->getLastStandardUnitPrice(),

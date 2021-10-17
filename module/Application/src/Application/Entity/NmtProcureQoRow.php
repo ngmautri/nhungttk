@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureQoRow
  *
- * @ORM\Table(name="nmt_procure_qo_row", indexes={@ORM\Index(name="nmt_procure_qo_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_qo_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_qo_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_qo_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_qo_row_FK7_idx", columns={"qo_id"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx1", columns={"doc_uom"})})
+ * @ORM\Table(name="nmt_procure_qo_row", indexes={@ORM\Index(name="nmt_procure_qo_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_qo_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_qo_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_qo_row_FK7_idx", columns={"qo_id"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx1", columns={"doc_uom"}), @ORM\Index(name="nmt_procure_qo_row_FK6_idx", columns={"lastchange_by"})})
  * @ORM\Entity
  */
 class NmtProcureQoRow

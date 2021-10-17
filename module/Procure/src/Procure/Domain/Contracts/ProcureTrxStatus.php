@@ -29,4 +29,6 @@ class ProcureTrxStatus
     const PENDING = 'pending';
 
     const UNCOMPLETED = 'uncompleted';
+
+    const CLEARED = 'cleared';
 }

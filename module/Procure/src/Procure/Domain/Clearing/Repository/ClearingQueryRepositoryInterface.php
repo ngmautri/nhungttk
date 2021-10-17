@@ -11,8 +11,6 @@ Interface ClearingQueryRepositoryInterface
 
     public function getHeaderIdByRowId($id);
 
-    public function findAll();
-
     public function getById($id, $outputStragegy = null);
 
     public function getHeaderById($id, $token = null);
@@ -23,17 +21,7 @@ Interface ClearingQueryRepositoryInterface
 
     public function getRootEntityByTokenId($id, $token = null);
 
-    /**
-     *
-     * @param int $id
-     * @param string $token
-     */
     public function getVersion($id, $token = null);
 
-    /**
-     *
-     * @param int $id
-     * @param string $token
-     */
     public function getVersionArray($id, $token = null);
 }

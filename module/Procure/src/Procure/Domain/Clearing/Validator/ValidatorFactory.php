@@ -45,22 +45,7 @@ class ValidatorFactory
         $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
         $headerValidators->add($validator);
 
-        $rowValidators = new RowValidatorCollection();
-        $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-        $rowValidators->add($validator);
-
-        $validator = new WarehouseValidator($sharedSpecsFactory, $fxService);
-        $rowValidators->add($validator);
-
-        $validator = new GLAccountValidator($sharedSpecsFactory, $fxService);
-        $rowValidators->add($validator);
-
-        if ($isPosting) {
-            $validator = new GrDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
-            $headerValidators->add($validator);
-            $validator = new APPostingValidator($sharedSpecsFactory, $fxService);
-            $headerValidators->add($validator);
-        }
+        if ($isPosting) {}
 
         return new ValidationServiceImpl($headerValidators, $rowValidators);
     }

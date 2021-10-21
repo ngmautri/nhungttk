@@ -6,6 +6,7 @@ use Application\Entity\NmtProcureClearingRow;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Procure\Domain\Clearing\BaseClearingDoc;
 use Procure\Domain\Clearing\BaseClearingRow;
+use Procure\Domain\Clearing\ClearingDocSnapshot;
 use Procure\Domain\Clearing\ClearingRowSnapshot;
 use Procure\Domain\Clearing\Repository\ClearingCmdRepositoryInterface;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
@@ -24,6 +25,11 @@ class ClearingCmdRepositoryImpl extends AbstractDoctrineRepository implements Cl
 
     const LOCAL_ENTITY_NAME = "\Application\Entity\NmtProcureClearingRow";
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\Clearing\Repository\ClearingCmdRepositoryInterface::storeRow()
+     */
     public function storeRow(BaseClearingDoc $rootEntity, BaseClearingRow $localEntity, $isPosting = false)
     {
         if ($rootEntity == null) {
@@ -58,8 +64,50 @@ class ClearingCmdRepositoryImpl extends AbstractDoctrineRepository implements Cl
         return $localSnapshot;
     }
 
-    public function post(BaseClearingDoc $rootEntity, $generateSysNumber = True)
-    {}
+    public function post(BaseClearingDoc $rootEntity, $generateSysNumber = TRUE)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("Root entity not given.");
+        }
+
+        $rows = $rootEntity->getRowCollection();
+
+        if ($rows->isEmpty()) {
+            throw new InvalidArgumentException("Document is empty.");
+        }
+
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+
+        $isPosting = true;
+        $isFlush = true;
+        $increaseVersion = true;
+
+        $rootEntityDoctrine = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Root doctrine entity not found.");
+        }
+
+        $increaseVersion = false;
+        $isFlush = false;
+        $n = 0;
+
+        foreach ($rows as $localEntity) {
+            $localSnapshot = $this->_getLocalSnapshot($localEntity);
+            $n ++;
+
+            $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n);
+        }
+
+        // it is time to flush.
+        $this->doctrineEM->flush();
+
+        $rootSnapshot->id = $rootEntityDoctrine->getId();
+        $rootSnapshot->version = $rootEntityDoctrine->getVersion();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
+        return $rootSnapshot;
+    }
 
     /**
      *
@@ -118,17 +166,137 @@ class ClearingCmdRepositoryImpl extends AbstractDoctrineRepository implements Cl
         return true;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\Clearing\Repository\ClearingCmdRepositoryInterface::storeHeader()
+     */
     public function storeHeader(BaseClearingDoc $rootEntity, $generateSysNumber = false, $isPosting = false)
-    {}
+    {
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
 
+        $isFlush = true;
+        $increaseVersion = true;
+
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePr $entity
+         */
+        $entity = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($entity == null) {
+            throw new InvalidArgumentException("Something wrong. Doctrine root entity not created");
+        }
+
+        $rootSnapshot->id = $entity->getId();
+        $rootSnapshot->sysNumber = $entity->getPrAutoNumber();
+        $rootSnapshot->revisionNo = $entity->getRevisionNo();
+
+        return $rootSnapshot;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\Clearing\Repository\ClearingCmdRepositoryInterface::store()
+     */
     public function store(BaseClearingDoc $rootEntity, $generateSysNumber = false, $isPosting = false)
-    {}
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("GenericPO not retrieved.");
+        }
+
+        $rowCollection = $rootEntity->getRowCollection();
+
+        if ($rowCollection->isEmpty()) {
+            throw new InvalidArgumentException("Document is empty.");
+        }
+
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+
+        $isFlush = true;
+        $increaseVersion = true;
+        $rootEntityDoctrine = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Root doctrine entity not found.");
+        }
+
+        $increaseVersion = false;
+        $isFlush = false;
+        $n = 0;
+        foreach ($rowCollection as $localEntity) {
+
+            $n ++;
+
+            // flush every 500 line, if big doc.
+            if ($n % 500 == 0) {
+                $this->doctrineEM->flush();
+            }
+
+            $localSnapshot = $this->_getLocalSnapshot($localEntity);
+            $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
+        }
+
+        // it is time to flush.
+        $this->getDoctrineEM()->flush();
+
+        $rootSnapshot->id = $rootEntityDoctrine->getId();
+        $rootSnapshot->version = $rootEntityDoctrine->getRevisionNo();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
+        return $rootSnapshot;
+    }
 
     /*
      * |=============================
      * | HELPER FUNCTION
      * |=============================
      */
+    private function _storeHeader(ClearingDocSnapshot $rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion)
+    {
+        if ($rootSnapshot == null) {
+            throw new InvalidArgumentException("Root snapshot not given.");
+        }
+
+        /**
+         *
+         * @var \Application\Entity\NmtProcureClearingDoc $entity ;
+         *     
+         */
+        if ($rootSnapshot->getId() > 0) {
+            $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());
+            if ($entity == null) {
+                throw new InvalidArgumentException(sprintf("Doctrine entity not found. %s", $rootSnapshot->getId()));
+            }
+        } else {
+            $rootClassName = self::ROOT_ENTITY_NAME;
+            $entity = new $rootClassName();
+        }
+
+        // Populate with data
+        $entity = ClearingMapper::mapDocSnapshotEntity($this->getDoctrineEM(), $rootSnapshot, $entity);
+
+        if ($generateSysNumber) {
+            $entity->setSysNumber($this->generateSysNumber($entity));
+        }
+
+        if ($increaseVersion) {
+            // Optimistic Locking
+            if ($rootSnapshot->getId() > 0) {
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            }
+        }
+
+        $this->doctrineEM->persist($entity);
+
+        if ($isFlush) {
+            $this->doctrineEM->flush();
+        }
+
+        return $entity;
+    }
+
     private function _storeRow($rootEntityDoctrine, ClearingRowSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
     {
         if (! $rootEntityDoctrine instanceof NmtProcureClearingDoc) {
@@ -172,6 +340,10 @@ class ClearingCmdRepositoryImpl extends AbstractDoctrineRepository implements Cl
 
         $rowEntityDoctrine = ClearingMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
 
+        if ($n > 0) {
+            $rowEntityDoctrine->setRowIdentifer(sprintf("%s-%s", $rootEntityDoctrine->getSysNumber(), $n));
+        }
+
         $this->doctrineEM->persist($rowEntityDoctrine);
 
         if ($increaseVersion) {
@@ -203,5 +375,24 @@ class ClearingCmdRepositoryImpl extends AbstractDoctrineRepository implements Cl
         }
 
         return $localSnapshot;
+    }
+
+    private function _getRootSnapshot(BaseClearingDoc $rootEntity)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("Root entity not given!");
+        }
+
+        /**
+         *
+         * @todo
+         * @var ClearingDocSnapshot $rootSnapshot ;
+         */
+        $rootSnapshot = $rootEntity->makeSnapshot();
+        if ($rootSnapshot == null) {
+            throw new InvalidArgumentException("Root snapshot not created!");
+        }
+
+        return $rootSnapshot;
     }
 }

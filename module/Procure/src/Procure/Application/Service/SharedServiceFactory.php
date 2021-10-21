@@ -5,6 +5,7 @@ use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\Service\APPostingService;
+use Procure\Domain\Service\ClearingDocPostingService;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\PRPostingService;
@@ -15,13 +16,14 @@ use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\PRCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\QRCmdRepositoryImpl;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\ClearingCmdRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
  * AP Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class SharedServiceFactory
 {
@@ -111,6 +113,21 @@ class SharedServiceFactory
 
         $sharedSpecsFactory = new ZendSpecificationFactory($doctrineEM);
         $postingService = new QrPostingService(new QRCmdRepositoryImpl($doctrineEM));
+        $fxService = new FXServiceImpl();
+        $fxService->setDoctrineEM($doctrineEM);
+        $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
+        $domainSpecsFactory = new ProcureSpecificationFactory($doctrineEM);
+        $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
+
+        return $sharedService;
+    }
+
+    static public function createForClearingDoc(\Doctrine\ORM\EntityManager $doctrineEM)
+    {
+        Assert::notNull($doctrineEM, "EntityManager not found!");
+
+        $sharedSpecsFactory = new ZendSpecificationFactory($doctrineEM);
+        $postingService = new ClearingDocPostingService(new ClearingCmdRepositoryImpl($doctrineEM));
         $fxService = new FXServiceImpl();
         $fxService->setDoctrineEM($doctrineEM);
         $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);

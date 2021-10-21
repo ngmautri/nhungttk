@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain\Clearing;
 
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Procure\Domain\BaseRow;
 use Webmozart\Assert\Assert;
 
@@ -17,6 +18,18 @@ class BaseClearingRow extends AbstractClearingRow
 
     private $counterRow;
 
+    public static function createFromSnapshot(BaseClearingDoc $rootDoc, ClearingRowSnapshot $snapshot)
+    {
+        Assert::isInstanceOf($rootDoc, BaseClearingDoc::class, "Clearing Doc is required!");
+        Assert::isInstanceOf($snapshot, ClearingRowSnapshot::class, "Clearing row snapshot is required!");
+
+        $instance = new self();
+
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        // $instance->createVO($rootDoc);
+        return $instance;
+    }
+
     public function __construct(BaseRow $row, BaseRow $counterRow, $clearingQuantity = 0)
     {
         Assert::notNull($row);
@@ -28,5 +41,7 @@ class BaseClearingRow extends AbstractClearingRow
     }
 
     public function makeSnapshot()
-    {}
+    {
+        return GenericObjectAssembler::updateAllFieldsFrom(new ClearingRowSnapshot(), $this);
+    }
 }

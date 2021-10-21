@@ -2,20 +2,23 @@
 namespace Procure\Domain\Clearing;
 
 use Application\Application\Event\DefaultParameter;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
 use Doctrine\Common\Collections\ArrayCollection;
+use Procure\Domain\Clearing\Repository\ClearingCmdRepositoryInterface;
 use Procure\Domain\Clearing\Validator\ValidatorFactory;
 use Procure\Domain\Contracts\ProcureDocStatus;
-use Procure\Domain\Event\Pr\PrPosted;
-use Procure\Domain\Event\Pr\PrRowAdded;
-use Procure\Domain\Event\Pr\PrRowRemoved;
-use Procure\Domain\Event\Pr\PrRowUpdated;
+use Procure\Domain\Event\Clearing\ClearingDocPosted;
+use Procure\Domain\Event\Clearing\ClearingRowAdded;
+use Procure\Domain\Event\Clearing\ClearingRowUpdated;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
 use Procure\Domain\Service\SharedService;
 use Webmozart\Assert\Assert;
+use ClearingRowRemoved;
+use InvalidArgumentException;
 
 /**
  * Clearing Document.
@@ -27,6 +30,14 @@ class BaseClearingDoc extends AbstractClearingDoc
 {
 
     private $rowCollection;
+
+    public function addRow(BaseClearingRow $row)
+    {
+        if (! $row instanceof BaseClearingRow) {
+            throw new InvalidArgumentException("input not invalid! AbstractRow");
+        }
+        $this->getRowCollection()->add($row);
+    }
 
     public function removeRow(PRRow $row, CommandOptions $options, SharedService $sharedService)
     {
@@ -60,7 +71,7 @@ class BaseClearingDoc extends AbstractClearingDoc
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
 
-        $event = new PrRowRemoved($target, $defaultParams, $params);
+        $event = new ClearingRowRemoved($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;
@@ -90,11 +101,11 @@ class BaseClearingDoc extends AbstractClearingDoc
         return $this;
     }
 
-    public function createRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
+    public function createRowFrom(ClearingRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
-        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted!%s", $this->getId()));
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("Clearing Document is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
-        Assert::notNull($snapshot, "PRRowSnapshot not found");
+        Assert::notNull($snapshot, "ClearingRowSnapshot not found");
 
         $validationService = ValidatorFactory::create($sharedService);
 
@@ -104,7 +115,7 @@ class BaseClearingDoc extends AbstractClearingDoc
         $createdBy = $options->getUserId();
         $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = PRRow::createFromSnapshot($this, $snapshot);
+        $row = BaseClearingRow::createFromSnapshot($this, $snapshot);
 
         $this->validateRow($row, $validationService->getRowValidators());
 
@@ -122,13 +133,11 @@ class BaseClearingDoc extends AbstractClearingDoc
         /**
          *
          * @var PRRowSnapshot $localSnapshot
-         * @var PrCmdRepositoryInterface $rep ;
+         * @var ClearingCmdRepositoryInterface $rep ;
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $localSnapshot = $rep->storeRow($this, $row);
-
-        Assert::notNull($localSnapshot, sprintf("Error occured when creating PR Row #%s", $this->getId()));
 
         $params = [
             "rowId" => $localSnapshot->getId(),
@@ -144,7 +153,7 @@ class BaseClearingDoc extends AbstractClearingDoc
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
 
-        $event = new PrRowAdded($target, $defaultParams, $params);
+        $event = new ClearingRowAdded($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;
@@ -189,7 +198,7 @@ class BaseClearingDoc extends AbstractClearingDoc
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
 
-        $event = new PrRowUpdated($target, $defaultParams, $params);
+        $event = new ClearingRowUpdated($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;
@@ -224,10 +233,15 @@ class BaseClearingDoc extends AbstractClearingDoc
 
         $params = null;
 
-        $event = new PrPosted($target, $defaultParams, $params);
+        $event = new ClearingDocPosted($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $this;
+    }
+
+    public function makeSnapshot()
+    {
+        return GenericObjectAssembler::updateAllFieldsFrom(new ClearingDocSnapshot(), $this);
     }
 
     /*

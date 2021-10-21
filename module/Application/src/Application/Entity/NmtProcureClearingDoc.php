@@ -85,6 +85,13 @@ class NmtProcureClearingDoc
     private $lastChangeOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
+     */
+    private $docStatus;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -330,6 +337,30 @@ class NmtProcureClearingDoc
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
+    }
+
+    /**
+     * Set docStatus
+     *
+     * @param string $docStatus
+     *
+     * @return NmtProcureClearingDoc
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get docStatus
+     *
+     * @return string
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
     }
 
     /**

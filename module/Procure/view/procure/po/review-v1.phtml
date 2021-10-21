@@ -1328,20 +1328,21 @@ echo sprintf('var review_url="%s";', $review_url)?>
            { title: "Brand", dataType: "string", dataIndx: "brand", width:100 ,editable: false },
 
                    { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
+                   { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
+           { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
+
            { title: "Receiving", dataType: "decimal", dataIndx: "draftGrQuantity",align: 'right', width:80,editable: false },
            { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
            { title: "Billed qty", dataType: "decimal", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
+           { title: "Open Qty", dataType: "string", dataIndx: "confirmedGrBalance", align: 'left',minWidth: 70,editable: false},
            { title: "Billed Amt", dataType: "decimal", dataIndx: "billedAmount",align: 'right', width:70,editable: false },
            { title: "Open Amt", dataType: "decimal", dataIndx: "openAPAmount",align: 'right', width:90,editable: false },
-           { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
-           { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
-
+       
            { title: "Loc Price", dataType: "decimal", dataIndx: "localUnitPrice", width: 150,align: 'right',editable: false},
 
     		{ title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
     	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
-           { title: "Balance GR ", dataType: "string", dataIndx: "confirmedGrBalance", align: 'left',minWidth: 150,editable: false},
-
+      
           ];
 
         var $grid = $("#pr_row_gird").pqGrid(obj);

@@ -5,12 +5,13 @@ use Application\Domain\Util\Pagination\Paginator;
 use Procure\Application\Reporting\QR\QrReporter;
 use Procure\Controller\Contracts\ProcureCRUDController;
 use Procure\Infrastructure\Persistence\Filter\QrReportSqlFilter;
+use Zend\Http\Headers;
 use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class QrController extends ProcureCRUDController
 {
@@ -108,7 +109,7 @@ class QrController extends ProcureCRUDController
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
             $limit = $paginator->getLimit();
-            $offset =$paginator->getOffset();
+            $offset = $paginator->getOffset();
         }
 
         $list = $this->qrReporter->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
@@ -127,6 +128,22 @@ class QrController extends ProcureCRUDController
 
         $viewModel->setTemplate("procure/qr/dto_list");
         return $viewModel;
+    }
+
+    public function getTemplateAction()
+    {
+        $f = ROOT . '/public/templates/QrInput.xlsx';
+        $output = file_get_contents($f);
+        $response = $this->getResponse();
+        $headers = new Headers();
+        $headers->addHeaderLine('Content-Type: xlsx');
+        $headers->addHeaderLine('Content-Disposition: attachment; filename="QrInput.xlsx"');
+        $headers->addHeaderLine('Content-Description: File Transfer');
+        $headers->addHeaderLine('Content-Transfer-Encoding: binary');
+        $headers->addHeaderLine('Content-Encoding: UTF-8');
+        $response->setHeaders($headers);
+        $response->setContent($output);
+        return $response;
     }
 
     /**

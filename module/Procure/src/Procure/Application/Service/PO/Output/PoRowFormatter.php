@@ -9,7 +9,7 @@ use Procure\Domain\PurchaseOrder\PORowSnapshot;
  * PO Row Output.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PoRowFormatter extends RowFormatterDecorator
 {
@@ -33,7 +33,7 @@ class PoRowFormatter extends RowFormatterDecorator
         );
 
         if (in_array($row->getDocCurrencyISO(), $curency)) {
-            $decimalNo = 4;
+            $decimalNo = 2;
         }
 
         $row = $this->formatter->format($row);

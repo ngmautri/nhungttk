@@ -29,6 +29,8 @@ $log_url = null;
 
 $upload_btn = "";
 $rows_upload_url = "/procure/qr/upload-rows";
+$get_templete_div= '<small><i class="glyphicon glyphicon-download-alt"></i></small>&nbsp;<a href="/inventory/item/get-template" style="color:blue;">Download template</a><hr>';
+
 $update_header_url = null;
 
 $view_url = null;
@@ -306,9 +308,10 @@ echo $error_msg;
 
 if ($action == FormActions::UPLOAD) :
     include (ROOT . '/module/Procure/view/procure/procure_rows_upload.php');
+    echo $get_templete_div;
 endif;
-
 ?>
+   
 
 <?php
 if ($action == Constants::FORM_ACTION_REVERSE) :
@@ -405,6 +408,8 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                   <input type="hidden" name="version" value="<?php
                 echo $version;
                 ?>" />
+
+                
                   <fieldset>
                      <legend style="font-size: 9.5pt; color: gray;">
                         <small>

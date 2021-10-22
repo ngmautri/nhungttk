@@ -202,8 +202,6 @@ class POService extends AbstractService implements PoServiceInterface
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $f = new RowTextAndNumberFormatter();
-                $f->setLocale($locale);
-
                 $formatter = new PoRowFormatter($f);
                 $factory = new DocSaveAsArray();
                 break;
@@ -226,7 +224,6 @@ class POService extends AbstractService implements PoServiceInterface
 
             default:
                 $f = new RowTextAndNumberFormatter();
-                $f->setLocale($locale);
 
                 $formatter = new PoRowFormatter($f);
                 $factory = new DocSaveAsArray();
@@ -234,6 +231,7 @@ class POService extends AbstractService implements PoServiceInterface
         }
 
         if ($factory !== null && $formatter !== null) {
+            $formatter->setLocale($locale);
             $output = $factory->saveAs($po, $formatter);
             $po->setRowsOutput($output);
         }

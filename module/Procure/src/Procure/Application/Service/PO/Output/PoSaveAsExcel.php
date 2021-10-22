@@ -11,7 +11,7 @@ use Procure\Domain\PurchaseOrder\PORowSnapshot;
  * Director
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PoSaveAsExcel extends AbstractDocSaveAsSpreadsheet
 {
@@ -51,25 +51,36 @@ class PoSaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
         $headerValues = array(
             "#",
+            "FA Remarks",
+            "Status",
+            "Row Ref",
             "Row#",
-            "GL",
-            "Vendor",
-            "PO#",
-            "ItemSKY",
-            "item",
-            "SysNo",
+            "ItemSKU",
+            "Item",
+            "ItemSys",
             "Item Name",
+            "Asset",
+            "Unit",
+            "Doc Cur",
+            "Doc Qty",
+            "Doc UP",
+            "Net Amt",
+            "Text Amt",
+            "Gross Amt",
+
             "Item Vendor Name",
             "Item Vendor code",
-            "Unit",
-            "Qty",
-            "UP",
-            "Net Amt",
-            "CUrr",
+            "Brand",
+
+            "Std Qty",
+            "Std UP",
+            "Loc UP",
+            "Loc Curr",
+
             "Draft GR",
             "Posted GR",
-            "Draft AP#",
             "Posted AP",
+            "Open Qty",
             "Billed Amt",
             "Open Amt",
             "PR",
@@ -95,31 +106,38 @@ class PoSaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
             $columnValues = array(
                 $i,
+                $row->getFaRemarks(),
+                $row->getTransactionStatus(),
+                $row->getRowIdentifer(),
                 $row->getRowNumber(),
-                $row->getGlAccount(),
-
-                $row->getVendorName(),
-                $row->getDocNumber(),
-                $row->itemSKU,
+                $row->getItemSKU(),
                 $row->item,
                 $row->getItemSysNumber(),
                 $row->itemName,
+                $row->getIsFixedAsset(),
+                $row->docUnit,
+                $row->getDocCurrencyISO(),
+                $row->getDocQuantity(),
+                $row->getDocUnitPrice(),
+
+                $row->netAmount,
+                $row->taxAmount,
+                $row->grossAmount,
+
                 $row->itemManufacturerModel,
                 $row->vendorItemName,
                 $row->vendorItemCode,
-                $row->docUnit,
-                $row->quantity,
-                $row->docUnitPrice,
-                $row->netAmount,
-                $row->docCurrencyISO,
+                $row->getBrand(),
+
                 $row->draftGrQuantity,
                 $row->postedGrQuantity,
                 $row->draftAPQuantity,
                 $row->postedAPQuantity,
+                $row->getConfirmedGrBalance(),
+
                 $row->billedAmount,
                 $row->openAPAmount,
                 $row->remarks,
-                $row->prRowIndentifer,
                 $row->prNumber
             );
 

@@ -9,6 +9,7 @@ use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
 use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
+use Procure\Application\Service\PO\Output\PoRowForExcelFormatter;
 use Procure\Application\Service\PO\Output\PoRowFormatter;
 use Procure\Application\Service\PO\Output\PoSaveAsExcel;
 use Procure\Application\Service\PO\Output\PoSaveAsOpenOffice;
@@ -57,18 +58,18 @@ class POService extends AbstractService implements PoServiceInterface
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new PoExcelBuilder();
-                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $formatter = new PoRowForExcelFormatter(new RowNumberFormatter());
                 $factory = new PoSaveAsExcel($builder);
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new PoOpenOfficeBuilder();
-                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $formatter = new PoRowForExcelFormatter(new RowNumberFormatter());
                 $factory = new PoSaveAsOpenOffice($builder);
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_PDF:
                 $builder = new PoPdfBuilder();
-                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $formatter = new PoRowForExcelFormatter(new RowNumberFormatter());
                 $factory = new PoSaveAsPdf($builder);
                 break;
 
@@ -206,18 +207,18 @@ class POService extends AbstractService implements PoServiceInterface
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new PoExcelBuilder();
-                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $formatter = new PoRowForExcelFormatter(new RowNumberFormatter());
                 $factory = new PoSaveAsExcel($builder);
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new PoOpenOfficeBuilder();
-                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $formatter = new PoRowForExcelFormatter(new RowNumberFormatter());
                 $factory = new PoSaveAsOpenOffice($builder);
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_PDF:
                 $builder = new PoPdfBuilder();
-                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $formatter = new PoRowForExcelFormatter(new RowNumberFormatter());
                 $factory = new PoSaveAsPdf($builder);
                 break;
 

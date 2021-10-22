@@ -34,12 +34,42 @@ final class NumberFormatter
         return $numberFormatter->format($number);
     }
 
+    public static function formatMoneyNumberForExcel($number, $currency, $local = 'en_EN', $minFractionDigits = 0, $maxFractionDigits = 0)
+    {
+        if ($number == 0 or $number == null) {
+            return 0;
+        }
+        return self::_formatMoneyNumber($number, $currency, $minFractionDigits, $maxFractionDigits);
+    }
+
     public static function formatMoneyNumberForGrid($number, $currency, $local = 'en_EN', $minFractionDigits = 0, $maxFractionDigits = 0)
     {
         if ($number == 0 or $number == null) {
             return '<span style="color: white;">0</span>';
         }
 
+        return self::_formatMoneyNumber($number, $currency, $minFractionDigits, $maxFractionDigits);
+    }
+
+    public static function formatNumberForGrid($number, $local = 'en_EN', $minFractionDigits = 2, $maxFractionDigits = 2)
+    {
+        if ($number == 0 or $number == null) {
+            return '<span style="color: white;">0</span>';
+        }
+        self::_formatNumber($number, $local, $minFractionDigits, $maxFractionDigits);
+    }
+
+    public static function formatNumberForExcel($number, $local = 'en_EN', $minFractionDigits = 2, $maxFractionDigits = 2)
+    {
+        if ($number == 0 or $number == null) {
+            return 0;
+        }
+
+        self::_formatNumber($number, $local, $minFractionDigits, $maxFractionDigits);
+    }
+
+    private static function _formatMoneyNumber($number, $currency, $local = 'en_EN', $minFractionDigits = 0, $maxFractionDigits = 0)
+    {
         $curencyList = array(
             "USD",
             "THB",
@@ -57,12 +87,8 @@ final class NumberFormatter
         return $numberFormatter->format($number);
     }
 
-    public static function formatNumberForGrid($number, $local = 'en_EN', $minFractionDigits = 2, $maxFractionDigits = 2)
+    private static function _formatNumber($number, $local = 'en_EN', $minFractionDigits = 0, $maxFractionDigits = 0)
     {
-        if ($number == 0 or $number == null) {
-            return '<span style="color: white;">0</span>';
-        }
-
         $numberFormatter = new \NumberFormatter($local, \NumberFormatter::DECIMAL);
         $numberFormatter->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $minFractionDigits);
         $numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $maxFractionDigits);

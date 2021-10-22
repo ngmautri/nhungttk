@@ -53,7 +53,6 @@ class POService extends AbstractService implements PoServiceInterface
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
-                $formatter->setLocale($locale);
                 $factory = new DocSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:

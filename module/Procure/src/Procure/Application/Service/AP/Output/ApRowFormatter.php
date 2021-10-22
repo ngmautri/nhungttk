@@ -9,7 +9,7 @@ use Procure\Domain\AccountPayable\APRowSnapshot;
  * AP Row Output.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ApRowFormatter extends RowFormatterDecorator
 {
@@ -25,17 +25,7 @@ class ApRowFormatter extends RowFormatterDecorator
             return null;
         }
 
-        $decimalNo = 0;
-        $curency = array(
-            "USD",
-            "THB",
-            "EUR"
-        );
-
-        if (in_array($row->getDocCurrencyISO(), $curency)) {
-            $decimalNo = 4;
-        }
-
+        $this->formatter->setLocale($this->getLocale());
         $row = $this->formatter->format($row);
 
         // then decorate

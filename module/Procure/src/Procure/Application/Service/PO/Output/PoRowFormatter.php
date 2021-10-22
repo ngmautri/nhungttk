@@ -26,6 +26,8 @@ class PoRowFormatter extends RowFormatterDecorator
             return null;
         }
 
+        // using same local
+        $this->formatter->setLocale($this->getLocale());
         $row = $this->formatter->format($row);
 
         // then decorate

@@ -25,7 +25,7 @@ use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
  * PO Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class POService extends AbstractService implements PoServiceInterface
 {
@@ -53,6 +53,7 @@ class POService extends AbstractService implements PoServiceInterface
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
+                $formatter->setLocale($locale);
                 $factory = new DocSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
@@ -79,6 +80,7 @@ class POService extends AbstractService implements PoServiceInterface
         }
 
         if ($factory !== null && $formatter !== null) {
+            $formatter->setLocale($locale);
             $output = $factory->saveAs($po, $formatter);
             $po->setRowsOutput($output);
         }

@@ -1303,6 +1303,8 @@ echo sprintf('var review_url="%s";', $review_url)?>
           { title: "Asset", dataType: "string", dataIndx: "isFixedAsset", width:10,editable: false },
 
            { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
+           { title: "Doc Cur", dataType: "text", dataIndx: "docCurrencyISO", width: 50,align: 'center',editable: false},
+
       <?php
 
     if ($action == Constants::FORM_ACTION_REVIEW) :
@@ -1334,11 +1336,12 @@ echo sprintf('var review_url="%s";', $review_url)?>
            { title: "Receiving", dataType: "decimal", dataIndx: "draftGrQuantity",align: 'right', width:80,editable: false },
            { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
            { title: "Billed qty", dataType: "decimal", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
-           { title: "Open Qty", dataType: "string", dataIndx: "confirmedGrBalance", align: 'left',minWidth: 70,editable: false},
+           { title: "Open Qty", dataType: "string", dataIndx: "confirmedGrBalance", align: 'right',minWidth: 70,editable: false},
            { title: "Billed Amt", dataType: "decimal", dataIndx: "billedAmount",align: 'right', width:70,editable: false },
            { title: "Open Amt", dataType: "decimal", dataIndx: "openAPAmount",align: 'right', width:90,editable: false },
        
            { title: "Loc Price", dataType: "decimal", dataIndx: "localUnitPrice", width: 90,align: 'right',editable: false},
+           { title: "Loc Cur", dataType: "text", dataIndx: "localCurrencyISO", width: 40,align: 'Center',editable: false},
 
     		{ title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
     	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},

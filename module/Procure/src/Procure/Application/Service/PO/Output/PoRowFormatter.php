@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\Service\PO\Output;
 
+use Application\Domain\Shared\Number\NumberFormatter;
 use Procure\Application\Service\Output\Formatter\RowFormatterDecorator;
 use Procure\Domain\RowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
@@ -25,17 +26,6 @@ class PoRowFormatter extends RowFormatterDecorator
             return null;
         }
 
-        $decimalNo = 0;
-        $curency = array(
-            "USD",
-            "THB",
-            "EUR"
-        );
-
-        if (in_array($row->getDocCurrencyISO(), $curency)) {
-            $decimalNo = 2;
-        }
-
         $row = $this->formatter->format($row);
 
         // then decorate
@@ -46,18 +36,15 @@ class PoRowFormatter extends RowFormatterDecorator
                 $row->transactionStatus = \sprintf('&nbsp;<span style="color: graytext;">%s</span>', "Done");
             }
 
-            // $row->unitPrice = ($row->getUnitPrice() !== null ? number_format($row->getUnitPrice(), $decimalNo) : 0);
+            $row->billedAmount = NumberFormatter::formatMoneyNumberForGrid($row->billedAmount, $row->getDocCurrencyISO(), $this->getLocale());
+            $row->openAPAmount = NumberFormatter::formatMoneyNumberForGrid($row->openAPAmount, $row->getDocCurrencyISO(), $this->getLocale());
 
-            $row->billedAmount = ($row->getBilledAmount() !== null ? number_format($row->getBilledAmount(), $decimalNo) : 0);
-            $row->localUnitPrice = ($row->getLocalUnitPrice() !== null ? number_format($row->getLocalUnitPrice(), $decimalNo) : 0);
-
-            $row->draftAPQuantity = ($row->getDraftAPQuantity() !== null ? number_format($row->getDraftAPQuantity(), $decimalNo) : 0);
-            $row->openAPAmount = ($row->getOpenAPAmount() !== null ? number_format($row->getOpenAPAmount(), $decimalNo) : 0);
-            $row->postedAPQuantity = ($row->getPostedAPQuantity() !== null ? number_format($row->getPostedAPQuantity(), $decimalNo) : 0);
-            $row->draftGrQuantity = ($row->getDraftGrQuantity() !== null ? number_format($row->getDraftGrQuantity(), $decimalNo) : 0);
-            $row->postedGrQuantity = ($row->getPostedGrQuantity() !== null ? number_format($row->getPostedGrQuantity(), $decimalNo) : 0);
-            $row->confirmedGrBalance = ($row->getConfirmedGrBalance() !== null ? number_format($row->getConfirmedGrBalance(), $decimalNo) : 0);
-            $row->openGrBalance = ($row->getOpenGrBalance() !== null ? number_format($row->getOpenGrBalance(), $decimalNo) : 0);
+            $row->draftAPQuantity = NumberFormatter::formatNumberForGrid($row->draftAPQuantity, $this->getLocale());
+            $row->postedAPQuantity = NumberFormatter::formatNumberForGrid($row->draftAPQuantity, $this->getLocale());
+            $row->draftGrQuantity = NumberFormatter::formatNumberForGrid($row->draftGrQuantity, $this->getLocale());
+            $row->postedGrQuantity = NumberFormatter::formatNumberForGrid($row->postedGrQuantity, $this->getLocale());
+            $row->confirmedGrBalance = NumberFormatter::formatNumberForGrid($row->confirmedGrBalance, $this->getLocale());
+            $row->openGrBalance = NumberFormatter::formatNumberForGrid($row->confirmedGrBalance, $this->getLocale());
         }
 
         return $row;

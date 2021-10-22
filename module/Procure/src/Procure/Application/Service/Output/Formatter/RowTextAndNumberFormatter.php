@@ -23,19 +23,6 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
         if (! $row instanceof RowSnapshot) {
             return null;
         }
-
-        $decimalNo = 0;
-        $curency = array(
-            "USD",
-            "THB",
-            "EUR",
-            "DKK"
-        );
-
-        if (in_array($row->getDocCurrencyISO(), $curency)) {
-            $decimalNo = 2;
-        }
-
         $escaper = new Escaper();
 
         $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $row->getItemToken(), $row->getItemChecksum(), $row->getItem());
@@ -48,40 +35,19 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
             $row->itemName = sprintf('%s <a style="cursor:pointer;color:#337ab7"  item-pic="" id="%s" item_name="%s" title="%s" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', substr($row->itemName, 0, 30), $row->item, $row->itemName, $row->itemName, $onclick);
         }
 
-        if ($row->docUnitPrice !== null) {
-            $row->docUnitPrice = NumberFormatter::format($row->docUnitPrice, $this->getLocale(), $decimalNo, $decimalNo);
-        }
+        // format money
+        $row->docUnitPrice = NumberFormatter::formatMoneyNumberForGrid($row->docUnitPrice, $row->getDocCurrencyISO(), $this->getLocale());
+        $row->unitPrice = NumberFormatter::formatMoneyNumberForGrid($row->unitPrice, $row->getDocCurrencyISO(), $this->getLocale());
+        $row->netAmount = NumberFormatter::formatMoneyNumberForGrid($row->netAmount, $row->getDocCurrencyISO(), $this->getLocale());
+        $row->taxAmount = NumberFormatter::formatMoneyNumberForGrid($row->taxAmount, $row->getDocCurrencyISO(), $this->getLocale());
+        $row->grossAmount = NumberFormatter::formatMoneyNumberForGrid($row->grossAmount, $row->getDocCurrencyISO(), $this->getLocale());
+        $row->convertedStandardUnitPrice = NumberFormatter::formatMoneyNumberForGrid($row->convertedStandardUnitPrice, $row->getDocCurrencyISO(), $this->getLocale());
+        $row->localUnitPrice = NumberFormatter::formatMoneyNumberForGrid($row->localUnitPrice, $row->getLocalCurrencyISO(), $this->getLocale());
 
-        if ($row->unitPrice != null) {
-            $row->unitPrice = NumberFormatter::format($row->unitPrice, $this->getLocale(), $decimalNo, $decimalNo);
-        }
-
-        if ($row->netAmount !== null) {
-            $row->netAmount = NumberFormatter::format($row->netAmount, $this->getLocale(), $decimalNo, $decimalNo);
-        }
-
-        if ($row->taxAmount !== null) {
-            $row->taxAmount = NumberFormatter::format($row->taxAmount, $this->getLocale(), $decimalNo, $decimalNo);
-        }
-        if ($row->grossAmount !== null) {
-            $row->grossAmount = NumberFormatter::format($row->grossAmount, $this->getLocale(), $decimalNo, $decimalNo);
-        }
-
-        if ($row->convertedStandardQuantity !== null) {
-            $row->convertedStandardQuantity = NumberFormatter::format($row->convertedStandardQuantity, $this->getLocale(), $decimalNo, $decimalNo);
-        }
-
-        if ($row->convertedStandardUnitPrice !== null) {
-            $row->convertedStandardUnitPrice = NumberFormatter::format($row->convertedStandardUnitPrice, $this->getLocale(), $decimalNo, $decimalNo);
-        }
-
-        if ($row->docQuantity != null) {
-            $row->docQuantity = NumberFormatter::format($row->docQuantity, $this->getLocale(), $decimalNo, $decimalNo);
-        }
-
-        if ($row->standardConvertFactor != null) {
-            $row->standardConvertFactor = NumberFormatter::format($row->standardConvertFactor, $this->getLocale(), $decimalNo, $decimalNo);
-        }
+        // format number
+        $row->docQuantity = NumberFormatter::formatNumberForGrid($row->docQuantity, $this->getLocale());
+        $row->convertedStandardQuantity = NumberFormatter::formatNumberForGrid($row->convertedStandardQuantity, $this->getLocale());
+        $row->standardConvertFactor = NumberFormatter::formatNumberForGrid($row->standardConvertFactor, $this->getLocale());
 
         $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $row->prRowIndentifer, $row->prToken, $row->pr);
 

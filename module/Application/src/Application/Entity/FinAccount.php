@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="fin_account", indexes={@ORM\Index(name="fin_account_FK1_idx", columns={"company_id"}), @ORM\Index(name="fin_account_FK2_idx", columns={"created_by"}), @ORM\Index(name="fin_account_FK3_idx", columns={"last_change_by"}), @ORM\Index(name="fin_account_idx1", columns={"token"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\FinAccountRepository")
  */
 class FinAccount
 {
@@ -20,133 +21,133 @@ class FinAccount
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="account_number", type="integer", nullable=true)
      */
     private $accountNumber;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="account_type", type="string", length=10, nullable=true)
      */
     private $accountType;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="account_class", type="string", length=45, nullable=true)
      */
     private $accountClass;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="account_group", type="string", length=10, nullable=true)
      */
     private $accountGroup;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
      */
     private $description;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
      */
     private $revisionNo;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="account_name", type="string", length=45, nullable=true)
      */
     private $accountName;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="reconcilation_for", type="string", length=10, nullable=true)
      */
     private $reconcilationFor;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="manual_posting_blocked", type="boolean", nullable=true)
      */
     private $manualPostingBlocked;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_control_account", type="boolean", nullable=true)
      */
     private $isControlAccount;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_clearing_account", type="boolean", nullable=true)
      */
     private $isClearingAccount;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="sap_account", type="string", length=45, nullable=true)
      */
     private $sapAccount;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="has_cost_center", type="boolean", nullable=true)
      */
     private $hasCostCenter;
-
+    
     /**
      * @var \Application\Entity\NmtApplicationCompany
      *
@@ -156,7 +157,7 @@ class FinAccount
      * })
      */
     private $company;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -166,7 +167,7 @@ class FinAccount
      * })
      */
     private $createdBy;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -176,9 +177,9 @@ class FinAccount
      * })
      */
     private $lastChangeBy;
-
-
-
+    
+    
+    
     /**
      * Get id
      *
@@ -188,7 +189,7 @@ class FinAccount
     {
         return $this->id;
     }
-
+    
     /**
      * Set token
      *
@@ -199,10 +200,10 @@ class FinAccount
     public function setToken($token)
     {
         $this->token = $token;
-
+        
         return $this;
     }
-
+    
     /**
      * Get token
      *
@@ -212,7 +213,7 @@ class FinAccount
     {
         return $this->token;
     }
-
+    
     /**
      * Set accountNumber
      *
@@ -223,10 +224,10 @@ class FinAccount
     public function setAccountNumber($accountNumber)
     {
         $this->accountNumber = $accountNumber;
-
+        
         return $this;
     }
-
+    
     /**
      * Get accountNumber
      *
@@ -236,7 +237,7 @@ class FinAccount
     {
         return $this->accountNumber;
     }
-
+    
     /**
      * Set accountType
      *
@@ -247,10 +248,10 @@ class FinAccount
     public function setAccountType($accountType)
     {
         $this->accountType = $accountType;
-
+        
         return $this;
     }
-
+    
     /**
      * Get accountType
      *
@@ -260,7 +261,7 @@ class FinAccount
     {
         return $this->accountType;
     }
-
+    
     /**
      * Set accountClass
      *
@@ -271,10 +272,10 @@ class FinAccount
     public function setAccountClass($accountClass)
     {
         $this->accountClass = $accountClass;
-
+        
         return $this;
     }
-
+    
     /**
      * Get accountClass
      *
@@ -284,7 +285,7 @@ class FinAccount
     {
         return $this->accountClass;
     }
-
+    
     /**
      * Set accountGroup
      *
@@ -295,10 +296,10 @@ class FinAccount
     public function setAccountGroup($accountGroup)
     {
         $this->accountGroup = $accountGroup;
-
+        
         return $this;
     }
-
+    
     /**
      * Get accountGroup
      *
@@ -308,7 +309,7 @@ class FinAccount
     {
         return $this->accountGroup;
     }
-
+    
     /**
      * Set isActive
      *
@@ -319,10 +320,10 @@ class FinAccount
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isActive
      *
@@ -332,7 +333,7 @@ class FinAccount
     {
         return $this->isActive;
     }
-
+    
     /**
      * Set description
      *
@@ -343,10 +344,10 @@ class FinAccount
     public function setDescription($description)
     {
         $this->description = $description;
-
+        
         return $this;
     }
-
+    
     /**
      * Get description
      *
@@ -356,7 +357,7 @@ class FinAccount
     {
         return $this->description;
     }
-
+    
     /**
      * Set createdOn
      *
@@ -367,10 +368,10 @@ class FinAccount
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdOn
      *
@@ -380,7 +381,7 @@ class FinAccount
     {
         return $this->createdOn;
     }
-
+    
     /**
      * Set lastChangeOn
      *
@@ -391,10 +392,10 @@ class FinAccount
     public function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastChangeOn
      *
@@ -404,7 +405,7 @@ class FinAccount
     {
         return $this->lastChangeOn;
     }
-
+    
     /**
      * Set revisionNo
      *
@@ -415,10 +416,10 @@ class FinAccount
     public function setRevisionNo($revisionNo)
     {
         $this->revisionNo = $revisionNo;
-
+        
         return $this;
     }
-
+    
     /**
      * Get revisionNo
      *
@@ -428,7 +429,7 @@ class FinAccount
     {
         return $this->revisionNo;
     }
-
+    
     /**
      * Set accountName
      *
@@ -439,10 +440,10 @@ class FinAccount
     public function setAccountName($accountName)
     {
         $this->accountName = $accountName;
-
+        
         return $this;
     }
-
+    
     /**
      * Get accountName
      *
@@ -452,7 +453,7 @@ class FinAccount
     {
         return $this->accountName;
     }
-
+    
     /**
      * Set remarks
      *
@@ -463,10 +464,10 @@ class FinAccount
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-
+        
         return $this;
     }
-
+    
     /**
      * Get remarks
      *
@@ -476,7 +477,7 @@ class FinAccount
     {
         return $this->remarks;
     }
-
+    
     /**
      * Set reconcilationFor
      *
@@ -487,10 +488,10 @@ class FinAccount
     public function setReconcilationFor($reconcilationFor)
     {
         $this->reconcilationFor = $reconcilationFor;
-
+        
         return $this;
     }
-
+    
     /**
      * Get reconcilationFor
      *
@@ -500,7 +501,7 @@ class FinAccount
     {
         return $this->reconcilationFor;
     }
-
+    
     /**
      * Set manualPostingBlocked
      *
@@ -511,10 +512,10 @@ class FinAccount
     public function setManualPostingBlocked($manualPostingBlocked)
     {
         $this->manualPostingBlocked = $manualPostingBlocked;
-
+        
         return $this;
     }
-
+    
     /**
      * Get manualPostingBlocked
      *
@@ -524,7 +525,7 @@ class FinAccount
     {
         return $this->manualPostingBlocked;
     }
-
+    
     /**
      * Set isControlAccount
      *
@@ -535,10 +536,10 @@ class FinAccount
     public function setIsControlAccount($isControlAccount)
     {
         $this->isControlAccount = $isControlAccount;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isControlAccount
      *
@@ -548,7 +549,7 @@ class FinAccount
     {
         return $this->isControlAccount;
     }
-
+    
     /**
      * Set isClearingAccount
      *
@@ -559,10 +560,10 @@ class FinAccount
     public function setIsClearingAccount($isClearingAccount)
     {
         $this->isClearingAccount = $isClearingAccount;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isClearingAccount
      *
@@ -572,7 +573,7 @@ class FinAccount
     {
         return $this->isClearingAccount;
     }
-
+    
     /**
      * Set sapAccount
      *
@@ -583,10 +584,10 @@ class FinAccount
     public function setSapAccount($sapAccount)
     {
         $this->sapAccount = $sapAccount;
-
+        
         return $this;
     }
-
+    
     /**
      * Get sapAccount
      *
@@ -596,7 +597,7 @@ class FinAccount
     {
         return $this->sapAccount;
     }
-
+    
     /**
      * Set hasCostCenter
      *
@@ -607,10 +608,10 @@ class FinAccount
     public function setHasCostCenter($hasCostCenter)
     {
         $this->hasCostCenter = $hasCostCenter;
-
+        
         return $this;
     }
-
+    
     /**
      * Get hasCostCenter
      *
@@ -620,7 +621,7 @@ class FinAccount
     {
         return $this->hasCostCenter;
     }
-
+    
     /**
      * Set company
      *
@@ -631,10 +632,10 @@ class FinAccount
     public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
     {
         $this->company = $company;
-
+        
         return $this;
     }
-
+    
     /**
      * Get company
      *
@@ -644,7 +645,7 @@ class FinAccount
     {
         return $this->company;
     }
-
+    
     /**
      * Set createdBy
      *
@@ -655,10 +656,10 @@ class FinAccount
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdBy
      *
@@ -668,7 +669,7 @@ class FinAccount
     {
         return $this->createdBy;
     }
-
+    
     /**
      * Set lastChangeBy
      *
@@ -679,10 +680,10 @@ class FinAccount
     public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
         $this->lastChangeBy = $lastChangeBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastChangeBy
      *

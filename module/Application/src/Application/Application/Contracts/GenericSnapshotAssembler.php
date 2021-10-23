@@ -260,17 +260,32 @@ class GenericSnapshotAssembler
 
         $result = "[%s]";
         $tmp = '';
+        $currentClz = '';
+
         foreach ($itemProperites as $property) {
 
             /**
              *
              * @var \ReflectionProperty $property ;
              */
+            $s = '';
+            if ($property->getDeclaringClass()->getName() != $currentClz) {
+                $f = "\n
+                /*
+                 * |=============================
+                 * | %s
+                 * |
+                 * |=============================
+                 */
+                ";
+                $s = sprintf($f, $property->getDeclaringClass()->getName());
+                $currentClz = $property->getDeclaringClass()->getName();
+            }
 
             $property->getDeclaringClass()->getName();
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            $tmp = $tmp . "\n\"" . $propertyName . "\",";
+            $tmp = $tmp . $s . "\n\"" . $propertyName . "\",";
         }
         echo \sprintf($result, $tmp);
     }

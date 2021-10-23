@@ -56,7 +56,7 @@ final class NumberFormatter
         if ($number == 0 or $number == null) {
             return '<span style="color: white;">0</span>';
         }
-        self::_formatNumber($number, $local, $minFractionDigits, $maxFractionDigits);
+        return self::_formatNumber($number, $local, $minFractionDigits, $maxFractionDigits);
     }
 
     public static function formatNumberForExcel($number, $local = 'en_EN', $minFractionDigits = 2, $maxFractionDigits = 2)
@@ -65,7 +65,7 @@ final class NumberFormatter
             return 0;
         }
 
-        self::_formatNumber($number, $local, $minFractionDigits, $maxFractionDigits);
+        return self::_formatNumber($number, $local, $minFractionDigits, $maxFractionDigits);
     }
 
     private static function _formatMoneyNumber($number, $currency, $local = 'en_EN', $minFractionDigits = 0, $maxFractionDigits = 0)

@@ -27,6 +27,11 @@ use Webmozart\Assert\Assert;
 final class PRDoc extends GenericPR
 {
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::refreshDoc()
+     */
     public function refreshDoc()
     {
         // no need, if refreshed.

@@ -30,5 +30,17 @@ class ProcureTrxStatus
 
     const UNCOMPLETED = 'uncompleted';
 
-    const CLEARED = 'cleared';
+    /*
+     * |=============================
+     * | PO Row status
+     * |
+     * |=============================
+     */
+    const PARTIAL_DELIVERED = 'partial delivered';
+
+    const FULL_DELIVERED = 'full delivery';
+
+    const PARTIAL_BILLED = 'partial billed';
+
+    const FULL_BILLED = 'full billed';
 }

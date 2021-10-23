@@ -27,11 +27,11 @@ class RowsSaveAsArray implements RowsSaveAsInterface
                 return $rows;
             }
 
-            if (count($rows) == 0) {
+            if ($rows == null) {
                 return null;
             }
 
-            $output = array();
+            $output = [];
             foreach ($rows as $row) {
 
                 /**

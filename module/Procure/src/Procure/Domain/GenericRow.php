@@ -23,24 +23,12 @@ use Procure\Domain\Exception\InvalidArgumentException;
 abstract class GenericRow extends BaseRow
 {
 
-    private $exculdedProps = [
-        "id",
-        "uuid",
-        "token",
-        "instance",
-        "sysNumber",
-        "createdBy",
-        "lastchangeBy",
-        "docId",
-        "docToken",
-        "revisionNo",
-        "docVersion"
-    ];
-
-    abstract protected function createVO(GenericDoc $rootDoc);
-
-    public function updateRowStatus()
-    {}
+    /*
+     * |=============================
+     * | VALUE OBJECT VO.
+     * |
+     * |=============================
+     */
 
     // Uom VO
     // ====================
@@ -86,6 +74,31 @@ abstract class GenericRow extends BaseRow
     protected $localTaxAmountVO;
 
     protected $localGrossAmountVO;
+
+    /*
+     * |=============================
+     * | FUNCTION
+     * |
+     * |=============================
+     */
+    private $exculdedProps = [
+        "id",
+        "uuid",
+        "token",
+        "instance",
+        "sysNumber",
+        "createdBy",
+        "lastchangeBy",
+        "docId",
+        "docToken",
+        "revisionNo",
+        "docVersion"
+    ];
+
+    abstract protected function createVO(GenericDoc $rootDoc);
+
+    public function updateRowStatus()
+    {}
 
     protected function createWarehouseVO()
     {}
@@ -261,6 +274,99 @@ abstract class GenericRow extends BaseRow
         $this->setIsDraft(1);
         $this->setIsPosted(0);
     }
+
+    /**
+     *
+     * @param int $postedBy
+     * @param string $postedDate
+     */
+    public function markAsPosted($postedBy, $postedDate)
+    {
+        $this->setLastchangeOn($postedDate);
+        $this->setLastchangeBy($postedBy);
+        $this->setIsPosted(1);
+        $this->setIsActive(1);
+        $this->setIsDraft(0);
+        $this->setIsReversed(0);
+        $this->setDocStatus(ProcureDocStatus::POSTED);
+    }
+
+    /**
+     *
+     * @param GenericDoc $rootDoc
+     * @param CommandOptions $options
+     */
+    public function markRowAsPosted(GenericDoc $rootDoc, CommandOptions $options)
+    {
+        $this->createVO($rootDoc); // important to recalculate before posting.
+
+        $createdDate = new \Datetime();
+        $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
+
+        $this->setIsPosted(1);
+        $this->setIsActive(1);
+        $this->setIsDraft(0);
+        $this->setIsReversed(0);
+        $this->setDocStatus(ProcureDocStatus::POSTED);
+    }
+
+    public function markRowAsReversed(GenericDoc $rootDoc, CommandOptions $options)
+    {
+        $this->createVO($rootDoc); // important to recalculate before posting.
+
+        $createdDate = new \Datetime();
+        $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setLastchangeBy($options->getUserId());
+
+        $this->setIsReversed(1);
+        $this->setIsActive(1);
+        $this->setIsDraft(0);
+        $this->setIsPosted(0);
+        $this->setDocStatus(ProcureDocStatus::REVERSED);
+    }
+
+    /**
+     *
+     * @param int $postedBy
+     * @param \DateTime $postedDate
+     */
+    public function markAsReversed(CommandOptions $options)
+    {
+        $createdDate = new \Datetime();
+        $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setLastchangeBy($options->getUserId());
+
+        $this->setIsReversed(1);
+        $this->setIsActive(1);
+        $this->setIsDraft(0);
+        $this->setIsPosted(0);
+        $this->setDocStatus(ProcureDocStatus::REVERSED);
+    }
+
+    public function refreshRowsFromNewHeaderSnapshot(DocSnapshot $snapshot)
+    {
+        // only update, if row does not have PR
+        if ($this->getPrRow() > 0) {
+            return;
+        }
+        $this->setWarehouse($snapshot->getWarehouse());
+    }
+
+    /**
+     *
+     * @return NULL|object
+     */
+    public function makeSnapshot()
+    {
+        return GenericSnapshotAssembler::createSnapshotFrom($this, new RowSnapshot());
+    }
+
+    /*
+     * |=============================
+     * | DEPRECETED
+     * |
+     * |=============================
+     */
 
     /**
      *
@@ -445,91 +551,12 @@ abstract class GenericRow extends BaseRow
         return $this;
     }
 
-    /**
-     *
-     * @param int $postedBy
-     * @param string $postedDate
+    /*
+     * |=============================
+     * | SETTER AND GETTER
+     * |
+     * |=============================
      */
-    public function markAsPosted($postedBy, $postedDate)
-    {
-        $this->setLastchangeOn($postedDate);
-        $this->setLastchangeBy($postedBy);
-        $this->setIsPosted(1);
-        $this->setIsActive(1);
-        $this->setIsDraft(0);
-        $this->setIsReversed(0);
-        $this->setDocStatus(ProcureDocStatus::POSTED);
-    }
-
-    /**
-     *
-     * @param GenericDoc $rootDoc
-     * @param CommandOptions $options
-     */
-    public function markRowAsPosted(GenericDoc $rootDoc, CommandOptions $options)
-    {
-        $this->createVO($rootDoc); // important to recalculate before posting.
-
-        $createdDate = new \Datetime();
-        $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
-
-        $this->setIsPosted(1);
-        $this->setIsActive(1);
-        $this->setIsDraft(0);
-        $this->setIsReversed(0);
-        $this->setDocStatus(ProcureDocStatus::POSTED);
-    }
-
-    public function markRowAsReversed(GenericDoc $rootDoc, CommandOptions $options)
-    {
-        $this->createVO($rootDoc); // important to recalculate before posting.
-
-        $createdDate = new \Datetime();
-        $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $this->setLastchangeBy($options->getUserId());
-
-        $this->setIsReversed(1);
-        $this->setIsActive(1);
-        $this->setIsDraft(0);
-        $this->setIsPosted(0);
-        $this->setDocStatus(ProcureDocStatus::REVERSED);
-    }
-
-    /**
-     *
-     * @param int $postedBy
-     * @param \DateTime $postedDate
-     */
-    public function markAsReversed(CommandOptions $options)
-    {
-        $createdDate = new \Datetime();
-        $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $this->setLastchangeBy($options->getUserId());
-
-        $this->setIsReversed(1);
-        $this->setIsActive(1);
-        $this->setIsDraft(0);
-        $this->setIsPosted(0);
-        $this->setDocStatus(ProcureDocStatus::REVERSED);
-    }
-
-    public function refreshRowsFromNewHeaderSnapshot(DocSnapshot $snapshot)
-    {
-        // only update, if row does not have PR
-        if ($this->getPrRow() > 0) {
-            return;
-        }
-        $this->setWarehouse($snapshot->getWarehouse());
-    }
-
-    /**
-     *
-     * @return NULL|object
-     */
-    public function makeSnapshot()
-    {
-        return GenericSnapshotAssembler::createSnapshotFrom($this, new RowSnapshot());
-    }
 
     /**
      *

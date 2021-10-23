@@ -13,7 +13,7 @@ abstract class BasePrRow extends GenericRow
 
     /*
      * |=============================
-     * |Specific Attributes
+     * |Specific Fields on DB
      * |
      * |=============================
      */
@@ -33,9 +33,7 @@ abstract class BasePrRow extends GenericRow
 
     protected $edt;
 
-    protected $variantId;
-
-    protected $project;
+    protected $pr;
 
     /*
      * |=============================
@@ -43,7 +41,6 @@ abstract class BasePrRow extends GenericRow
      * |
      * |=============================
      */
-
     /**
      *
      * @param mixed $checksum
@@ -118,20 +115,11 @@ abstract class BasePrRow extends GenericRow
 
     /**
      *
-     * @param mixed $variantId
+     * @param mixed $pr
      */
-    protected function setVariantId($variantId)
+    protected function setPr($pr)
     {
-        $this->variantId = $variantId;
-    }
-
-    /**
-     *
-     * @param mixed $project
-     */
-    protected function setProject($project)
-    {
-        $this->project = $project;
+        $this->pr = $pr;
     }
 
     /**
@@ -210,17 +198,8 @@ abstract class BasePrRow extends GenericRow
      *
      * @return mixed
      */
-    public function getVariantId()
+    public function getPr()
     {
-        return $this->variantId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getProject()
-    {
-        return $this->project;
+        return $this->pr;
     }
 }

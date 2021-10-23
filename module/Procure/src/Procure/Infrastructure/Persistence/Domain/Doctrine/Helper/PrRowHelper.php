@@ -124,10 +124,13 @@ class PrRowHelper
             $tmp2 = $tmp2 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
         }
 
-        if ($filter->getBalance() == 0) {
-            $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity <=  posted_standard_gr_qty";
-        } elseif ($filter->getBalance() == 1) {
-            $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity >  posted_standard_gr_qty";
+        switch ($filter->getBalance()) {
+            case 0:
+                $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity <=  posted_standard_gr_qty";
+                break;
+            case 1:
+                $tmp2 = $tmp2 . " HAVING nmt_procure_pr_row.converted_standard_quantity >  posted_standard_gr_qty";
+                break;
         }
 
         if ($filter->getPrId() > 0) {

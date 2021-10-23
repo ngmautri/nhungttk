@@ -28,4 +28,6 @@ Interface POQueryRepositoryInterface
     public function getVersionArray($id, $token = null);
 
     public function getHeaderIdByRowId($id);
+
+    public function getRootEntityByTokenId($id, $token = null);
 }

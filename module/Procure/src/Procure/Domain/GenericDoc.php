@@ -23,6 +23,31 @@ abstract class GenericDoc extends BaseDoc
 
     protected $refreshed = false;
 
+    protected $constructedFromDB = false;
+
+    /**
+     *
+     * @param boolean $constructedFromDB
+     */
+    protected function setConstructedFromDB($constructedFromDB)
+    {
+        $this->constructedFromDB = $constructedFromDB;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function getConstructedFromDB()
+    {
+        return $this->constructedFromDB;
+    }
+
+    public function getExculdedProps()
+    {
+        return $this->exculdedProps;
+    }
+
     /**
      *
      * @return mixed
@@ -157,12 +182,14 @@ abstract class GenericDoc extends BaseDoc
     }
 
     /**
+     * Ti
      *
      * @deprecated
      * @param GenericRow $row
      */
     protected function calculateRowQuantity(GenericRow $row)
     {
+        trigger_error("Deprecated function called.", E_USER_NOTICE);
         if ($row->hasErrors()) {
             return;
         }

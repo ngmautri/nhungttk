@@ -1,104 +1,92 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
+use Application\Application\Contracts\GenericDTOAssembler;
 use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
+use Procure\Domain\PurchaseOrder\Definition\PoDefinition;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class POSnapshotAssembler
 {
 
-    private static $defaultIncludedFields = array(
-        "isActive",
-        "vendor",
-        "contractNo",
-        "contractDate",
-        "docDate",
-        "docNumber",
-        "docCurrency",
-        "exchangeRate",
-        "incoterm",
-        "incotermPlace",
-        "paymentTerm",
-        "remarks",
-        "pmtTerm"
-    );
-
-    private static $defaultExcludedFields = array(
-        "id",
-        "uuid",
-        "token",
-        "checksum",
-        "createdBy",
-        "createdOn",
-        "lastChangeOn",
-        "lastChangeBy",
-        "sysNumber",
-        "company",
-        "itemType",
-        "revisionNo",
-        "currencyIso3",
-        "vendorName",
-        "docStatus",
-        "workflowStatus",
-        "transactionStatus",
-        "paymentStatus",
-        "paymentStatus"
-    );
-
-    public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)
+    /*
+     * |=============================
+     * | Update Snapshot from Array
+     * |
+     * |=============================
+     */
+    public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $target, $source)
     {
-        return GenericObjectAssembler::updateAllFieldsFromArray($snapShot, $data);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, PoDefinition::$defaultIncludedFields);
     }
 
-    public static function updateIncludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
+    public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $target, $source)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, PoDefinition::$defaultExcludedFields);
     }
 
-    public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    /*
+     * |=============================
+     * | Update Snapshot from OBject
+     * |
+     * |=============================
+     */
+    public static function updateDefaultFieldsFrom($target, AbstractDTO $source)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($target, $source, PoDefinition::$defaultIncludedFields);
     }
 
-    public static function updateExcludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
+    public static function updateDefaultExcludedFieldsFrom($target, AbstractDTO $source)
     {
-        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
+        return GenericObjectAssembler::updateExcludedFieldsFrom($target, $source, PoDefinition::$defaultExcludedFields);
     }
 
-    public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    /*
+     * |=============================
+     * | For Form Element
+     * |
+     * |=============================
+     */
+    public static function createFormElementsExclude($className, $properties = null)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultExcludedFields);
+        if ($properties == null) {
+            $properties = PoDefinition::$defaultExcludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsExclude($className, $properties);
     }
 
-    // from Object
-    // =============================
-    public static function updateAllFieldsFrom(AbstractDTO $snapShot, $data)
+    public static function createFormElementsFor($className, $properties = null)
     {
-        return GenericObjectAssembler::updateAllFieldsFrom($snapShot, $data);
+        if ($properties == null) {
+            $properties = PoDefinition::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFor($className, $properties);
     }
 
-    public static function updateIncludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
+    /*
+     * |=============================
+     * | For Form Get Function
+     * |
+     * |=============================
+     */
+    public static function createFormElementsFunctionExclude($className, $properties = null)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
+        if ($properties == null) {
+            $properties = PoDefinition::$defaultExcludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionExclude($className, $properties);
     }
 
-    public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
+    public static function createFormElementsFunctionFor($className, $properties = null)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
-    }
-
-    public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
-    {
-        return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
-    }
-
-    public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
-    {
-        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+        if ($properties == null) {
+            $properties = PoDefinition::$defaultIncludedFields;
+        }
+        return GenericDTOAssembler::createFormElementsFunctionFor($className, $properties);
     }
 }

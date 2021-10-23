@@ -11,11 +11,17 @@ use Procure\Domain\RowSnapshot;
 class PORowSnapshot extends RowSnapshot
 {
 
-    public $draftGrQuantity;
-
-    public $postedGrQuantity;
-
+    /*
+     * |=============================
+     * | Procure\Domain\PurchaseOrder\BaseRow
+     * |
+     * |=============================
+     */
     public $confirmedGrBalance;
+
+    public $openAPAmount;
+
+    public $billedAmount;
 
     public $openGrBalance;
 
@@ -24,28 +30,6 @@ class PORowSnapshot extends RowSnapshot
     public $postedAPQuantity;
 
     public $openAPQuantity;
-
-    public $billedAmount;
-
-    public $openAPAmount;
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDraftGrQuantity()
-    {
-        return $this->draftGrQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedGrQuantity()
-    {
-        return $this->postedGrQuantity;
-    }
 
     /**
      *
@@ -58,38 +42,29 @@ class PORowSnapshot extends RowSnapshot
 
     /**
      *
-     * @return mixed
+     * @param mixed $confirmedGrBalance
      */
-    public function getOpenGrBalance()
+    public function setConfirmedGrBalance($confirmedGrBalance)
     {
-        return $this->openGrBalance;
+        $this->confirmedGrBalance = $confirmedGrBalance;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getDraftAPQuantity()
+    public function getOpenAPAmount()
     {
-        return $this->draftAPQuantity;
+        return $this->openAPAmount;
     }
 
     /**
      *
-     * @return mixed
+     * @param mixed $openAPAmount
      */
-    public function getPostedAPQuantity()
+    public function setOpenAPAmount($openAPAmount)
     {
-        return $this->postedAPQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getOpenAPQuantity()
-    {
-        return $this->openAPQuantity;
+        $this->openAPAmount = $openAPAmount;
     }
 
     /**
@@ -103,10 +78,82 @@ class PORowSnapshot extends RowSnapshot
 
     /**
      *
+     * @param mixed $billedAmount
+     */
+    public function setBilledAmount($billedAmount)
+    {
+        $this->billedAmount = $billedAmount;
+    }
+
+    /**
+     *
      * @return mixed
      */
-    public function getOpenAPAmount()
+    public function getOpenGrBalance()
     {
-        return $this->openAPAmount;
+        return $this->openGrBalance;
+    }
+
+    /**
+     *
+     * @param mixed $openGrBalance
+     */
+    public function setOpenGrBalance($openGrBalance)
+    {
+        $this->openGrBalance = $openGrBalance;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDraftAPQuantity()
+    {
+        return $this->draftAPQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $draftAPQuantity
+     */
+    public function setDraftAPQuantity($draftAPQuantity)
+    {
+        $this->draftAPQuantity = $draftAPQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedAPQuantity()
+    {
+        return $this->postedAPQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedAPQuantity
+     */
+    public function setPostedAPQuantity($postedAPQuantity)
+    {
+        $this->postedAPQuantity = $postedAPQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getOpenAPQuantity()
+    {
+        return $this->openAPQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $openAPQuantity
+     */
+    public function setOpenAPQuantity($openAPQuantity)
+    {
+        $this->openAPQuantity = $openAPQuantity;
     }
 }

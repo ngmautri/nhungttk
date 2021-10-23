@@ -1,7 +1,8 @@
 <?php
 namespace ProcureTest;
 
-use Procure\Domain\GenericRow;
+use Application\Application\Contracts\GenericSnapshotAssembler;
+use Procure\Domain\BaseRow;
 use PHPUnit_Framework_TestCase;
 
 class RowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
@@ -14,9 +15,6 @@ class RowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        // PORowSnapshotAssembler::findMissingPropertiesOfEntity();
-        // GRRowSnapshotAssembler::findMissingPropertiesOfEntity();
-        // APRowSnapshotAssembler::findMissingPropertiesOfEntity();
-        GenericRow::printProps();
+        $result = GenericSnapshotAssembler::createAllSnapshotProps(BaseRow::class);
     }
 }

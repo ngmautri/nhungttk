@@ -6,9 +6,11 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\SimpleCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Contracts\ProcureDocType;
+use Procure\Domain\Contracts\ProcureTrxStatus;
 use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Exception\PoCreateException;
@@ -30,7 +32,7 @@ use Ramsey;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 final class PODoc extends GenericPO
 {
@@ -47,6 +49,102 @@ final class PODoc extends GenericPO
 
     /**
      *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::refreshDoc()
+     */
+    public function refreshDoc()
+    {
+        // no need, if refreshed.
+        if ($this->getRefreshed()) {
+            return;
+        }
+
+        if ($this->getRowsGenerator() == null) {
+            return;
+        }
+
+        if (! $this->getRowsGenerator()->valid()) {
+            return;
+        }
+
+        $rowCollection = new ArrayCollection();
+
+        // refreshing.
+        $totalRows = 0;
+        $totalPending = 0;
+
+        $totalCompletedGR = 0;
+        $totalCompletedAP = 0;
+        $totalCompleted = 0;
+
+        $netAmount = 0;
+        $taxAmount = 0;
+        $grossAmount = 0;
+        $completed = true;
+
+        $totalBilledAmount = 0;
+
+        foreach ($this->getRowsGenerator() as $row) {
+
+            /**
+             *
+             * @var PORow $row ;
+             */
+            $row->updateRowStatus(); // Important
+            $status = $row->getTransactionStatus();
+
+            $totalRows ++;
+
+            if ($row->getConfirmedGrBalance() <= 0) {
+                $totalCompletedGR ++;
+            }
+
+            if ($row->getOpenAPQuantity() <= 0 and $row->getOpenAPQuantity() <= 0) {
+                $totalCompletedAP ++;
+            }
+
+            if ($status == ProcureTrxStatus::COMPLETED) {
+                $totalCompleted ++;
+            } else {
+                $completed = false;
+            }
+
+            $totalBilledAmount = $totalBilledAmount + $row->getBilledAmount();
+            $netAmount = $netAmount + $row->getNetAmount();
+
+            $taxAmount = $taxAmount + $row->getTaxAmount();
+            $grossAmount = $grossAmount + $row->getGrossAmount();
+
+            // add row collection
+            $rowCollection->add($row);
+        }
+
+        $this->setTransactionStatus(ProcureTrxStatus::UNCOMPLETED);
+        if ($completed == true) {
+            $this->setTransactionStatus(ProcureTrxStatus::COMPLETED);
+        }
+
+        $this->setTotalRows($totalRows);
+        $this->setCompletedGRRows($totalCompletedGR);
+        $this->setCompletedAPRows($totalCompletedAP);
+        $this->setCompletedRows($totalCompleted);
+
+        $this->setBilledAmount($totalBilledAmount);
+
+        $this->setNetAmount($netAmount);
+        $this->setTaxAmount($taxAmount);
+        $this->setGrossAmount($grossAmount);
+
+        $this->setOpenAPAmount($this->getNetAmount() - $this->getBilledAmount());
+
+        $this->setRowCollection($rowCollection);
+
+        // marked as refreshed.
+        $this->refreshed = TRUE;
+    }
+
+    /**
+     *
      * @return \Procure\Domain\PurchaseOrder\PODoc
      */
     public static function getInstance()
@@ -55,6 +153,16 @@ final class PODoc extends GenericPO
             self::$instance = new PODoc();
         }
         return self::$instance;
+    }
+
+    public static function getInstanceFromDB()
+    {
+        $instance = self::$instance;
+        if ($instance == null) {
+            $instance = new PODoc();
+        }
+        $instance->setConstructedFromDB(TRUE);
+        return $instance;
     }
 
     public function cloneAndSave(CommandOptions $options, SharedService $sharedService)
@@ -312,179 +420,6 @@ final class PODoc extends GenericPO
 
     /**
      *
-     * @param POSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
-     * @return \Procure\Domain\PurchaseOrder\PODoc
-     */
-    public static function createFrom(POSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
-    {
-        Assert::notNull($snapshot, "PO snapshot not found");
-        Assert::notNull($options, "command options not found");
-        $validationService = ValidatorFactory::create($sharedService);
-        Assert::notNull($validationService, "Validation can not created!");
-
-        $snapshot->initDoc($options);
-        $snapshot->docType = ProcureDocType::PO;
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $snapshot->setExchangeRate($fxRate);
-
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $instance->validateHeader($validationService->getHeaderValidators());
-
-        if ($instance->hasErrors()) {
-            throw new \RuntimeException($instance->getNotification()->errorMessage());
-        }
-
-        $instance->clearEvents();
-
-        /**
-         *
-         * @var POSnapshot $rootSnapshot
-         * @var POCmdRepositoryInterface $rep ;
-         */
-
-        $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->storeHeader($instance, false);
-        Assert::notNull($rootSnapshot, sprintf("Error occured when creating PO", $instance->getId()));
-
-        $instance->updateIdentityFrom($rootSnapshot);
-
-        $target = $rootSnapshot;
-        $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
-        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
-        $defaultParams->setTriggeredBy($options->getTriggeredBy());
-        $defaultParams->setUserId($options->getUserId());
-        $params = null;
-
-        $event = new PoHeaderCreated($target, $defaultParams, $params);
-        $instance->addEvent($event);
-        return $instance;
-    }
-
-    /**
-     *
-     * @param POSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param array $params
-     * @param HeaderValidatorCollection $headerValidators
-     * @param SharedService $sharedService
-     * @param POPostingService $postingService
-     * @throws PoInvalidArgumentException
-     * @throws PoCreateException
-     * @throws PoUpdateException
-     * @return \Procure\Domain\PurchaseOrder\PODoc
-     */
-    public static function updateFrom(POSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
-    {
-        Assert::notNull($snapshot, "PO snapshot not found");
-        Assert::notNull($options, "command options not found");
-        $validationService = ValidatorFactory::create($sharedService);
-        Assert::notNull($validationService, "Validation can not created!");
-
-        $instance = new self();
-        $createdDate = new \Datetime();
-        $snapshot->markAsChange($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
-        $snapshot->docType = ProcureDocType::PO;
-
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
-        $instance->validateHeader($validationService->getHeaderValidators());
-
-        if ($instance->hasErrors()) {
-            throw new \RuntimeException($instance->getNotification()->errorMessage());
-        }
-
-        $instance->clearEvents();
-
-        /**
-         *
-         * @var POSnapshot $rootSnapshot
-         * @var POCmdRepositoryInterface $rep ;
-         */
-
-        $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->storeHeader($instance, false);
-        Assert::notNull($rootSnapshot, sprintf("Error occured when creating PO", $instance->getId()));
-
-        $instance->id = $rootSnapshot->getId();
-
-        $target = $rootSnapshot;
-        $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
-        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
-        $defaultParams->setTriggeredBy($options->getTriggeredBy());
-        $defaultParams->setUserId($options->getUserId());
-        $params = null;
-
-        $event = new PoHeaderUpdated($target, $defaultParams, $params);
-        $instance->addEvent($event);
-
-        return $instance;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\GenericDoc::makeSnapshot()
-     */
-    public function makeSnapshot()
-    {
-        return GenericSnapshotAssembler::createSnapshotFrom($this, new POSnapshot());
-    }
-
-    /**
-     * This should be only call when constructing object from storage.
-     *
-     * @param PODetailsSnapshot $snapshot
-     * @return void|\Procure\Domain\PurchaseOrder\PODoc
-     */
-    public static function makeFromDetailsSnapshot(PoSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof PoSnapshot)
-            return;
-
-        if ($snapshot->uuid == null) {
-            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
-        }
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
-    }
-
-    /**
-     * This should be only call when constructing object from storage.
-     *
-     * @param PoSnapshot $snapshot
-     * @return void|\Procure\Domain\PurchaseOrder\PODoc
-     */
-    public static function makeFromSnapshot(PoSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof PoSnapshot)
-            return;
-
-        if ($snapshot->uuid == null) {
-            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
-            $snapshot->token = $snapshot->uuid;
-        }
-
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
-    }
-
-    /**
-     *
      * @return mixed
      */
     public function getGrCollection()
@@ -567,5 +502,182 @@ final class PODoc extends GenericPO
     protected function raiseEvent()
     {
         // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param POSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @throws \RuntimeException
+     * @return \Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function createFrom(POSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    {
+        Assert::notNull($snapshot, "PO snapshot not found");
+        Assert::notNull($options, "command options not found");
+        $validationService = ValidatorFactory::create($sharedService);
+        Assert::notNull($validationService, "Validation can not created!");
+
+        $snapshot->initDoc($options);
+        $snapshot->docType = ProcureDocType::PO;
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $snapshot->setExchangeRate($fxRate);
+
+        $instance = new self();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+
+        $instance->validateHeader($validationService->getHeaderValidators());
+
+        if ($instance->hasErrors()) {
+            throw new \RuntimeException($instance->getNotification()->errorMessage());
+        }
+
+        $instance->clearEvents();
+
+        /**
+         *
+         * @var POSnapshot $rootSnapshot
+         * @var POCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->storeHeader($instance, false);
+        Assert::notNull($rootSnapshot, sprintf("Error occured when creating PO", $instance->getId()));
+
+        $instance->updateIdentityFrom($rootSnapshot);
+
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new PoHeaderCreated($target, $defaultParams, $params);
+        $instance->addEvent($event);
+        return $instance;
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param POSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param POPostingService $postingService
+     * @throws PoInvalidArgumentException
+     * @throws PoCreateException
+     * @throws PoUpdateException
+     * @return \Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function updateFrom(POSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
+    {
+        Assert::notNull($snapshot, "PO snapshot not found");
+        Assert::notNull($options, "command options not found");
+        $validationService = ValidatorFactory::create($sharedService);
+        Assert::notNull($validationService, "Validation can not created!");
+
+        $instance = new self();
+        $createdDate = new \Datetime();
+        $snapshot->markAsChange($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
+        $snapshot->docType = ProcureDocType::PO;
+
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $instance->setExchangeRate($fxRate);
+        $instance->validateHeader($validationService->getHeaderValidators());
+
+        if ($instance->hasErrors()) {
+            throw new \RuntimeException($instance->getNotification()->errorMessage());
+        }
+
+        $instance->clearEvents();
+
+        /**
+         *
+         * @var POSnapshot $rootSnapshot
+         * @var POCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->storeHeader($instance, false);
+        Assert::notNull($rootSnapshot, sprintf("Error occured when creating PO", $instance->getId()));
+
+        $instance->id = $rootSnapshot->getId();
+
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new PoHeaderUpdated($target, $defaultParams, $params);
+        $instance->addEvent($event);
+
+        return $instance;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::makeSnapshot()
+     */
+    public function makeSnapshot()
+    {
+        return GenericSnapshotAssembler::createSnapshotFrom($this, new POSnapshot());
+    }
+
+    /**
+     *
+     * @deprecated This should be only call when constructing object from storage.
+     *            
+     * @param PODetailsSnapshot $snapshot
+     * @return void|\Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function makeFromDetailsSnapshot(PoSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PoSnapshot)
+            return;
+
+        if ($snapshot->uuid == null) {
+            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+        }
+        $instance = new self();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
+    }
+
+    /**
+     *
+     * @deprecated This should be only call when constructing object from storage.
+     *            
+     * @param PoSnapshot $snapshot
+     * @return void|\Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function makeFromSnapshot(PoSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PoSnapshot)
+            return;
+
+        if ($snapshot->uuid == null) {
+            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+            $snapshot->token = $snapshot->uuid;
+        }
+
+        $instance = new self();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
     }
 }

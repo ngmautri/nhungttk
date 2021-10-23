@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Infrastructure\Mapper;
+namespace Procure\Infrastructure\Persistence\Domain\Doctrine\Mapper;
 
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePoRow;
@@ -9,7 +9,6 @@ use Procure\Domain\PurchaseOrder\POSnapshot;
 
 /**
  *
- * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

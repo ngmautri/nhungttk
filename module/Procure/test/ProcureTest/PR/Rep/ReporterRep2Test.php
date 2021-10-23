@@ -8,7 +8,7 @@ use Procure\Infrastructure\Persistence\Reporting\Doctrine\PrReportImplV1;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 use PHPUnit_Framework_TestCase;
 
-class QueryRep2Test extends PHPUnit_Framework_TestCase
+class ReporterRep2Test extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -30,8 +30,8 @@ class QueryRep2Test extends PHPUnit_Framework_TestCase
             $filter->setSort('desc');
             $filter->setBalance(2);
 
-            $result = $rep->getAllRowTotal($filter);
-            var_dump($result);
+            $result = $rep->getAllRow($filter);
+            var_dump($result->current());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

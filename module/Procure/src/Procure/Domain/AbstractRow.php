@@ -7,13 +7,17 @@ use Application\Domain\Shared\AbstractEntity;
  * Abstract Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class AbstractRow extends AbstractEntity
 {
 
-    // Row Original
-    // ====================
+    /*
+     * |=============================
+     * | All field of PR ROW
+     * |
+     * |=============================
+     */
     protected $id;
 
     protected $rowNumber;
@@ -156,6 +160,17 @@ class AbstractRow extends AbstractEntity
 
     protected $brand;
 
+    protected $variantId;
+
+    protected $project;
+
+    /*
+     * |=============================
+     * | GETTER : public
+     * | SEETER : procteced
+     * |
+     * |=============================
+     */
     /**
      *
      * @param mixed $id
@@ -775,6 +790,33 @@ class AbstractRow extends AbstractEntity
     protected function setStandardConvertFactor($standardConvertFactor)
     {
         $this->standardConvertFactor = $standardConvertFactor;
+    }
+
+    /**
+     *
+     * @param mixed $clearingDocId
+     */
+    protected function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
+    }
+
+    /**
+     *
+     * @param mixed $brand
+     */
+    protected function setBrand($brand)
+    {
+        $this->brand = $brand;
+    }
+
+    /**
+     *
+     * @param mixed $variantId
+     */
+    protected function setVariantId($variantId)
+    {
+        $this->variantId = $variantId;
     }
 
     /**
@@ -1409,15 +1451,6 @@ class AbstractRow extends AbstractEntity
 
     /**
      *
-     * @param mixed $clearingDocId
-     */
-    protected function setClearingDocId($clearingDocId)
-    {
-        $this->clearingDocId = $clearingDocId;
-    }
-
-    /**
-     *
      * @return mixed
      */
     public function getBrand()
@@ -1427,10 +1460,28 @@ class AbstractRow extends AbstractEntity
 
     /**
      *
-     * @param mixed $brand
+     * @return mixed
      */
-    public function setBrand($brand)
+    public function getVariantId()
     {
-        $this->brand = $brand;
+        return $this->variantId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     *
+     * @param mixed $project
+     */
+    protected function setProject($project)
+    {
+        $this->project = $project;
     }
 }

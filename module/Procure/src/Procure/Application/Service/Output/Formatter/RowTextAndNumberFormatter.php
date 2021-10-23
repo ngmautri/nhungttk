@@ -45,8 +45,8 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
         $row->localUnitPrice = NumberFormatter::formatMoneyNumberForGrid($row->localUnitPrice, $row->getLocalCurrencyISO(), $this->getLocale());
 
         // format number
-        $row->docQuantity = NumberFormatter::formatNumberForGrid($row->docQuantity, $this->getLocale());
-        $row->convertedStandardQuantity = NumberFormatter::formatNumberForGrid($row->convertedStandardQuantity, $this->getLocale());
+        $row->docQuantity = NumberFormatter::formatNumberForGrid($row->getDocQuantity(), $this->getLocale());
+        $row->convertedStandardQuantity = NumberFormatter::formatNumberForGrid($row->getConvertedStandardQuantity(), $this->getLocale());
         $row->standardConvertFactor = NumberFormatter::formatNumberForGrid($row->standardConvertFactor, $this->getLocale());
 
         $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $row->prRowIndentifer, $row->prToken, $row->pr);

@@ -1,11 +1,9 @@
 <?php
 namespace Procure\Domain\PurchaseRequest;
 
-use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Application\DTO\Pr\PrRowDTO;
 use Procure\Domain\GenericDoc;
 use Procure\Domain\Contracts\ProcureTrxStatus;
 use Webmozart\Assert\Assert;
@@ -24,65 +22,13 @@ class PRRow extends BasePrRow
 
     /*
      * |=============================
-     * | Value Object
+     * | Addtional Field
      * |
      * |=============================
      */
     private $prId;
 
     private $prQuantity;
-
-    /*
-     * |=============================
-     * | Addtional Attributes
-     * |
-     * |=============================
-     */
-
-    // Quotation
-    protected $qoQuantity;
-
-    protected $standardQoQuantity;
-
-    protected $postedQoQuantity;
-
-    protected $postedStandardQoQuantity;
-
-    // PO
-    protected $draftPoQuantity;
-
-    protected $standardPoQuantity;
-
-    protected $postedPoQuantity;
-
-    protected $postedStandardPoQuantity;
-
-    // PO-GR
-    protected $draftGrQuantity;
-
-    protected $standardGrQuantity;
-
-    protected $postedGrQuantity;
-
-    protected $postedStandardGrQuantity;
-
-    // STOCK-GR
-    protected $draftStockQrQuantity;
-
-    protected $standardStockQrQuantity;
-
-    protected $postedStockQrQuantity;
-
-    protected $postedStandardStockQrQuantity;
-
-    // AP
-    protected $draftApQuantity;
-
-    protected $standardApQuantity;
-
-    protected $postedApQuantity;
-
-    protected $postedStandardApQuantity;
 
     // Last Purchase
     protected $lastVendorId;
@@ -105,6 +51,8 @@ class PRRow extends BasePrRow
      */
     public function updateRowStatus()
     {
+        $this->createVO(); // important
+
         if ($this->getPostedStandardQoQuantity() > 0) {
             $this->setTransactionStatus(ProcureTrxStatus::HAS_QUOTATION);
         }
@@ -126,12 +74,23 @@ class PRRow extends BasePrRow
         }
     }
 
-    protected function createVO(GenericDoc $rootDoc)
+    protected function createVO(GenericDoc $rootDoc = null)
     {
+        if ($this->getCreatedVO()) {
+            return;
+        }
+
         $this->createUomVO();
         $this->createQuantityVO();
+        $this->setCreatedVO(TRUE);
     }
 
+    /**
+     *
+     * @param PRDoc $rootDoc
+     * @param PRRowSnapshot $snapshot
+     * @return \Procure\Domain\PurchaseRequest\PRRow
+     */
     public static function createFromSnapshot(PRDoc $rootDoc, PRRowSnapshot $snapshot)
     {
         Assert::isInstanceOf($rootDoc, PRDoc::class, "PR is required!");
@@ -140,7 +99,21 @@ class PRRow extends BasePrRow
         $instance = new self();
 
         GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
-        $instance->createVO($rootDoc);
+        $instance->createVO($rootDoc); // important
+        return $instance;
+    }
+
+    public static function constructFromDB(PRRowSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PRRowSnapshot) {
+            return null;
+        }
+
+        $instance = new self();
+
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        $instance->setConstructedFromDB(TRUE);
+
         return $instance;
     }
 
@@ -188,18 +161,6 @@ class PRRow extends BasePrRow
         return $instance;
     }
 
-    public static function constructFromDB(PRRowSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof PRRowSnapshot) {
-            return null;
-        }
-
-        $instance = new self();
-
-        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
-        return $instance;
-    }
-
     public static function makeFromSnapshot(PRRowSnapshot $snapshot)
     {
         if (! $snapshot instanceof PRRowSnapshot) {
@@ -218,6 +179,106 @@ class PRRow extends BasePrRow
      * |
      * |=============================
      */
+
+    /**
+     *
+     * @param mixed $prId
+     */
+    protected function setPrId($prId)
+    {
+        $this->prId = $prId;
+    }
+
+    /**
+     *
+     * @param mixed $prQuantity
+     */
+    protected function setPrQuantity($prQuantity)
+    {
+        $this->prQuantity = $prQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $lastVendorId
+     */
+    protected function setLastVendorId($lastVendorId)
+    {
+        $this->lastVendorId = $lastVendorId;
+    }
+
+    /**
+     *
+     * @param mixed $lastVendorName
+     */
+    protected function setLastVendorName($lastVendorName)
+    {
+        $this->lastVendorName = $lastVendorName;
+    }
+
+    /**
+     *
+     * @param mixed $lastUnitPrice
+     */
+    protected function setLastUnitPrice($lastUnitPrice)
+    {
+        $this->lastUnitPrice = $lastUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $lastStandardUnitPrice
+     */
+    protected function setLastStandardUnitPrice($lastStandardUnitPrice)
+    {
+        $this->lastStandardUnitPrice = $lastStandardUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $lastStandardConvertFactor
+     */
+    protected function setLastStandardConvertFactor($lastStandardConvertFactor)
+    {
+        $this->lastStandardConvertFactor = $lastStandardConvertFactor;
+    }
+
+    /**
+     *
+     * @param mixed $lastCurrency
+     */
+    protected function setLastCurrency($lastCurrency)
+    {
+        $this->lastCurrency = $lastCurrency;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public static function getInstance()
+    {
+        return PRRow::$instance;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrId()
+    {
+        return $this->prId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrQuantity()
+    {
+        return $this->prQuantity;
+    }
+
     /**
      *
      * @return mixed
@@ -249,378 +310,6 @@ class PRRow extends BasePrRow
      *
      * @return mixed
      */
-    public function getLastCurrency()
-    {
-        return $this->lastCurrency;
-    }
-
-    /**
-     *
-     * @param mixed $lastVendorId
-     */
-    public function setLastVendorId($lastVendorId)
-    {
-        $this->lastVendorId = $lastVendorId;
-    }
-
-    /**
-     *
-     * @param mixed $lastVendorName
-     */
-    public function setLastVendorName($lastVendorName)
-    {
-        $this->lastVendorName = $lastVendorName;
-    }
-
-    /**
-     *
-     * @param mixed $lastUnitPrice
-     */
-    public function setLastUnitPrice($lastUnitPrice)
-    {
-        $this->lastUnitPrice = $lastUnitPrice;
-    }
-
-    /**
-     *
-     * @param mixed $lastCurrency
-     */
-    public function setLastCurrency($lastCurrency)
-    {
-        $this->lastCurrency = $lastCurrency;
-    }
-
-    // ===================
-    private function __construct()
-    {}
-
-    /**
-     *
-     * @param PRRowSnapshot $snapshot
-     * @return NULL|\Procure\Domain\AccountPayable\APRow
-     */
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\GenericRow::makeSnapshot()
-     */
-    public function makeSnapshot()
-    {
-        return SnapshotAssembler::createSnapshotFrom($this, new PRRowSnapshot());
-    }
-
-    /**
-     *
-     * @return NULL|object
-     */
-    public function makeDetailsDTO()
-    {
-        $dto = new PrRowDTO();
-        $dto = DTOFactory::createDTOFrom($this, $dto);
-        return $dto;
-    }
-
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new PRRow();
-        }
-        return self::$instance;
-    }
-
-    /**
-     *
-     * @return \Procure\Domain\AccountPayable\APRow
-     */
-    public static function createInstance()
-    {
-        return new PRRow();
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDraftPoQuantity()
-    {
-        return $this->draftPoQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedPoQuantity()
-    {
-        return $this->postedPoQuantity;
-    }
-
-    /**
-     *
-     * @param \Procure\Domain\PurchaseRequest\PRRow $instance
-     */
-    protected static function setInstance($instance)
-    {
-        PRRow::$instance = $instance;
-    }
-
-    /**
-     *
-     * @param mixed $draftPoQuantity
-     */
-    protected function setDraftPoQuantity($draftPoQuantity)
-    {
-        $this->draftPoQuantity = $draftPoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedPoQuantity
-     */
-    protected function setPostedPoQuantity($postedPoQuantity)
-    {
-        $this->postedPoQuantity = $postedPoQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDraftGrQuantity()
-    {
-        return $this->draftGrQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedGrQuantity()
-    {
-        return $this->postedGrQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDraftApQuantity()
-    {
-        return $this->draftApQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedApQuantity()
-    {
-        return $this->postedApQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDraftStockQrQuantity()
-    {
-        return $this->draftStockQrQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedStockQrQuantity()
-    {
-        return $this->postedStockQrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $draftGrQuantity
-     */
-    protected function setDraftGrQuantity($draftGrQuantity)
-    {
-        $this->draftGrQuantity = $draftGrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedGrQuantity
-     */
-    protected function setPostedGrQuantity($postedGrQuantity)
-    {
-        $this->postedGrQuantity = $postedGrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $draftApQuantity
-     */
-    protected function setDraftApQuantity($draftApQuantity)
-    {
-        $this->draftApQuantity = $draftApQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedApQuantity
-     */
-    protected function setPostedApQuantity($postedApQuantity)
-    {
-        $this->postedApQuantity = $postedApQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $draftStockQrQuantity
-     */
-    protected function setDraftStockQrQuantity($draftStockQrQuantity)
-    {
-        $this->draftStockQrQuantity = $draftStockQrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStockQrQuantity
-     */
-    protected function setPostedStockQrQuantity($postedStockQrQuantity)
-    {
-        $this->postedStockQrQuantity = $postedStockQrQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPrId()
-    {
-        return $this->prId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPrQuantity()
-    {
-        return $this->prQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getQoQuantity()
-    {
-        return $this->qoQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStandardQoQuantity()
-    {
-        return $this->standardQoQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedQoQuantity()
-    {
-        return $this->postedQoQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedStandardQoQuantity()
-    {
-        return $this->postedStandardQoQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStandardPoQuantity()
-    {
-        return $this->standardPoQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedStandardPoQuantity()
-    {
-        return $this->postedStandardPoQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStandardGrQuantity()
-    {
-        return $this->standardGrQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedStandardGrQuantity()
-    {
-        return $this->postedStandardGrQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStandardStockQrQuantity()
-    {
-        return $this->standardStockQrQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedStandardStockQrQuantity()
-    {
-        return $this->postedStandardStockQrQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStandardApQuantity()
-    {
-        return $this->standardApQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPostedStandardApQuantity()
-    {
-        return $this->postedStandardApQuantity;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
     public function getLastStandardUnitPrice()
     {
         return $this->lastStandardUnitPrice;
@@ -637,127 +326,10 @@ class PRRow extends BasePrRow
 
     /**
      *
-     * @param mixed $qoQuantity
+     * @return mixed
      */
-    public function setQoQuantity($qoQuantity)
+    public function getLastCurrency()
     {
-        $this->qoQuantity = $qoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardQoQuantity
-     */
-    public function setStandardQoQuantity($standardQoQuantity)
-    {
-        $this->standardQoQuantity = $standardQoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedQoQuantity
-     */
-    public function setPostedQoQuantity($postedQoQuantity)
-    {
-        $this->postedQoQuantity = $postedQoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardQoQuantity
-     */
-    public function setPostedStandardQoQuantity($postedStandardQoQuantity)
-    {
-        $this->postedStandardQoQuantity = $postedStandardQoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardPoQuantity
-     */
-    public function setStandardPoQuantity($standardPoQuantity)
-    {
-        $this->standardPoQuantity = $standardPoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardPoQuantity
-     */
-    public function setPostedStandardPoQuantity($postedStandardPoQuantity)
-    {
-        $this->postedStandardPoQuantity = $postedStandardPoQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardGrQuantity
-     */
-    public function setStandardGrQuantity($standardGrQuantity)
-    {
-        $this->standardGrQuantity = $standardGrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardGrQuantity
-     */
-    public function setPostedStandardGrQuantity($postedStandardGrQuantity)
-    {
-        $this->postedStandardGrQuantity = $postedStandardGrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardStockQrQuantity
-     */
-    public function setStandardStockQrQuantity($standardStockQrQuantity)
-    {
-        $this->standardStockQrQuantity = $standardStockQrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardStockQrQuantity
-     */
-    public function setPostedStandardStockQrQuantity($postedStandardStockQrQuantity)
-    {
-        $this->postedStandardStockQrQuantity = $postedStandardStockQrQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $standardApQuantity
-     */
-    public function setStandardApQuantity($standardApQuantity)
-    {
-        $this->standardApQuantity = $standardApQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $postedStandardApQuantity
-     */
-    public function setPostedStandardApQuantity($postedStandardApQuantity)
-    {
-        $this->postedStandardApQuantity = $postedStandardApQuantity;
-    }
-
-    /**
-     *
-     * @param mixed $lastStandardUnitPrice
-     */
-    public function setLastStandardUnitPrice($lastStandardUnitPrice)
-    {
-        $this->lastStandardUnitPrice = $lastStandardUnitPrice;
-    }
-
-    /**
-     *
-     * @param mixed $lastStandardConvertFactor
-     */
-    public function setLastStandardConvertFactor($lastStandardConvertFactor)
-    {
-        $this->lastStandardConvertFactor = $lastStandardConvertFactor;
+        return $this->lastCurrency;
     }
 }

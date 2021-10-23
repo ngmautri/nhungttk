@@ -9,12 +9,13 @@ use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
+use Procure\Domain\PurchaseOrder\Factory\POFactory;
 use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class CreateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -51,7 +52,9 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $this->setOutput($snapshot); // important;
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
-            $rootEntity = PODoc::createFrom($snapshot, $options, $sharedService);
+            // $rootEntity = PODoc::createFrom($snapshot, $options, $sharedService);
+
+            $rootEntity = POFactory::createFrom($snapshot, $options, $sharedService);
 
             $snapshot->id = $rootEntity->getId();
             $snapshot->token = $rootEntity->getToken();

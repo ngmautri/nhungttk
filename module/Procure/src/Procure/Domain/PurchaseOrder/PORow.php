@@ -3,12 +3,14 @@ namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Domain\GenericDoc;
 use Procure\Domain\AccountPayable\APRowSnapshotAssembler;
 use Procure\Domain\Contracts\ProcureDocType;
+use Procure\Domain\Contracts\ProcureTrxStatus;
 use Procure\Domain\QuotationRequest\QRRow;
 use Webmozart\Assert\Assert;
 
@@ -16,10 +18,32 @@ use Webmozart\Assert\Assert;
  * PO Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 final class PORow extends BaseRow
 {
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericRow::updateRowStatus()
+     */
+    public function updateRowStatus()
+    {
+        $openGRQty = $this->getPostedStandardGrQuantity() - $this->getPostedStandardGrQuantity();
+        $openAPQty = $this->getPostedStandardGrQuantity() - $this->getPostedStandardApQuantity();
+        $openAPAmount = $this->getNetAmount() - $this->getBilledAmount();
+
+        $this->setConfirmedGrBalance($openGRQty);
+        $this->setOpenAPQuantity($openAPQty);
+        $this->setOpenAPAmount($openAPAmount);
+
+        $this->setTransactionStatus(ProcureTrxStatus::PENDING);
+
+        if ($openGRQty <= 0 and $openAPQty <= 0) {
+            $this->setTransactionStatus(ProcureTrxStatus::COMPLETED);
+        }
+    }
 
     /**
      *
@@ -146,6 +170,20 @@ final class PORow extends BaseRow
         $dto = new PORowDetailsDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
+    }
+
+    public static function constructFromDB(PORowSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PORowSnapshot) {
+            return null;
+        }
+
+        $instance = new self();
+
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        $instance->setConstructedFromDB(TRUE);
+
+        return $instance;
     }
 
     /**

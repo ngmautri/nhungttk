@@ -1,49 +1,32 @@
 <?php
-namespace Procure\Domain\PurchaseRequest\Definition;
+namespace Procure\Domain\PurchaseOrder\Definition;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrRowDefinition
+class PoRowDefinition
 {
 
     public static $fields = [
 
         /*
          * |=============================
-         * | Procure\Domain\PurchaseRequest\PRRow
+         * | Procure\Domain\PurchaseOrder\BaseRow
          * |
          * |=============================
          */
 
-        "instance",
-        "prId",
-        "prQuantity",
-        "lastVendorId",
-        "lastVendorName",
-        "lastUnitPrice",
-        "lastStandardUnitPrice",
-        "lastStandardConvertFactor",
-        "lastCurrency",
-        
-        /*
-         * |=============================
-         * | Procure\Domain\PurchaseRequest\BasePrRow
-         * |
-         * |=============================
-         */
-        
-        "checksum",
-        "priority",
-        "rowName",
-        "rowDescription",
-        "rowCode",
-        "rowUnit",
-        "conversionText",
-        "edt",
-        "pr",
+        "confirmedGrBalance",
+        "openAPAmount",
+        "billedAmount",
+        "draftGrQuantity",
+        "postedGrQuantity",
+        "openGrBalance",
+        "draftAPQuantity",
+        "postedAPQuantity",
+        "openAPQuantity",
         
         /*
          * |=============================
@@ -86,9 +69,7 @@ class PrRowDefinition
         "standardPoQuantity",
         "postedPoQuantity",
         "postedStandardPoQuantity",
-        "draftGrQuantity",
         "standardGrQuantity",
-        "postedGrQuantity",
         "postedStandardGrQuantity",
         "draftReturnQuantity",
         "standardReturnQuantity",
@@ -182,6 +163,7 @@ class PrRowDefinition
         "itemInventoryGL",
         "itemCogsGL",
         "itemCostCenter",
+        "pr",
         "prToken",
         "prChecksum",
         "prNumber",
@@ -291,29 +273,15 @@ class PrRowDefinition
     ];
 
     public static $defaultExcludedFields = [
-        /*
-         * |=============================
-         * | Procure\Domain\PurchaseRequest\BasePrRow
-         * |
-         * |=============================
-         */
-
-        "checksum",
-        "pr",
-        
-        
-        /*
-         * |=============================
-         * | Procure\Domain\AbstractRow
-         * |
-         * |=============================
-         */
-        
         "id",
+        "rowNumber",
         "token",
         "createdOn",
         "lastchangeOn",
         "currentState",
+        "grossAmount",
+        "taxAmount",
+        "faRemarks",
         "rowIdentifer",
         "revisionNo",
         "targetObject",
@@ -325,44 +293,59 @@ class PrRowDefinition
         "transactionStatus",
         "isPosted",
         "isDraft",
+        "exwUnitPrice",
         "convertFactorPurchase",
         "convertedPurchaseQuantity",
         "convertedStandardQuantity",
         "convertedStockQuantity",
         "convertedStandardUnitPrice",
         "convertedStockUnitPrice",
+        "convertedPurchaseUnitPrice",
         "docType",
-        "reversalBlocked",
-        "invoice",
         "lastchangeBy",
-        "prRow",
         "createdBy",
         "warehouse",
-        "po",
-        "docUom",
         "docVersion",
         "uuid",
-        "localUnitPrice",
+        "localNetAmount",
+        "localGrossAmount",
         "transactionType",
-        "isReversed"
+        "isReversed",
+        "reversalDate",
+        "clearingDocId"
     ];
 
     public static $defaultIncludedFields = [
-        "isActive",
-        "remarks",
         "rowNumber",
-        "item",
-        "variantId",
+        "quantity",
+        "unitPrice",
+        "netAmount",
+        "unit",
+        "itemUnit",
+        "conversionFactor",
+        "taxRate",
+        "remarks",
+        "isActive",
         "vendorItemCode",
-        "vendorItemName",
+        "faRemarks",
+        "discountRate",
         "docQuantity",
         "docUnit",
         "docUnitPrice",
-        "conversionFactor",
-        "standardConvertFactor",
         "descriptionText",
-        "taxRate",
-        "remarks",
-        "edt"
+        "vendorItemName",
+        "prRow",
+        "warehouse",
+        "item",
+        "docUom",
+        "transactionType",
+        "reversalDate",
+        "glAccount",
+        "costCenter",
+        "standardConvertFactor",
+        "clearingDocId",
+        "brand",
+        "variantId",
+        "project"
     ];
 }

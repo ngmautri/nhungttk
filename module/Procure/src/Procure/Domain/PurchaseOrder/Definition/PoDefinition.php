@@ -1,50 +1,26 @@
 <?php
-namespace Procure\Domain\PurchaseRequest\Definition;
+namespace Procure\Domain\PurchaseOrder\Definition;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrDefinition
+class PoDefinition
 {
 
     public static $fields = [
 
         /*
          * |=============================
-         * | Procure\Domain\PurchaseRequest\PRDoc
+         * | Procure\Domain\PurchaseOrder\PODoc
          * |
          * |=============================
          */
 
         "instance",
-        
-        /*
-         * |=============================
-         * | Procure\Domain\PurchaseRequest\BasePR
-         * |
-         * |=============================
-         */
-        
-        "attachmentList",
-        
-        /*
-         * |=============================
-         * | Procure\Domain\PurchaseRequest\AbstractPR
-         * |
-         * |=============================
-         */
-        
-        "prAutoNumber",
-        "prNumber",
-        "prName",
-        "keywords",
-        "status",
-        "checksum",
-        "submittedOn",
-        "totalRowManual",
-        "department",
+        "grCollection",
+        "apCollection",
         
         /*
          * |=============================
@@ -68,6 +44,7 @@ class PrDefinition
         "lazyRowSnapshotCollectionReference",
         "rowCollection",
         "pictureList",
+        "attachmentList",
         "totalPicture",
         "totalAttachment",
         "docRows",
@@ -191,35 +168,7 @@ class PrDefinition
         "clearingDocId"
     ];
 
-    public static $defaultExcludedFields = [
-        "id",
-        "uuid",
-        "token",
-        "checksum",
-        "createdBy",
-        "createdOn",
-        "lastChangeOn",
-        "lastChangeBy",
-        "sysNumber",
-        "company",
-        "itemType",
-        "revisionNo",
-        "currencyIso3",
-        "vendorName",
-        "docStatus",
-        "workflowStatus",
-        "transactionStatus",
-        "paymentStatus",
-        "paymentStatus"
-    ];
+    public static $defaultExcludedFields = [];
 
-    public static $defaultIncludedFields = [
-        "isActive",
-        "prNumber",
-        "keywords",
-        "submittedOn",
-        "department",
-        "warehouse",
-        "remarks"
-    ];
+    public static $defaultIncludedFields = [];
 }

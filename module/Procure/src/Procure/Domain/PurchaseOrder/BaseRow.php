@@ -6,18 +6,23 @@ use Procure\Domain\GenericRow;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class BaseRow extends GenericRow
 {
 
     // Specific Attributes
     // =================================
+    protected $confirmedGrBalance;
+
+    protected $openAPAmount;
+
+    protected $billedAmount;
+
+    // =================================
     protected $draftGrQuantity;
 
     protected $postedGrQuantity;
-
-    protected $confirmedGrBalance;
 
     protected $openGrBalance;
 
@@ -26,10 +31,6 @@ abstract class BaseRow extends GenericRow
     protected $postedAPQuantity;
 
     protected $openAPQuantity;
-
-    protected $billedAmount;
-
-    protected $openAPAmount;
 
     /**
      *

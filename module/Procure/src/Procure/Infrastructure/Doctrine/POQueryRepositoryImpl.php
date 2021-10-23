@@ -431,4 +431,7 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
 
         return $rootEntity;
     }
+
+    public function getRootEntityByTokenId($id, $token = null)
+    {}
 }

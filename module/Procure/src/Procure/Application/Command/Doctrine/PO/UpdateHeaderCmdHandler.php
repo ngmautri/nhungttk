@@ -12,12 +12,13 @@ use Procure\Domain\PurchaseOrder\GenericPO;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
+use Procure\Domain\PurchaseOrder\Factory\POFactory;
 use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UpdateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -36,7 +37,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
          * @var PODoc $rootEntity ;
          * @var POSnapshot $snapshot ;
          * @var UpdateHeaderCmdOptions $options ;
-         *
+         *     
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
         Assert::notNull($cmd->getData(), 'Input data in emty');
@@ -69,7 +70,9 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
-            $newRootEntity = PODoc::updateFrom($newSnapshot, $options, $params, $sharedService);
+            // $newRootEntity = PODoc::updateFrom($newSnapshot, $options, $params, $sharedService);
+
+            $newRootEntity = POFactory::updateFrom($rootEntity, $newSnapshot, $options, $params, $sharedService);
 
             // event dispatch
             // ================

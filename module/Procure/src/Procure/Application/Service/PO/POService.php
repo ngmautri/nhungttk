@@ -21,6 +21,7 @@ use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
 use Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface;
 use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\POQueryRepositoryImplV1;
 
 /**
  * PO Service.
@@ -36,7 +37,10 @@ class POService extends AbstractService implements PoServiceInterface
     private $queryRepository;
 
     public function getDocMap($id)
-    {}
+    {
+        $rep = new POQueryRepositoryImplV1($this->getDoctrineEM());
+        $results = $rep->getDocMap($id);
+    }
 
     /**
      *

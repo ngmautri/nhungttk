@@ -21,6 +21,61 @@ use Generator;
 class PoHeaderHelper
 {
 
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param PoHeaderReportSqlFilter $filter
+     * @return NULL|array|mixed|\Doctrine\DBAL\Driver\Statement|NULL
+     */
+    public static function getDocMapFor(EntityManager $doctrineEM, PoHeaderReportSqlFilter $filter)
+    {
+        if (! $filter instanceof PoHeaderReportSqlFilter) {
+            return null;
+        }
+
+        if ($filter->getPoId() == null) {
+            return null;
+        }
+
+        $sql = "%s 
+union 
+
+%s";
+
+        $f1 = 'AND nmt_procure_gr_row.is_posted = 1';
+        $f2 = sprintf('AND nmt_procure_po.id = %s', $filter->getPoId());
+        $sql1 = sprintf(PoHeaderSQL::PO_GR_SQL, $f1, $f2);
+
+        $f1 = ' AND fin_vendor_invoice_row.is_posted = 1';
+        $f2 = sprintf(' AND nmt_procure_po.id = %s', $filter->getPoId());
+        $sql2 = sprintf(PoHeaderSQL::PO_AP_SQL, $f1, $f2);
+
+        $sql = sprintf($sql, $sql1, $sql2);
+
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addScalarResult("po_id", "po_id");
+            $rsm->addScalarResult("po_sys_number", "po_sys_number");
+
+            $rsm->addScalarResult("doc_type", "doc_type");
+            $rsm->addScalarResult("doc_id", "doc_id");
+            $rsm->addScalarResult("doc_token", "doc_token");
+            $rsm->addScalarResult("doc_sys_number", "doc_sys_number");
+            $rsm->addScalarResult("doc_currency", "doc_currency");
+            $rsm->addScalarResult("doc_net_amount", "doc_net_amount");
+            $rsm->addScalarResult("local_net_amount", "local_net_amount");
+            $rsm->addScalarResult("doc_posting_date", "doc_posting_date");
+            $rsm->addScalarResult("doc_date", "doc_date");
+            $rsm->addScalarResult("doc_created_date", "doc_created_date");
+
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     public static function getPOHeader(EntityManager $doctrineEM, PoHeaderReportSqlFilter $filterHeader, PoRowReportSqlFilter $filterRows)
     {
         if (! $doctrineEM instanceof EntityManager) {

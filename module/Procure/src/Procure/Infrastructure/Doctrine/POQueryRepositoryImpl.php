@@ -20,6 +20,9 @@ use Procure\Infrastructure\Mapper\PoMapper;
 class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQueryRepositoryInterface
 {
 
+    public function getDocMap($id, $token = null)
+    {}
+
     /**
      *
      * {@inheritdoc}

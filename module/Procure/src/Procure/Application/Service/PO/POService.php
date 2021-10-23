@@ -35,6 +35,9 @@ class POService extends AbstractService implements PoServiceInterface
 
     private $queryRepository;
 
+    public function getDocMap($id)
+    {}
+
     /**
      *
      * {@inheritdoc}

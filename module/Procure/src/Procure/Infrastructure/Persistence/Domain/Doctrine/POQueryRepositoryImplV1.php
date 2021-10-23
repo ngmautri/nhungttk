@@ -2,13 +2,16 @@
 namespace Procure\Infrastructure\Persistence\Domain\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Procure\Application\DTO\Po\PoDocMapDTO;
 use Procure\Domain\PurchaseOrder\Factory\POFactory;
 use Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface;
 use Procure\Domain\PurchaseRequest\Factory\PrFactory;
 use Procure\Infrastructure\Mapper\PrMapper;
+use Procure\Infrastructure\Persistence\Domain\Doctrine\Helper\PoHeaderHelper;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\Helper\PoRowHelper;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\Helper\PrHeaderHelper;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\Mapper\PoMapper;
+use Procure\Infrastructure\Persistence\SQL\Filter\PoHeaderReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\Filter\PoRowReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
@@ -21,6 +24,39 @@ use Generator;
  */
 class POQueryRepositoryImplV1 extends AbstractDoctrineRepository implements POQueryRepositoryInterface
 {
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getDocMap()
+     */
+    public function getDocMap($id, $token = null)
+    {
+        $filter = new PoHeaderReportSqlFilter();
+        $filter->setPoId($id);
+        $results = PoHeaderHelper::getDocMapFor($this->getDoctrineEM(), $filter);
+
+        if ($results == null) {
+            yield null;
+        }
+
+        foreach ($results as $result) {
+            $dto = new PoDocMapDTO();
+            $dto->setPoId($result["po_id"]);
+            $dto->setPoSysNumber($result["po_sys_number"]);
+            $dto->setDocType($result["doc_type"]);
+            $dto->setDocId($result["doc_id"]);
+            $dto->setDocToken($result["doc_token"]);
+            $dto->setDocSysNumber($result["doc_sys_number"]);
+            $dto->setDocCurrency($result["doc_currency"]);
+            $dto->setDocNetAmount($result["doc_net_amount"]);
+            $dto->setLocalNetAmount($result["local_net_amount"]);
+            $dto->setDocPostingDate($result["doc_posting_date"]);
+            $dto->setDocDate($result["doc_date"]);
+            $dto->setDocCreatedDate($result["doc_created_date"]);
+            yield $dto;
+        }
+    }
 
     /**
      *

@@ -23,14 +23,12 @@ class NewQueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new POQueryRepositoryImplV1($doctrineEM);
 
-            $rootEntityId = 647;
+            $rootEntityId = 614;
             $rootEntityToken = "d9eb59d0-2cd7-494d-927a-bcb264a39057";
 
-            $rootEntity = $rep->getRootEntityByTokenId($rootEntityId, $rootEntityToken);
-            $rootEntity->refreshDoc();
+            $rootEntity = $rep->getDocMap($rootEntityId, $rootEntityToken);
 
-            var_dump($rootEntity->getRefreshed());
-            var_dump($rootEntity->getRowsGenerator());
+            var_dump($rootEntity->current());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

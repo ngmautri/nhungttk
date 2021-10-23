@@ -19,7 +19,7 @@ class PoHeaderReportSqlFilter extends ProcureQuerySqlFilter
 
     public $balance;
 
-    public $prId;
+    public $poId;
 
     public $isActive;
 
@@ -78,15 +78,6 @@ class PoHeaderReportSqlFilter extends ProcureQuerySqlFilter
      *
      * @return mixed
      */
-    public function getPrId()
-    {
-        return $this->prId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
     public function getIsActive()
     {
         return $this->isActive;
@@ -139,19 +130,28 @@ class PoHeaderReportSqlFilter extends ProcureQuerySqlFilter
 
     /**
      *
-     * @param mixed $prId
-     */
-    public function setPrId($prId)
-    {
-        $this->prId = $prId;
-    }
-
-    /**
-     *
      * @param mixed $isActive
      */
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoId()
+    {
+        return $this->poId;
+    }
+
+    /**
+     *
+     * @param mixed $poId
+     */
+    public function setPoId($poId)
+    {
+        $this->poId = $poId;
     }
 }

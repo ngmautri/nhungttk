@@ -4,7 +4,7 @@ namespace Application\Domain\Util\Pagination;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class Paginator
 {
@@ -37,6 +37,10 @@ class Paginator
     // ~ Contructor ========================================================================
     function __construct($totalResults, $page, $resultsPerPage)
     {
+        if ($page == null) {
+            $page = 1;
+        }
+
         $this->totalResults = $totalResults;
         $this->page = $page;
         $this->resultsPerPage = $resultsPerPage;

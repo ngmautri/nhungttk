@@ -39,7 +39,7 @@ class POService extends AbstractService implements PoServiceInterface
     public function getDocMap($id)
     {
         $rep = new POQueryRepositoryImplV1($this->getDoctrineEM());
-        $results = $rep->getDocMap($id);
+        return $rep->getDocMap($id);
     }
 
     /**

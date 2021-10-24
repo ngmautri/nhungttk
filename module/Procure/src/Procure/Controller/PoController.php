@@ -3,6 +3,7 @@ namespace Procure\Controller;
 
 use Application\Notification;
 use Application\Application\Command\Doctrine\GenericCommand;
+use Application\Domain\Contracts\FormActions;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Util\JsonErrors;
 use Procure\Application\Command\TransactionalCommandHandler;
@@ -20,7 +21,7 @@ use Zend\View\Model\ViewModel;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PoController extends ProcureCRUDController
 {
@@ -57,6 +58,41 @@ class PoController extends ProcureCRUDController
     protected function setListTemplate()
     {
         $this->listTemplate = $this->getBaseUrl() . '/procure/po/dto_list';
+    }
+
+    public function docMapAction()
+    {
+        $this->layout($this->getAjaxLayout());
+
+        $form_action = $this->getBaseUrl() . "/doc-map";
+        $form_title = "Doc Map";
+        $action = FormActions::SHOW;
+
+        $viewTemplete = $this->getBaseUrl() . "/doc-map";
+        $request = $this->getRequest();
+
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $docMapCollection = $this->getProcureService()->getDocMap($id);
+
+        $viewModel = new ViewModel(array(
+            'action' => $action,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'docMapCollection' => $docMapCollection,
+            'companyVO' => $this->getCompanyVO()
+        ));
+
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
     }
 
     /**

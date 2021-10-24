@@ -33,6 +33,7 @@ $update_header_url = null;
 
 $pdf_url = null;
 $excel_url = null;
+$doc_map_url = null;
 $openoffice_url = null;
 $hoverMode = "row";
 
@@ -95,6 +96,8 @@ if (! $headerDTO == null) {
     $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
+     $doc_map_url = sprintf($this->baseUrl . "/procure/po/doc-map?&entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+  
     $save_as_pdf = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_excel = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
@@ -206,32 +209,19 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                      &nbsp;Picture
                   </a>
                </li>
-               <li>
-                  <a href="#logistic">
-                     <small>
-                        <i class="fa fa-calculator" aria-hidden="true"></i>
-                     </small>
-                     &nbsp;Logistic
-                  </a>
-               </li>
-               <li>
-                  <a href="#accounting">
-                     <small>
-                        <i class="fa fa-calculator" aria-hidden="true"></i>
-                     </small>
-                     &nbsp;Accounting
-                  </a>
-               </li>
+             
                <li>
                   <a href="<?php
 
-                echo $status_url;
-                ?>">
-                     <span class="glyphicon glyphicon-picture"></span>
-                     </span>
-                     &nbsp;Status
+echo $doc_map_url;
+?>">
+                     <small>
+                        <i class="fa fa-sitemap" aria-hidden="false"></i>
+                     </small>
+                     &nbsp;Doc Map
                   </a>
                </li>
+             
                <li>
                   <a href="<?php
 
@@ -656,9 +646,7 @@ echo $upload_btn;
                   </fieldset>
                </form>
             </div>
-            <div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
-            <div id="accounting" style="font-size: 9pt">Payment Term, Payment method etc.</div>
-            <!-- end tab -->
+             <!-- end tab -->
          </div>
       </div>
    </div>

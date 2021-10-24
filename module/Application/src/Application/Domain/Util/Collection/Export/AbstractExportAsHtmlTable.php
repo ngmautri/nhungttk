@@ -69,8 +69,6 @@ abstract class AbstractExportAsHtmlTable extends AbstractExport
         }
 
         // create Message
-        $tmp = sprintf('Record %s to %s of %s found!', $filter->getLimit() + 1, $filter->getLimit(), count($collection));
-        $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;">%s</div>', $tmp);
 
         $tableHead = "<tr>\n";
         $tableHead = $tableHead . "<td>#</td>\n"; // default
@@ -99,6 +97,9 @@ abstract class AbstractExportAsHtmlTable extends AbstractExport
             $tableBody = $tableBody . $this->createRowCell($element);
             $tableBody = $tableBody . "</tr>";
         }
+
+        $tmp = sprintf('%s found!', $n);
+        $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;">%s</div>', $tmp);
 
         return $result_msg . sprintf($this->tableHtml, $this->getTableId(), $this->getTableClass(), $this->getTableStyle(), $tableHead, $tableBody);
     }

@@ -27,10 +27,21 @@ class ExportDocMapAsHtmlTable extends AbstractExportAsHtmlTable
     {
         /**@var PoDocMapDTO $element ;*/
         $cells = '';
-        $showUrl = \sprintf("<a href=\"/inventory/item-variant/view?id=%s\">Show</a>", $element->getDocId());
+        $showUrl = '';
+        $sysNumber = '';
+
+        switch ($element->getDocType()) {
+            case "AP":
+                $showUrl = \sprintf("<a target=\"blank\" href=\"/procure/ap/view?entity_id=%s&entity_token=%s\">Show</a>", $element->getDocId(), $element->getDocToken());
+                $sysNumber = \sprintf("<a target=\"blank\" href=\"/procure/ap/view?entity_id=%s&entity_token=%s\">%s</a>", $element->getDocId(), $element->getDocToken(), $element->getDocSysNumber());
+                break;
+            case "POGR":
+                $showUrl = \sprintf("<a target=\"blank\" href=\"/procure/gr/view?entity_id=%s&entity_token=%s\">Show</a>", $element->getDocId(), $element->getDocToken());
+                $sysNumber = \sprintf("<a target=\"blank\" href=\"/procure/gr/view?entity_id=%s&entity_token=%s\">%s</a>", $element->getDocId(), $element->getDocToken(), $element->getDocSysNumber());
+        }
 
         $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getDocType()));
-        $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getDocSysNumber()));
+        $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($sysNumber));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getDocPostingDate()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getDocNetAmount()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getDocCurrency()));

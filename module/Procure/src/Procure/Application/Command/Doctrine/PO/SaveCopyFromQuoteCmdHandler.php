@@ -3,19 +3,19 @@ namespace Procure\Application\Command\Doctrine\PO;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Options\SaveCopyFromCmdOptions;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class SaveCopyFromQuoteCmdHandler extends AbstractCommandHandler
 {
@@ -35,8 +35,8 @@ class SaveCopyFromQuoteCmdHandler extends AbstractCommandHandler
          * @var POSnapshot $snapshot ;
          * @var PODoc $rootEntity ;
          * @var AbstractCommand $cmd ;
-         *
-         *
+         *     
+         *     
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
 
@@ -64,7 +64,9 @@ class SaveCopyFromQuoteCmdHandler extends AbstractCommandHandler
             ];
 
             $snapshot = new PoDTO();
-            $snapshot = POSnapshotAssembler::updateIncludedFieldsFromArray($snapshot, $cmd->getData(), $includedFields);
+            // $snapshot = POSnapshotAssembler::updateIncludedFieldsFromArray($snapshot, $cmd->getData(), $includedFields);
+
+            $snapshot = GenericObjectAssembler::updateIncludedFieldsFromArray($snapshot, $cmd->getData(), $includedFields);
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
             $rootSnapshot = $rootEntity->saveFromQuotation($snapshot, $options, $sharedService);

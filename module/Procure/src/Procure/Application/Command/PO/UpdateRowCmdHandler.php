@@ -3,6 +3,7 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
@@ -10,17 +11,15 @@ use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
-use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UpdateRowCmdHandler extends AbstractCommandHandler
 {
@@ -65,7 +64,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
              * @var PORowSnapshot $snapshot ;
              * @var PORowSnapshot $newSnapshot ;
              * @var PORow $row ;
-             *
+             *     
              */
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
@@ -91,7 +90,10 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
              * $newSnapshot->rowNumber;
              */
 
-            $newSnapshot = PORowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
+            // $newSnapshot = PORowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
+
+            $newSnapshot = GenericObjectAssembler::updateIncludedFieldsFrom($newSnapshot, $dto, $editableProperties);
+
             $changeLog = $snapshot->compare($newSnapshot);
 
             if ($changeLog == null) {

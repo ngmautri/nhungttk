@@ -3,6 +3,7 @@ namespace Procure\Application\Command\Doctrine\PO;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
@@ -11,13 +12,12 @@ use Procure\Application\Service\PO\PORowSnapshotModifier;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
-use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UpdateRowInlineCmdHandler extends AbstractCommandHandler
 {
@@ -37,8 +37,8 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
          * @var PORowSnapshot $snapshot ;
          * @var PORowSnapshot $newSnapshot ;
          * @var PORow $row ;
-         *
-         *
+         *     
+         *     
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
         Assert::notNull($cmd->getData(), 'Input data emty!');
@@ -63,7 +63,9 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
                 "conversionFactor"
             ];
 
-            $newSnapshot = PORowSnapshotAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $incluedFields);
+            // $newSnapshot = PORowSnapshotAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $incluedFields);
+            $newSnapshot = GenericObjectAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $incluedFields);
+
             $this->setOutput($newSnapshot);
             $newSnapshot = PORowSnapshotModifier::modify($newSnapshot, $cmd->getDoctrineEM(), $options->getLocale());
 

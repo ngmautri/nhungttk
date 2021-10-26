@@ -75,7 +75,7 @@ class PrRowFormatter extends RowFormatterDecorator
             $row->postedApQuantity = NumberFormatter::formatNumberForGrid($row->getPostedApQuantity(), $this->getLocale());
             $row->postedStandardApQuantity = NumberFormatter::formatNumberForGrid($row->getPostedStandardApQuantity(), $this->getLocale());
 
-            $row->lastStandardUnitPrice = NumberFormatter::formatMoneyNumberForGrid($row->getLastStandardUnitPrice(), $row->getDocCurrencyISO(), $this->getLocale());
+            $row->lastStandardUnitPrice = NumberFormatter::formatMoneyNumberForGrid($row->getLastStandardUnitPrice(), $row->getLastCurrency(), $this->getLocale());
         }
 
         return $row;

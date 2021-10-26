@@ -21,10 +21,10 @@ class PrService1Test extends PHPUnit_Framework_TestCase
             /** @var PRServiceV1 $sv ; */
             $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\PR\PRService');
 
-            $id = 1454;
-            $token = "4a600b5e-d6bc-43be-86c6-978308aaf746";
+            $id = 1450;
+            $token = "6057d472-8a03-44f9-8460-3545fe99e451";
 
-            $rootEntity = $sv->getProcureDocByTokenId($id, $token, 1, 2);
+            $rootEntity = $sv->getDocDetailsByTokenId($id, $token, 1, 2);
             var_dump($rootEntity->getRowsOutput());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());

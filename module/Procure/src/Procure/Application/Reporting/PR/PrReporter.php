@@ -236,7 +236,7 @@ class PrReporter extends AbstractService
         return $total;
     }
 
-    public function getAllRow(SqlFilterInterface $filter, $file_type)
+    public function getAllRow(SqlFilterInterface $filter, $file_type, $locale = 'en_EN')
     {
         if (! $filter instanceof PrRowReportSqlFilter) {
             throw new \InvalidArgumentException("Invalid filter object.");
@@ -289,6 +289,7 @@ class PrReporter extends AbstractService
                 break;
         }
 
+        $formatter->setLocale($locale); // new
         return $factory->saveAs($results, $formatter);
     }
 

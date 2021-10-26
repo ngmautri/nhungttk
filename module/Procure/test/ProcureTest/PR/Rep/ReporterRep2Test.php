@@ -25,12 +25,13 @@ class ReporterRep2Test extends PHPUnit_Framework_TestCase
             $rep = new PrReportImplV1($doctrineEM);
 
             $filter = new PrRowReportSqlFilter();
-            $filter->setPrId(1444);
-            $filter->setSortBy('prSubmitted');
-            $filter->setSort('desc');
-            $filter->setBalance(2);
-
+            $filter->setItemId(4475);
+            // $filter->setSortBy('prSubmitted');
+            // $filter->setSort('desc');
+            $filter->setBalance(200);
             $result = $rep->getAllRow($filter);
+
+            var_dump($result);
             var_dump($result->current());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());

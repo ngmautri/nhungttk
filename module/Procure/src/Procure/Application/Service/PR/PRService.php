@@ -58,7 +58,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
             return null;
         }
 
-        return $this->_getRootEntity($rootEntity, $outputStrategy);
+        return $this->_getRootEntity($rootEntity, $outputStrategy, $locale);
     }
 
     /**
@@ -183,7 +183,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
      * @param string $outputStrategy
      * @return object
      */
-    private function _getRootEntity($rootEntity, $outputStrategy)
+    private function _getRootEntity($rootEntity, $outputStrategy, $locale = 'en_EN')
     {
 
         // FOR PDF and Excel.

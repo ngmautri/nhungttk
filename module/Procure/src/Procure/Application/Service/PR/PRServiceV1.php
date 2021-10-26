@@ -57,7 +57,7 @@ class PRServiceV1 extends AbstractService implements PrServiceInterface
             return null;
         }
 
-        return $this->_getRootEntity($rootEntity, $outputStrategy);
+        return $this->_getRootEntity($rootEntity, $outputStrategy, $locale);
     }
 
     /**
@@ -76,7 +76,7 @@ class PRServiceV1 extends AbstractService implements PrServiceInterface
             return null;
         }
 
-        return $this->_getRootEntity($rootEntity, $outputStrategy);
+        return $this->_getRootEntity($rootEntity, $outputStrategy, $locale);
     }
 
     /**
@@ -96,7 +96,7 @@ class PRServiceV1 extends AbstractService implements PrServiceInterface
             return null;
         }
 
-        return $this->_getRootEntity($rootEntity, $outputStrategy);
+        return $this->_getRootEntity($rootEntity, $outputStrategy, $locale);
     }
 
     public function getDocGirdByTokenId($id, $token, $offset = null, $limit = null, $locale = 'en_EN')
@@ -125,7 +125,7 @@ class PRServiceV1 extends AbstractService implements PrServiceInterface
      * @param string $outputStrategy
      * @return object
      */
-    private function _getRootEntity($rootEntity, $outputStrategy)
+    private function _getRootEntity($rootEntity, $outputStrategy, $locale = 'en_EN')
     {
 
         // FOR PDF and Excel.
@@ -162,6 +162,7 @@ class PRServiceV1 extends AbstractService implements PrServiceInterface
         }
 
         if ($factory !== null && $formatter !== null) {
+            $formatter->setLocale($locale);
             $output = $factory->saveAs($rootEntity, $formatter);
             $rootEntity->setRowsOutput($output);
         }

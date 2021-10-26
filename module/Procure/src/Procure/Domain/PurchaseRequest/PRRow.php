@@ -49,6 +49,16 @@ class PRRow extends BasePrRow
      * |
      * |=============================
      */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericRow::makeSnapshot()
+     */
+    public function makeSnapshot()
+    {
+        return GenericObjectAssembler::updateAllFieldsFrom(new PRRowSnapshot(), $this);
+    }
+
     public function updateRowStatus()
     {
         $this->createVO(); // important

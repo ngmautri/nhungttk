@@ -8,7 +8,6 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Domain\GenericDoc;
-use Procure\Domain\AccountPayable\APRowSnapshotAssembler;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Contracts\ProcureTrxStatus;
 use Procure\Domain\QuotationRequest\QRRow;
@@ -134,11 +133,12 @@ final class PORow extends BaseRow
 
     /**
      *
-     * @return NULL|PORowSnapshot
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericRow::makeSnapshot()
      */
     public function makeSnapshot()
     {
-        return APRowSnapshotAssembler::updateAllFieldsFrom(new PORowSnapshot(), $this);
+        return GenericObjectAssembler::updateAllFieldsFrom(new PORowSnapshot(), $this);
     }
 
     /**

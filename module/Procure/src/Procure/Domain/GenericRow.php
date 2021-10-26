@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Domain;
 
-use Application\Application\Contracts\GenericSnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Shared\Money\MoneyParser;
 use Application\Domain\Shared\Number\NumberFormatter;
@@ -96,6 +95,12 @@ abstract class GenericRow extends BaseRow
     ];
 
     abstract protected function createVO(GenericDoc $rootDoc);
+
+    /**
+     *
+     * @return NULL|object
+     */
+    abstract public function makeSnapshot();
 
     public function updateRowStatus()
     {}
@@ -350,15 +355,6 @@ abstract class GenericRow extends BaseRow
             return;
         }
         $this->setWarehouse($snapshot->getWarehouse());
-    }
-
-    /**
-     *
-     * @return NULL|object
-     */
-    public function makeSnapshot()
-    {
-        return GenericSnapshotAssembler::createSnapshotFrom($this, new RowSnapshot());
     }
 
     /*

@@ -44,7 +44,7 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
         $row->convertedStandardUnitPrice = NumberFormatter::formatMoneyNumberForGrid($row->convertedStandardUnitPrice, $row->getDocCurrencyISO(), $this->getLocale());
         $row->localUnitPrice = NumberFormatter::formatMoneyNumberForGrid($row->localUnitPrice, $row->getLocalCurrencyISO(), $this->getLocale());
 
-        // format number
+        // format number qty
         $row->docQuantity = NumberFormatter::formatNumberForGrid($row->getDocQuantity(), $this->getLocale());
         $row->convertedStandardQuantity = NumberFormatter::formatNumberForGrid($row->getConvertedStandardQuantity(), $this->getLocale());
         $row->standardConvertFactor = NumberFormatter::formatNumberForGrid($row->standardConvertFactor, $this->getLocale());
@@ -62,6 +62,9 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
         if ($row->docNumber !== null) {
             $row->docNumber = sprintf('<span style="font-size:8pt; color: graytext">%s %s</span', $row->docNumber, $link);
         }
+        $row->vendorItemName = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemName());
+        $row->vendorItemCode = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemCode());
+        $row->itemManufacturerModel = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getItemManufacturerModel());
 
         /*
          * if ($row->prNumber != null) {
@@ -75,9 +78,6 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
          * $row->prNumber = \sprintf($f, $row->prNumber, $onclick);
          * }
          */
-        $row->vendorItemName = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemName());
-        $row->vendorItemCode = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemCode());
-        $row->itemManufacturerModel = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getItemManufacturerModel());
 
         return $row;
     }

@@ -16,7 +16,6 @@ use Procure\Application\Command\Options\PostCmdOptions;
 use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\Contracts\ProcureServiceInterface;
-use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Upload\UploadFactory;
 use Procure\Domain\DocSnapshot;
 use Procure\Domain\GenericDoc;
@@ -378,7 +377,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
-        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, SaveAsSupportedType::OUTPUT_IN_ARRAY, $this->getLocale());
+        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
 
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');

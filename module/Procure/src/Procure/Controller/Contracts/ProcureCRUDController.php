@@ -973,24 +973,6 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $target_token = $this->params()->fromQuery('target_token');
             $version = $this->params()->fromQuery('ver');
 
-            $result = $this->getProcureService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $this->getLocale());
-
-            $rootDTO = null;
-            $localDTO = null;
-
-            if (isset($result["rootDTO"])) {
-                $rootDTO = $result["rootDTO"];
-            }
-
-            if (isset($result["localDTO"])) {
-                $localDTO = $result["localDTO"];
-            }
-
-            if ($rootDTO == null || $localDTO == null) {
-                $this->logInfo(\sprintf("Entity not found! %s", $entity_id));
-                return $this->redirect()->toRoute('not_found');
-            }
-
             try {
                 $result = $this->getProcureService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
 

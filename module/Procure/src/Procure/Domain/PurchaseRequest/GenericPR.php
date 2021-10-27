@@ -316,6 +316,11 @@ abstract class GenericPR extends BasePR
         return $dto;
     }
 
+    /**
+     *
+     * @deprecated
+     * @return NULL|object
+     */
     public function makeHeaderDTO()
     {
         $dto = new PrDTO();
@@ -323,6 +328,12 @@ abstract class GenericPR extends BasePR
         return $dto;
     }
 
+    /**
+     *
+     * @deprecated
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::makeDTOForGrid()
+     */
     public function makeDTOForGrid()
     {
         $dto = new PrDTO();

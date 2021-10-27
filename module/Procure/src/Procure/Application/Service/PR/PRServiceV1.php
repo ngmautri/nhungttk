@@ -208,15 +208,20 @@ class PRServiceV1 extends AbstractService implements PrServiceInterface
         $rootDTO = null;
         $localDTO = null;
 
+        /**
+         *
+         * @var PRDoc $rootEntity ;
+         */
         $rootEntity = $rep->getRootEntityByTokenId($target_id, $target_token);
 
         if (! $rootEntity == null) {
-            $rootDTO = $rootEntity->makeDTOForGrid();
 
-            $localEntity = $rootEntity->getRowbyTokenId($entity_id, $entity_token);
+            $rootDTO = $rootEntity->makeSnapshot();
+
+            $localEntity = $rootEntity->getRowFromCollectionbyTokenId($entity_id, $entity_token);
 
             if ($localEntity instanceof PRRow) {
-                $localDTO = $localEntity->makeDetailsDTO();
+                $localDTO = $localEntity->makeSnapshot();
             }
         }
 

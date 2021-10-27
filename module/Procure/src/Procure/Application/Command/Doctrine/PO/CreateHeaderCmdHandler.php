@@ -3,12 +3,12 @@ namespace Procure\Application\Command\Doctrine\PO;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use Procure\Domain\PurchaseOrder\Factory\POFactory;
 use Webmozart\Assert\Assert;
 
@@ -48,7 +48,9 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
              */
 
             $snapshot = new POSnapshot();
-            POSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            // POSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            GenericObjectAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+
             $this->setOutput($snapshot); // important;
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());

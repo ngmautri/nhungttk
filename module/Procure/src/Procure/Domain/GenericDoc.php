@@ -431,6 +431,31 @@ abstract class GenericDoc extends BaseDoc
         return null;
     }
 
+    public function getRowFromCollectionbyTokenId($id, $token)
+    {
+        $this->refreshDoc();
+
+        $collection = $this->getRowCollection();
+
+        if ($collection->isEmpty()) {
+            return null;
+        }
+
+        foreach ($collection as $r) {
+
+            /**
+             *
+             * @var AbstractRow $r ;
+             */
+
+            if ($r->getId() == $id && $r->getToken() == $token) {
+                return $r;
+            }
+        }
+
+        return null;
+    }
+
     /**
      *
      * @param AbstractRow $row

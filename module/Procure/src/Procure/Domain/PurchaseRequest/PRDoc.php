@@ -59,6 +59,11 @@ final class PRDoc extends GenericPR
 
         foreach ($this->getRowsGenerator() as $row) {
 
+            // becasue of yield NULL.
+            if ($row == null) {
+                continue;
+            }
+
             /**
              *
              * @var PRRow $row ;

@@ -33,6 +33,11 @@ class PrDocSaveAsArray implements DocSaveAsInterface
         $output = array();
         foreach ($doc->getRowsGenerator() as $row) {
 
+            // because of yield NULL
+            if ($row == null) {
+                continue;
+            }
+
             /**
              *
              * @var GenericRow $row ;

@@ -76,6 +76,10 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
         foreach ($doc->getRowsGenerator() as $r) {
 
+            if ($r == null) {
+                continue;
+            }
+
             /**
              *
              * @var PRRow $r ;

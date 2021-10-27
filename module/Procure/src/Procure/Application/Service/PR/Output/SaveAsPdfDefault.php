@@ -212,6 +212,10 @@ class SaveAsPdfDefault extends AbstractDocSaveAsPdf
         );
         foreach ($doc->getRowsGenerator() as $r) {
 
+            // Because of yield Null
+            if ($r == null) {
+                continue;
+            }
             $n ++;
 
             /**

@@ -86,6 +86,11 @@ final class PODoc extends GenericPO
 
         foreach ($this->getRowsGenerator() as $row) {
 
+            // becasue of yield NULL
+            if ($row == null) {
+                continue;
+            }
+
             /**
              *
              * @var PORow $row ;

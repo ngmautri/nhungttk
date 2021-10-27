@@ -3,6 +3,7 @@ namespace Procure\Application\Command\Doctrine\PR;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\CreateRowCmdOptions;
@@ -10,13 +11,12 @@ use Procure\Application\Service\SharedServiceFactory;
 use Procure\Application\Service\PR\PRRowSnapshotModifier;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
-use Procure\Domain\PurchaseRequest\PRRowSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class CreateRowCmdHandler extends AbstractCommandHandler
 {
@@ -35,7 +35,7 @@ class CreateRowCmdHandler extends AbstractCommandHandler
          * @var CreateRowCmdOptions $options ;
          * @var PRRowSnapshot $snapshot ;
          * @var PRDoc $rootEntity ;
-         *
+         *     
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
         Assert::isInstanceOf($cmd->getOptions(), CreateRowCmdOptions::class);
@@ -48,7 +48,9 @@ class CreateRowCmdHandler extends AbstractCommandHandler
 
         try {
             $snapshot = new PRRowSnapshot();
-            PRRowSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            // PRRowSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            GenericObjectAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+
             $this->setOutput($snapshot);
 
             $snapshot = PrRowSnapshotModifier::modify($snapshot, $cmd->getDoctrineEM(), $options->getLocale());

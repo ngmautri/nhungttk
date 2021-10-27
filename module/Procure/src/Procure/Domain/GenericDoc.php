@@ -25,6 +25,14 @@ abstract class GenericDoc extends BaseDoc
 
     protected $constructedFromDB = false;
 
+    /*
+     * |=============================
+     * |Abtract
+     * |
+     * |=============================
+     */
+    abstract public function refreshDoc();
+
     /**
      *
      * @param boolean $constructedFromDB
@@ -74,9 +82,6 @@ abstract class GenericDoc extends BaseDoc
     {
         $this->exculdedProps = $exculdedProps;
     }
-
-    public function refreshDoc()
-    {}
 
     public function markDocAsChanged($postedBy, $postedDate)
     {

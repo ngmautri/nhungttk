@@ -239,6 +239,10 @@ abstract class GenericPR extends BasePR
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
+
+        // need to refresh doc.
+        $this->refreshDoc();
+
         $validationService = ValidatorFactory::create($sharedService);
 
         $this->validate($validationService);
@@ -274,6 +278,9 @@ abstract class GenericPR extends BasePR
     {
         Assert::eq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is not posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
+
+        // need to refresh doc.
+        $this->refreshDoc();
 
         $validationService = ValidatorFactory::create($sharedService);
         $this->validate($validationService);

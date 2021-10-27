@@ -77,7 +77,7 @@ abstract class BaseDoc extends AbstractDoc
     public function setRowsGenerator(\Generator $rowsGenerator = null)
     {
         if ($this->getGeneratorInjected()) {
-            throw new \InvalidArgumentException("Rows generator can be set only one time!");
+            return;
         }
         $this->rowsGenerator = $rowsGenerator;
 

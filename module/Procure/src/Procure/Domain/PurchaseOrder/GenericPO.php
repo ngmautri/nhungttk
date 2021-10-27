@@ -25,7 +25,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class GenericPO extends BaseDoc
 {
@@ -153,6 +153,9 @@ abstract class GenericPO extends BaseDoc
     {
         Assert::eq($this->getDocStatus(), ProcureDocStatus::AMENDING, sprintf("Document is not on amendment! %s", $this->getId()));
         Assert::notNull($options, "command options not found");
+
+        // need to refresh doc.
+        $this->refreshDoc();
 
         $validationService = ValidatorFactory::create($sharedService);
         Assert::notNull($validationService, "Validation can not be created!");
@@ -317,6 +320,9 @@ abstract class GenericPO extends BaseDoc
         Assert::eq($this->getDocStatus(), ProcureDocStatus::DRAFT, sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
         Assert::notNull($sharedService, "SharedService service not found");
         Assert::notNull($options, "Comnand Options not found!");
+
+        // need to refresh doc.
+        $this->refreshDoc();
 
         $validationService = ValidatorFactory::create($sharedService);
         Assert::notNull($validationService, "Validation can not created!");

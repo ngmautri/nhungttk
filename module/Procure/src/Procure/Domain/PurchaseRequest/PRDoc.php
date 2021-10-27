@@ -91,6 +91,9 @@ final class PRDoc extends GenericPR
 
             // add row collection
             $rowCollection->add($row);
+
+            // add row collection @todo: need to removed.
+            $this->addRow($row);
         }
 
         $this->setTotalRows($totalRows);

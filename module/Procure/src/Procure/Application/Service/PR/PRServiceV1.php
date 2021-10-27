@@ -51,7 +51,7 @@ class PRServiceV1 extends AbstractService implements PrServiceInterface
 
         // Not in Cache.
         $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
-        $rootEntity = $rep->getRootEntityById($id);
+        $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
         if (! $rootEntity instanceof PRDoc) {
             return null;

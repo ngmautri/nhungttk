@@ -15,7 +15,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class AbstractCommand implements CommandInterface
 {

@@ -26,12 +26,15 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class GenericAP extends BaseDoc
 {
 
     abstract public function specify();
+
+    public function refreshDoc()
+    {}
 
     // ============================
     public function removeRow(APRow $row, CommandOptions $options, SharedService $sharedService)

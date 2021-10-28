@@ -122,10 +122,11 @@ class POFactory
         $snapshot->markAsChange($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
         $snapshot->docType = ProcureDocType::PO;
 
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $snapshot->setExchangeRate($fxRate);
+
         POSnapshotAssembler::updateDefaultExcludedFieldsFrom($rootEntity, $snapshot);
 
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $rootEntity->setExchangeRate($fxRate);
         $rootEntity->validateHeader($validationService->getHeaderValidators());
 
         if ($rootEntity->hasErrors()) {
@@ -144,8 +145,6 @@ class POFactory
         $rootSnapshot = $rep->storeHeader($rootEntity, false);
         Assert::notNull($rootSnapshot, sprintf("Error occured when creating PO", $rootEntity->getId()));
 
-        $rootEntity->id = $rootSnapshot->getId();
-
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($rootSnapshot->getId());
@@ -159,6 +158,7 @@ class POFactory
         $event = new PoHeaderUpdated($target, $defaultParams, $params);
         $rootEntity->addEvent($event);
 
+        $rootEntity->updateIdentityFrom($snapshot);
         return $rootEntity;
     }
 

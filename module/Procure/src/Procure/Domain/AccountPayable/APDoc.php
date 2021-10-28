@@ -13,10 +13,13 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 final class APDoc extends GenericAP
 {
+
+    public function refreshDoc()
+    {}
 
     /**
      *

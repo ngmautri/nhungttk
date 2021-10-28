@@ -2,8 +2,8 @@
 namespace Procure\Application\Helper;
 
 use Application\Domain\Contracts\FormActions;
-use Procure\Application\DTO\Ap\ApDTO;
-use Procure\Application\DTO\Po\PoDetailsDTO;
+use Procure\Domain\AccountPayable\APSnapshot;
+use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Domain\QuotationRequest\QRSnapshot;
 use Procure\Domain\Shared\Constants;
@@ -17,7 +17,7 @@ use Procure\Domain\Shared\ProcureDocStatus;
 class Toolbar
 {
 
-    public static function showToolbarAP(ApDTO $headerDTO, $action, $view)
+    public static function showToolbarAP(APSnapshot $headerDTO, $action, $view)
     {
         $toolbar = "";
 
@@ -61,7 +61,7 @@ class Toolbar
         return $toolbar;
     }
 
-    public static function showToolbarPO(PoDetailsDTO $headerDTO, $action, $view)
+    public static function showToolbarPO(POSnapshot $headerDTO, $action, $view)
     {
         $toolbar = "";
 

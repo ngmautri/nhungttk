@@ -4,7 +4,7 @@ namespace Application;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class Notification
 {
@@ -118,16 +118,16 @@ class Notification
     public function successMessage($html = true)
     {
         if ($this->hasSuccess()) {
-            $str = '';
+            $str = "";
 
             if ($html == true) {
-                $newLine = "<br>";
+                $newLine = '. ';
             } else {
-                $newLine = "\n";
+                $newLine = '.';
             }
 
             foreach ($this->success as $e) {
-                $str .= $e . $newLine;
+                $str = $str . $e . $newLine;
             }
             return $str;
         }

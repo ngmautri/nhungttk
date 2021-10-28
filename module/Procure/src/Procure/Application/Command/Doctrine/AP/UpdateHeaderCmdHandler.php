@@ -17,7 +17,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UpdateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -36,7 +36,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
          * @var APDoc $rootEntity ;
          * @var APSnapshot $snapshot ;
          * @var UpdateHeaderCmdOptions $options ;
-         *
+         *     
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
         Assert::notNull($cmd->getData(), 'Input data in emty');
@@ -81,7 +81,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             VersionChecker::checkAPVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
 
-            $m = sprintf("AP #%s updated", $newRootEntity->getId());
+            $m = sprintf('AP #%s updated', $newRootEntity->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
 

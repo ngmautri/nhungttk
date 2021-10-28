@@ -63,6 +63,8 @@ class PRRow extends BasePrRow
     {
         $this->createVO(); // important
 
+        $this->setTransactionStatus(ProcureTrxStatus::PENDING);
+
         if ($this->getPostedStandardQoQuantity() > 0) {
             $this->setTransactionStatus(ProcureTrxStatus::HAS_QUOTATION);
         }

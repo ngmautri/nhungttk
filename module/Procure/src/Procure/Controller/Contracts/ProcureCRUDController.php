@@ -659,7 +659,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
         }
 
         $this->flashMessenger()->addMessage($cmd->getNotification()
-            ->successMessage(false));
+            ->successMessage());
         $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $rootEntityId, $rootEntityToken);
         // $this->flashMessenger()->addMessage($redirectUrl);
 

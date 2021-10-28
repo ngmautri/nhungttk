@@ -4,7 +4,7 @@ namespace Inventory\Domain\Transaction;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class TrxDoc extends GenericTrx
 {
@@ -31,5 +31,8 @@ class TrxDoc extends GenericTrx
     }
 
     public function specify()
+    {}
+
+    public function refreshDoc()
     {}
 }

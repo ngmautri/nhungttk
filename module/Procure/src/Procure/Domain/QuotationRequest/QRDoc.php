@@ -33,6 +33,9 @@ final class QRDoc extends GenericQR
     private function __construct()
     {}
 
+    public function refreshDoc()
+    {}
+
     public function cloneAndSave(CommandOptions $options, SharedService $sharedService)
     {
         $rows = $this->getDocRows();

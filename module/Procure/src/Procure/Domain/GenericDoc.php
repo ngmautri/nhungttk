@@ -25,6 +25,13 @@ abstract class GenericDoc extends BaseDoc
 
     protected $constructedFromDB = false;
 
+    private $exculdedProps = [
+        "rowIdArray",
+        "instance",
+        "grCollection",
+        "apCollection"
+    ];
+
     /*
      * |=============================
      * |Abtract
@@ -32,73 +39,6 @@ abstract class GenericDoc extends BaseDoc
      * |=============================
      */
     abstract public function refreshDoc();
-
-    /**
-     *
-     * @param boolean $constructedFromDB
-     */
-    protected function setConstructedFromDB($constructedFromDB)
-    {
-        $this->constructedFromDB = $constructedFromDB;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function getConstructedFromDB()
-    {
-        return $this->constructedFromDB;
-    }
-
-    public function getExculdedProps()
-    {
-        return $this->exculdedProps;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRefreshed()
-    {
-        return $this->refreshed;
-    }
-
-    /**
-     *
-     * @param mixed $refreshed
-     */
-    protected function setRefreshed($refreshed)
-    {
-        $this->refreshed = $refreshed;
-    }
-
-    /**
-     *
-     * @param multitype:string $exculdedProps
-     */
-    protected function setExculdedProps($exculdedProps)
-    {
-        $this->exculdedProps = $exculdedProps;
-    }
-
-    public function markDocAsChanged($postedBy, $postedDate)
-    {
-        $this->setLastchangeOn($postedDate);
-        $this->setLastchangeBy($postedBy);
-        $this->setIsPosted(0);
-        $this->setIsActive(1);
-        $this->setIsDraft(1);
-        $this->setIsReversed(0);
-    }
-
-    private $exculdedProps = [
-        "rowIdArray",
-        "instance",
-        "grCollection",
-        "apCollection"
-    ];
 
     abstract protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
 
@@ -114,17 +54,90 @@ abstract class GenericDoc extends BaseDoc
 
     abstract protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
 
-    /**
-     *
-     * @return DocSnapshot
-     */
     abstract public function makeSnapshot();
+
+    abstract public function makeDTOForGrid();
+
+    /*
+     * |=============================
+     * |Methods
+     * |
+     * |=============================
+     */
+    protected function refresh()
+    {}
 
     /**
      *
-     * @return DocSnapshot
+     * @param int $createdBy
+     * @param string $createdDate
      */
-    abstract function makeDTOForGrid();
+    protected function initDoc(CommandOptions $options)
+
+    {
+        $createdDate = new \DateTime();
+        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setCreatedBy($options->getUserId());
+        $this->setDocStatus(ProcureDocStatus::DRAFT);
+
+        $this->setIsActive(1);
+        $this->setIsDraft(1);
+        $this->setIsPosted(0);
+
+        $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
+        $this->setRevisionNo(0);
+        $this->setDocVersion(0);
+        $this->setUuid(Uuid::uuid4()->toString());
+        $this->setToken($this->getUuid());
+
+        $c = $options->getCompanyVO();
+        $this->company = $c->getId();
+        $this->setCurrency($this->getDocCurrency());
+        $this->setLocalCurrency($c->getDefaultCurrency());
+    }
+
+    /**
+     *
+     * @param int $postedBy
+     * @param string $postedDate
+     */
+    protected function markAsPosted($postedBy, $postedDate)
+    {
+        $this->setLastchangeOn($postedDate);
+        $this->setLastchangeBy($postedBy);
+
+        $this->setIsPosted(1);
+        $this->setIsDraft(0);
+        $this->setIsActive(1);
+        $this->setDocStatus(ProcureDocStatus::POSTED);
+    }
+
+    /**
+     *
+     * @param int $postedBy
+     * @param string $postedDate
+     */
+    protected function markAsReversed($postedBy, $postedDate)
+    {
+        $this->setLastchangeOn($postedDate);
+        $this->setReversalDate($postedDate);
+        $this->setIsReversed(1);
+        $this->setIsDraft(0);
+        $this->setIsPosted(0);
+        $this->setIsActive(1);
+        $this->setDocStatus(ProcureDocStatus::REVERSED);
+        $this->setLastchangeBy($postedBy);
+    }
+
+    public function markDocAsChanged($postedBy, $postedDate)
+    {
+        $this->setLastchangeOn($postedDate);
+        $this->setLastchangeBy($postedBy);
+        $this->setIsPosted(0);
+        $this->setIsActive(1);
+        $this->setIsDraft(1);
+        $this->setIsReversed(0);
+    }
 
     /**
      *
@@ -186,86 +199,6 @@ abstract class GenericDoc extends BaseDoc
         }
     }
 
-    /**
-     * Ti
-     *
-     * @deprecated
-     * @param GenericRow $row
-     */
-    protected function calculateRowQuantity(GenericRow $row)
-    {
-        trigger_error("Deprecated function called.", E_USER_NOTICE);
-        if ($row->hasErrors()) {
-            return;
-        }
-
-        try {
-            // $this->convertedDocQuantity = $this->getDocQuantity() * $this->getConversionFactor();
-            // $this->convertedDocUnitPrice = $this->getDocUnitPrice() / $this->getConvertedDocQuantity();
-
-            // actuallly converted doc quantity /price.
-            $row->set = $row->getDocQuantity() * $row->getConversionFactor();
-            $row->unitPrice = $row->getDocUnitPrice() / $row->getConversionFactor();
-
-            $netAmount = $row->getDocUnitPrice() * $row->getDocQuantity();
-
-            $discountAmount = 0;
-            if ($row->getDiscountRate() > 0) {
-                $discountAmount = $netAmount * ($row->getDiscountRate() / 100);
-                $this->setDiscountAmount($discountAmount);
-                $netAmount = $netAmount - $discountAmount;
-            }
-
-            $taxAmount = $netAmount * $row->getTaxRate() / 100;
-            $grosAmount = $netAmount + $taxAmount;
-
-            $row->setNetAmount($netAmount);
-            $row->setTaxAmount($taxAmount);
-            $row->setGrossAmount($grosAmount);
-
-            $convertedPurchaseQuantity = $row->getDocQuantity();
-            $convertedPurchaseUnitPrice = $row->getDocUnitPrice();
-
-            $conversionFactor = $row->getConversionFactor();
-
-            $standardCF = 1;
-
-            if ($row->getStandardConvertFactor() > 0) {
-                $standardCF = $this->getStandardConvertFactor();
-            }
-
-            $prRowConvertFactor = $row->getPrRowConvertFactor();
-
-            if ($row->getPrRow() > 0) {
-                $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
-                $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-                $standardCF = $standardCF * $prRowConvertFactor;
-            }
-
-            // quantity /unit price is converted purchase quantity to clear PR
-
-            // $entity->setQuantity($convertedPurchaseQuantity);
-            // $entity->setUnitPrice($convertedPurchaseUnitPrice);
-
-            $convertedStandardQuantity = $row->getQuantity();
-            $convertedStandardUnitPrice = $row->getUnitPrice();
-
-            if ($row->getItem() > 0) {
-                $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
-                $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
-            }
-
-            // calculate standard quantity
-            $row->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
-            $this->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
-
-            $row->setConvertedStandardQuantity($convertedStandardQuantity);
-            $row->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
-        } catch (\Exception $e) {
-            $row->addError($e->getMessage());
-        }
-    }
-
     public function updateIdentityFrom($snapshot)
     {
         if (! $snapshot instanceof DocSnapshot) {
@@ -311,6 +244,8 @@ abstract class GenericDoc extends BaseDoc
      */
     public function splitRowsByWarehouse()
     {
+        $this->refreshDoc();
+
         if ($this->getDocRowsCount() == 0) {
             return null;
         }
@@ -355,6 +290,10 @@ abstract class GenericDoc extends BaseDoc
         return $results;
     }
 
+    /**
+     *
+     * @throws \RuntimeException
+     */
     public function sortRowsByWarehouse()
     {
 
@@ -415,6 +354,8 @@ abstract class GenericDoc extends BaseDoc
      */
     public function getRowbyTokenId($id, $token)
     {
+        $this->refreshDoc();
+
         $rows = $this->getDocRows();
 
         if ($id == null || $token == null || $rows == null) {
@@ -436,6 +377,12 @@ abstract class GenericDoc extends BaseDoc
         return null;
     }
 
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @return NULL|\Procure\Domain\AbstractRow
+     */
     public function getRowFromCollectionbyTokenId($id, $token)
     {
         $this->refreshDoc();
@@ -541,6 +488,12 @@ abstract class GenericDoc extends BaseDoc
         return $targetObj;
     }
 
+    /**
+     *
+     * @param AbstractDoc $targetObj
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\AbstractDoc
+     */
     public function convertAllTo(AbstractDoc $targetObj)
     {
         if (! $targetObj instanceof AbstractDoc) {
@@ -570,6 +523,13 @@ abstract class GenericDoc extends BaseDoc
         return $targetObj;
     }
 
+    /**
+     *
+     * @param AbstractDoc $targetObj
+     * @param array $exculdedProps
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\AbstractDoc
+     */
     public function convertExcludeFieldsTo(AbstractDoc $targetObj, $exculdedProps)
     {
         if (! $targetObj instanceof AbstractDoc) {
@@ -599,80 +559,147 @@ abstract class GenericDoc extends BaseDoc
         return $targetObj;
     }
 
-    protected function refresh()
-    {}
+    /*
+     * |=============================
+     * | Getter, Setter
+     * |
+     * |=============================
+     */
 
     /**
      *
-     * @param int $createdBy
-     * @param string $createdDate
+     * @return boolean
      */
-    protected function initDoc(CommandOptions $options)
-
+    public function getConstructedFromDB()
     {
-        $createdDate = new \DateTime();
-        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $this->setCreatedBy($options->getUserId());
-        $this->setDocStatus(ProcureDocStatus::DRAFT);
+        return $this->constructedFromDB;
+    }
 
-        $this->setIsActive(1);
-        $this->setIsDraft(1);
-        $this->setIsPosted(0);
-
-        $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
-        $this->setRevisionNo(0);
-        $this->setDocVersion(0);
-        $this->setUuid(Uuid::uuid4()->toString());
-        $this->setToken($this->getUuid());
-
-        $c = $options->getCompanyVO();
-        $this->company = $c->getId();
-        $this->setCurrency($this->getDocCurrency());
-        $this->setLocalCurrency($c->getDefaultCurrency());
+    public function getExculdedProps()
+    {
+        return $this->exculdedProps;
     }
 
     /**
      *
-     * @param int $postedBy
-     * @param string $postedDate
+     * @return mixed
      */
-    protected function markAsPosted($postedBy, $postedDate)
+    public function getRefreshed()
     {
-        $this->setLastchangeOn($postedDate);
-        $this->setLastchangeBy($postedBy);
-
-        $this->setIsPosted(1);
-        $this->setIsDraft(0);
-        $this->setIsActive(1);
-        $this->setDocStatus(ProcureDocStatus::POSTED);
+        return $this->refreshed;
     }
 
     /**
      *
-     * @param int $postedBy
-     * @param string $postedDate
+     * @param mixed $refreshed
      */
-    protected function markAsReversed($postedBy, $postedDate)
+    protected function setRefreshed($refreshed)
     {
-        $this->setLastchangeOn($postedDate);
-        $this->setReversalDate($postedDate);
-        $this->setIsReversed(1);
-        $this->setIsDraft(0);
-        $this->setIsPosted(0);
-        $this->setIsActive(1);
-        $this->setDocStatus(ProcureDocStatus::REVERSED);
-        $this->setLastchangeBy($postedBy);
+        $this->refreshed = $refreshed;
     }
 
-    public static function printProps()
+    /**
+     *
+     * @param boolean $constructedFromDB
+     */
+    protected function setConstructedFromDB($constructedFromDB)
     {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-        $props = $reflectionClass->getProperties();
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print sprintf("\n public $%s;", $propertyName);
+        $this->constructedFromDB = $constructedFromDB;
+    }
+
+    /**
+     *
+     * @param multitype:string $exculdedProps
+     */
+    protected function setExculdedProps($exculdedProps)
+    {
+        $this->exculdedProps = $exculdedProps;
+    }
+
+    /*
+     * |=============================
+     * | @deprecated
+     * |
+     * |=============================
+     */
+
+    /**
+     * Ti
+     *
+     * @deprecated
+     * @param GenericRow $row
+     */
+    protected function calculateRowQuantity(GenericRow $row)
+    {
+        trigger_error("Deprecated function called.", E_USER_NOTICE);
+        if ($row->hasErrors()) {
+            return;
+        }
+
+        try {
+            // $this->convertedDocQuantity = $this->getDocQuantity() * $this->getConversionFactor();
+            // $this->convertedDocUnitPrice = $this->getDocUnitPrice() / $this->getConvertedDocQuantity();
+
+            // actuallly converted doc quantity /price.
+            $row->set = $row->getDocQuantity() * $row->getConversionFactor();
+            $row->unitPrice = $row->getDocUnitPrice() / $row->getConversionFactor();
+
+            $netAmount = $row->getDocUnitPrice() * $row->getDocQuantity();
+
+            $discountAmount = 0;
+            if ($row->getDiscountRate() > 0) {
+                $discountAmount = $netAmount * ($row->getDiscountRate() / 100);
+                $this->setDiscountAmount($discountAmount);
+                $netAmount = $netAmount - $discountAmount;
+            }
+
+            $taxAmount = $netAmount * $row->getTaxRate() / 100;
+            $grosAmount = $netAmount + $taxAmount;
+
+            $row->setNetAmount($netAmount);
+            $row->setTaxAmount($taxAmount);
+            $row->setGrossAmount($grosAmount);
+
+            $convertedPurchaseQuantity = $row->getDocQuantity();
+            $convertedPurchaseUnitPrice = $row->getDocUnitPrice();
+
+            $conversionFactor = $row->getConversionFactor();
+
+            $standardCF = 1;
+
+            if ($row->getStandardConvertFactor() > 0) {
+                $standardCF = $this->getStandardConvertFactor();
+            }
+
+            $prRowConvertFactor = $row->getPrRowConvertFactor();
+
+            if ($row->getPrRow() > 0) {
+                $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
+                $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
+                $standardCF = $standardCF * $prRowConvertFactor;
+            }
+
+            // quantity /unit price is converted purchase quantity to clear PR
+
+            // $entity->setQuantity($convertedPurchaseQuantity);
+            // $entity->setUnitPrice($convertedPurchaseUnitPrice);
+
+            $convertedStandardQuantity = $row->getQuantity();
+            $convertedStandardUnitPrice = $row->getUnitPrice();
+
+            if ($row->getItem() > 0) {
+                $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
+                $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
+            }
+
+            // calculate standard quantity
+            $row->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+            $this->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
+
+            $row->setConvertedStandardQuantity($convertedStandardQuantity);
+            $row->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+        } catch (\Exception $e) {
+            $row->addError($e->getMessage());
         }
     }
 }

@@ -74,12 +74,6 @@ abstract class GenericRow extends BaseRow
 
     protected $localGrossAmountVO;
 
-    /*
-     * |=============================
-     * | FUNCTION
-     * |
-     * |=============================
-     */
     private $exculdedProps = [
         "id",
         "uuid",
@@ -94,6 +88,12 @@ abstract class GenericRow extends BaseRow
         "docVersion"
     ];
 
+    /*
+     * |=============================
+     * |Abtract
+     * |
+     * |=============================
+     */
     abstract protected function createVO(GenericDoc $rootDoc);
 
     /**
@@ -105,6 +105,12 @@ abstract class GenericRow extends BaseRow
     public function updateRowStatus()
     {}
 
+    /*
+     * |=============================
+     * | Methods
+     * |
+     * |=============================
+     */
     protected function createWarehouseVO()
     {}
 

@@ -1,12 +1,12 @@
 <?php
-namespace Procure\Domain\PurchaseOrder\Definition;
+namespace Procure\Domain\AccountPayable\Definition;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoDefinition
+class ApDefinition
 {
 
     public static $fields = [
@@ -170,24 +170,5 @@ class PoDefinition
 
     public static $defaultExcludedFields = [];
 
-    public static $defaultIncludedFields = [
-        /*
-         * |=============================
-         * | Procure\Domain\AbstractDoc
-         * |
-         * |=============================
-         */
-
-        "exchangeRate",
-        "remarks",
-        "incoterm",
-        "incotermPlace",
-        "paymentTerm",
-        "pmtTerm",
-        "company",
-        "docCurrency",
-        "incoterm2",
-        "docNumber",
-        "docDate"
-    ];
+    public static $defaultIncludedFields = [];
 }

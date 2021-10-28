@@ -167,7 +167,7 @@ echo $this->doctype();
       </div>
    <!--/.container-->
    <div id="flash_messages" class="global-notice" style="display: none;"><?php
-if ($this->flashMessenger() !== null) {
+if ($this->flashMessenger() != null) {
     echo $this->flashMessenger()->render();
 }
 ?></div>
@@ -175,7 +175,7 @@ if ($this->flashMessenger() !== null) {
 		var flash_message = $( "#flash_messages" ).text();
 		if(flash_message!=''){
 			$( "#flash_messages" ).show();
-			$( "#flash_messages" ).delay(2200).fadeOut(1000);
+			$( "#flash_messages" ).delay(3000).fadeOut(1000);
 		}
 
 		 $('[data-toggle="offcanvas"]').click(function () {

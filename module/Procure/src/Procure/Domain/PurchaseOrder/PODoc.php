@@ -47,6 +47,13 @@ final class PODoc extends GenericPO
     private function __construct()
     {}
 
+    /*
+     * |=============================
+     * | Methods
+     * |
+     * |=============================
+     */
+
     /**
      *
      * {@inheritdoc}
@@ -122,6 +129,9 @@ final class PODoc extends GenericPO
 
             // add row collection
             $rowCollection->add($row);
+
+            // add row collection @todo: need to removed.
+            $this->addRow($row);
         }
 
         $this->setTransactionStatus(ProcureTrxStatus::UNCOMPLETED);
@@ -146,6 +156,16 @@ final class PODoc extends GenericPO
 
         // marked as refreshed.
         $this->refreshed = TRUE;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::makeSnapshot()
+     */
+    public function makeSnapshot()
+    {
+        return GenericSnapshotAssembler::createSnapshotFrom($this, new POSnapshot());
     }
 
     /**
@@ -340,55 +360,6 @@ final class PODoc extends GenericPO
 
     /**
      *
-     * @param mixed $grList
-     */
-    public function addGrId($id)
-    {
-        $collection = $this->getGrCollection();
-        $collection->add($id);
-    }
-
-    public function addGrArray($idArray)
-    {
-        if (count($idArray) == null) {
-            return;
-        }
-
-        foreach ($idArray as $e) {
-            $collection = $this->getGrCollection();
-            $collection->add($e);
-        }
-    }
-
-    public function addApArray($idArray)
-    {
-        if (count($idArray) == null) {
-            return;
-        }
-
-        foreach ($idArray as $e) {
-            $collection = $this->getApCollection();
-            $collection->add($e);
-        }
-    }
-
-    public function addApId($id)
-    {
-        $collection = $this->getApList();
-        $collection->add($id);
-    }
-
-    /**
-     *
-     * @param mixed $apList
-     */
-    public function setApList($apList)
-    {
-        $this->apList = $apList;
-    }
-
-    /**
-     *
      * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\GenericPO::doPost()
      */
@@ -421,32 +392,6 @@ final class PODoc extends GenericPO
         }
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $rep->post($this, true);
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getGrCollection()
-    {
-        if ($this->grCollection == null) {
-            $this->grCollection = new SimpleCollection();
-            return $this->grCollection;
-        }
-        return $this->grCollection;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getApCollection()
-    {
-        if ($this->apCollection == null) {
-            $this->apCollection = new SimpleCollection();
-            return $this->apCollection;
-        }
-        return $this->apCollection;
     }
 
     /**
@@ -507,6 +452,41 @@ final class PODoc extends GenericPO
     protected function raiseEvent()
     {
         // TODO Auto-generated method stub
+    }
+
+    /*
+     * |=============================
+     * | @deprecated
+     * |
+     * |=============================
+     */
+
+    /**
+     *
+     * @deprecated
+     * @return mixed
+     */
+    public function getGrCollection()
+    {
+        if ($this->grCollection == null) {
+            $this->grCollection = new SimpleCollection();
+            return $this->grCollection;
+        }
+        return $this->grCollection;
+    }
+
+    /**
+     *
+     * @deprecated
+     * @return mixed
+     */
+    public function getApCollection()
+    {
+        if ($this->apCollection == null) {
+            $this->apCollection = new SimpleCollection();
+            return $this->apCollection;
+        }
+        return $this->apCollection;
     }
 
     /**
@@ -636,16 +616,6 @@ final class PODoc extends GenericPO
 
     /**
      *
-     * {@inheritdoc}
-     * @see \Procure\Domain\GenericDoc::makeSnapshot()
-     */
-    public function makeSnapshot()
-    {
-        return GenericSnapshotAssembler::createSnapshotFrom($this, new POSnapshot());
-    }
-
-    /**
-     *
      * @deprecated This should be only call when constructing object from storage.
      *            
      * @param PODetailsSnapshot $snapshot
@@ -684,5 +654,66 @@ final class PODoc extends GenericPO
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         return $instance;
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param mixed $grList
+     */
+    public function addGrId($id)
+    {
+        $collection = $this->getGrCollection();
+        $collection->add($id);
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param unknown $idArray
+     */
+    public function addGrArray($idArray)
+    {
+        if (count($idArray) == null) {
+            return;
+        }
+
+        foreach ($idArray as $e) {
+            $collection = $this->getGrCollection();
+            $collection->add($e);
+        }
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param unknown $idArray
+     */
+    public function addApArray($idArray)
+    {
+        if (count($idArray) == null) {
+            return;
+        }
+
+        foreach ($idArray as $e) {
+            $collection = $this->getApCollection();
+            $collection->add($e);
+        }
+    }
+
+    public function addApId($id)
+    {
+        $collection = $this->getApList();
+        $collection->add($id);
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param mixed $apList
+     */
+    public function setApList($apList)
+    {
+        $this->apList = $apList;
     }
 }

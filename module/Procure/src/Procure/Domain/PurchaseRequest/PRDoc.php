@@ -27,6 +27,20 @@ use Webmozart\Assert\Assert;
 final class PRDoc extends GenericPR
 {
 
+    private static $instance = null;
+
+    private function __construct()
+    {
+        // left bank
+    }
+
+    /*
+     * |=============================
+     * | Methods
+     * |
+     * |=============================
+     */
+
     /**
      *
      * {@inheritdoc}
@@ -104,13 +118,6 @@ final class PRDoc extends GenericPR
 
         // marked as refreshed.
         $this->refreshed = TRUE;
-    }
-
-    private static $instance = null;
-
-    private function __construct()
-    {
-        // left bank
     }
 
     protected function cloneDoc(CommandOptions $options)

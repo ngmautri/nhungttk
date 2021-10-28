@@ -22,93 +22,6 @@ abstract class BaseDoc extends AbstractDoc
 
     private $generatorInjected;
 
-    /**
-     *
-     * @return mixed
-     */
-    public function getGeneratorInjected()
-    {
-        return $this->generatorInjected;
-    }
-
-    /**
-     *
-     * @param mixed $generatorInjected
-     */
-    private function setGeneratorInjected($generatorInjected)
-    {
-        $this->generatorInjected = $generatorInjected;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRowCollection()
-    {
-        if ($this->rowCollection == null) {
-            $this->rowCollection = new ArrayCollection();
-        }
-        return $this->rowCollection;
-    }
-
-    /**
-     *
-     * @param mixed $rowCollection
-     */
-    protected function setRowCollection($rowCollection)
-    {
-        $this->rowCollection = $rowCollection;
-    }
-
-    /**
-     *
-     * @return \Generator
-     */
-    public function getRowsGenerator()
-    {
-        return $this->rowsGenerator;
-    }
-
-    /**
-     *
-     * @param \Generator $rowsGenerator
-     */
-    public function setRowsGenerator(\Generator $rowsGenerator = null)
-    {
-        if ($this->getGeneratorInjected()) {
-            return;
-        }
-        $this->rowsGenerator = $rowsGenerator;
-
-        $this->generatorInjected = true;
-    }
-
-    public function setLazyRowSnapshotCollectionReference($lazyRowSnapshotCollectionReference)
-    {
-        $this->lazyRowSnapshotCollectionReference = $lazyRowSnapshotCollectionReference;
-    }
-
-    /**
-     *
-     * @return NULL|ArrayCollection
-     */
-    public function getLazyRowSnapshotCollection()
-    {
-        $ref = $this->getLazyRowSnapshotCollectionReference();
-        if ($ref == null) {
-            return null;
-        }
-
-        $this->lazyRowSnapshotCollection = $ref();
-        return $this->lazyRowSnapshotCollection;
-    }
-
-    public function getDocRowsCount()
-    {
-        return count($this->getDocRows());
-    }
-
     // Addtional attributes
     // =========================
     protected $pictureList;
@@ -214,6 +127,100 @@ abstract class BaseDoc extends AbstractDoc
     protected $docCurrencyId;
 
     protected $localCurrencyId;
+
+    /*
+     * |=============================
+     * | Getter Setter
+     * |
+     * |=============================
+     */
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGeneratorInjected()
+    {
+        return $this->generatorInjected;
+    }
+
+    /**
+     *
+     * @param mixed $generatorInjected
+     */
+    private function setGeneratorInjected($generatorInjected)
+    {
+        $this->generatorInjected = $generatorInjected;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowCollection()
+    {
+        if ($this->rowCollection == null) {
+            $this->rowCollection = new ArrayCollection();
+        }
+        return $this->rowCollection;
+    }
+
+    /**
+     *
+     * @param mixed $rowCollection
+     */
+    protected function setRowCollection($rowCollection)
+    {
+        $this->rowCollection = $rowCollection;
+    }
+
+    /**
+     *
+     * @return \Generator
+     */
+    public function getRowsGenerator()
+    {
+        return $this->rowsGenerator;
+    }
+
+    /**
+     *
+     * @param \Generator $rowsGenerator
+     */
+    public function setRowsGenerator(\Generator $rowsGenerator = null)
+    {
+        if ($this->getGeneratorInjected()) {
+            return;
+        }
+        $this->rowsGenerator = $rowsGenerator;
+
+        $this->generatorInjected = true;
+    }
+
+    public function setLazyRowSnapshotCollectionReference($lazyRowSnapshotCollectionReference)
+    {
+        $this->lazyRowSnapshotCollectionReference = $lazyRowSnapshotCollectionReference;
+    }
+
+    /**
+     *
+     * @return NULL|ArrayCollection
+     */
+    public function getLazyRowSnapshotCollection()
+    {
+        $ref = $this->getLazyRowSnapshotCollectionReference();
+        if ($ref == null) {
+            return null;
+        }
+
+        $this->lazyRowSnapshotCollection = $ref();
+        return $this->lazyRowSnapshotCollection;
+    }
+
+    public function getDocRowsCount()
+    {
+        return count($this->getDocRows());
+    }
 
     /**
      *

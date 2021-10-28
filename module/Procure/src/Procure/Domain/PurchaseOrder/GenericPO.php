@@ -354,6 +354,11 @@ abstract class GenericPO extends BaseDoc
         return $this;
     }
 
+    /**
+     *
+     * @deprecated
+     * @return NULL|object
+     */
     public function makeDetailsDTO()
     {
         $dto = new PoDetailsDTO();
@@ -370,6 +375,11 @@ abstract class GenericPO extends BaseDoc
         return $dto;
     }
 
+    /**
+     *
+     * @deprecated
+     * @return NULL|object
+     */
     public function makeHeaderDTO()
     {
         $dto = new PoDetailsDTO();
@@ -377,6 +387,12 @@ abstract class GenericPO extends BaseDoc
         return $dto;
     }
 
+    /**
+     *
+     * @deprecated
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::makeDTOForGrid()
+     */
     public function makeDTOForGrid()
     {
         $dto = new PoDetailsDTO();
@@ -393,10 +409,5 @@ abstract class GenericPO extends BaseDoc
 
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
-    }
-
-    public function setRowsOutput($rowsOutput)
-    {
-        $this->rowsOutput = $rowsOutput;
     }
 }

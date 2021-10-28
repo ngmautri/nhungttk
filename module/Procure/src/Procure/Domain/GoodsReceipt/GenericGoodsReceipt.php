@@ -9,7 +9,7 @@ use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GenericGoodsReceipt extends GenericGR
 {

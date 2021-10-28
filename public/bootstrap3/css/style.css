@@ -121,51 +121,9 @@ ul.pagination li a.active {
 	border: 1px solid #4CAF50;
 }
 
-ul
 
-
-.pagination
-
- 
-
-li
-
- 
-
-a
-
-
-:hover
-
-
-:not
-
- 
-
-(
-.active
-
- 
-
-)
-{
-background-color
-
-
-:
-
- 
-
-#ddd
-
-
-;
-}
 <!--
-jquery UI -->.dialogClass a:hover {
-	background-color: #0080c0;
-	color: #ffffff;
-}
+
 
 .dialogClass table a {
 	color: #0000ff;
@@ -193,9 +151,9 @@ select.ui-datepicker-month, select.ui-datepicker-year {
 	font-size: 8px;
 }
 
-/* #global-notice{position:absolute; background: #FFFFCC; top:55px; left: 40%;
+ #global-notice{position:absolute; background: #FFFFCC; top:55px; left: 40%;
 border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:bold; font-size:10pt 
- */
+ }
 
 /* #global-notice{
 	
@@ -219,16 +177,18 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
     -moz-box-shadow: 4px 4px 4px #000;
     z-index:99999;
  } */
+ 
+ 
 .global-notice {
 	background-color: #FFFFCC;
 	position: absolute;
 	border: 1px #999999 solid;
-	/*   right: 20px;
+	/*right: 250px;
     top: 60px; */
 	right: 20px;
 	bottom: 50px;
 	color: black;
-	padding: 25px 15px 25px 0px;
+	padding: 25px;
 	-webkit-border-top-right-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
@@ -243,12 +203,14 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
 	z-index: 99999;
 }
 
+
+/*
 #global-notice {
 	background-color: #FFFFCC;
 	position: absolute;
 	border: 1px #999999 solid;
-	/*   right: 20px;
-    top: 60px; */
+	right: 20px;
+    top: 60px; 
 	right: 20px;
 	bottom: 50px;
 	color: black;
@@ -266,6 +228,7 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
 	-moz-box-shadow: 4px 4px 4px #000;
 	z-index: 99999;
 }
+*/
 
 .form-group.required .control-label:after {
 	color: #d00;
@@ -277,10 +240,10 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
 	font-weight: normal;
 	font-size: 9px; */
 }
-
-/* .global-notice{position:absolute; background: #FFFFCC; top:55px; left: 40%;
+/*
+ .global-notice{position:absolute; background: #00ff00; top:55px; left: 40%;
 border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:bold; font-size:10pt  }
- */
+*/
 
 /**-----*/
 .demo-gallery>ul {

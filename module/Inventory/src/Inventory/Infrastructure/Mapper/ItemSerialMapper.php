@@ -10,7 +10,7 @@ use Inventory\Domain\Item\Variant\VariantSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ItemSerialMapper
 {

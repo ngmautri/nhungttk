@@ -1,6 +1,8 @@
 <?php
 namespace InventoryTest\CodeGenerate;
 
+use Application\Application\Contracts\GenericSnapshotAssembler;
+use Inventory\Domain\Item\Serial\BaseSerial;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
@@ -18,7 +20,7 @@ class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
             // $result = GenericSnapshotAssembler::findMissingProps(NmtProcurePoRow::class, AbstractRow::class);
 
             // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(ChartSnapshot::class);
-            // $result = GenericSnapshotAssembler::createAllSnapshotProps(GenericRow::class);
+            $result = GenericSnapshotAssembler::createAllSnapshotProps(BaseSerial::class);
             // result = GenericSnapshotAssembler::createAllSnapshotPropsExclude(PRRow::class, RowSnapshot::class);
 
             // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(PORow::class);

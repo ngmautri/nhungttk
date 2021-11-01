@@ -16,7 +16,12 @@ use Inventory\Infrastructure\Persistence\SQL\Filter\ItemSerialSqlFilter;
 class ItemSerialQueryRepositoryImpl extends AbstractDoctrineRepository implements ItemSerialQueryRepositoryInterface
 {
 
-    public function getlist(ItemSerialSqlFilter $filter)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\Serial\Repository\ItemSerialQueryRepositoryInterface::getList()
+     */
+    public function getList(ItemSerialSqlFilter $filter)
     {
         if ($filter == null) {
             throw new \InvalidArgumentException('Filter not given');
@@ -25,7 +30,12 @@ class ItemSerialQueryRepositoryImpl extends AbstractDoctrineRepository implement
         return ItemSerialHelper::createRowsGenerator($this->getDoctrineEM(), $rows);
     }
 
-    public function getlistTotal(ItemSerialSqlFilter $filter)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\Serial\Repository\ItemSerialQueryRepositoryInterface::getListTotal()
+     */
+    public function getListTotal(ItemSerialSqlFilter $filter)
     {
         if ($filter == null) {
             throw new \InvalidArgumentException('Filter not given');

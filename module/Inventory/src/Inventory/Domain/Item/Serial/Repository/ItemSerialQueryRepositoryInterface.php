@@ -1,7 +1,8 @@
 <?php
-namespace Inventory\Domain\Item\Repository;
+namespace Inventory\Domain\Item\Serial\Repository;
 
 use Inventory\Domain\Contracts\Repository\QueryRepositoryInterface;
+use Inventory\Infrastructure\Persistence\SQL\Filter\ItemSerialSqlFilter;
 
 /**
  *
@@ -22,4 +23,8 @@ Interface ItemSerialQueryRepositoryInterface extends QueryRepositoryInterface
     public function getOfInvoice($invoiceId);
 
     public function getOfPOGoodReceipt($grId);
+
+    public function getList(ItemSerialSqlFilter $filter);
+
+    public function getListTotal(ItemSerialSqlFilter $filter);
 }

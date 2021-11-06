@@ -44,6 +44,7 @@ union
 
         $f1 = 'AND nmt_procure_gr_row.is_posted = 1';
         $f2 = sprintf('AND nmt_procure_po.id = %s', $filter->getPoId());
+
         $sql1 = sprintf(PoHeaderSQL::PO_GR_SQL, $f1, $f2);
 
         $f1 = ' AND fin_vendor_invoice_row.is_posted = 1';
@@ -51,6 +52,16 @@ union
         $sql2 = sprintf(PoHeaderSQL::PO_AP_SQL, $f1, $f2);
 
         $sql = sprintf($sql, $sql1, $sql2);
+
+        if ($filter->getLimit() > 0) {
+            $sql = $sql . " LIMIT " . $filter->getLimit();
+        }
+
+        if ($filter->getOffset() > 0) {
+            $sql = $sql . " OFFSET " . $filter->getOffset();
+        }
+
+        // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
@@ -71,6 +82,46 @@ union
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    public static function getDocMapTotalFor(EntityManager $doctrineEM, PoHeaderReportSqlFilter $filter)
+    {
+        if (! $filter instanceof PoHeaderReportSqlFilter) {
+            return null;
+        }
+
+        if ($filter->getPoId() == null) {
+            return null;
+        }
+
+        $sql = "%s
+union
+            
+%s";
+
+        $f1 = 'AND nmt_procure_gr_row.is_posted = 1';
+        $f2 = sprintf('AND nmt_procure_po.id = %s', $filter->getPoId());
+
+        $sql1 = sprintf(PoHeaderSQL::PO_GR_SQL, $f1, $f2);
+
+        $f1 = ' AND fin_vendor_invoice_row.is_posted = 1';
+        $f2 = sprintf(' AND nmt_procure_po.id = %s', $filter->getPoId());
+        $sql2 = sprintf(PoHeaderSQL::PO_AP_SQL, $f1, $f2);
+
+        $sql = sprintf($sql, $sql1, $sql2);
+
+        $f = "select count(*) as total_row from (%s) as t ";
+
+        $sql = sprintf($f, $sql);
+
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            $rsm->addScalarResult("total_row", "total_row");
+            return $query->getSingleScalarResult();
         } catch (NoResultException $e) {
             return null;
         }

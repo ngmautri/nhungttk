@@ -4,7 +4,7 @@ namespace Application\Application\Service\Document\Spreadsheet;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class DefaultExcelBuilder extends AbstractBuilder
 {

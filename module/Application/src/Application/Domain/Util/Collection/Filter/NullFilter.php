@@ -8,18 +8,8 @@ use Application\Domain\Util\Collection\Contracts\FilterInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DefaultFilter implements FilterInterface
+class NullFilter implements FilterInterface
 {
-
-    private $offset;
-
-    private $limit;
-
-    public function __construct($offset, $limit)
-    {
-        $this->offset = $offset;
-        $this->limit = $limit;
-    }
 
     public function getLimit()
     {

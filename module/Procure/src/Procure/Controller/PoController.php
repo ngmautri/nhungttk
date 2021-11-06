@@ -80,14 +80,25 @@ class PoController extends ProcureCRUDController
 
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
-        $docMapCollection = $this->getProcureService()->getDocMap($id);
+        $page = $this->params()->fromQuery('page');
+        $perPage = $this->params()->fromQuery('perPage');
+
+        if ($page == null) {
+            $page = 1;
+        }
+
+        if ($perPage == null) {
+            $perPage = 1;
+        }
+
+        $collectionRender = $this->getProcureService()->getDocMapCollectionRender($id, $token, $page, $perPage);
 
         $viewModel = new ViewModel(array(
             'action' => $action,
             'form_action' => $form_action,
             'form_title' => $form_title,
             'redirectUrl' => null,
-            'docMapCollection' => $docMapCollection,
+            'collectionRender' => $collectionRender,
             'companyVO' => $this->getCompanyVO()
         ));
 

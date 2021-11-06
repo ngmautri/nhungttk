@@ -31,5 +31,5 @@ Interface POQueryRepositoryInterface
 
     public function getRootEntityByTokenId($id, $token = null);
 
-    public function getDocMap($id, $token = null);
+    public function getDocMap($id, $token = null, $offset = null, $limit = null);
 }

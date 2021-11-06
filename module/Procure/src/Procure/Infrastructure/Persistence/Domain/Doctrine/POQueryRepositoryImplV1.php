@@ -30,10 +30,12 @@ class POQueryRepositoryImplV1 extends AbstractDoctrineRepository implements POQu
      * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getDocMap()
      */
-    public function getDocMap($id, $token = null)
+    public function getDocMap($id, $token = null, $offset = null, $limit = null)
     {
         $filter = new PoHeaderReportSqlFilter();
         $filter->setPoId($id);
+        $filter->setLimit($limit);
+        $filter->setOffset($offset);
         $results = PoHeaderHelper::getDocMapFor($this->getDoctrineEM(), $filter);
 
         if ($results == null) {
@@ -56,6 +58,13 @@ class POQueryRepositoryImplV1 extends AbstractDoctrineRepository implements POQu
             $dto->setDocCreatedDate($result["doc_created_date"]);
             yield $dto;
         }
+    }
+
+    public function getDocMapTotal($id, $token = null, $offset = null, $limit = null)
+    {
+        $filter = new PoHeaderReportSqlFilter();
+        $filter->setPoId($id);
+        return PoHeaderHelper::getDocMapTotalFor($this->getDoctrineEM(), $filter);
     }
 
     /**

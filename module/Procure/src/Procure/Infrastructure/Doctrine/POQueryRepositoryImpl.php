@@ -20,9 +20,6 @@ use Procure\Infrastructure\Mapper\PoMapper;
 class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQueryRepositoryInterface
 {
 
-    public function getDocMap($id, $token = null)
-    {}
-
     /**
      *
      * {@inheritdoc}
@@ -436,5 +433,8 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
     }
 
     public function getRootEntityByTokenId($id, $token = null)
+    {}
+
+    public function getDocMap($id, $token = null, $offset = null, $limit = null)
     {}
 }

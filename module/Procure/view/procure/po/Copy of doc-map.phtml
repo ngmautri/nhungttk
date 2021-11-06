@@ -1,0 +1,20 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
+use Procure\Application\Service\PO\Export\ExportDocMapAsHtmlTable;
+
+$url = sprintf('/inventory/item-variant/list?item_id=%s', "");
+?>
+    <h5>Releated Documents</h5>
+
+    <div id="variant_div">
+
+        <?php
+$export = new ExportDocMapAsHtmlTable();
+echo $export->execute($docMapCollection);
+?>
+    </div>

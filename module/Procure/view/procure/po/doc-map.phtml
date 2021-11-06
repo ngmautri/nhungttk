@@ -3,18 +3,21 @@
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-use Procure\Application\Service\PO\Export\ExportDocMapAsHtmlTable;
 
-$url = sprintf('/inventory/item-variant/list?item_id=%s', "");
+/**
+ *
+ * @var DocMapRenderAsHtmlTable $collectionRender
+ */
+use Procure\Application\Service\PO\Render\DocMapRenderAsHtmlTable;
 ?>
-    <h5>Releated Documents</h5>
-
-    <div id="variant_div">
+  
+    <div id="doc_map_div">
+	  <h5>Releated Documents</h5>
 
         <?php
-$export = new ExportDocMapAsHtmlTable();
-echo $export->execute($docMapCollection);
-?>
+        echo $collectionRender->execute();
+        echo $collectionRender->printAjaxPaginator();
+        ?>
     </div>

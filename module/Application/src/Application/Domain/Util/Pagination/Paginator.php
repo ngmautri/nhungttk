@@ -9,36 +9,74 @@ namespace Application\Domain\Util\Pagination;
 class Paginator
 {
 
-    // ~ Attribute =========================================================================
-    private $maxInPage = 0;
-
-    private $minInPage = 0;
-
-    private $maxInPageSet = 0;
-
-    private $minInPageSet = 0;
+    /*
+     * |=============================
+     * | Input
+     * |
+     * |=============================
+     */
+    private $totalResults;
 
     private $page = 1;
 
-    private $pageSet;
-
-    private $step = 5;
+    private $resultsPerPage = 10;
 
     private $pagePerPageSet = 10;
 
-    private $resultsPerPage = 10;
+    private $step = 5;
 
-    private $totalPages = 1;
+    /*
+     * |=============================
+     * | to calculate
+     * |
+     * |=============================
+     */
+    private $totalPages;
 
-    private $totalPageSets = 10;
+    private $minInPage = 0;
 
-    private $totalResults;
+    private $maxInPage = 0;
 
-    // ~ Contructor ========================================================================
-    function __construct($totalResults, $page, $resultsPerPage)
+    private $minInPageSet = 0;
+
+    private $maxInPageSet = 0;
+
+    /*
+     * |=============================
+     * | OTher
+     * |
+     * |=============================
+     */
+    private $pageSet;
+
+    private $totalPageSets = 20;
+
+    /*
+     * |=============================
+     * | For printing
+     * |
+     * |=============================
+     */
+    private $baseUrl;
+
+    private $urlConnectorSymbol;
+
+    private $displayHTMLDiv;
+
+    /*
+     * |=============================
+     * |Constructor
+     * |
+     * |=============================
+     */
+    function __construct($totalResults, $page = null, $resultsPerPage = null)
     {
         if ($page == null) {
             $page = 1;
+        }
+
+        if ($resultsPerPage == null) {
+            $resultsPerPage = 10;
         }
 
         $this->totalResults = $totalResults;
@@ -47,17 +85,12 @@ class Paginator
         $this->_init();
     }
 
-    public function getLimit()
-    {
-        return ($this->getMaxInPage() - $this->getMinInPage()) + 1;
-    }
-
-    public function getOffset()
-    {
-        return $this->getMinInPage() - 1;
-    }
-
-    // ~ Methods ===========================================================================
+    /*
+     * |=============================
+     * |Methods
+     * |
+     * |=============================
+     */
 
     /**
      *
@@ -113,134 +146,81 @@ class Paginator
 
     public function __toString()
     {
+        $f = 'Total result: %s, total pages:%s, $result per page:%s, $result per pageset:%s';
         return '[TotalResults:' . $this->totalResults . ',TotalPages:' . $this->totalPages . ',Page:' . $this->page . ',MinInPage:' . $this->minInPage . ',MaxInPage:' . $this->maxInPage . ',MinInPageSet:' . $this->minInPageSet . ',maxInPageSet:' . $this->maxInPageSet . ']';
     }
 
-    /**
-     *
-     * @return number
+    /*
+     * |=============================
+     * |Render
+     * |
+     * |=============================
      */
-    public function getMaxInPage()
+    public function printPaginator()
     {
-        return $this->maxInPage;
+        return PaginatorRender::createPaginator($this, $this->getBaseUrl(), $this->getUrlConnectorSymbol());
     }
 
-    /**
-     *
-     * @param number $maxInPage
-     */
-    public function setMaxInPage($maxInPage)
+    public function printAjaxPaginator()
     {
-        $this->maxInPage = $maxInPage;
+        return PaginatorRender::createPaginatorAjax($this, $this->getBaseUrl(), $this->getUrlConnectorSymbol(), $this->getDisplayHTMLDiv());
     }
 
-    /**
-     *
-     * @return number
-     */
-    public function getMinInPage()
+    public function printCustomPaginator($baseUrl, $connector_symbol)
     {
-        return $this->minInPage;
+        return PaginatorRender::createPaginator($this, $baseUrl, $connector_symbol);
     }
 
-    /**
-     *
-     * @param number $minInPage
-     */
-    public function setMinInPage($minInPage)
+    public function printCustomAjaxPaginator($baseUrl, $connector_symbol, $result_div)
     {
-        $this->minInPage = $minInPage;
+        return PaginatorRender::createPaginatorAjax($this, $baseUrl, $connector_symbol, $result_div);
     }
 
-    /**
-     *
-     * @return number
+    /*
+     * |=============================
+     * |Offset and limit
+     * |
+     * |=============================
      */
-    public function getMaxInPageSet()
+    public function getLimit()
     {
-        return $this->maxInPageSet;
+        if ($this->getTotalPages() == 1) {
+            return null;
+        }
+        return ($this->getMaxInPage() - $this->getMinInPage()) + 1;
     }
 
-    /**
-     *
-     * @param number $maxInPageSet
-     */
-    public function setMaxInPageSet($maxInPageSet)
+    public function getOffset()
     {
-        $this->maxInPageSet = $maxInPageSet;
+        if ($this->getTotalPages() == 1) {
+            return null;
+        }
+        return $this->getMinInPage() - 1;
     }
 
+    /*
+     * |=============================
+     * |Getter and Setter
+     * |
+     * |=============================
+     */
     /**
      *
-     * @return number
+     * @return mixed
      */
-    public function getMinInPageSet()
+    public function getTotalResults()
     {
-        return $this->minInPageSet;
+        return $this->totalResults;
     }
 
-    /**
-     *
-     * @param number $minInPageSet
-     */
-    public function setMinInPageSet($minInPageSet)
-    {
-        $this->minInPageSet = $minInPageSet;
-    }
-
-    /**
-     *
-     * @return int
-     */
     public function getPage()
     {
         return $this->page;
     }
 
-    /**
-     *
-     * @param
-     *            Ambigous <number, unknown> $page
-     */
-    public function setPage($page)
+    public function getResultsPerPage()
     {
-        $this->page = $page;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPageSet()
-    {
-        return $this->pageSet;
-    }
-
-    /**
-     *
-     * @param mixed $pageSet
-     */
-    public function setPageSet($pageSet)
-    {
-        $this->pageSet = $pageSet;
-    }
-
-    /**
-     *
-     * @return number
-     */
-    public function getStep()
-    {
-        return $this->step;
-    }
-
-    /**
-     *
-     * @param number $step
-     */
-    public function setStep($step)
-    {
-        $this->step = $step;
+        return $this->resultsPerPage;
     }
 
     /**
@@ -254,30 +234,11 @@ class Paginator
 
     /**
      *
-     * @param number $pagePerPageSet
+     * @return number
      */
-    public function setPagePerPageSet($pagePerPageSet)
+    public function getStep()
     {
-        $this->pagePerPageSet = $pagePerPageSet;
-    }
-
-    /**
-     *
-     * @return int
-     */
-    public function getResultsPerPage()
-    {
-        return $this->resultsPerPage;
-    }
-
-    /**
-     *
-     * @param
-     *            Ambigous <number, unknown> $resultsPerPage
-     */
-    public function setResultsPerPage($resultsPerPage)
-    {
-        $this->resultsPerPage = $resultsPerPage;
+        return $this->step;
     }
 
     /**
@@ -291,11 +252,47 @@ class Paginator
 
     /**
      *
-     * @param number $totalPages
+     * @return number
      */
-    public function setTotalPages($totalPages)
+    public function getMaxInPage()
     {
-        $this->totalPages = $totalPages;
+        return $this->maxInPage;
+    }
+
+    /**
+     *
+     * @return number
+     */
+    public function getMinInPage()
+    {
+        return $this->minInPage;
+    }
+
+    /**
+     *
+     * @return number
+     */
+    public function getMaxInPageSet()
+    {
+        return $this->maxInPageSet;
+    }
+
+    /**
+     *
+     * @return number
+     */
+    public function getMinInPageSet()
+    {
+        return $this->minInPageSet;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPageSet()
+    {
+        return $this->pageSet;
     }
 
     /**
@@ -305,6 +302,107 @@ class Paginator
     public function getTotalPageSets()
     {
         return $this->totalPageSets;
+    }
+
+    /**
+     *
+     * @param mixed $totalResults
+     */
+    public function setTotalResults($totalResults)
+    {
+        $this->totalResults = $totalResults;
+    }
+
+    /**
+     *
+     * @param
+     *            Ambigous <number, string> $page
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+
+    /**
+     *
+     * @param
+     *            Ambigous <number, string> $resultsPerPage
+     */
+    public function setResultsPerPage($resultsPerPage)
+    {
+        $this->resultsPerPage = $resultsPerPage;
+    }
+
+    /**
+     *
+     * @param number $pagePerPageSet
+     */
+    public function setPagePerPageSet($pagePerPageSet)
+    {
+        $this->pagePerPageSet = $pagePerPageSet;
+    }
+
+    /**
+     *
+     * @param number $step
+     */
+    public function setStep($step)
+    {
+        $this->step = $step;
+    }
+
+    /**
+     *
+     * @param number $totalPages
+     */
+    public function setTotalPages($totalPages)
+    {
+        $this->totalPages = $totalPages;
+    }
+
+    /**
+     *
+     * @param number $maxInPage
+     */
+    public function setMaxInPage($maxInPage)
+    {
+        $this->maxInPage = $maxInPage;
+    }
+
+    /**
+     *
+     * @param number $minInPage
+     */
+    public function setMinInPage($minInPage)
+    {
+        $this->minInPage = $minInPage;
+    }
+
+    /**
+     *
+     * @param number $maxInPageSet
+     */
+    public function setMaxInPageSet($maxInPageSet)
+    {
+        $this->maxInPageSet = $maxInPageSet;
+    }
+
+    /**
+     *
+     * @param number $minInPageSet
+     */
+    public function setMinInPageSet($minInPageSet)
+    {
+        $this->minInPageSet = $minInPageSet;
+    }
+
+    /**
+     *
+     * @param mixed $pageSet
+     */
+    public function setPageSet($pageSet)
+    {
+        $this->pageSet = $pageSet;
     }
 
     /**
@@ -320,17 +418,53 @@ class Paginator
      *
      * @return mixed
      */
-    public function getTotalResults()
+    public function getBaseUrl()
     {
-        return $this->totalResults;
+        return $this->baseUrl;
     }
 
     /**
      *
-     * @param mixed $totalResults
+     * @return mixed
      */
-    public function setTotalResults($totalResults)
+    public function getUrlConnectorSymbol()
     {
-        $this->totalResults = $totalResults;
+        return $this->urlConnectorSymbol;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDisplayHTMLDiv()
+    {
+        return $this->displayHTMLDiv;
+    }
+
+    /**
+     *
+     * @param mixed $baseUrl
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        $this->baseUrl = $baseUrl;
+    }
+
+    /**
+     *
+     * @param mixed $urlConnectorSymbol
+     */
+    public function setUrlConnectorSymbol($urlConnectorSymbol)
+    {
+        $this->urlConnectorSymbol = $urlConnectorSymbol;
+    }
+
+    /**
+     *
+     * @param mixed $displayHTMLDiv
+     */
+    public function setDisplayHTMLDiv($displayHTMLDiv)
+    {
+        $this->displayHTMLDiv = $displayHTMLDiv;
     }
 }

@@ -2,6 +2,7 @@
 namespace Procure\Application\Service\PO;
 
 use Application\Domain\Shared\Command\CommandOptions;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Service\AbstractService;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Application\Service\Contracts\PoServiceInterface;
@@ -17,6 +18,7 @@ use Procure\Application\Service\PO\Output\PoSaveAsPdf;
 use Procure\Application\Service\PO\Output\Pdf\PoPdfBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoExcelBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoOpenOfficeBuilder;
+use Procure\Application\Service\PO\Render\DocMapRenderAsHtmlTable;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
 use Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface;
@@ -35,6 +37,32 @@ class POService extends AbstractService implements PoServiceInterface
     private $cmdRepository;
 
     private $queryRepository;
+
+    public function getDocMapCollectionRender($id, $token, $page, $resultPerPage = 10)
+    {
+        $rep = new POQueryRepositoryImplV1($this->getDoctrineEM());
+
+        // create Paginator
+        $totalResults = $rep->getDocMapTotal($id);
+        $paginator = new Paginator($totalResults, $page, $resultPerPage);
+
+        // var_dump($paginator);
+
+        $f = "/procure/po/doc-map?entity_id=%s&entity_token=%s";
+        $url = sprintf($f, $id, $token);
+        $paginator->setBaseUrl($url);
+        $paginator->setUrlConnectorSymbol("&");
+        $paginator->setDisplayHTMLDiv("doc_map_div");
+
+        // create collection
+        $collection = $rep->getDocMap($id, $token, $paginator->getOffset(), $paginator->getLimit());
+
+        // create render
+        $render = new DocMapRenderAsHtmlTable($totalResults, $collection);
+        $render->setPaginator($paginator);
+
+        return $render;
+    }
 
     public function getDocMap($id)
     {

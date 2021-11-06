@@ -1,19 +1,12 @@
 <?php
-namespace Application\Domain\Util\Collection\Export;
-
-use Application\Domain\Util\Collection\GenericCollection;
-use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
-use Application\Domain\Util\Collection\Contracts\FilterInterface;
-use Application\Domain\Util\Collection\Filter\NullFilter;
-use Application\Domain\Util\Collection\Formatter\NullFormatter;
-use Traversable;
+namespace Application\Domain\Util\Collection\Render;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractExportAsHtmlTable extends AbstractExport
+abstract class AbstractRenderAsHtmlTable extends AbstractCollectionRender
 {
 
     private $totalResults;
@@ -47,29 +40,12 @@ abstract class AbstractExportAsHtmlTable extends AbstractExport
     /**
      *
      * {@inheritdoc}
-     * @see \Application\Domain\Util\Collection\Contracts\ExportInterface::execute()
+     * @see \Application\Domain\Util\Collection\Contracts\CollectionRenderInterface::execute()
      */
-    public function execute(Traversable $collection, FilterInterface $filter = null, ElementFormatterInterface $formatter = null)
+    public function execute()
     {
 
-        /**
-         *
-         * @var GenericCollection $collection;
-         */
-        if (empty($collection)) {
-            return "Nothing found!";
-        }
-
-        if ($formatter == null) {
-            $formatter = new NullFormatter();
-        }
-
-        if ($filter == null) {
-            $filter = new NullFilter();
-        }
-
         // create Message
-
         $tableHead = "<tr>\n";
         $tableHead = $tableHead . "<td>#</td>\n"; // default
         $tableHead = $tableHead . $this->createHeaderCell();
@@ -78,27 +54,21 @@ abstract class AbstractExportAsHtmlTable extends AbstractExport
         $tableBody = '';
         $n = 0;
 
-        // $paginator = new Paginator(count($collection), $this->getPage(), $this->getResultsPerPage());
-        // $pagination = FormHelper::createPaginatorAjax($this->getBaseUrl(), $paginator, "&", 'variant_div');
-
-        // $offset = $paginator->getOffset();
-        // $limit = $paginator->getLimit();
-
-        foreach ($collection as $element) {
+        foreach ($this->getCollection() as $element) {
 
             if ($element == null) {
                 continue;
             }
-            $element = $formatter->format($element);
+            $element = $this->getFormatter()->format($element);
             $n ++;
 
             $tableBody = $tableBody . "<tr>\n";
-            $tableBody = $tableBody . sprintf("<td>%s</td>\n", $n + $filter->getOffset()); // default
+            $tableBody = $tableBody . sprintf("<td>%s</td>\n", $n + $this->getFilter()->getOffset()); // default
             $tableBody = $tableBody . $this->createRowCell($element);
             $tableBody = $tableBody . "</tr>";
         }
 
-        $tmp = sprintf('%s found!', $n);
+        $tmp = sprintf('%s found!', $this->getTotalResults());
         $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;">%s</div>', $tmp);
 
         return $result_msg . sprintf($this->tableHtml, $this->getTableId(), $this->getTableClass(), $this->getTableStyle(), $tableHead, $tableBody);

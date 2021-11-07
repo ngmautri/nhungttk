@@ -3,6 +3,7 @@ namespace Inventory\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Contracts\FormActions;
+use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
 use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtInventorySerial;
 use Inventory\Application\Reporting\ItemSerial\ItemSerialReporter;
@@ -28,6 +29,102 @@ class ItemSerialController extends AbstractGenericController
 
     /**
      *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function list1Action()
+    {
+        $this->layout("layout/user/ajax");
+        $form_action = "/inventory/item-serial/list1";
+        $form_title = "Item Serial Map";
+        $action = FormActions::SHOW;
+
+        $viewTemplete = "/inventory/item-serial/list1";
+
+        $request = $this->getRequest();
+
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        $page = $this->params()->fromQuery('page');
+        $perPage = $this->params()->fromQuery('perPage');
+
+        if ($page == null) {
+            $page = 1;
+        }
+
+        if ($perPage == null) {
+            $perPage = 15;
+        }
+
+        $filter = new ItemSerialSqlFilter();
+        $filter->setItemId($id);
+
+        $collectionRender = $this->getItemSerialReporter()->getItemSerialCollectionRender($filter, $page, $perPage, SupportedRenderType::PARAM_QUERY);
+
+        if ($collectionRender == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $viewModel = new ViewModel(array(
+            'action' => $action,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'collectionRender' => $collectionRender,
+            'companyVO' => $this->getCompanyVO()
+        ));
+
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
+
+    public function girdAction()
+    {
+        $itemId = null;
+        if (isset($_GET['item_id'])) {
+            $itemId = (int) $_GET['item_id'];
+        }
+
+        if (isset($_GET["pq_curpage"])) {
+            $page = $_GET["pq_curpage"];
+        } else {
+            $page = 1;
+        }
+
+        if (isset($_GET["pq_rpp"])) {
+            $perPage = $_GET["pq_rpp"];
+        } else {
+            $perPage = 100;
+        }
+
+        $filter = new ItemSerialSqlFilter();
+        $filter->setItemId($itemId);
+
+        $collectionRender = $this->getItemSerialReporter()->getItemSerialCollectionRender($filter, $page, $perPage, SupportedRenderType::AS_ARRAY);
+
+        if ($collectionRender == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $a_json_final['data'] = $collectionRender->execute();
+        $a_json_final['totalRecords'] = $collectionRender->getPaginator()->getTotalResults();
+        $a_json_final['curPage'] = $page;
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
+
+    /*
+     * |=============================
+     * |Mapping Serial
+     * |
+     * |=============================
+     */
+
+    /**
+     *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
@@ -185,82 +282,7 @@ class ItemSerialController extends AbstractGenericController
 
     /**
      *
-     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
-     */
-    public function assignAction()
-    {
-        $request = $this->getRequest();
-
-        if ($request->isPost()) {
-
-            $target_id = (int) $request->getPost('target_id');
-            $token = $request->getPost('token');
-            $incomes = $request->getPost('incomes');
-            $redirectUrl = $request->getPost('redirectUrl');
-
-            $criteria = array(
-                'id' => $target_id,
-                'token' => $token
-            );
-
-            /**@var \Application\Entity\NmtHrContract $target ; */
-            $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrContract')->findOneBy($criteria);
-            $errors = array();
-
-            if (! $target instanceof \Application\Entity\NmtHrContract) {
-
-                $errors[] = 'Entity object can\'t be empty!';
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors
-                ));
-
-                // might need redirect
-            } else {
-
-                return $this->redirect()->toUrl($redirectUrl);
-            }
-        }
-
-        // NO POST
-        // ==============================
-
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        } else {
-            $redirectUrl = $request->getHeader('Referer')->getUri();
-        }
-
-        $n = (int) $this->params()->fromQuery('n');
-        $id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $id,
-            'token' => $token
-        );
-
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-        $list = $res->getVacantSerialNumbers();
-
-        /**@var \Application\Entity\NmtInventoryItem $target ; */
-        $target = $res->findOneBy($criteria);
-
-        // if ($target instanceof \Application\Entity\NmtInventoryItem) {
-
-        return new ViewModel(array(
-            'redirectUrl' => $redirectUrl,
-            'errors' => null,
-            'target' => $target,
-            'serialList' => $list,
-            'n' => $n
-        ));
-        // }
-        // return $this->redirect()->toRoute('access_denied');
-    }
-
-    /**
-     *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function showAction()
@@ -301,6 +323,7 @@ class ItemSerialController extends AbstractGenericController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function editAction()
@@ -565,6 +588,7 @@ class ItemSerialController extends AbstractGenericController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function listAction()
@@ -629,52 +653,7 @@ class ItemSerialController extends AbstractGenericController
 
     /**
      *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function list1Action()
-    {
-        $this->layout("layout/user/ajax");
-        $form_action = "/inventory/item-serial/list1";
-        $form_title = "Item Serial Map";
-        $action = FormActions::SHOW;
-
-        $viewTemplete = "/inventory/item-serial/list1";
-
-        $request = $this->getRequest();
-
-        $id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
-        $page = $this->params()->fromQuery('page');
-        $perPage = $this->params()->fromQuery('perPage');
-
-        if ($page == null) {
-            $page = 1;
-        }
-
-        if ($perPage == null) {
-            $perPage = 15;
-        }
-
-        $filter = new ItemSerialSqlFilter();
-        $filter->setItemId($id);
-
-        $collectionRender = $this->getItemSerialReporter()->getItemSerialCollectionRender($filter, $page, $perPage);
-
-        $viewModel = new ViewModel(array(
-            'action' => $action,
-            'form_action' => $form_action,
-            'form_title' => $form_title,
-            'redirectUrl' => null,
-            'collectionRender' => $collectionRender,
-            'companyVO' => $this->getCompanyVO()
-        ));
-
-        $viewModel->setTemplate($viewTemplete);
-        return $viewModel;
-    }
-
-    /**
-     *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function list2Action()
@@ -734,37 +713,12 @@ class ItemSerialController extends AbstractGenericController
         ));
     }
 
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
+    /*
+     * |=============================
+     * |Mapping Serial
+     * |
+     * |=============================
      */
-    public function updateTokenAction()
-    {
-        $criteria = array();
-
-        // var_dump($criteria);
-        $sort_criteria = array();
-
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findBy($criteria, $sort_criteria);
-
-        if (count($list) > 0) {
-            foreach ($list as $entity) {
-                $entity->setChecksum(md5(uniqid("item_" . $entity->getId()) . microtime()));
-                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            }
-        }
-
-        $this->doctrineEM->flush();
-
-        // update search index()
-        $this->itemSearchService->createItemIndex();
-
-        $total_records = count($list);
-
-        return new ViewModel(array(
-            'total_records' => $total_records
-        ));
-    }
 
     /**
      *

@@ -217,7 +217,7 @@ abstract class AbstractParamQueryColModel
      */
     public function setEditable($editable)
     {
-        $this->editable = \sprintf("editable: %s", $editable);
+        $this->editable = \sprintf("editable: %s", $this->_convertBoolean($editable));
         return $this->editable;
     }
 
@@ -512,5 +512,13 @@ abstract class AbstractParamQueryColModel
     {
         $this->width = \sprintf("width: %s", $width);
         return $this->width;
+    }
+
+    private function _convertBoolean($v)
+    {
+        if ($v == true) {
+            return 'true';
+        }
+        return 'false';
     }
 }

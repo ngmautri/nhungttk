@@ -1,6 +1,8 @@
 <?php
 namespace Application\Domain\Util\Collection\Render;
 
+use Ramsey\Uuid\Uuid;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -30,7 +32,26 @@ abstract class AbstractRenderAsParamQuery extends AbstractCollectionRender
      */
     public function execute()
     {
-        // do nothing
+        // create gird holder.
+        $this->setGirdDiv(Uuid::uuid4());
+
+        // create gird div.
+        $format = '<div id="%s"></div>';
+        $result = sprintf($format, $this->getGirdDiv());
+
+        $format = '<script>';
+        $result = $result . $format;
+
+        $result = $result . $this->createParamQueryObject();
+
+        $format = "\n\n// Create ParamQuery Object!\n";
+        $format = $format . 'var $grid = $("#%s").pqGrid(obj)';
+        $result = $result . sprintf($format, $this->getGirdDiv());
+
+        $format = '</script>';
+        $result = $result . $format;
+
+        return $result;
     }
 
     /*

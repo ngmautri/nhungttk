@@ -10,6 +10,10 @@ namespace Application\Application\Helper\Contracts;
 abstract class AbstractParamQuery
 {
 
+    const PAGE_MODEL_REMOTE = 'remote';
+
+    const PAGE_MODEL_LOCAL = 'local';
+
     protected $collapsible;
 
     protected $colModel;
@@ -564,8 +568,11 @@ abstract class AbstractParamQuery
      *
      * @param mixed $pageModel
      */
-    public function setPageModel($pageModel)
+    public function setPageModel($type, $perPage)
+
     {
+        $format = '{type: "%s", rPP: %s, strRpp: "{0}" }';
+        $pageModel = sprintf($format, $type, $perPage);
         $this->pageModel = \sprintf("pageModel: %s", $pageModel);
         return $this->pageModel;
     }

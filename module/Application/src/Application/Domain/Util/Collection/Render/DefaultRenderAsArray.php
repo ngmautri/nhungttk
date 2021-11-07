@@ -14,7 +14,7 @@ class DefaultRenderAsArray extends AbstractCollectionRender
         $output = [];
         foreach ($this->getCollection() as $element) {
 
-            $output[] = $this->getFormatter()->format($element);
+            $output[] = $this->getFormatter()->format($element->makeSnapshot());
         }
 
         return $output;

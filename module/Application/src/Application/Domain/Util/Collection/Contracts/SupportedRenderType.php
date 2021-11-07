@@ -22,4 +22,6 @@ class SupportedRenderType
     const OTHER = "6";
 
     const PARAM_QUERY = "7";
+
+    const AS_JSON = "8";
 }

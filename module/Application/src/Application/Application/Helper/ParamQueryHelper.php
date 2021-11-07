@@ -7,7 +7,7 @@ use Application\Application\Helper\Contracts\AbstractParamQuery;
  * to create paramquerey gird
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ParamQueryHelper extends AbstractParamQuery
 {
@@ -15,6 +15,23 @@ class ParamQueryHelper extends AbstractParamQuery
     protected $output;
 
     protected $changeEvent;
+
+    public function addComment($comment)
+    {
+        $tmp = $this->output;
+
+        $format = "
+       /*
+        * |=============================
+        * |%s
+        * |
+        * |=============================
+        */";
+        $c = sprintf($format, $comment);
+
+        $tmp = $tmp . $c . "\n";
+        $this->output = $tmp;
+    }
 
     public function addOption($option)
     {
@@ -76,162 +93,37 @@ class ParamQueryHelper extends AbstractParamQuery
      */
     public function getChangeEventTemplate($url)
     {
-        $t = <<<EOD
-\n change: function (evt, ui) {
-    if (ui.source == 'commit' || ui.source == 'rollback') {return;}
-    console.log(ui);
-    var \$grid = $(this), grid = \$grid.pqGrid('getInstance').grid;
-    var rowList = ui.rowList, addList = [], recIndx = grid.option('dataModel').recIndx, deleteList = [],updateList = [];
- 
-    for (var i = 0; i < rowList.length; i++) {
-        var obj = rowList[i], rowIndx = obj.rowIndx, newRow = obj.newRow, type = obj.type, rowData = obj.rowData;   
-        
-        if (type == 'add') {
-            var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
-            if (valid) {
-                addList.push(newRow);
-            }
-        }else if (type == 'update') {
-            var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
-            if (valid) {
-                if (rowData[recIndx] == null) {
-                    addList.push(rowData);
-                }else{
-                    updateList.push(rowData);
-                }
-            }
-        }
-    }
-
-    if (addList.length || updateList.length || deleteList.length) {
-        
-        var sent_list = JSON.stringify({
-            updateList: updateList,
-            addList: addList,
-            deleteList: deleteList
-        });
-        
-        $.ajax({
-            url: $url,
-            data: {
-                sent_list: sent_list
-            },
-            dataType: "json",
-            type: "POST",
-            async: true,
-            beforeSend: function (jqXHR, settings) {
-                //@todo:
-
-
-            },
-            success: function (changes) {
-                //@todo:
-            },
-            complete: function () {
-                //@todo:
-                refreshGird();
-                location.reload();
-                $("#global-notice").delay(5000).fadeOut(500); 
-            }
-        };
-    }
-
-},
-EOD;
+        $t = '';
         return $t;
     }
 
     public function setChangeEventTemplate($url)
-    {
-        $t = <<<EOD
-\n change: function (evt, ui) {
-    if (ui.source == 'commit' || ui.source == 'rollback') {return;}
-    console.log(ui);
-    var \$grid = $(this), grid = \$grid.pqGrid('getInstance').grid;
-    var rowList = ui.rowList, addList = [], recIndx = grid.option('dataModel').recIndx, deleteList = [],updateList = [];
-    
-    for (var i = 0; i < rowList.length; i++) {
-        var obj = rowList[i], rowIndx = obj.rowIndx, newRow = obj.newRow, type = obj.type, rowData = obj.rowData;
-        
-        if (type == 'add') {
-            var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
-            if (valid) {
-                addList.push(newRow);
-            }
-        }else if (type == 'update') {
-            var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
-            if (valid) {
-                if (rowData[recIndx] == null) {
-                    addList.push(rowData);
-                }else{
-                    updateList.push(rowData);
-                }
-            }
-        }
-    }
-    
-    if (addList.length || updateList.length || deleteList.length) {
-    
-        var sent_list = JSON.stringify({
-            updateList: updateList,
-            addList: addList,
-            deleteList: deleteList
-        });
-        
-        $.ajax({
-            url: "$url",
-            data: {
-                sent_list: sent_list
-            },
-            dataType: "json",
-            type: "POST",
-            async: true,
-            beforeSend: function (jqXHR, settings) {
-                //@todo:
-                
-                
-            },
-            success: function (changes) {
-                //@todo:
-            },
-            complete: function () {
-                //@todo:
-                refreshGird();
-                location.reload();
-                $("#global-notice").delay(5000).fadeOut(500);
-            }
-        };
-    }
-    
-},
-EOD;
-        $this->changeEvent = $t;
-    }
+    {}
 
     public function getParamQueryTemplate()
     {
-        $t = <<<EOD
-var obj = {
-            width: 400,
-            height: 360,
-            showTop: false,
-            showBottom: false,
-            //collapsible: false,
-            showHeader: false,
-            roundCorners: false,
-            rowBorders: false,
-            columnBorders: false,
-            selectionModel: { type: 'cell' },
-            numberCell: { show: false },
-            stripeRows: false,
-            title: "Grid Constituents",
-            toolbar: {
-                items: [
-                { type: "button", label: 'button on toolbar' }
-                ]
-            }
-        };
-EOD;
+        $t = "
+        var obj = {
+                    width: 400,
+                    height: 360,
+                    showTop: false,
+                    showBottom: false,
+                    //collapsible: false,
+                    showHeader: false,
+                    roundCorners: false,
+                    rowBorders: false,
+                    columnBorders: false,
+                    selectionModel: { type: \'cell' },
+                    numberCell: { show: false },
+                    stripeRows: false,
+                    title: \"Grid Constituents\",
+                    toolbar: {
+                        items: [
+                        { type: \"button\", label: 'button on toolbar' }
+                        ]
+                    }
+                };
+        ";
         return $t;
     }
 

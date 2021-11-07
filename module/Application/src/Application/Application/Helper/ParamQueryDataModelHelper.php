@@ -7,9 +7,9 @@ use Application\Application\Helper\Contracts\AbstractParamQueryDataModel;
  * to create paramquerey gird
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-class ParamQueryDataModeHelper extends AbstractParamQueryDataModel
+class ParamQueryDataModelHelper extends AbstractParamQueryDataModel
 {
 
     protected $output;
@@ -44,14 +44,14 @@ class ParamQueryDataModeHelper extends AbstractParamQueryDataModel
 
     public function getParamQueryTemplate()
     {
-        $t = <<<EOD
-obj.dataModel = {
-            data: data,
-            location: "local",
-            sorting: "local",
-            sortDir: "down"
-    };
-EOD;
+        $t = '
+        obj.dataModel = {
+                    data: data,
+                    location: "local",
+                    sorting: "local",
+                    sortDir: "down"
+            };
+        ';
         return $t;
     }
 }

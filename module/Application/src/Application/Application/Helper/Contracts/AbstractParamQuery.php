@@ -5,7 +5,7 @@ namespace Application\Application\Helper\Contracts;
  * Abstract ParamQuery
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class AbstractParamQuery
 {
@@ -446,7 +446,12 @@ abstract class AbstractParamQuery
      */
     public function setHeight($height)
     {
-        $this->height = \sprintf("height: %s", $height);
+        if (is_numeric($height)) {
+            $this->height = \sprintf("height: %s", $height);
+        } else {
+            $this->height = \sprintf("height: '%s'", $height);
+        }
+
         return $this->height;
     }
 
@@ -1026,7 +1031,11 @@ abstract class AbstractParamQuery
      */
     public function setWidth($width)
     {
-        $this->width = \sprintf("width: %s", $width);
+        if (is_numeric($width)) {
+            $this->width = \sprintf("width: %s", $width);
+        } else {
+            $this->width = \sprintf("width: '%s'", $width);
+        }
         return $this->width;
     }
 

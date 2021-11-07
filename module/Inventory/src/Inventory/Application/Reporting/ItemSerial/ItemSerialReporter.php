@@ -1,17 +1,15 @@
 <?php
-namespace Inventory\Application\Reporting\Item;
+namespace Inventory\Application\Reporting\ItemSerial;
 
+use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
+use Application\Domain\Util\Collection\Render\DefaultRenderAsArray;
+use Application\Domain\Util\Collection\Render\TestRenderAsParamQuery;
+use Application\Domain\Util\Pagination\Paginator;
 use Application\Service\AbstractService;
-use Inventory\Application\Export\Item\SaveAsArray;
-use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
-use Inventory\Application\Export\Item\Contracts\SupportedExportType;
-use Inventory\Application\Export\Item\Formatter\NullFormatter;
-use Inventory\Application\Reporting\ItemSerial\Export\Formatter\DefaultItemSerialFormatter;
-use Inventory\Application\Reporting\Item\Export\SaveAsExcel;
-use Inventory\Application\Reporting\Item\Export\SaveAsOpenOffice;
-use Inventory\Application\Reporting\Item\Export\Spreadsheet\ExcelBuilder;
+use Inventory\Application\Reporting\ItemSerial\CollectionRender\DefaultItemSerialRenderAsHtmlTable;
 use Inventory\Domain\Item\Serial\Repository\ItemSerialQueryRepositoryInterface;
-use Inventory\Infrastructure\Persistence\Filter\ItemSerialSqlFilter;
+use Inventory\Infrastructure\Persistence\Domain\Doctrine\ItemSerialQueryRepositoryImpl;
+use Inventory\Infrastructure\Persistence\SQL\Filter\ItemSerialSqlFilter;
 
 /**
  * Item Serial Report Service.
@@ -24,56 +22,75 @@ class ItemSerialReporter extends AbstractService
 
     private $reporterRespository;
 
-    public function getList($filter, $file_type)
+    public function getItemSerialCollectionRender($filter, $page, $resultPerPage = 10, $renderType = SupportedRenderType::HMTL_TABLE)
     {
         if (! $filter instanceof ItemSerialSqlFilter) {
             throw new \InvalidArgumentException("Invalid filter object.");
         }
 
-        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
-            $limit = null;
-            $offset = null;
-        }
-        $results = $this->getReporterRespository()->getList($filter);
+        // create Paginator
+        $totalResults = $this->getListTotal($filter);
+        $paginator = new Paginator($totalResults, $page, $resultPerPage);
 
-        $factory = null;
-        $formatter = null;
+        // var_dump($paginator);
 
-        switch ($file_type) {
-            case SupportedExportType::ARRAY:
-                $formatter = new DefaultItemSerialFormatter();
-                $factory = new SaveAsArray();
+        $f = "/inventory/item-serial/list1?target_id=%s&token=%s";
+        $url = sprintf($f, $filter->getItemId(), "");
+        $paginator->setBaseUrl($url);
+        $paginator->setUrlConnectorSymbol("&");
+        $paginator->setDisplayHTMLDiv("item_serial_div");
+
+        $rep = new ItemSerialQueryRepositoryImpl($this->getDoctrineEM());
+
+        // create collection
+
+        $filter->setOffset($paginator->getOffset());
+        $filter->setLimit($paginator->getLimit());
+
+        $filter->setSortBy('createdDate');
+        $filter->setSort('DESC');
+        $collection = $rep->getList($filter);
+
+        $render = null;
+        switch ($renderType) {
+
+            case SupportedRenderType::HMTL_TABLE:
+                $render = new DefaultItemSerialRenderAsHtmlTable($totalResults, $collection);
+                $render->setPaginator($paginator);
                 break;
-            case SupportedExportType::EXCEL:
 
-                $builder = new ExcelBuilder();
-                $formatter = new NullFormatter();
-                $factory = new SaveAsExcel($builder);
+            case SupportedRenderType::PARAM_QUERY:
+                $render = new TestRenderAsParamQuery($totalResults, $collection);
                 break;
 
-            case SupportedExportType::OPEN_OFFICE:
-
-                $builder = new ExcelBuilder();
-                $formatter = new NullFormatter();
-                $factory = new SaveAsOpenOffice($builder);
+            case SupportedRenderType::AS_ARRAY:
+                $render = new DefaultRenderAsArray($totalResults, $collection);
                 break;
 
             default:
-                $formatter = new NullFormatter();
-                $factory = new SaveAsArray();
+                $render = new TestRenderAsParamQuery($totalResults, $collection);
                 break;
         }
 
-        return $factory->saveAs($results, $formatter);
+        return $render;
     }
 
+    /**
+     *
+     * @param unknown $filter
+     * @param unknown $file_type
+     * @throws \InvalidArgumentException
+     * @return NULL|NULL[]
+     */
     public function getListTotal(ItemSerialSqlFilter $filter)
     {
         $key = \sprintf("_item_serial_list_%s", $filter->__toString());
 
         $resultCache = $this->getCache()->getItem($key);
         if (! $resultCache->isHit()) {
-            $total = $this->getReporterRespository()->getListTotal($filter);
+
+            $rep = new ItemSerialQueryRepositoryImpl($this->getDoctrineEM());
+            $total = $rep->getListTotal($filter);
             $resultCache->set($total);
             $this->getCache()->save($resultCache);
         } else {

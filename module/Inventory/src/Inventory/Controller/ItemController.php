@@ -173,7 +173,7 @@ class ItemController extends AbstractGenericController
 
     public function getTemplateAction()
     {
-        $f = ROOT.'/public/templates/ItemUpload.xlsx';
+        $f = ROOT . '/public/templates/ItemUpload.xlsx';
         $output = file_get_contents($f);
         $response = $this->getResponse();
         $headers = new Headers();

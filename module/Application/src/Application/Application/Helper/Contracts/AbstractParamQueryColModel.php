@@ -5,7 +5,7 @@ namespace Application\Application\Helper\Contracts;
  * Abstract ParamQuery
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class AbstractParamQueryColModel
 {
@@ -364,7 +364,8 @@ abstract class AbstractParamQueryColModel
      */
     public function setRender($render)
     {
-        $this->render = $render;
+        $this->render = \sprintf("render: %s", $render);
+        return $this->render;
     }
 
     /**

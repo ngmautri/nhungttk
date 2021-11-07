@@ -41,6 +41,8 @@ use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhTransferLocat
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhTransferPostedCreateTrxFactory;
 use Inventory\Application\Reporting\Item\ItemReporter;
 use Inventory\Application\Reporting\Item\ItemReporterFactory;
+use Inventory\Application\Reporting\ItemSerial\ItemSerialReporter;
+use Inventory\Application\Reporting\ItemSerial\ItemSerialReporterFactory;
 use Inventory\Application\Reporting\Transaction\TrxReporter;
 use Inventory\Application\Reporting\Transaction\TrxReporterFactory;
 use Inventory\Application\Service\Association\AssociationService;
@@ -322,6 +324,8 @@ return array(
             // Reporting
             ItemReporter::class => ItemReporterFactory::class,
             TrxReporter::class => TrxReporterFactory::class,
+
+            ItemSerialReporter::class => ItemSerialReporterFactory::class,
 
             // Repository
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',

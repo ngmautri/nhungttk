@@ -1,109 +1,24 @@
 <?php
-use Procure\Application\Helper\FormHelper;
+use Application\Domain\Util\Collection\Render\AbstractCollectionRender;
 
-$base = sprintf("inventory/item-serial/list1?token=%s&target_id=%s", $token, $target_id);
-$table_body = '';
-$message_log_div = "message_log_div1";
-$result_msg = "No record found!";
-$count = 0;
-$n = 0;
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
+ */
 
-if (count($list) > 0) {
-
-    $result_msg = sprintf("%s records found!", $total_records);
-
-    if ($paginator !== null) {
-        $result_msg = sprintf("Recored %s to %s | %s records found!", $paginator->getMinInPage(), $paginator->getMaxInPage(), $total_records);
-    }
-
-    foreach ($list as $a) {
-
-        /**@var \Application\Entity\NmtInventoryItemSerial $a ; */
-        $count ++;
-        $n ++;
-
-        if ($paginator !== null) {
-            $count = $paginator->getMinInPage() - 1 + $n;
-        } else {
-            $count = $n;
-        }
-        $format = '<a class="" style="color:black;padding:1pt 2pt 2pt 2pt;" href="/inventory/item-serial/edit?token=%s&entity_id=%s">Edit</a>';
-        $edit = sprintf($format, $a->getToken(), $a->getId());
-
-        $format = '<a class="" style="color:black;padding:1pt 2pt 2pt 2pt;" href="/inventory/item-serial-attachment/upload-pictures?token=%s&target_id=%s">Upload</a>';
-        $upload = sprintf($format, $a->getToken(), $a->getId());
-
-        $apNo = null;
-        if ($a->getApRow() !== null) {
-            $apNo = $a->getApRow()
-                ->getInvoice()
-                ->getSysNumber();
-        }
-        $table_body = $table_body . "<tr>";
-        $table_body = $table_body . sprintf("<td>%s</td>", $count);
-        $table_body = $table_body . sprintf("<td>%s</td>", $apNo);
-        $table_body = $table_body . sprintf("<td>%s</td>", $a->getSysNumber());
-        $table_body = $table_body . sprintf("<td>%s</td>", $a->getMfgDate() != null ? date_format($a->getMfgDate(), "Y-M-d") : "");
-        $table_body = $table_body . sprintf("<td>%s</td>", $a->getMfgWarrantyStart() !== null ? date_format($a->getMfgWarrantyStart(), "Y-M-d") : "");
-        $table_body = $table_body . sprintf("<td>%s</td>", $a->getMfgWarrantyEnd() !== null ? date_format($a->getMfgWarrantyEnd(), "Y-M-d") : "");
-        $table_body = $table_body . sprintf("<td>%s</td>", $a->getMfgDate() !== null ? date_format($a->getMfgDate(), "Y-M-d") : "");
-        $table_body = $table_body . sprintf("<td>%s</td>", $edit . $upload);
-        $table_body = $table_body . "</tr>";
-    }
-}
+/**
+ *
+ * @var AbstractCollectionRender $collectionRender
+ */
 
 ?>
+  
+    <div id="item_serial_div">
+	  <h5>Item Serial Documents</h5>
 
-<div id="<?php
-echo $message_log_div;
-?>">
-
-   <?php
-echo $result_msg;
-?>
-<table id="mytable26" style="font-size: 9pt; color: graytext;" class="table table-bordered table-hover">
-   <thead>
-      <tr>
-         <td>
-            <b>#</b>
-         </td>
-         <td>
-            <b>Ref</b>
-         </td>
-         <td>
-            <b>BarCode</b>
-         </td>
-         <td>
-            <b>BarCode1</b>
-         </td>
-         <td>
-            <b>Flow</b>
-         </td>
-          <td>
-            <b>Flow</b>
-         </td>   
-          <td>
-            <b>Flow</b>
-         </td>   
-          <td>
-            <b>Flow</b>
-         </td>         
-      </tr>
-   </thead>
-   <tbody>
- 
-	<?php
-echo $table_body;
-?>
-
- </tbody>
-</table>
-
-<?php
-// ===============================
-echo FormHelper::createPaginatorAjax($base, $paginator, "&", $message_log_div);
-// ===============================
-?>
-
-</div>
-
+        <?php
+        echo $collectionRender->execute();
+        echo $collectionRender->printAjaxPaginator();
+        ?>
+    </div>

@@ -180,8 +180,7 @@ class ItemSerialHelper
      */
     private static function runQuery(EntityManager $doctrineEM, $sql, ResultSetMappingBuilder $rsm)
     {
-        echo $sql;
-
+        // /echo $sql;
         try {
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
@@ -298,6 +297,10 @@ class ItemSerialHelper
         switch ($filter->getSortBy()) {
             case "itemName":
                 $tmp = $tmp . " ORDER BY nmt_inventory_item.item_name " . $filter->getSort();
+                break;
+
+            case "createdDate":
+                $tmp = $tmp . " ORDER BY nmt_inventory_item_serial.created_on " . $filter->getSort();
                 break;
         }
 

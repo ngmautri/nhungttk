@@ -86,10 +86,14 @@ echo $this->doctype();
   $(function() {
 	    $( "#tabs" ).tabs({
 
-	    	beforeLoad:function(e,ui){
-	    		$( ui.panel ).html('<p>Loading...</p>');
+        	beforeLoad:function(e,ui){
+            $("#overlay").fadeIn(300);
+	    		//$( ui.panel ).html('<p>Loading...</p>');
 	    	    },
 
+            load:function(e,ui){
+                $("#overlay").fadeOut(300);
+	    	    },
 	    });
 	  });
 

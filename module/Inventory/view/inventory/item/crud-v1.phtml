@@ -747,15 +747,18 @@ echo $entityFormInput;
 <script type="text/javascript">
 
 
-$("#<?php
-echo $tab_id;
-?>").tabs(
-   {active: <?php
-echo $tab_active;
-?>},
-   { beforeLoad:function(e,ui){
-      $( ui.panel ).html('<p>Loading...</p>');
+$("#<?php echo $tab_id;?>").tabs(
+   {active: <?php echo $tab_active;?>},   
+   { 
+      beforeLoad:function(e,ui){
+      $("#overlay").fadeIn(300);
+      //$( ui.panel ).html('<p>Loading...</p>');
    },
+   load:function(e,ui){
+      $("#overlay").fadeOut(300);
+      //$( ui.panel ).html('<p>Loading...</p>');
+   },
+   
 });
 
 

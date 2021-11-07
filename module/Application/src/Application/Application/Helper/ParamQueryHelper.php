@@ -16,6 +16,8 @@ class ParamQueryHelper extends AbstractParamQuery
 
     protected $changeEvent;
 
+    protected $remoteUrl;
+
     public function addComment($comment)
     {
         $tmp = $this->output;
@@ -143,5 +145,23 @@ class ParamQueryHelper extends AbstractParamQuery
     public function setChangeEvent($changeEvent)
     {
         $this->changeEvent = $changeEvent;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRemoteUrl()
+    {
+        return $this->remoteUrl;
+    }
+
+    /**
+     *
+     * @param mixed $remoteUrl
+     */
+    public function setRemoteUrl($remoteUrl)
+    {
+        $this->remoteUrl = $remoteUrl;
     }
 }

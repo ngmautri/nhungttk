@@ -19,6 +19,8 @@ class SerialSnapshot extends AbstractDTO
      */
     public $invoiceSysNumber;
 
+    public $vendorName;
+
     public $invoiceId;
 
     public $invoiceToken;
@@ -1021,5 +1023,14 @@ class SerialSnapshot extends AbstractDTO
     public function setOriginCountry($originCountry)
     {
         $this->originCountry = $originCountry;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorName()
+    {
+        return $this->vendorName;
     }
 }

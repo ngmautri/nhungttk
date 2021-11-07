@@ -12,6 +12,8 @@ abstract class BaseSerial extends AbstractSerial
 
 {
 
+    protected $vendorName;
+
     protected $invoiceSysNumber;
 
     protected $invoiceId;
@@ -200,5 +202,23 @@ abstract class BaseSerial extends AbstractSerial
     public function getItemToken()
     {
         return $this->itemToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function getVendorName()
+    {
+        return $this->vendorName;
+    }
+
+    /**
+     *
+     * @param mixed $vendorName
+     */
+    protected function setVendorName($vendorName)
+    {
+        $this->vendorName = $vendorName;
     }
 }

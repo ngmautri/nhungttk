@@ -2,6 +2,9 @@
 namespace Procure\Application\Service\PO;
 
 use Application\Domain\Shared\Command\CommandOptions;
+use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
+use Application\Domain\Util\Collection\Render\DefaultRenderAsArray;
+use Application\Domain\Util\Collection\Render\TestRenderAsParamQuery;
 use Application\Domain\Util\Pagination\Paginator;
 use Application\Service\AbstractService;
 use Procure\Application\Service\SharedServiceFactory;
@@ -38,7 +41,16 @@ class POService extends AbstractService implements PoServiceInterface
 
     private $queryRepository;
 
-    public function getDocMapCollectionRender($id, $token, $page, $resultPerPage = 10)
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @param int $page
+     * @param int $resultPerPage
+     * @param string $renderType
+     * @return NULL|\Application\Domain\Util\Collection\Render\TestRenderAsParamQuery
+     */
+    public function getDocMapCollectionRender($id, $token, $page, $resultPerPage = 10, $renderType = SupportedRenderType::PARAM_QUERY)
     {
         $rep = new POQueryRepositoryImplV1($this->getDoctrineEM());
 
@@ -57,9 +69,26 @@ class POService extends AbstractService implements PoServiceInterface
         // create collection
         $collection = $rep->getDocMap($id, $token, $paginator->getOffset(), $paginator->getLimit());
 
-        // create render
-        $render = new DocMapRenderAsHtmlTable($totalResults, $collection);
-        $render->setPaginator($paginator);
+        $render = null;
+        switch ($renderType) {
+
+            case SupportedRenderType::HMTL_TABLE:
+                $render = new DocMapRenderAsHtmlTable($totalResults, $collection);
+                $render->setPaginator($paginator);
+                break;
+
+            case SupportedRenderType::PARAM_QUERY:
+                $render = new TestRenderAsParamQuery($totalResults, $collection);
+                break;
+
+            case SupportedRenderType::AS_ARRAY:
+                $render = new DefaultRenderAsArray($totalResults, $collection);
+                break;
+
+            default:
+                $render = new TestRenderAsParamQuery($totalResults, $collection);
+                break;
+        }
 
         return $render;
     }

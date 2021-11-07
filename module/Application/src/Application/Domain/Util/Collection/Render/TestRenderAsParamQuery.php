@@ -15,6 +15,7 @@ class TestRenderAsParamQuery extends AbstractRenderAsParamQuery
     protected function createParamQueryObject()
     {
         $data = new DefaultParamQueryHelper();
+        $data->setRemoteUrl($remoteUrl);
         return $data->getOutPut();
     }
 }

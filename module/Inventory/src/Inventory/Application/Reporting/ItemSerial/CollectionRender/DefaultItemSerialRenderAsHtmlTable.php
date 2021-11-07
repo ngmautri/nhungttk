@@ -1,7 +1,8 @@
 <?php
-namespace Inventory\Application\Service\Reporting\CollectionRender;
+namespace Inventory\Application\Reporting\ItemSerial\CollectionRender;
 
 use Application\Domain\Util\Collection\Render\AbstractRenderAsHtmlTable;
+use Inventory\Domain\Item\Serial\GenericSerial;
 use Inventory\Domain\Item\Serial\SerialSnapshot;
 
 /**
@@ -22,11 +23,17 @@ class DefaultItemSerialRenderAsHtmlTable extends AbstractRenderAsHtmlTable
         <td><b>Action</b></td>";
     }
 
-    protected function createRowCell($element)
+    protected function createRowCell($ele)
     {
-        if (! $element instanceof SerialSnapshot) {
+        if (! $ele instanceof GenericSerial) {
             return null;
         }
+
+        /**
+         *
+         * @var SerialSnapshot $element
+         */
+        $element = $ele->makeSnapshot();
 
         $cells = '';
         $showUrl = '';
@@ -39,8 +46,8 @@ class DefaultItemSerialRenderAsHtmlTable extends AbstractRenderAsHtmlTable
 
         $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getInvoiceSysNumber()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getSerialNumber()));
-        $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getSerialNumber1()));
-        $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getSysNumber()));
+        $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getCreatedOn()));
+        $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getVendorName()));
         $cells = $cells . sprintf("<td>%s</td>\n", $showUrl);
         return $cells;
     }

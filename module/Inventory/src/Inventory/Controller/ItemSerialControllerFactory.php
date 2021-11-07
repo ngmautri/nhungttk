@@ -1,8 +1,9 @@
 <?php
 namespace Inventory\Controller;
 
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Inventory\Application\Reporting\ItemSerial\ItemSerialReporter;
 use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
@@ -29,6 +30,9 @@ class ItemSerialControllerFactory implements FactoryInterface
 
         $sv = $container->get('Inventory\Service\ItemSearchService');
         $controller->setItemSearchService($sv);
+
+        $sv = $container->get(ItemSerialReporter::class);
+        $controller->setItemSerialReporter($sv);
 
         return $controller;
     }

@@ -2,9 +2,12 @@
 namespace Inventory\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
-use Application\Entity\NmtInventorySerial;
-use Inventory\Service\ItemSearchService;
+use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Pagination\Paginator;
+use Application\Entity\NmtInventorySerial;
+use Inventory\Application\Reporting\ItemSerial\ItemSerialReporter;
+use Inventory\Infrastructure\Persistence\SQL\Filter\ItemSerialSqlFilter;
+use Inventory\Service\ItemSearchService;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
@@ -17,11 +20,11 @@ use Zend\View\Model\ViewModel;
 class ItemSerialController extends AbstractGenericController
 {
 
-    protected $doctrineEM;
-
     protected $itemSearchService;
 
     protected $itemSerialService;
+
+    protected $itemSerialReporter;
 
     /**
      *
@@ -630,6 +633,52 @@ class ItemSerialController extends AbstractGenericController
      */
     public function list1Action()
     {
+        $this->layout("layout/user/ajax");
+        $form_action = "/inventory/item-serial/list1";
+        $form_title = "Item Serial Map";
+        $action = FormActions::SHOW;
+
+        $viewTemplete = "/inventory/item-serial/list1";
+
+        $request = $this->getRequest();
+
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        $page = $this->params()->fromQuery('page');
+        $perPage = $this->params()->fromQuery('perPage');
+
+        if ($page == null) {
+            $page = 1;
+        }
+
+        if ($perPage == null) {
+            $perPage = 15;
+        }
+
+        $filter = new ItemSerialSqlFilter();
+        $filter->setItemId($id);
+
+        $collectionRender = $this->getItemSerialReporter()->getItemSerialCollectionRender($filter, $page, $perPage);
+
+        $viewModel = new ViewModel(array(
+            'action' => $action,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'collectionRender' => $collectionRender,
+            'companyVO' => $this->getCompanyVO()
+        ));
+
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function list2Action()
+    {
         $request = $this->getRequest();
 
         // accepted only ajax request
@@ -753,5 +802,23 @@ class ItemSerialController extends AbstractGenericController
     public function setItemSerialService(\Inventory\Service\ItemSerialService $itemSerialService)
     {
         $this->itemSerialService = $itemSerialService;
+    }
+
+    /**
+     *
+     * @return ItemSerialReporter
+     */
+    public function getItemSerialReporter()
+    {
+        return $this->itemSerialReporter;
+    }
+
+    /**
+     *
+     * @param ItemSerialReporter $itemSerialReporter
+     */
+    public function setItemSerialReporter(ItemSerialReporter $itemSerialReporter)
+    {
+        $this->itemSerialReporter = $itemSerialReporter;
     }
 }

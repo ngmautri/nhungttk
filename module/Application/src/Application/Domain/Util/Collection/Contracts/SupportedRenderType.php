@@ -1,12 +1,12 @@
 <?php
-namespace Inventory\Application\Export\Item\Contracts;
+namespace Application\Domain\Util\Collection\Contracts;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SupportedExportType
+class SupportedRenderType
 {
 
     const AS_ARRAY = "1";
@@ -20,4 +20,6 @@ class SupportedExportType
     const PDF = "5";
 
     const OTHER = "6";
+
+    const PARAM_QUERY = "7";
 }

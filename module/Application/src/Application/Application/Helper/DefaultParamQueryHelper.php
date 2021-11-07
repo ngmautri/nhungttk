@@ -15,17 +15,27 @@ class DefaultParamQueryHelper extends ParamQueryHelper
 
     public function __construct()
     {
-        $this->addOption($this->setHeight(400));
-        $this->addOption($this->setWidth(400));
+        $this->addOption($this->setHeight(500));
+        $this->addOption($this->setWidth('100%'));
         $this->addOption($this->setShowTop(true));
         $this->addOption($this->setCollapsible(true));
-
         $this->addOption($this->setShowHeader(true));
         $this->addOption($this->setShowBottom(true));
         $this->addOption($this->setEditable(true));
         $this->addOption($this->setWrap(true));
 
+        // Col Model
         $colModel = new ParamQueryColModeHelper();
+
+        $col = new DefaultParamQueryColHelper();
+        $col->addOption($col->setDataIndx("OK"));
+        $col->addOption($col->setDataType(AbstractParamQueryColModel::INTEGER));
+        $col->addOption($col->setTitle("Edit"));
+        $render = 'function(ui) {
+            return \'<button type="button" class="edit_btn">Edit</button > \';
+        }';
+        $col->addOption($col->setRender($render));
+        $colModel->addColumn($col->getOutPut());
 
         $col = new DefaultParamQueryColHelper();
         $col->addOption($col->setDataIndx("OK"));
@@ -34,21 +44,22 @@ class DefaultParamQueryHelper extends ParamQueryHelper
         $colModel->addColumn($col->getOutPut());
 
         $col = new DefaultParamQueryColHelper();
-
         $col->addOption($col->setDataIndx("OK"));
         $col->addOption($col->setDataType(AbstractParamQueryColModel::INTEGER));
         $col->addOption($col->setTitle("Test"));
         $col->addOption($col->setAlign(AbstractParamQueryColModel::LEFT));
+        $col->addOption($col->setMinWidth(55));
         $colModel->addColumn($col->getOutPut());
 
+        $this->addComment("COLS MODEL");
+        $this->addOption($this->setColModel($colModel->getOutPut()));
+
+        // Data Model
         $dataModel = new ParamQueryDataModelHelper();
         $dataModel->addOption($dataModel->setLocation(AbstractParamQueryDataModel::LOCAL));
         $dataModel->addOption($dataModel->setUrl("sdsddsfgfd"));
 
         $this->addComment("DATA MODEL");
         $this->addOption($this->setDataModel($dataModel->getOutPut()));
-
-        $this->addComment("COLS MODEL");
-        $this->addOption($this->setColModel($colModel->getOutPut()));
     }
 }

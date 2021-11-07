@@ -93,10 +93,14 @@ echo $this->doctype();
   $(function() {
 	    $( "#tabs" ).tabs({
 
-	    	beforeLoad:function(e,ui){
-	    		$( ui.panel ).html('<p>Loading...</p>');
+        	beforeLoad:function(e,ui){
+            $("#overlay").fadeIn(300);
+	    		//$( ui.panel ).html('<p>Loading...</p>');
 	    	    },
 
+            load:function(e,ui){
+                $("#overlay").fadeOut(300);
+	    	    },
 	    });
 	  });
 
@@ -143,6 +147,16 @@ echo $this->doctype();
 </head>
 <body>
    <div style="display: none" id="global-notice"></div>
+
+   <div id="overlay">
+          <div class="cv-spinner">
+            <span class="spinner"></span>
+            </div>
+
+          
+         
+   </div>
+
    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="padding: 0px">
       <div class="container" style="padding-right: 0px; padding-left: 0px">
          <div class="navbar-header" style="padding-right: 0px; padding-left: 0px">

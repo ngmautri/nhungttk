@@ -4,6 +4,7 @@ namespace ApplicationTest\UtilityTest;
 use ApplicationTest\UtilityTest\Collection\TestCollectionRenderAsHtmlTable;
 use Application\Application\Service\Document\Spreadsheet\TestOpenOfficeBuilder;
 use Application\Domain\Util\Collection\GenericCollection;
+use Application\Domain\Util\Collection\Render\TestRenderAsParamQuery;
 use Application\Domain\Util\Collection\Render\TestRenderAsSpreadsheet;
 use Application\Domain\Util\Pagination\Paginator;
 use Doctrine\ORM\EntityManager;
@@ -70,7 +71,28 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $render = new TestCollectionRenderAsHtmlTable($collectionCount, $collection);
         $render->setPaginator($paginator);
 
+        // echo $render->execute();
+        // echo $render->printAjaxPaginator();
+    }
+
+    public function testRenderAsParamQuery()
+    {
+        $collection = new GenericCollection();
+
+        $element = new stdClass();
+        $element->value1 = 'value1';
+        $element->value2 = 'value2';
+        $collection->add($element);
+
+        $element = new stdClass();
+        $element->value1 = 'value3';
+        $element->value2 = 'value4';
+        $collection->add($element);
+
+        $collectionCount = 10;
+
+        $render = new TestRenderAsParamQuery($collectionCount, $collection);
+        $render->setGirdDiv('param_query_div');
         echo $render->execute();
-        echo $render->printAjaxPaginator();
     }
 }

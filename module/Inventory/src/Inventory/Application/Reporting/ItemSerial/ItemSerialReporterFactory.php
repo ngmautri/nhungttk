@@ -1,7 +1,6 @@
 <?php
-namespace Inventory\Application\Reporting\Item;
+namespace Inventory\Application\Reporting\ItemSerial;
 
-use Inventory\Infrastructure\Persistence\Domain\Doctrine\ItemSerialQueryRepositoryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -29,9 +28,6 @@ class ItemSerialReporterFactory implements FactoryInterface
 
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
-
-        $sv = $container->get(ItemSerialQueryRepositoryImpl::class);
-        $service->setReporterRespository($sv);
 
         $sv = $container->get("AppCache");
         $service->setCache($sv);

@@ -323,6 +323,7 @@ class ItemSerialMapper
                 $snapshot->invoiceId = $invoice->getId();
                 $snapshot->invoiceToken = $invoice->getToken();
                 $snapshot->invoiceSysNumber = $invoice->getSysNumber();
+                $snapshot->vendorName = $invoice->getVendorName();
             }
         }
 

@@ -46,6 +46,7 @@ class ItemSerialController extends AbstractGenericController
         $token = $this->params()->fromQuery('token');
         $page = $this->params()->fromQuery('page');
         $perPage = $this->params()->fromQuery('perPage');
+        $render_type = $this->params()->fromQuery('render_type');
 
         if ($page == null) {
             $page = 1;
@@ -55,10 +56,14 @@ class ItemSerialController extends AbstractGenericController
             $perPage = 15;
         }
 
+        if ($render_type == null) {
+            $render_type = SupportedRenderType::PARAM_QUERY;
+        }
+
         $filter = new ItemSerialSqlFilter();
         $filter->setItemId($id);
 
-        $collectionRender = $this->getItemSerialReporter()->getItemSerialCollectionRender($filter, $page, $perPage, SupportedRenderType::PARAM_QUERY);
+        $collectionRender = $this->getItemSerialReporter()->getItemSerialCollectionRender($filter, $page, $perPage, $render_type);
 
         if ($collectionRender == null) {
             return $this->redirect()->toRoute('not_found');

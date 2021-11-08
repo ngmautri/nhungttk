@@ -1,4 +1,5 @@
 <?php
+use Application\Application\Helper\Form\FormHelper;
 use Application\Domain\Util\Collection\Render\AbstractCollectionRender;
 use Application\Domain\Util\Collection\Render\AbstractRenderAsParamQuery;
 
@@ -8,104 +9,127 @@ use Application\Domain\Util\Collection\Render\AbstractRenderAsParamQuery;
  */
 ?>
 
-<div id="item_serial_div">
 
-    <h5>Item Serial Documents</h5>
+  <div id="item_serial_div">
 
-    <?php
-    echo $collectionRender->execute();
-    echo $collectionRender->printAjaxPaginator();
-    ?>
-</div>
+	<h5>Item Serial:</h5>
+
+        <?php
+        echo $collectionRender->printToolBar() . FormHelper::drawLine();
+        echo $collectionRender->execute();
+        echo $collectionRender->printAjaxPaginator();
+        ?>
+    
+    
+  
+  
 
 <?php
-// ==========
+/*
+ * |=============================
+ * |PARAM QUERY
+ * |
+ * |=============================
+ */
+
 if ($collectionRender instanceof AbstractRenderAsParamQuery) :
+    // echo $collectionRender->printToolBar();
     ?>
+    
+     <div id="item_serial_param"></div>
 
 <script>
-    /* 
-     * |=============================
-     * |PARAM QUERY
-     * |
-     * |=============================
-     */
-    var obj = {
-        height: 500,
-        width: '100%',
-        showTop: true,
-        collapsible: true,
-        showHeader: true,
-        showBottom: true,
-        editable: true,
-        wrap: false,
-        pageModel: { type: "remote", rPP: 100, strRpp: "{0}" }
-    };
+            /* 
+             * |=============================
+             * |PARAM QUERY
+             * |
+             * |=============================
+             */
+            var obj = {
+                height: 500,
+                width: '60%',
+                showTop: true,
+                collapsible: true,
+                showHeader: true,
+                showBottom: true,
+                editable: true,
+                wrap: false,
+                pageModel: {
+                    type: "remote",
+                    rPP: 100,
+                    strRpp: "{0}"
+                }
+            };
 
-    /*
-     * |=============================
-     * |DATA MODEL
-     * |
-     * |=============================
-     */
-    obj.dataModel = {
-        location: "remote",
-        url: "/inventory/item-serial/gird?item_id=3963"
-    };
+            /*
+             * |=============================
+             * |DATA MODEL
+             * |
+             * |=============================
+             */
+            obj.dataModel = {
+                location: "remote",
+                url: "/inventory/item-serial/gird?item_id=3963"
+            };
 
-    /*   
-     * |=============================
-     * |COLS MODEL
-     * |
-     * |=============================
-     */
-    obj.colModel = [
-        {
-            dataType: "string",
-            title: "Edit",
-            render: function (ui) { return '<button type="button" class="edit_btn">Edit</button > '; },
-            editable: false
-        },
-        {
-            dataIndx: "invoiceSysNumber",
-            dataType: "string",
-            title: "Invoice Number",
-            minWidth: 90
-        },
-        {
-            dataIndx: "vendorName",
-            dataType: "string",
-            title: "Vendor Name",
-            minWidth: 150
-        }
-    ];
+            /*   
+             * |=============================
+             * |COLS MODEL
+             * |
+             * |=============================
+             */
+            obj.colModel = [{
+                dataType: "string",
+                title: "Edit",
+                render: function(ui) {
+                    return '<button type="button" class="edit_btn">Edit</button > ';
+                },
+                editable: false
+            }, {
+                dataIndx: "invoiceSysNumber",
+                dataType: "string",
+                title: "Invoice Number",
+                minWidth: 90
+            }, {
+                dataIndx: "vendorName",
+                dataType: "string",
+                title: "Vendor Name",
+                minWidth: 150
+            }];
 
-    // Create ParamQuery Object!
-    var $grid = $("#item_serial_div").pqGrid(obj)
+            // Create ParamQuery Object!
+            var $grid = $("#item_serial_param").pqGrid(obj)
 
-    $grid.on('pqgridrefresh pqgridrefreshrow', function () {
-        //debugger;
-        var $grid = $(this);
+            $grid.on('pqgridrefresh pqgridrefreshrow', function() {
+                //debugger;
+                var $grid = $(this);
 
-        $grid.find("button.edit_btn").button({})
-            .unbind("click")
-            .bind("click", function (evt) {
+                $grid.find("button.edit_btn").button({})
+                    .unbind("click")
+                    .bind("click", function(evt) {
 
-                var $tr = $(this).closest("tr"),
-                    rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+                        var $tr = $(this).closest("tr"),
+                            rowIndx = $grid.pqGrid("getRowIndx", {
+                                $tr: $tr
+                            }).rowIndx;
 
-                rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
-                    recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+                        rowData = $grid.pqGrid("getRowData", {
+                                rowIndx: rowIndx
+                            }),
+                            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
 
-                redirectUrl = '';
-                //alert(redirectUrl);
-                window.location.href = redirectUrl;
+                        redirectUrl = '';
+                        //alert(redirectUrl);
+                        window.location.href = redirectUrl;
+                    });
+
+
             });
-
-
-    });
-</script>
+        </script>
 <?php 
 endif;
 
 ?>
+
+
+  </div>

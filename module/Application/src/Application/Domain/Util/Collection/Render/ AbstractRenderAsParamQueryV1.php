@@ -8,7 +8,7 @@ use Ramsey\Uuid\Uuid;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractRenderAsParamQuery extends AbstractCollectionRender
+abstract class AbstractRenderAsParamQueryV1 extends AbstractCollectionRender
 {
 
     private $totalResults;

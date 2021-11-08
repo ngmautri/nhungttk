@@ -9,6 +9,13 @@ namespace Application\Domain\Util\Pagination;
 class PaginatorRender
 {
 
+    /**
+     *
+     * @param Paginator $paginator
+     * @param string $base
+     * @param string $connector_symbol
+     * @return void|string
+     */
     public static function createPaginator(Paginator $paginator, $base, $connector_symbol)
 
     {
@@ -56,6 +63,14 @@ class PaginatorRender
         return $paginator_str;
     }
 
+    /**
+     *
+     * @param Paginator $paginator
+     * @param string $base
+     * @param string $connector_symbol
+     * @param string $result_div
+     * @return void|string
+     */
     public static function createPaginatorAjax(Paginator $paginator, $base, $connector_symbol, $result_div)
     {
         if (! $paginator instanceof Paginator || $result_div == null) {

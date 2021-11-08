@@ -31,6 +31,8 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
 
     protected $paginator;
 
+    protected $toolbar;
+
     /**
      *
      * @param int $collectionCount
@@ -54,6 +56,17 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
         $this->collection = $collection;
         $this->formatter = $formatter;
         $this->filter = $filter;
+    }
+
+    /*
+     * |=============================
+     * |Tool bar
+     * |
+     * |=============================
+     */
+    public function printToolBar()
+    {
+        return $this->toolbar;
     }
 
     public function __toString()
@@ -240,5 +253,14 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
     public function setPaginator(Paginator $paginator)
     {
         $this->paginator = $paginator;
+    }
+
+    /**
+     *
+     * @param mixed $toolbar
+     */
+    public function setToolbar($toolbar)
+    {
+        $this->toolbar = $toolbar;
     }
 }

@@ -5,11 +5,14 @@ use Application\Domain\Util\Pagination\Paginator;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class FormHelper
 {
+
+    const DIVIDER = 'divider';
 
     public static function createTabs($list)
     {
@@ -39,7 +42,7 @@ class FormHelper
 
         foreach ($list as $l) {
 
-            if ($l == "divider") {
+            if ($l == self::DIVIDER) {
                 $dropDown = $dropDown . '<li role="separator" class="divider"></li>';
             } else {
                 $dropDown = $dropDown . \sprintf('<li>%s</li>', $l);
@@ -116,6 +119,7 @@ class FormHelper
 
     /**
      *
+     * @deprecated
      * @param string $base
      * @param Paginator $paginator
      * @param string $connector_symbol

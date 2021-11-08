@@ -28,6 +28,7 @@ class ErrorMessage
                 $error_msg = $error_msg . '<li>' . $error . '</li>';
             endforeach
             ;
+
             $error_msg = $error_msg . '</ul>';
             $error_msg = $error_msg . '</div>';
         }

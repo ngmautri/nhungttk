@@ -21,8 +21,6 @@ abstract class AbstractRenderAsParamQuery extends AbstractCollectionRender
 
     private $editUrl;
 
-    protected abstract function createParamQueryObject();
-
     /**
      *
      * {@inheritdoc}

@@ -409,7 +409,8 @@ function loadData1(source, context = null) {
 function doPaginator(source, target=null) {
 	var target_id = '#' + target;
 	
-	$(target_id).text("Loading...");
+	//$(target_id).text("Loading...");
+	$("#overlay").fadeIn(300);　
 	//$('#b_modal_no_header').modal();
 	
 	$.ajax({
@@ -418,11 +419,35 @@ function doPaginator(source, target=null) {
 			
 			$(target_id).html(text);
 			//$('#b_modal_no_header').modal('hide');
+			$("#overlay").fadeOut(300);
 		},
 		always : function(text) {
 		    //alert(source);
 		    //alert(text);
+			$("#overlay").fadeOut(300);
 
+		},
+	});
+}
+
+
+function doPaginatorV1(source, target=null) {
+	var target_id = '#' + target;
+	
+	$("#overlay").fadeIn(300);　
+	
+	$.ajax({
+		url : source,
+		success : function(text) {
+			
+			$(target_id).html(text);
+			//$('#b_modal_no_header').modal('hide');
+			$("#overlay").fadeOut(300);
+		},
+		always : function(text) {
+		    //alert(source);
+		    //alert(text);
+			$("#overlay").fadeOut(300);
 		},
 	});
 }

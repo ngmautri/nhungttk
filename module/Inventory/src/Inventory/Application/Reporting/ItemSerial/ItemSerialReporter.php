@@ -36,6 +36,7 @@ class ItemSerialReporter extends AbstractService
      * @return NULL|\Application\Domain\Util\Collection\Render\TestRenderAsParamQuery
      */
     public function getItemSerialCollectionRender($filter, $page, $resultPerPage = 10, $renderType = SupportedRenderType::HMTL_TABLE)
+
     {
         if (! $filter instanceof ItemSerialSqlFilter) {
             throw new \InvalidArgumentException("Invalid filter object.");
@@ -77,6 +78,7 @@ class ItemSerialReporter extends AbstractService
 
         $list = [
             FormHelper::createLink($excel_url, '<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel (*.xlxs)'),
+            FormHelper::DIVIDER,
             FormHelper::createLink($oo_url, '<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Open Office (*.ods)')
         ];
 

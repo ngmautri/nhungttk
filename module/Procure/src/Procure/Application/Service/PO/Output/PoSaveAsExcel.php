@@ -124,11 +124,12 @@ class PoSaveAsExcel extends AbstractDocSaveAsSpreadsheet
                 $row->taxAmount,
                 $row->grossAmount,
 
-                $row->itemManufacturerModel,
                 $row->vendorItemName,
                 $row->vendorItemCode,
                 $row->getBrand(),
 
+                $row->getConvertedStandardQuantity(),
+                $row->draftGrQuantity,
                 $row->draftGrQuantity,
                 $row->postedGrQuantity,
                 $row->draftAPQuantity,

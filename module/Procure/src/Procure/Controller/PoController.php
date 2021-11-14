@@ -71,9 +71,11 @@ class PoController extends ProcureCRUDController
         $viewTemplete = $this->getBaseUrl() . "/doc-map";
         $request = $this->getRequest();
 
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
+        /*
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('not_found');
+         * }
+         */
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
@@ -88,7 +90,7 @@ class PoController extends ProcureCRUDController
         }
 
         if ($perPage == null) {
-            $perPage = 1;
+            $perPage = 15;
         }
 
         $collectionRender = $this->getProcureService()->getDocMapCollectionRender($id, $token, $page, $perPage);

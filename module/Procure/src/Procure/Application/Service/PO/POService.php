@@ -50,12 +50,17 @@ class POService extends AbstractService implements PoServiceInterface
      * @param string $renderType
      * @return NULL|\Application\Domain\Util\Collection\Render\TestRenderAsParamQuery
      */
-    public function getDocMapCollectionRender($id, $token, $page, $resultPerPage = 10, $renderType = SupportedRenderType::PARAM_QUERY)
+    public function getDocMapCollectionRender($id, $token, $page, $resultPerPage = 10, $renderType = SupportedRenderType::HMTL_TABLE)
     {
         $rep = new POQueryRepositoryImplV1($this->getDoctrineEM());
 
         // create Paginator
         $totalResults = $rep->getDocMapTotal($id);
+
+        if ($totalResults == 0 or $totalResults == null) {
+            return null;
+        }
+
         $paginator = new Paginator($totalResults, $page, $resultPerPage);
 
         // var_dump($paginator);

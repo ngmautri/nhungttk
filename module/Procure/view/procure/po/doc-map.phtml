@@ -10,6 +10,7 @@
  *
  * @var DocMapRenderAsHtmlTable $collectionRender
  */
+use Application\Application\Helper\Form\FormHelper;
 use Procure\Application\Service\PO\Render\DocMapRenderAsHtmlTable;
 ?>
   
@@ -17,7 +18,11 @@ use Procure\Application\Service\PO\Render\DocMapRenderAsHtmlTable;
 	  <h5>Releated Documents</h5>
 
         <?php
-        echo $collectionRender->execute();
-        echo $collectionRender->printAjaxPaginator();
+        if ($collectionRender != null) :
+            echo $collectionRender->execute();
+            echo $collectionRender->printAjaxPaginator();
+        else :
+            FormHelper::echoMessage("Nothing found !");
+        endif;
         ?>
     </div>

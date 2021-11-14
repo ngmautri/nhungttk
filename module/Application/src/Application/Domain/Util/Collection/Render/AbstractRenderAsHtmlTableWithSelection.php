@@ -68,7 +68,7 @@ abstract class AbstractRenderAsHtmlTableWithSelection extends AbstractCollection
             $n ++;
 
             $tableBody = $tableBody . "<tr>\n";
-            $tableBody = $tableBody . sprintf("<td>%s</td>\n", $n + $this->getFilter()->getOffset()); // default
+            $tableBody = $tableBody . sprintf("<td>%s</td>\n", $n + $this->getOffset()); // default
             $tableBody = $tableBody . $this->createRowCell($element);
             $tableBody = $tableBody . "</tr>";
         }

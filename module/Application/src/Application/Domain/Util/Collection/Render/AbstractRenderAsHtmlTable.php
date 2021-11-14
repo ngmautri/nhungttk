@@ -68,9 +68,7 @@ abstract class AbstractRenderAsHtmlTable extends AbstractCollectionRender
             $tableBody = $tableBody . "</tr>";
         }
 
-        $tmp = sprintf('%s found!', $this->getTotalResults());
-        $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;">%s</div>', $tmp);
-
+        $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;">%s</div>', $this->printResultCount());
         return $result_msg . sprintf($this->tableHtml, $this->getTableId(), $this->getTableClass(), $this->getTableStyle(), $tableHead, $tableBody);
     }
 

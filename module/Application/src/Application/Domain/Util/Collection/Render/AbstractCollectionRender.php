@@ -39,8 +39,22 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
             return null;
         }
 
-        $format = "Records %s to %s /%s";
+        if ($this->getPaginator()->getTotalResults() <= $this->getPaginator()->getResultsPerPage()) {
+            $format = "%s records found!";
+            return sprintf($format, $this->getPaginator()->getTotalResults());
+        }
+
+        $format = "Records %s to %s of %s found!";
         return sprintf($format, $this->getPaginator()->getOffset() + 1, $this->getPaginator()->getOffset() + $this->getPaginator()->getLimit(), $this->getPaginator()->getTotalResults());
+    }
+
+    protected function getOffset()
+    {
+        if ($this->getPaginator() == null) {
+            return 0;
+        }
+
+        return $this->getPaginator()->getOffset();
     }
 
     /**

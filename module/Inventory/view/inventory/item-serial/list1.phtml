@@ -8,21 +8,21 @@ use Application\Domain\Util\Collection\Render\AbstractRenderAsParamQuery;
  * @var AbstractCollectionRender $collectionRender
  */
 ?>
-
-
-  <div id="item_serial_div">
+<div id="item_serial_div">
 
 	<h5>Item Serial:</h5>
 
         <?php
-        echo $collectionRender->printToolBar() . FormHelper::drawLine();
-        echo $collectionRender->execute();
-        echo $collectionRender->printAjaxPaginator();
+
+        if ($collectionRender != null) :
+            echo $collectionRender->printToolBar() . FormHelper::drawLine();
+            echo $collectionRender->execute();
+            echo $collectionRender->printAjaxPaginator();
+        else :
+            echo FormHelper::echoMessage("Nothing found !");
+        endif;
         ?>
-    
-    
-  
-  
+   
 
 <?php
 /*

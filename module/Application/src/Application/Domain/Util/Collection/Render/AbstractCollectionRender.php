@@ -33,6 +33,16 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
 
     protected $toolbar;
 
+    protected function printResultCount()
+    {
+        if ($this->getPaginator() == null) {
+            return null;
+        }
+
+        $format = "Records %s to %s /%s";
+        return sprintf($format, $this->getPaginator()->getOffset() + 1, $this->getPaginator()->getOffset() + $this->getPaginator()->getLimit(), $this->getPaginator()->getTotalResults());
+    }
+
     /**
      *
      * @param int $collectionCount

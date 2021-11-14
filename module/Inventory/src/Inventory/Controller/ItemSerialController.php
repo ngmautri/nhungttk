@@ -65,10 +65,6 @@ class ItemSerialController extends AbstractGenericController
 
         $collectionRender = $this->getItemSerialReporter()->getItemSerialCollectionRender($filter, $page, $perPage, $render_type);
 
-        if ($collectionRender == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
-
         $viewModel = new ViewModel(array(
             'action' => $action,
             'form_action' => $form_action,

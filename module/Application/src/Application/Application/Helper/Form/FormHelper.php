@@ -9,7 +9,11 @@ namespace Application\Application\Helper\Form;
 class FormHelper
 {
 
-    const DIVIDER = 'divider';
+    public static function echoMessage($msg, $label = FormHelperConst::B_LABEL_DEFAULT)
+    {
+        $format = '<h5><span class="label label-%s" style="margin: 5pt 1pt 5pt 1pt; font-size:10pt;">%s</span></h5>';
+        echo sprintf($format, $label, $msg);
+    }
 
     public static function drawLine()
     {
@@ -47,7 +51,7 @@ class FormHelper
 
         foreach ($list as $l) {
 
-            if ($l == self::DIVIDER) {
+            if ($l == FormHelperConst::DIVIDER) {
                 $dropDown = $dropDown . '<li role="separator" class="divider"></li>';
             } else {
                 $dropDown = $dropDown . \sprintf('<li>%s</li>', $l);

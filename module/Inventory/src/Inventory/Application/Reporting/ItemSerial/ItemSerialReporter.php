@@ -2,11 +2,12 @@
 namespace Inventory\Application\Reporting\ItemSerial;
 
 use Application\Application\Helper\Form\FormHelper;
+use Application\Application\Helper\Form\FormHelperConst;
 use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
 use Application\Domain\Util\Collection\Render\DefaultRenderAsArray;
 use Application\Domain\Util\Pagination\Paginator;
 use Application\Service\AbstractService;
-use Inventory\Application\Reporting\ItemSerial\CollectionRender\DefaultItemSerialRenderAsHtmlTable;
+use Inventory\Application\Reporting\ItemSerial\CollectionRender\DefaultItemSerialRenderAsHtmlTableWithForm;
 use Inventory\Application\Reporting\ItemSerial\CollectionRender\ItemSerialRenderAsExcel;
 use Inventory\Application\Reporting\ItemSerial\CollectionRender\ItemSerialRenderAsParamQuery;
 use Inventory\Application\Reporting\ItemSerial\CollectionRender\Spreadsheet\ExcelBuilder;
@@ -44,6 +45,11 @@ class ItemSerialReporter extends AbstractService
 
         // create Paginator
         $totalResults = $this->getListTotal($filter);
+
+        if ($totalResults == null or $totalResults == 0) {
+            return null;
+        }
+
         $paginator = new Paginator($totalResults, $page, $resultPerPage);
 
         $f = "/inventory/item-serial/list1?target_id=%s&token=%s&render_type=%s";
@@ -78,7 +84,7 @@ class ItemSerialReporter extends AbstractService
 
         $list = [
             FormHelper::createLink($excel_url, '<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel (*.xlxs)'),
-            FormHelper::DIVIDER,
+            FormHelperConst::DIVIDER,
             FormHelper::createLink($oo_url, '<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Open Office (*.ods)')
         ];
 
@@ -87,7 +93,7 @@ class ItemSerialReporter extends AbstractService
         switch ($renderType) {
 
             case SupportedRenderType::HMTL_TABLE:
-                $render = new DefaultItemSerialRenderAsHtmlTable($totalResults, $collection);
+                $render = new DefaultItemSerialRenderAsHtmlTableWithForm($totalResults, $collection);
                 $render->setPaginator($paginator);
                 $toolbar1 = $toolbar1 . FormHelper::createButtonForJS('<i class="fa fa-th" aria-hidden="true"></i>', $html_onclick, 'Gird View');
 
@@ -126,7 +132,7 @@ class ItemSerialReporter extends AbstractService
                 break;
 
             default:
-                $render = new DefaultItemSerialRenderAsHtmlTable($totalResults, $collection);
+                $render = new DefaultItemSerialRenderAsHtmlTableWithForm($totalResults, $collection);
                 $render->setPaginator($paginator);
                 break;
         }

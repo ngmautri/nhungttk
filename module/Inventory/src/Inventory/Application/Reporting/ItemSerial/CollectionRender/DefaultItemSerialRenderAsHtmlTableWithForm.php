@@ -61,5 +61,11 @@ class DefaultItemSerialRenderAsHtmlTableWithForm extends AbstractRenderAsHtmlTab
     {
         return 'test';
     }
+
+    protected function createHeader()
+    {}
+
+    protected function createFooter()
+    {}
 }
 

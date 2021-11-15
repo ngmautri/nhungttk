@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Infrastructure\Persistence\SQL\Filter;
 
-use Inventory\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
+use Application\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
 
 /**
  *
@@ -20,6 +20,8 @@ class InventoryQuerySqlFilter implements SqlFilterInterface
     public $limit;
 
     public $offset;
+
+    public $resultPerPage;
 
     /**
      *
@@ -109,5 +111,23 @@ class InventoryQuerySqlFilter implements SqlFilterInterface
     public function setOffset($offset)
     {
         $this->offset = $offset;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getResultPerPage()
+    {
+        return $this->resultPerPage;
+    }
+
+    /**
+     *
+     * @param mixed $resultPerPage
+     */
+    public function setResultPerPage($resultPerPage)
+    {
+        $this->resultPerPage = $resultPerPage;
     }
 }

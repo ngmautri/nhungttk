@@ -7,8 +7,10 @@ use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
 use Application\Domain\Util\Pagination\Paginator;
 use Application\Entity\NmtInventorySerial;
 use Inventory\Application\Reporting\ItemSerial\ItemSerialReporter;
+use Inventory\Form\ItemSerial\ItemSerialFilterForm;
 use Inventory\Infrastructure\Persistence\SQL\Filter\ItemSerialSqlFilter;
 use Inventory\Service\ItemSearchService;
+use Zend\Hydrator\Reflection;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
@@ -48,6 +50,13 @@ class ItemSerialController extends AbstractGenericController
         $perPage = $this->params()->fromQuery('perPage');
         $render_type = $this->params()->fromQuery('render_type');
 
+        $form = new ItemSerialFilterForm("coa_create_form");
+        $form->setAction($form_action);
+        $form->setHydrator(new Reflection());
+        $form->setRedirectUrl('/application/warehouse/list');
+        $form->setFormAction($action);
+        $form->refresh();
+
         if ($page == null) {
             $page = 1;
         }
@@ -71,7 +80,8 @@ class ItemSerialController extends AbstractGenericController
             'form_title' => $form_title,
             'redirectUrl' => null,
             'collectionRender' => $collectionRender,
-            'companyVO' => $this->getCompanyVO()
+            'companyVO' => $this->getCompanyVO(),
+            'form' => $form
         ));
 
         $viewModel->setTemplate($viewTemplete);

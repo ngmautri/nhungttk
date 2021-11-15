@@ -1,9 +1,8 @@
 <?php
-namespace Inventory\Infrastructure\Persistence\SQL\Contract;
+namespace Application\Infrastructure\Persistence\SQL\Contract;
 
 /**
  *
- * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

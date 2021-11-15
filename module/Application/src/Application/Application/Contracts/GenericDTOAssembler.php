@@ -6,7 +6,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GenericDTOAssembler
 {
@@ -113,20 +113,23 @@ class GenericDTOAssembler
             $property->setAccessible(true);
             $propertyName = $property->getName();
 
-            $a = sprintf("[
-               'type' => 'text',
-               'name' => '%s',
-               'attributes' => [
-                   'id' => '%s',
-                   'class' => 'form-control'
-               ],
-               'options' => [
-                   'label' => '%s'
-               ]
-           ]", $propertyName, $propertyName, $propertyName);
+            echo self::_createFormElement($propertyName);
+        }
+    }
 
-            $e = \sprintf('$this->add(%s);' . "\n", $a);
-            echo $e;
+    public static function createFormElementsFunction($className)
+    {
+        Assert::notNull($className);
+
+        $entity = new $className();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            echo self::_createFormElementFunctionFor($propertyName);
         }
     }
 
@@ -170,29 +173,6 @@ class GenericDTOAssembler
         }
     }
 
-    private static function _createFormElement($propertyName)
-    {
-        $a = sprintf("[
-                   'type' => 'text',
-                   'name' => '%s',
-                   'attributes' => [
-                       'id' => '%s',
-                       'class' => \"form-control input-sm\",
-                       'required' => FALSE,
-                   ],
-                   'options' => [
-                       'label' => Translator::translate('%s'),
-                       'label_attributes' => [
-                            'class' => \"control-label col-sm-2\"
-                        ]
-                   ]
-                ]", $propertyName, $propertyName, $propertyName);
-
-        $tmp = "//======================================\n";
-        $e = \sprintf("\n%s //Form Element for {%s}\n" . ' %s $this->add(%s);' . "\n", $tmp, $propertyName, $tmp, $a);
-        return $e;
-    }
-
     public static function createFormElementsFunctionExclude($className, $properties)
     {
         Assert::notNull($className);
@@ -207,16 +187,7 @@ class GenericDTOAssembler
             $propertyName = $property->getName();
 
             if (! in_array($propertyName, $properties)) {
-
-                $fName = sprintf('get%s()', ucfirst($propertyName));
-                $fContent = sprintf('return $this->get("%s");', $propertyName);
-
-                $f = <<<EOD
-public function $fName {
-    $fContent\n
-}\n
-EOD;
-                echo $f;
+                echo self::_createFormElementFunctionFor($propertyName);
             }
         }
     }
@@ -235,17 +206,50 @@ EOD;
             $propertyName = $property->getName();
 
             if (in_array($propertyName, $properties)) {
-
-                $fName = sprintf('get%s()', ucfirst($propertyName));
-                $fContent = sprintf('return $this->get("%s");', $propertyName);
-
-                $f = <<<EOD
-public function $fName {
-    $fContent\n
-}\n
-EOD;
-                echo $f;
+                echo self::_createFormElementFunctionFor($propertyName);
             }
         }
+    }
+
+    /*
+     * |=============================
+     * |Helper
+     * |
+     * |=============================
+     */
+    private static function _createFormElement($propertyName)
+    {
+        $a = sprintf("[
+                   'type' => 'text', // to update, if needed
+                   'name' => '%s',
+                   'attributes' => [
+                       'id' => '%s',
+                       'class' => \"form-control input-sm\", // to update, if needed
+                       'required' => FALSE, // to update, if needed
+                   ],
+                   'options' => [
+                       'label' => Translator::translate('%s'), // to update, if needed
+                       'label_attributes' => [
+                            'class' => \"control-label col-sm-2\" // to update, if needed
+                        ]
+                   ]
+                ]", $propertyName, $propertyName, $propertyName);
+
+        $tmp = "//======================================\n";
+        $e = \sprintf("\n%s //Form Element for {%s}\n" . ' %s $this->add(%s);' . "\n", $tmp, $propertyName, $tmp, $a);
+        return $e;
+    }
+
+    private static function _createFormElementFunctionFor($propertyName)
+    {
+        $fName = sprintf('get%s()', ucfirst($propertyName));
+        $fContent = sprintf('return $this->get("%s");', $propertyName);
+
+        $f = "
+                public function $fName {
+                    $fContent\n
+                }\n
+                ";
+        return $f;
     }
 }

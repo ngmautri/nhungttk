@@ -30,7 +30,9 @@ $(document).ready(function(){
     {
         $format = '<button id="btn_9999999" type="button" class="btn btn-default" data-toggle="collapse" data-target="#%s">%s</button>
         <div id="%s" class="collapse%s">
+ <div style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
         %s
+</div>
         </div>';
 
         $in = '';

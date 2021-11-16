@@ -44,33 +44,60 @@ class ItemSerialController extends AbstractGenericController
 
         $request = $this->getRequest();
 
-        $id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
-        $page = $this->params()->fromQuery('page');
-        $perPage = $this->params()->fromQuery('perPage');
-        $render_type = $this->params()->fromQuery('render_type');
+        // var_dump($this->params()->fromQuery());
 
-        $form = new ItemSerialFilterForm("coa_create_form");
-        $form->setAction($form_action);
-        $form->setHydrator(new Reflection());
-        $form->setRedirectUrl('/application/warehouse/list');
-        $form->setFormAction($action);
-        $form->refresh();
+        // / var_dump($_GET);
 
-        if ($page == null) {
+        $id = null;
+
+        if (isset($_GET['itemId'])) {
+            $id = (int) $_GET['itemId'];
+        }
+        $docMonth = null;
+        if (isset($_GET['docMonth'])) {
+            $docMonth = (int) $_GET['docMonth'];
+        }
+
+        if (isset($_GET['resultPerPage'])) {
+            $perPage = (int) $_GET['resultPerPage'];
+        } else {
+            $perPage = 20;
+        }
+
+        if (isset($_GET['render_type'])) {
+            $render_type = (int) $_GET['render_type'];
+        } else {
+            $render_type = SupportedRenderType::HMTL_TABLE;
+        }
+
+        if (isset($_GET['page'])) {
+            $page = (int) $_GET['page'];
+        } else {
             $page = 1;
         }
 
-        if ($perPage == null) {
-            $perPage = 15;
-        }
-
-        if ($render_type == null) {
-            $render_type = SupportedRenderType::PARAM_QUERY;
-        }
+        /*
+         * $id = (int) $this->params()->fromQuery('itemId');
+         * $token = $this->params()->fromQuery('token');
+         * $page = $this->params()->fromQuery('page');
+         * $perPage = $this->params()->fromQuery('resultPerPage');
+         * $render_type = $this->params()->fromQuery('render_type');
+         */
 
         $filter = new ItemSerialSqlFilter();
         $filter->setItemId($id);
+        $filter->setResultPerPage($perPage);
+        $filter->setDocMonth($docMonth);
+
+        // var_dump($filter);
+
+        $form = new ItemSerialFilterForm("filter_form");
+        $form->setAction($form_action);
+        $form->setHydrator(new Reflection());
+        $form->setRedirectUrl('http://mla-app.com/inventory/item/list2');
+        $form->setFormAction($action);
+        $form->refresh();
+        $form->bind($filter);
 
         $collectionRender = $this->getItemSerialReporter()->getItemSerialCollectionRender($filter, $page, $perPage, $render_type);
 

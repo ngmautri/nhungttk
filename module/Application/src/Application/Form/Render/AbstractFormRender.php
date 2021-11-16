@@ -10,7 +10,7 @@ use Zend\View\Renderer\PhpRenderer;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class AbstractFormRender implements FormRenderInterface
 {
@@ -209,6 +209,24 @@ abstract class AbstractFormRender implements FormRenderInterface
         return null;
     }
 
+    /**
+     * when submit form with AJAX, button type submit must be used! otherwise, submit event is not triggered!
+     */
+    protected function submitButtonWithCustomResultDiv(GenericForm $form, PhpRenderer $viewRender, $url, $resultDiv, $label, $cssClass = null)
+    {
+        $html = "<div class=\"form-group margin-bottom\">\n
+                    %s\n
+                    <div class=\"col-sm-3\">%s</div>\n
+              </div>\n";
+
+        $cssClass = 'btn btn-default btn-sm';
+
+        $b = sprintf(' <button type="submit" class="%s" style="color: black; font-size:9pt;" onclick="submitAjaxGETForm(\'%s\');" href="javascript:;">
+        <i class="fa fa-filter" aria-hidden="true"></i> &nbsp;%s</button>', $cssClass, $form->getId(), $this->createLabel($label, $viewRender));
+
+        return sprintf($html, "<label class=\"control-label col-sm-2\" for=\"inputTag\"></label>", $b);
+    }
+
     protected function submitButton(GenericForm $form, PhpRenderer $viewRender, $cssClass = null)
     {
         $cssClass = 'btn btn-primary btn-sm';
@@ -236,6 +254,14 @@ abstract class AbstractFormRender implements FormRenderInterface
 
         return sprintf(' <a title="%s" class="%s" style="%s" href="%s">
         <i class="%s" aria-hidden="true"></i> &nbsp;%s</a>', $title, $cssClass, $style, $href, $icon, $label);
+    }
+
+    protected function createCustomButtonWithOnclick(GenericForm $form, PhpRenderer $viewRender, $onclick, $cssClass, $style, $icon, $label, $title)
+    {
+        $cssClass = 'btn btn-default btn-sm';
+
+        return sprintf(' <a title="%s" class="%s" style="%s" href="#" onclick="%s">
+        <i class="%s" aria-hidden="true"></i> &nbsp;%s</a>', $title, $cssClass, $style, $onclick, $icon, $label);
     }
 
     protected function _drawSeparator()

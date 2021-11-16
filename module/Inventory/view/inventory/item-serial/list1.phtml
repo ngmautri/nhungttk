@@ -19,16 +19,15 @@ use Inventory\Form\ItemSerial\ItemSerialFilterFormRender;
 
         <?php
 
+        $showTitle = '<span style="font-size:8pt"><i class="fa fa-chevron-down" aria-hidden="true"></i> Filter</span>';
+        $hideTitle = '<span <span style="font-size:8pt"><i class="fa fa-chevron-up" aria-hidden="true"></i> Filter</span>';
+        $collapseId = 'test_id';
+        $content = $form->renderForView($this, new ItemSerialFilterFormRender());
+
+        echo CollapseHelper::drawBasisCollapse($showTitle, $hideTitle, $collapseId, $content);
+        echo FormHelper::drawLine();
+
         if ($collectionRender != null) :
-
-            $showTitle = '<i class="fa fa-chevron-down" aria-hidden="true"></i> Filter';
-            $hideTitle = '<i class="fa fa-chevron-up" aria-hidden="true"></i> Filter';
-            $collapseId = 'test_id';
-            $content = $form->renderForView($this, new ItemSerialFilterFormRender());
-
-            echo CollapseHelper::drawBasisCollapse($showTitle, $hideTitle, $collapseId, $content);
-
-            echo FormHelper::drawLine();
 
             echo $collectionRender->printToolBar() . FormHelper::drawLine();
             echo $collectionRender->execute();

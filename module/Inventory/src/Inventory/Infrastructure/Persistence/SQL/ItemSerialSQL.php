@@ -48,7 +48,7 @@ WHERE 1 %s
 ";
 
     const SERIAL_AP_SQL = "
-LEFT JOIN (
+JOIN (
 	SELECT
 		fin_vendor_invoice.vendor_name,
 		fin_vendor_invoice.vendor_id AS vendor_id,

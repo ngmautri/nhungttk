@@ -27,14 +27,14 @@ class PaginatorRender
             return;
         }
 
-        $last = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $paginator->getTotalPages(), $paginator->getResultsPerPage());
-        $first = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, 1, $paginator->getResultsPerPage());
+        $last = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, $paginator->getTotalPages(), $paginator->getResultsPerPage());
+        $first = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, 1, $paginator->getResultsPerPage());
 
         $p1 = ($paginator->getPage()) - 1;
         $p2 = ($paginator->getPage()) + 1;
 
-        $prev = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p1, $paginator->getResultsPerPage());
-        $next = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p2, $paginator->getResultsPerPage());
+        $prev = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, $p1, $paginator->getResultsPerPage());
+        $next = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, $p2, $paginator->getResultsPerPage());
 
         $paginator_str = '<ul class="pagination pagination-sm">';
 
@@ -45,7 +45,7 @@ class PaginatorRender
 
         for ($i = $paginator->getMinInPageSet(); $i <= $paginator->getMaxInPageSet(); $i ++) {
 
-            $url = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $i, $paginator->getResultsPerPage());
+            $url = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, $i, $paginator->getResultsPerPage());
 
             if ($i == $paginator->getPage()) {
                 $paginator_str = $paginator_str . \sprintf('<li><a class="active" href="#">%s</a></li>', $i);
@@ -81,8 +81,8 @@ class PaginatorRender
             return;
         }
 
-        $last = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $paginator->getTotalPages(), $paginator->getResultsPerPage());
-        $first = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, 1, $paginator->getResultsPerPage());
+        $last = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, $paginator->getTotalPages(), $paginator->getResultsPerPage());
+        $first = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, 1, $paginator->getResultsPerPage());
 
         $first_js = \sprintf("doPaginatorV1('%s','%s')", $first, $result_div);
         $last_js = \sprintf("doPaginatorV1('%s','%s')", $last, $result_div);
@@ -90,8 +90,8 @@ class PaginatorRender
         $p1 = ($paginator->getPage()) - 1;
         $p2 = ($paginator->getPage()) + 1;
 
-        $prev = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p1, $paginator->getResultsPerPage());
-        $next = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p2, $paginator->getResultsPerPage());
+        $prev = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, $p1, $paginator->getResultsPerPage());
+        $next = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, $p2, $paginator->getResultsPerPage());
         $next_js = \sprintf("doPaginatorV1('%s','%s')", $next, $result_div);
         $prev_js = \sprintf("doPaginatorV1('%s','%s')", $prev, $result_div);
 
@@ -104,7 +104,7 @@ class PaginatorRender
 
         for ($i = $paginator->getMinInPageSet(); $i <= $paginator->getMaxInPageSet(); $i ++) {
 
-            $url = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $i, $paginator->getResultsPerPage());
+            $url = \sprintf("%s%spage=%s&resultPerPage=%s", $base, $connector_symbol, $i, $paginator->getResultsPerPage());
             $url_js = \sprintf("doPaginatorV1('%s','%s')", $url, $result_div);
 
             if ($i == $paginator->getPage()) {

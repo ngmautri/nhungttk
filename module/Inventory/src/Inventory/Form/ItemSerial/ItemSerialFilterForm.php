@@ -3,6 +3,7 @@ namespace Inventory\Form\ItemSerial;
 
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
+use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Select;
 
 /**
@@ -19,7 +20,7 @@ class ItemSerialFilterForm extends GenericForm
     {
         parent::__construct($id);
         $this->id = $id;
-        $this->setAttribute('method', 'post');
+        $this->setAttribute('method', 'get');
         $this->setAttribute('class', 'form-horizontal');
     }
 
@@ -115,6 +116,31 @@ class ItemSerialFilterForm extends GenericForm
      */
     protected function addManualElements()
     {
+
+        // ======================================
+        // Form Element for {itemId}
+        // ======================================
+        $this->add([
+            'type' => Hidden::class, // to update, if needed
+            'name' => 'itemId'
+        ]);
+
+        // ======================================
+        // Form Element for {vendorId}
+        // ======================================
+        $this->add([
+            'type' => Hidden::class, // to update, if needed
+            'name' => 'vendorId'
+        ]);
+
+        // ======================================
+        // Form Element for {invoiceId}
+        // ======================================
+        $this->add([
+            'type' => Hidden::class, // to update, if needed
+            'name' => 'invoiceId'
+        ]);
+
         // ======================================
         // Form Element for {resultPerPage}
         // ======================================
@@ -171,6 +197,21 @@ class ItemSerialFilterForm extends GenericForm
      * |
      * |=============================
      */
+    public function getItemId()
+    {
+        return $this->get("itemId");
+    }
+
+    public function getVendorId()
+    {
+        return $this->get("vendorId");
+    }
+
+    public function getInvoiceId()
+    {
+        return $this->get("invoiceId");
+    }
+
     public function getDocYear()
     {
         return $this->get("docYear");

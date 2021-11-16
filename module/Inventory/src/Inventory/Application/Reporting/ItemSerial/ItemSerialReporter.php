@@ -52,8 +52,8 @@ class ItemSerialReporter extends AbstractService
 
         $paginator = new Paginator($totalResults, $page, $resultPerPage);
 
-        $f = "/inventory/item-serial/list1?target_id=%s&token=%s&render_type=%s";
-        $url = sprintf($f, $filter->getItemId(), "", $renderType);
+        $f = "/inventory/item-serial/list1?itemId=%s&token=%s&render_type=%s&docMonth=%s";
+        $url = sprintf($f, $filter->getItemId(), "", $renderType, $filter->getDocMonth());
         $paginator->setBaseUrl($url);
         $paginator->setUrlConnectorSymbol("&");
         $paginator->setDisplayHTMLDiv("item_serial_div");
@@ -73,7 +73,7 @@ class ItemSerialReporter extends AbstractService
         $filter->setSort('DESC');
         $collection = $rep->getList($filter);
 
-        $format = "/inventory/item-serial/list1?target_id=%s&render_type=%s";
+        $format = "/inventory/item-serial/list1?itemId=%s&render_type=%s";
         $excel_url = sprintf($format, $filter->getItemId(), SupportedRenderType::EXCEL);
         $oo_url = sprintf($format, $filter->getItemId(), SupportedRenderType::OPEN_OFFICE);
         $table_html_url = sprintf($format, $filter->getItemId(), SupportedRenderType::HMTL_TABLE);

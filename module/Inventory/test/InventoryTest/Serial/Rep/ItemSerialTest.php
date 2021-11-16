@@ -44,9 +44,10 @@ class ItemSerialTest extends PHPUnit_Framework_TestCase
 
             $filter = new ItemSerialSqlFilter();
             $filter->setItemId(3963);
-            $rootEntity = $rep->getlist($filter);
+            $filter->setDocMonth(10);
+            $rootEntity = $rep->getListTotal($filter);
 
-            // \var_dump($rootEntity->getReturn());
+            var_dump($rootEntity);
         } catch (InvalidArgumentException $e) {
             // var_dump($e->getMessage());
         }

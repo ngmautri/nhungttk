@@ -17,16 +17,18 @@ class FormCodeGenerateTest extends PHPUnit_Framework_TestCase
         try {
 
             $properties = [
-
                 "docYear",
                 "docMonth",
                 "isActive",
-                "resultPerPage"
+                "resultPerPage",
+                "itemId",
+                "vendorId",
+                "invoiceId"
             ];
 
             // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(ItemSerialSqlFilter::class);
-            $result = GenericDTOAssembler::createFormElementsFor(ItemSerialSqlFilter::class, $properties);
-            // $result = GenericDTOAssembler::createFormElementsFunctionFor(ItemSerialSqlFilter::class, $properties);
+            // $result = GenericDTOAssembler::createFormElementsFor(ItemSerialSqlFilter::class, $properties);
+            $result = GenericDTOAssembler::createFormElementsFunctionFor(ItemSerialSqlFilter::class, $properties);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

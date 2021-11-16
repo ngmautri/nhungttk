@@ -67,10 +67,10 @@ class ItemSerialHelper
         }
 
         if ($filter->getDocYear() > 0) {
-            $tmp1 = $tmp1 . \sprintf(" AND year(fin_vendor_invoice_row.invoice_posting_date) =%s", $filter->getDocYear());
+            $tmp1 = $tmp1 . \sprintf(" AND year(fin_vendor_invoice.posting_date) =%s", $filter->getDocYear());
         }
         if ($filter->getDocMonth() > 0) {
-            $tmp1 = $tmp1 . \sprintf(" AND month(fin_vendor_invoice_row.invoice_posting_date) =%s", $filter->getDocMonth());
+            $tmp1 = $tmp1 . \sprintf(" AND month(fin_vendor_invoice.posting_date) =%s", $filter->getDocMonth());
         }
 
         if ($filter->getItemId() > 0) {
@@ -95,13 +95,6 @@ class ItemSerialHelper
             $tmp1 = $tmp1 . " AND (nmt_inventory_item_serial.is_active = 1";
         } elseif ($filter->getIsActive() == - 1) {
             $tmp1 = $tmp1 . " AND (nmt_inventory_item_serial.is_active = 0 OR nmt_inventory_item_serial.is_active = 0)";
-        }
-
-        if ($filter->getDocYear() > 0) {
-            $tmp1 = $tmp1 . \sprintf(" AND year(fin_vendor_invoice_row.invoice_posting_date) =%s", $filter->getDocYear());
-        }
-        if ($filter->getDocMonth() > 0) {
-            $tmp1 = $tmp1 . \sprintf(" AND month(fin_vendor_invoice_row.invoice_posting_date) =%s", $filter->getDocMonth());
         }
 
         if ($filter->getItemId() > 0) {
@@ -180,7 +173,7 @@ class ItemSerialHelper
      */
     private static function runQuery(EntityManager $doctrineEM, $sql, ResultSetMappingBuilder $rsm)
     {
-        // /echo $sql;
+        // echo $sql;
         try {
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
             $result = $query->getResult();

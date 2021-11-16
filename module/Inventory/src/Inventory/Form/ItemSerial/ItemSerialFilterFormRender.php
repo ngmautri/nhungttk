@@ -27,11 +27,23 @@ class ItemSerialFilterFormRender extends AbstractFormRender
 
         $labelHelper = new FormLabel();
 
+        $e = $form->getItemId();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
+        $itemID = $e->getValue();
+
         $e = $form->getDocMonth();
         $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
 
         $e = $form->getResultPerPage();
-        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-3', true);
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
+        $perPage = $e->getValue();
+
+        $url = '/inventory/item-serial/list1';
+        $resultDiv = 'item_serial_div';
+        $label = 'Filter';
+
+        $otherBtn = $this->submitButtonWithCustomResultDiv($form, $viewRender, $url, $resultDiv, $label);
+        $this->append($otherBtn);
 
         return $this->getOutput();
     }

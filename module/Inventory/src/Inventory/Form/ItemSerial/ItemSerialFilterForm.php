@@ -134,6 +134,14 @@ class ItemSerialFilterForm extends GenericForm
         ]);
 
         // ======================================
+        // Form Element for {renderType}
+        // ======================================
+        $this->add([
+            'type' => Hidden::class, // to update, if needed
+            'name' => 'renderType'
+        ]);
+
+        // ======================================
         // Form Element for {invoiceId}
         // ======================================
         $this->add([
@@ -230,5 +238,10 @@ class ItemSerialFilterForm extends GenericForm
     public function getResultPerPage()
     {
         return $this->get("resultPerPage");
+    }
+
+    public function getRenderType()
+    {
+        return $this->get("renderType");
     }
 }

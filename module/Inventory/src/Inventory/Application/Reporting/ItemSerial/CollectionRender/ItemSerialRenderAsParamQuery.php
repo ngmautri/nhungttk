@@ -17,4 +17,14 @@ class ItemSerialRenderAsParamQuery extends AbstractRenderAsParamQuery
         $data = new ItemSerialParamQueryHelper($this->getRemoteUrl());
         return $data->getOutPut();
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Util\Collection\Render\AbstractCollectionRender::printAjaxPaginator()
+     */
+    public function printAjaxPaginator()
+    {
+        return null;
+    }
 }

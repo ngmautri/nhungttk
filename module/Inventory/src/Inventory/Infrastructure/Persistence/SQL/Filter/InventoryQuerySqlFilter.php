@@ -23,6 +23,8 @@ class InventoryQuerySqlFilter implements SqlFilterInterface
 
     public $resultPerPage;
 
+    public $renderType;
+
     /**
      *
      * @return mixed
@@ -129,5 +131,23 @@ class InventoryQuerySqlFilter implements SqlFilterInterface
     public function setResultPerPage($resultPerPage)
     {
         $this->resultPerPage = $resultPerPage;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRenderType()
+    {
+        return $this->renderType;
+    }
+
+    /**
+     *
+     * @param mixed $renderType
+     */
+    public function setRenderType($renderType)
+    {
+        $this->renderType = $renderType;
     }
 }

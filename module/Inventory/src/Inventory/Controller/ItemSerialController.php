@@ -48,51 +48,22 @@ class ItemSerialController extends AbstractGenericController
 
         // / var_dump($_GET);
 
-        $id = null;
-
-        if (isset($_GET['itemId'])) {
-            $id = (int) $_GET['itemId'];
-        }
-        $docMonth = null;
-        if (isset($_GET['docMonth'])) {
-            $docMonth = (int) $_GET['docMonth'];
-        }
-
-        if (isset($_GET['resultPerPage'])) {
-            $perPage = (int) $_GET['resultPerPage'];
-        } else {
-            $perPage = 20;
-        }
-
-        if (isset($_GET['render_type'])) {
-            $render_type = (int) $_GET['render_type'];
-        } else {
-            $render_type = SupportedRenderType::HMTL_TABLE;
-        }
-
-        if (isset($_GET['page'])) {
-            $page = (int) $_GET['page'];
-        } else {
-            $page = 1;
-        }
-
-        /*
-         * $id = (int) $this->params()->fromQuery('itemId');
-         * $token = $this->params()->fromQuery('token');
-         * $page = $this->params()->fromQuery('page');
-         * $perPage = $this->params()->fromQuery('resultPerPage');
-         * $render_type = $this->params()->fromQuery('render_type');
-         */
+        $itemId = $this->getGETparam('itemId');
+        $docMonth = $this->getGETparam('docMonth');
+        $docMonth = $this->getGETparam('docMonth');
+        $perPage = $this->getGETparam('resultPerPage', 20);
+        $render_type = $this->getGETparam('render_type', SupportedRenderType::HMTL_TABLE);
+        $page = $this->getGETparam('page', 1);
 
         $filter = new ItemSerialSqlFilter();
-        $filter->setItemId($id);
+        $filter->setItemId($itemId);
         $filter->setResultPerPage($perPage);
         $filter->setDocMonth($docMonth);
 
         // var_dump($filter);
 
         $form = new ItemSerialFilterForm("filter_form");
-        $form->setAction($form_action);
+        $form->setAction($form_action . "?render_type=" . $render_type);
         $form->setHydrator(new Reflection());
         $form->setRedirectUrl('http://mla-app.com/inventory/item/list2');
         $form->setFormAction($action);
@@ -117,25 +88,15 @@ class ItemSerialController extends AbstractGenericController
 
     public function girdAction()
     {
-        $itemId = null;
-        if (isset($_GET['item_id'])) {
-            $itemId = (int) $_GET['item_id'];
-        }
-
-        if (isset($_GET["pq_curpage"])) {
-            $page = $_GET["pq_curpage"];
-        } else {
-            $page = 1;
-        }
-
-        if (isset($_GET["pq_rpp"])) {
-            $perPage = $_GET["pq_rpp"];
-        } else {
-            $perPage = 100;
-        }
+        $itemId = $this->getGETparam('itemId');
+        $docMonth = $this->getGETparam('docMonth');
+        $page = $this->getGETparam('pq_curpage', 1);
+        $perPage = $this->getGETparam('pq_rpp', 50);
 
         $filter = new ItemSerialSqlFilter();
         $filter->setItemId($itemId);
+        $filter->setResultPerPage($perPage);
+        $filter->setDocMonth($docMonth);
 
         $collectionRender = $this->getItemSerialReporter()->getItemSerialCollectionRender($filter, $page, $perPage, SupportedRenderType::AS_ARRAY);
 

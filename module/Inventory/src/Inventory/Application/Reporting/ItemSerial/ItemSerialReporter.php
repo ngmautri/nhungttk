@@ -101,11 +101,12 @@ class ItemSerialReporter extends AbstractService
 
             case SupportedRenderType::PARAM_QUERY:
 
-                $format = '/inventory/item-serial/gird?item_id=%s';
-                $remoteUrl = sprintf($format, $filter->getItemId());
+                $format = '/inventory/item-serial/gird?itemId=%s&docMonth=%s&pq_rpp=%s';
+                $remoteUrl = sprintf($format, $filter->getItemId(), $filter->getDocMonth(), $resultPerPage);
 
                 $render = new ItemSerialRenderAsParamQuery($totalResults, $collection);
                 $render->setRemoteUrl($remoteUrl);
+                $render->setPaginator($paginator);
                 $toolbar1 = $toolbar1 . FormHelper::createButtonForJS('<i class="fa fa-list" aria-hidden="true"></i>', $param_onclick, 'Table View');
 
                 break;

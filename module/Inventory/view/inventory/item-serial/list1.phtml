@@ -48,7 +48,16 @@ use Inventory\Form\ItemSerial\ItemSerialFilterFormRender;
 
 if ($collectionRender instanceof AbstractRenderAsParamQuery) :
     // echo $collectionRender->printToolBar();
+
+    $format = "<script> 
+ var remote_url = '%s';
+ var r_pp = '%s';
+
+            </script>";
+    echo sprintf($format, $collectionRender->getRemoteUrl(), $collectionRender->getPaginator()->getResultsPerPage());
+
     ?>
+    
     
      <div id="item_serial_param"></div>
 
@@ -70,7 +79,7 @@ if ($collectionRender instanceof AbstractRenderAsParamQuery) :
                 wrap: false,
                 pageModel: {
                     type: "remote",
-                    rPP: 100,
+                    rPP: r_pp,
                     strRpp: "{0}"
                 }
             };
@@ -83,7 +92,7 @@ if ($collectionRender instanceof AbstractRenderAsParamQuery) :
              */
             obj.dataModel = {
                 location: "remote",
-                url: "/inventory/item-serial/gird?item_id=3963"
+                url: remote_url
             };
 
             /*   

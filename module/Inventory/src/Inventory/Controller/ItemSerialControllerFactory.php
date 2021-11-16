@@ -34,6 +34,9 @@ class ItemSerialControllerFactory implements FactoryInterface
         $sv = $container->get(ItemSerialReporter::class);
         $controller->setItemSerialReporter($sv);
 
+        $sv = $container->get('AppLogger');
+        $controller->setLogger($sv);
+
         return $controller;
     }
 }

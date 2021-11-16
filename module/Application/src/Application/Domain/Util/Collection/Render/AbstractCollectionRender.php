@@ -33,6 +33,8 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
 
     protected $toolbar;
 
+    protected $url;
+
     protected function printResultCount()
     {
         if ($this->getPaginator() == null) {
@@ -286,5 +288,32 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
     public function setToolbar($toolbar)
     {
         $this->toolbar = $toolbar;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getToolbar()
+    {
+        return $this->toolbar;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     *
+     * @param mixed $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
     }
 }

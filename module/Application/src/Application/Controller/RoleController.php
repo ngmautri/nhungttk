@@ -1,16 +1,15 @@
 <?php
 namespace Application\Controller;
 
+use Application\Domain\Util\Pagination\Paginator;
+use Application\Entity\NmtApplicationAclRole;
+use Application\Entity\NmtApplicationAclRoleResource;
+use Application\Entity\NmtApplicationAclUserRole;
+use Application\Model\AclRoleTable;
+use Application\Service\AclService;
+use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Model\AclRoleTable;
-use Application\Domain\Util\Pagination\Paginator;
-use Application\Service\AclService;
-use Application\Entity\NmtApplicationAclRole;
-use Doctrine\ORM\EntityManager;
-use Application\Entity\NmtApplicationAclUserRole;
-use User\Model\UserTable;
-use Application\Entity\NmtApplicationAclRoleResource;
 
 /**
  *
@@ -309,9 +308,11 @@ class RoleController extends AbstractActionController
     public function grantAccessAction()
     {
         $request = $this->getRequest();
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+        /*
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         */
 
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()

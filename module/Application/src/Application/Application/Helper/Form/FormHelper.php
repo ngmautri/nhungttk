@@ -9,6 +9,10 @@ namespace Application\Application\Helper\Form;
 class FormHelper
 {
 
+    const POST_PRE = "<!--#POST_PRE-->";
+
+    const POST_AFTER = "<!--#POST_AFTER-->";
+
     public static function echoMessage($msg, $label = FormHelperConst::B_LABEL_DEFAULT)
     {
         $format = '<h5><span class="label label-%s" style="margin: 5pt 1pt 5pt 1pt; font-size:10pt;">%s</span></h5>';
@@ -41,9 +45,10 @@ class FormHelper
         if ($list == null) {
             return;
         }
-        $dropDown = '<div tyle="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;">';
+        $dropDown = '<div tyle="font-size: 9pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;">';
         $dropDown = $dropDown . '<div class="dropdown">';
         $dropDown = $dropDown . $other_pre;
+        $dropDown = $dropDown . self::POST_PRE;
         $dropDown = $dropDown . '<button style="color: black; padding: 3pt 5pt 3pt 5pt;; color: black; font-size: 9.5pt" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">';
         $dropDown = $dropDown . '<i class="fa fa-download" aria-hidden="true"></i>&nbsp;Download&nbsp;<span class="caret"></span></button>';
 
@@ -60,9 +65,15 @@ class FormHelper
 
         $dropDown = $dropDown . '</ul>';
         $dropDown = $dropDown . $other_after;
+        $dropDown = $dropDown . self::POST_AFTER;
         $dropDown = $dropDown . '</div></div>';
 
         return $dropDown;
+    }
+
+    public static function preAppendToCurrentToolbar($currentToolBar, $element)
+    {
+        return str_replace(self::POST_AFTER, $element, $currentToolBar);
     }
 
     public static function createCustomDropDownMenu($list, $id)

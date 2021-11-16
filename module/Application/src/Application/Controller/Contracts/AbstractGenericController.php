@@ -15,7 +15,7 @@ use Exception;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class AbstractGenericController extends AbstractActionController
 {
@@ -31,16 +31,14 @@ class AbstractGenericController extends AbstractActionController
     protected $company;
 
     protected $formOptionCollection;
-    
-    
+
     protected function modifyPath($path)
     {
-        if($path==null){
+        if ($path == null) {
             return null;
         }
-       
+
         return str_replace('\\', '/', $path);
-        
     }
 
     protected function getGETparam($name, $default = null)

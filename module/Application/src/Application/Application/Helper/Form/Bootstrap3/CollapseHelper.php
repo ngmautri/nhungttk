@@ -28,7 +28,7 @@ $(document).ready(function(){
 
     public static function drawBasisCollapse($showTitle, $hideTitle, $collapseId, $content, $hide = TRUE)
     {
-        $format = '<button id="btn_9999999" type="button" class="btn btn-default" data-toggle="collapse" data-target="#%s">%s</button>
+        $format = '<button id="btn_9999999"  style="font-size: 9.5pt; margin: 2pt; padding: 3pt 5pt 3pt 5pt;" type="button" class="btn btn-default" data-toggle="collapse" data-target="#%s">%s</button>
         <div id="%s" class="collapse%s">
  <div style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
         %s

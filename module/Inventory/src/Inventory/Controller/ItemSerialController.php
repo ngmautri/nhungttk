@@ -55,6 +55,10 @@ class ItemSerialController extends AbstractGenericController
         $render_type = $this->getGETparam('render_type', SupportedRenderType::HMTL_TABLE);
         $page = $this->getGETparam('page', 1);
 
+        if ($page <= 0 or $page == null) {
+            $page = 1;
+        }
+
         $filter = new ItemSerialSqlFilter();
         $filter->setItemId($itemId);
         $filter->setResultPerPage($perPage);
@@ -110,6 +114,20 @@ class ItemSerialController extends AbstractGenericController
 
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
+
+    public function removeAction()
+    {
+        $ids = $this->getPOSTparam('ids');
+
+        $a_json_final['data'] = $ids;
+        $this->logInfo(json_encode($a_json_final));
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+
         $response->setContent(json_encode($a_json_final));
         return $response;
     }

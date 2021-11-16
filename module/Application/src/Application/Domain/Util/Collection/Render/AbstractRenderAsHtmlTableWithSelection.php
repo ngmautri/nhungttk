@@ -1,6 +1,8 @@
 <?php
 namespace Application\Domain\Util\Collection\Render;
 
+use Application\Application\Helper\Form\FormHelper;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -40,8 +42,6 @@ abstract class AbstractRenderAsHtmlTableWithSelection extends AbstractCollection
 
     protected abstract function createFooter();
 
-    protected abstract function setURL();
-
     protected abstract function createHeaderCell();
 
     protected abstract function createRowCell($element);
@@ -77,9 +77,21 @@ abstract class AbstractRenderAsHtmlTableWithSelection extends AbstractCollection
             $tableBody = $tableBody . "</tr>";
         }
 
-        $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;">%s</div>', $this->printResultCount());
+        $format = "confirmRemove(%s)";
+        $onclick = sprintf($format, '');
+        $title = 'Delete selected items!';
 
-        return $result_msg . sprintf($this->tableHtml, $this->setURL(), $this->getTableId(), $this->getTableClass(), $this->getTableStyle(), $tableHead, $tableBody);
+        $btnLable = sprintf('<i class="fa fa-remove" aria-hidden="true"></i><span style="color:red">%s</span>', ' Delete');
+        $deleteBtn = FormHelper::createButtonForJS($btnLable, $onclick, $title);
+
+        $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;">%s</div> ', $this->printResultCount());
+        $result_msg = $result_msg . sprintf('<div style="display:none; color:red;" id="deleteBtn">%s</div>', $deleteBtn);
+
+        $result_msg = $result_msg . sprintf($this->tableHtml, $this->getUrl(), $this->getTableId(), $this->getTableClass(), $this->getTableStyle(), $tableHead, $tableBody);
+
+        $result_msg = $result_msg . $this->createFooter();
+
+        return $result_msg;
     }
 
     /*

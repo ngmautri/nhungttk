@@ -5,6 +5,8 @@ use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
 use Application\Form\Helper\FormHelperFactory;
+use Zend\Form\Element;
+use Zend\Form\View\Helper\FormLabel;
 use Zend\View\Renderer\PhpRenderer;
 
 /**
@@ -17,19 +19,20 @@ abstract class AbstractFormRender implements FormRenderInterface
 
     protected $output = '';
 
-    public function append($htmlPart)
-    {
-        $output = $this->getOutput();
-        $output = $output . $htmlPart;
-        $this->output = $output;
-    }
-
-    public function drawSeparator()
-    {
-        $this->append($this->_drawSeparator());
-    }
-
+    /*
+     * |=============================
+     * |Abstract
+     * |
+     * |=============================
+     */
     abstract function doRendering(GenericForm $form, PhpRenderer $viewRender);
+
+    /*
+     * |=============================
+     * |Render
+     * |
+     * |=============================
+     */
 
     /**
      *
@@ -49,6 +52,12 @@ abstract class AbstractFormRender implements FormRenderInterface
         return $output;
     }
 
+    /*
+     * |=============================
+     * |Fieldset
+     * |
+     * |=============================
+     */
     protected function openFieldSetTag($id, $title, $collapse = 'in')
     {
         $fs = '<fieldset>
@@ -66,7 +75,28 @@ abstract class AbstractFormRender implements FormRenderInterface
         return '</div></fieldset>';
     }
 
-    protected function drawElementOnly($e, $labelHelper, $viewRender, $cssClass = 'col-sm-3', $showLabel = true, $otherHtml = '')
+    /*
+     * |=============================
+     * | Drawing
+     * |
+     * |=============================
+     */
+    public function append($htmlPart)
+    {
+        $output = $this->getOutput();
+        $output = $output . $htmlPart;
+        $this->output = $output;
+    }
+
+    public function drawSeparator()
+    {
+        $this->append($this->_drawSeparator());
+    }
+
+    /**
+     * drawElementOnly
+     */
+    protected function drawElementOnly(Element $e, FormLabel $labelHelper, $viewRender, $cssClass = 'col-sm-3', $showLabel = true, $otherHtml = '')
     {
         $div = '
 %s
@@ -87,7 +117,10 @@ abstract class AbstractFormRender implements FormRenderInterface
         return \sprintf($div, $labelHtml, $cssClass, $elementHtml, $otherHtml);
     }
 
-    protected function drawElement($e, $labelHelper, $viewRender, $cssClass = 'col-sm-3', $showLabel = true, $otherHtml = null)
+    /**
+     * drawElementOnly
+     */
+    protected function drawElement(Element $e, FormLabel $labelHelper, $viewRender, $cssClass = 'col-sm-3', $showLabel = true, $otherHtml = null)
     {
         $labelHtml = '';
 
@@ -98,6 +131,7 @@ abstract class AbstractFormRender implements FormRenderInterface
         }
 
         $elementHtml = FormHelperFactory::render($e);
+
         $required = $e->getAttribute('required');
         if ($required) {
             $div = $this->createRequiredDiv($labelHtml, $elementHtml, $cssClass, $otherHtml);
@@ -108,6 +142,9 @@ abstract class AbstractFormRender implements FormRenderInterface
         return $div;
     }
 
+    /**
+     * drawAndAppendElement
+     */
     protected function drawAndAppendElement($e, $labelHelper, $viewRender, $cssClass = 'col-sm-3', $showLabel = true, $otherHtml = null)
     {
         $labelHtml = '';
@@ -130,31 +167,45 @@ abstract class AbstractFormRender implements FormRenderInterface
         $this->append($div);
     }
 
+    /**
+     * createNormalDiv
+     * ==================
+     */
     protected function createNormalDiv($labelHtml, $elementHtml, $cssClass, $otherHtml = null)
     {
         $div = '<div class="form-group margin-bottom">%s
-                <div class="%s">
-                    %s
-                </div>
+                    <div class="%s">
+                        %s
+                    </div>
                     %s
                 </div>';
-
         return \sprintf($div, $labelHtml, $cssClass, $elementHtml, $otherHtml);
     }
 
+    /**
+     * createRequiredDiv
+     * ==================
+     */
     protected function createRequiredDiv($labelHtml, $elementHtml, $cssClass, $otherHtml = null)
 
     {
-        $div = '<div class="form-group margin-bottom required">%s
-                <div class="%s">
-                %s
-                </div>
-                %s
+        $div = '<div class="form-group margin-bottom required">
+                    s
+                    <div class="%s">
+                    %s
+                    </div>
+                    %s
                 </div>';
 
         return \sprintf($div, $labelHtml, $cssClass, $elementHtml, $otherHtml);
     }
 
+    /*
+     * |=============================
+     * |Helper
+     * |
+     * |=============================
+     */
     protected function formOpenTag(\Zend\Form\View\Helper\Form $helper, GenericForm $form, PhpRenderer $viewRender)
     {
         return "\n" . $helper->openTag($form) . "\n";
@@ -165,18 +216,12 @@ abstract class AbstractFormRender implements FormRenderInterface
         return "\n" . $helper->closeTag($form) . "\n";
     }
 
-    protected function ensureRendering(GenericForm $form, PhpRenderer $viewRender = null)
-    {
-        if ($form == null) {
-            throw new \InvalidArgumentException(\sprintf("Form not given", ""));
-        }
-
-        $elements = $form->getElements();
-
-        if ($elements == null) {
-            throw new \InvalidArgumentException(\sprintf("Form [%s] does not have any elements!", $form->getId()));
-        }
-    }
+    /*
+     * |=============================
+     * |Button
+     * |
+     * |=============================
+     */
 
     /**
      *
@@ -210,7 +255,8 @@ abstract class AbstractFormRender implements FormRenderInterface
     }
 
     /**
-     * when submit form with AJAX, button type submit must be used! otherwise, submit event is not triggered!
+     * when submit form with AJAX, button with type submit must be used! otherwise, submit event is not triggered!
+     * ==================
      */
     protected function submitButtonWithCustomResultDiv(GenericForm $form, PhpRenderer $viewRender, $url, $resultDiv, $label, $cssClass = null)
     {
@@ -227,6 +273,10 @@ abstract class AbstractFormRender implements FormRenderInterface
         return sprintf($html, "<label class=\"control-label col-sm-2\" for=\"inputTag\"></label>", $b);
     }
 
+    /**
+     * submitButton
+     * ==================
+     */
     protected function submitButton(GenericForm $form, PhpRenderer $viewRender, $cssClass = null)
     {
         $cssClass = 'btn btn-primary btn-sm';
@@ -234,6 +284,10 @@ abstract class AbstractFormRender implements FormRenderInterface
         <i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', $cssClass, $form->getId(), $this->createLabel(Translator::translate("Save"), $viewRender));
     }
 
+    /**
+     * cancelButton
+     * ==================
+     */
     protected function cancelButton(GenericForm $form, PhpRenderer $viewRender, $cssClass = null)
     {
         $cssClass = 'btn btn-default btn-sm';
@@ -241,6 +295,10 @@ abstract class AbstractFormRender implements FormRenderInterface
         <i class="fa fa-arrow-circle-left" aria-hidden="true"></i> &nbsp;%s</a>', $cssClass, $form->getRedirectUrl(), $this->createLabel(Translator::translate("Cancel"), $viewRender));
     }
 
+    /**
+     * updateButton
+     * ==================
+     */
     protected function updateButton(GenericForm $form, PhpRenderer $viewRender, $cssClass = null)
     {
         $cssClass = 'btn btn-default btn-sm';
@@ -248,6 +306,10 @@ abstract class AbstractFormRender implements FormRenderInterface
         <i class="fa fa-edit" aria-hidden="true"></i> &nbsp;%s</a>', $cssClass, $form->getId(), $this->createLabel(Translator::translate("Edit"), $viewRender));
     }
 
+    /**
+     * createCustomButton
+     * ==================
+     */
     protected function createCustomButton(GenericForm $form, PhpRenderer $viewRender, $href, $cssClass, $style, $icon, $label, $title)
     {
         $cssClass = 'btn btn-default btn-sm';
@@ -264,6 +326,25 @@ abstract class AbstractFormRender implements FormRenderInterface
         <i class="%s" aria-hidden="true"></i> &nbsp;%s</a>', $title, $cssClass, $style, $onclick, $icon, $label);
     }
 
+    /*
+     * |=============================
+     * |Helper
+     * |
+     * |=============================
+     */
+    protected function ensureRendering(GenericForm $form, PhpRenderer $viewRender = null)
+    {
+        if ($form == null) {
+            throw new \InvalidArgumentException(\sprintf("Form not given", ""));
+        }
+
+        $elements = $form->getElements();
+
+        if ($elements == null) {
+            throw new \InvalidArgumentException(\sprintf("Form [%s] does not have any elements!", $form->getId()));
+        }
+    }
+
     protected function _drawSeparator()
     {
         return '<hr style="margin: 5pt 1pt 5pt 1pt;">';
@@ -277,6 +358,13 @@ abstract class AbstractFormRender implements FormRenderInterface
 
         return $viewRender->translate($label);
     }
+
+    /*
+     * |=============================
+     * |Setter and Getter
+     * |
+     * |=============================
+     */
 
     /**
      *

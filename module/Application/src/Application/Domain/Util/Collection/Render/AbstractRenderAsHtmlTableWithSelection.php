@@ -38,6 +38,12 @@ abstract class AbstractRenderAsHtmlTableWithSelection extends AbstractCollection
 </table>
 </form>';
 
+    /*
+     * |=============================
+     * |Abstract
+     * |
+     * |=============================
+     */
     protected abstract function createHeader();
 
     protected abstract function createFooter();

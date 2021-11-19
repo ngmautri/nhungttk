@@ -16,7 +16,7 @@ class DefaultItemSerialRenderAsHtmlTableWithForm extends AbstractRenderAsHtmlTab
     protected function createHeaderCell()
     {
         return "
-        <td style=\"width=20px;\"><b>S</b></td>
+        <td style=\"width=20px;\"><input type=\"checkbox\" id=\"checkAll\"></td>
         <td><b>Invoice Number</b></td>
         <td><b>No.</b></td>
         <td><b>No2</b></td>
@@ -57,15 +57,36 @@ class DefaultItemSerialRenderAsHtmlTableWithForm extends AbstractRenderAsHtmlTab
         return $cells;
     }
 
-    protected function setURL()
-    {
-        return 'test';
-    }
-
     protected function createHeader()
     {}
 
     protected function createFooter()
     {}
+
+    protected function createFooter2()
+    {
+        $format = '<script>%s</script>';
+
+        $c = "$(\"#checkAll\").click(function () {
+            $('input:checkbox').not(this).prop('checked', this.checked);
+        })";
+
+        $c1 = "
+        $(\".checkbox1\").change(function() {
+               //countSelected();            
+        });";
+
+        return sprintf($format, $c . $c1);
+    }
+
+    protected function createFooter1()
+    {
+        $format = '<script>%s</script>';
+
+        $c = "$(\"#checkAll\").click(function () {
+     $('input:checkbox').not(this).prop('checked', this.checked);});";
+
+        return sprintf($format, $c);
+    }
 }
 

@@ -73,11 +73,11 @@ class ItemSerialReporter extends AbstractService
         $filter->setSort('DESC');
         $collection = $rep->getList($filter);
 
-        $format = "/inventory/item-serial/list1?itemId=%s&render_type=%s";
-        $excel_url = sprintf($format, $filter->getItemId(), SupportedRenderType::EXCEL);
-        $oo_url = sprintf($format, $filter->getItemId(), SupportedRenderType::OPEN_OFFICE);
-        $table_html_url = sprintf($format, $filter->getItemId(), SupportedRenderType::HMTL_TABLE);
-        $param_query_url = sprintf($format, $filter->getItemId(), SupportedRenderType::PARAM_QUERY);
+        $format = "/inventory/item-serial/list1?itemId=%s&render_type=%s&page=%s&resultPerPage=%s";
+        $excel_url = sprintf($format, $filter->getItemId(), SupportedRenderType::EXCEL, $page, $resultPerPage);
+        $oo_url = sprintf($format, $filter->getItemId(), SupportedRenderType::OPEN_OFFICE, $page, $resultPerPage);
+        $table_html_url = sprintf($format, $filter->getItemId(), SupportedRenderType::HMTL_TABLE, $page, $resultPerPage);
+        $param_query_url = sprintf($format, $filter->getItemId(), SupportedRenderType::PARAM_QUERY, $page, $resultPerPage);
 
         $param_onclick = \sprintf("doPaginatorV1('%s','%s')", $table_html_url, 'item_serial_div');
         $html_onclick = \sprintf("doPaginatorV1('%s','%s')", $param_query_url, 'item_serial_div');
@@ -95,6 +95,7 @@ class ItemSerialReporter extends AbstractService
             case SupportedRenderType::HMTL_TABLE:
                 $render = new DefaultItemSerialRenderAsHtmlTableWithForm($totalResults, $collection);
                 $render->setPaginator($paginator);
+                $render->setUrl(sprintf($format, $filter->getItemId(), SupportedRenderType::HMTL_TABLE, $page - 1, $resultPerPage));
                 $toolbar1 = $toolbar1 . FormHelper::createButtonForJS('<i class="fa fa-th" aria-hidden="true"></i>', $html_onclick, 'Gird View');
 
                 break;

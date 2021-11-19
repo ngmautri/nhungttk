@@ -10,7 +10,7 @@ use Zend\View\Renderer\PhpRenderer;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class GenericForm extends Form
 {
@@ -24,6 +24,28 @@ abstract class GenericForm extends Form
     protected $rootId;
 
     protected $memberId;
+
+    /*
+     * |=============================
+     * |Abstract
+     * |
+     * |=============================
+     */
+    abstract protected function addElements();
+
+    abstract protected function addManualElements();
+
+    /*
+     * |=============================
+     * |Methods
+     * |
+     * |=============================
+     */
+    public function refresh()
+    {
+        $this->addElements();
+        $this->addManualElements();
+    }
 
     public function disableForm()
     {
@@ -49,16 +71,6 @@ abstract class GenericForm extends Form
         foreach ($elements as $e) {
             $e->setAttribute('readonly', 'readonly');
         }
-    }
-
-    abstract protected function addElements();
-
-    abstract protected function addManualElements();
-
-    public function refresh()
-    {
-        $this->addElements();
-        $this->addManualElements();
     }
 
     protected function addHiddenElement($name, $value)
@@ -120,8 +132,25 @@ abstract class GenericForm extends Form
         return $render->render($this);
     }
 
-    // =========================
-    // =========================
+    /*
+     * |=============================
+     * | Getter and Setter.
+     * |
+     * |=============================
+     */
+    public function getRootId()
+    {
+        return $this->get("rootId");
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getMemberId()
+    {
+        return $this->get("memberId");
+    }
 
     /**
      *
@@ -170,29 +199,11 @@ abstract class GenericForm extends Form
 
     /**
      *
-     * @return mixed
-     */
-    public function getRootId()
-    {
-        return $this->get("rootId");
-    }
-
-    /**
-     *
      * @param mixed $rootId
      */
     public function setRootId($rootId)
     {
         $this->rootId = $rootId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getMemberId()
-    {
-        return $this->get("memberId");
     }
 
     /**

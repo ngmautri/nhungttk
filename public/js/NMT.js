@@ -24,6 +24,8 @@ function submitAjaxForm(url, form_id){
 	form_id_tmp = '#' + form_id;
 	$( form_id_tmp).submit(function( event ) {
 		 var form_data =   JSON.stringify($( this ).serializeArray());
+
+		 // prevent the default GET form behavior (name-value pairs)
 		  event.preventDefault();
 		  // alert(form_data);
 
@@ -63,6 +65,59 @@ function submitAjaxForm(url, form_id){
               }
           });
 		  
+	});
+}
+
+function submitAjaxGETForm(form_id){
+	var form_id_tmp;
+
+	form_id_tmp = 'form#' + form_id;
+	//alert(form_id_tmp);
+
+	var f = $(form_id_tmp);
+		
+	$(form_id_tmp).submit(function(e) {
+	
+		e.preventDefault();
+
+		var form = $( this ), // this will resolve to the form submitted
+		action = form.attr( 'action' ), type = form.attr( 'method' );
+
+		var data =  form.serialize();
+
+		//var data =   JSON.stringify($( this ).serializeArray());
+		
+		// Get all the forms elements and their values in one step
+	
+		sendRequest(action, type, data);
+	
+	});
+}
+
+function sendRequest(action, type, data) {
+
+	$("#overlay").fadeIn(300);
+	console.log(action);
+	console.log(type);
+	console.log(data);
+
+	$.ajax({
+		 url: action,
+		 //dataType: "json",
+		 type: type,
+		 data:data,
+		 async: true,
+		
+	})
+	.success(function( returnedHtml ) {
+		$( "#item_serial_div" ).html( returnedHtml);
+		
+	})
+	.done(function( returnedHtml ) {		
+		$("#overlay").fadeOut(300);
+	})
+	.fail(function(returnedHtml) {
+		$( "#item_serial_div" ).html( "Failed!" + returnedHtml );
 	});
 }
 

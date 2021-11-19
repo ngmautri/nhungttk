@@ -190,7 +190,7 @@ abstract class AbstractFormRender implements FormRenderInterface
 
     {
         $div = '<div class="form-group margin-bottom required">
-                    s
+                    %s
                     <div class="%s">
                     %s
                     </div>

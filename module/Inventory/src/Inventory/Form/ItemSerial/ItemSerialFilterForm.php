@@ -3,6 +3,7 @@ namespace Inventory\Form\ItemSerial;
 
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
+use Application\Form\Helper\DefaultOptions;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Select;
 
@@ -165,35 +166,12 @@ class ItemSerialFilterForm extends GenericForm
         $select->setOptions([
             'label' => Translator::translate('Result Per Page'),
             'label_attributes' => [
-                'class' => "control-label col-sm-2"
+                'class' => 'control-label col-sm-2'
             ]
         ]);
         // $select->setEmptyOption(Translator::translate('Parent Account Number'));
 
-        $o = [];
-
-        $tmp1 = [
-            'value' => 10,
-            'label' => 10
-        ];
-
-        $o[] = $tmp1;
-
-        $tmp1 = [
-            'value' => 20,
-            'label' => 20
-        ];
-
-        $o[] = $tmp1;
-
-        $tmp1 = [
-            'value' => 50,
-            'label' => 50
-        ];
-
-        $o[] = $tmp1;
-
-        $select->setValueOptions($o);
+        $select->setValueOptions(DefaultOptions::createResultPerPageOption());
         // $select->setDisableInArrayValidator(false);
         $this->add($select);
     }

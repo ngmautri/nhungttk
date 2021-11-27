@@ -1,57 +1,124 @@
-    <?php /**@var \Application\Entity\NmtInventoryItem $a ; */ ?>
-
-<div id="tabs" style="font-size: 9.5pt">
-
-	<ul>
-		<li><a href="#general">Contract /PO List:</a></li>
-	</ul>
-	<div id="general" style="padding: 10px 10px 1px 3px">
-
-
-
-<?php
-if ($total_records <= 0) :
-    echo 'No record found!';
-else :
-
-    if (! is_null($paginator)) :
-        echo 'Record ' . $paginator->getMinInPage() . ' to ' . $paginator->getMaxInPage() . ' | ' . $total_records . ' records found!';
-    else :
-        echo $total_records . ' records found!';
-    endif;
-
-    ?>
-
-<table style="font-size: 9.3pt;"
-			class="table table-bordered table-hover">
-			<thead>
-				<tr>
-					<td><b>#</b></td>
-					<td><b>Status</b></td>
-				</tr>
-			</thead>
-
-			<tbody>
- 
-	 <?php
-
-    $count = 0;
-    foreach ($list as $l) :
-        $count ++;
-
-        /**@var \Application\Entity\NmtInventoryItem $a ; */
-        $a = $l;
-        ?>
+<form class="form-horizontal">
+	<div class="row">
+		<div class="col-sm-4">
+			<label class="col-sm-4 control-label" for="formGroupInputLarge">Large label</label>
+		  <input type="text" class="form-control col-sm-8" placeholder=".col-xs-2">
+		</div>
+		<div class="col-sm-4">
+			<label class="col-sm-4 control-label" for="formGroupInputLarge">Large label</label>
+		  <input type="text" class="form-control col-sm-8" placeholder=".col-xs-2">
+		</div>
 		
-	<tr>
-					<td>
-				<?php echo $count;?>
-			</td>
-					<td><?php echo $a->getItemName();?></td>
+	  </div>
 
-				</tr>
-	<?php endforeach; ?>
- </tbody>
-		</table>
+	  <div class="row">
+		<div class="col-sm-4">
+			<label class="col-sm-4 control-label" for="formGroupInputLarge">Large label</label>
+		  <input type="text" class="form-control col-sm-8" placeholder=".col-xs-2">
+		</div>
+		<div class="col-sm-4">
+			<label class="col-sm-4 control-label" for="formGroupInputLarge">Large label</label>
+		  <input type="text" class="form-control col-sm-8" placeholder=".col-xs-2">
+		</div>
+		
+	  </div>
+  </form>
 
-<?php endif;?>
+
+
+
+
+<div class="container-fluid" style="background-color: blanchedalmond;">
+<div class="row">
+	
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+</div>
+<div class="row">
+  <div class="col-md-8">.col-md-8</div>
+  <div class="col-md-4">.col-md-4</div>
+</div>
+<div class="row">
+  <div class="col-md-4">.col-md-4</div>
+  <div class="col-md-4">.col-md-4</div>
+  <div class="col-md-4">.col-md-4</div>
+</div>
+<div class="row">
+  <div class="col-md-6">.col-md-6</div>
+  <div class="col-md-6">.col-md-6</div>
+</div>
+</div>
+
+
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+<div class="row">
+  <div class="col-xs-12 col-md-8">.col-xs-12 .col-md-8</div>
+  <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+</div>
+
+<!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+<div class="row">
+  <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+  <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+  <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+</div>
+
+<!-- Columns are always 50% wide, on mobile and desktop -->
+<div class="row">
+  <div class="col-xs-6">.col-xs-6</div>
+  <div class="col-xs-6">.col-xs-6</div>
+</div>
+
+
+<div class="row">
+	<div class="col-xs-12 col-sm-6 col-md-8">.col-xs-12 .col-sm-6 .col-md-8</div>
+	<div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+  </div>
+  <div class="row">
+	<div class="col-xs-6 col-sm-4">.col-xs-6 .col-sm-4</div>
+	<div class="col-xs-6 col-sm-4">.col-xs-6 .col-sm-4</div>
+	<!-- Optional: clear the XS cols if their content doesn't match in height -->
+	<div class="clearfix visible-xs-block"></div>
+	<div class="col-xs-6 col-sm-4">.col-xs-6 .col-sm-4</div>
+  </div>
+
+<p class="text-muted">test text  test text  test text </p>
+<p class="text-primary">test text  test text  test text </p>
+<p class="text-success">test text  test text  test text </p>
+<p class="text-info">test text  test text  test text </p>
+<p class="text-warning">test text  test text  test text </p>
+<p class="text-danger">test text  test text  test text </p>
+
+
+<div class="pull-left">test text  test text  test text </div>
+<div class="pull-right">test text  test text  test text </div>
+
+
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+<div class="row">
+	<div class="col-xs-12 col-md-8">.col-xs-12 .col-md-8</div>
+	<div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+  </div>
+  
+  <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+  <div class="row">
+	<div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+	<div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+	<div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+  </div>
+  
+  <!-- Columns are always 50% wide, on mobile and desktop -->
+  <div class="row">
+	<div class="col-xs-6">.col-xs-6</div>
+	<div class="col-xs-6">.col-xs-6</div>
+  </div>

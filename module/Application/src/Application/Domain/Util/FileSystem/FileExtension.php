@@ -1,5 +1,5 @@
 <?php
-namespace Application\Domain\Util;
+namespace Application\Domain\Util\FileSystem;
 
 /**
  *

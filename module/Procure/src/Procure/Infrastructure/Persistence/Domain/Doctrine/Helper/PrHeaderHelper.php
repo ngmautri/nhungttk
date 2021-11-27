@@ -38,7 +38,7 @@ class PrHeaderHelper
 
         $sql = $sql . ";";
 
-        echo $sql;
+        // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);

@@ -140,6 +140,21 @@ class PrRowHelper
         return $tmp2;
     }
 
+    public static function createPrRowsSQL(PrRowReportSqlFilter $filter, $includeLastAP = true)
+    {
+        $sql = PrRowSQLV1::PR_ROW_SQL_TEMPLATE;
+        $sql = self::AddQoSQL($sql, $filter);
+        $sql = self::AddPoSQL($sql, $filter);
+        $sql = self::AddGrSQL($sql, $filter);
+        $sql = self::AddStockGrSQL($sql, $filter);
+        $sql = self::AddApSQL($sql, $filter);
+
+        if ($includeLastAP) {
+            $sql = self::AddLastApSQL($sql, $filter);
+        }
+        return sprintf($sql, self::createWhere($filter));
+    }
+
     /**
      *
      * @param EntityManager $doctrineEM

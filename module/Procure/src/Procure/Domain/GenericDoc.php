@@ -2,6 +2,7 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\Command\CommandOptions;
+use Doctrine\Common\Collections\ArrayCollection;
 use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
@@ -21,9 +22,9 @@ use InvalidArgumentException;
 abstract class GenericDoc extends BaseDoc
 {
 
-    protected $refreshed = false;
-
     protected $constructedFromDB = false;
+
+    protected $refreshed = false;
 
     private $exculdedProps = [
         "rowIdArray",
@@ -38,6 +39,8 @@ abstract class GenericDoc extends BaseDoc
      * |
      * |=============================
      */
+
+    // refresh document; create row collection, update row and document status:
     abstract public function refreshDoc();
 
     abstract protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
@@ -64,6 +67,50 @@ abstract class GenericDoc extends BaseDoc
      * |
      * |=============================
      */
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getRowCollection()
+    {
+
+        // need to refresh document.
+        $this->refreshDoc();
+
+        if ($this->rowCollection == null) {
+            $this->rowCollection = new ArrayCollection();
+        }
+        return $this->rowCollection;
+    }
+
+    /**
+     *
+     * @param mixed $rowCollection
+     */
+    protected function setRowCollection($rowCollection)
+    {
+        $this->rowCollection = $rowCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRefreshed()
+    {
+        return $this->refreshed;
+    }
+
+    /**
+     *
+     * @param mixed $refreshed
+     */
+    protected function setRefreshed($refreshed)
+    {
+        $this->refreshed = $refreshed;
+    }
+
     protected function refresh()
     {}
 
@@ -578,24 +625,6 @@ abstract class GenericDoc extends BaseDoc
     public function getExculdedProps()
     {
         return $this->exculdedProps;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRefreshed()
-    {
-        return $this->refreshed;
-    }
-
-    /**
-     *
-     * @param mixed $refreshed
-     */
-    protected function setRefreshed($refreshed)
-    {
-        $this->refreshed = $refreshed;
     }
 
     /**

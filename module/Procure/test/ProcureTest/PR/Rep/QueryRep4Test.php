@@ -23,13 +23,16 @@ class QueryRep4Test extends PHPUnit_Framework_TestCase
 
             $rep = new PRQueryRepositoryImplV1($doctrineEM);
 
-            $id = 1454;
-            $token = "4a600b5e-d6bc-43be-86c6-978308aaf746";
+            $id = 1459;
+            $token = "bea38e13-82a8-405b-90d2-751abaf3093c";
 
             $result = $rep->getRootEntityByTokenId($id, $token);
-            $result->refreshDoc();
-            var_dump($result->getRefreshed());
-            var_dump($result->getGeneratorInjected());
+            // $result->refreshDoc();
+            var_dump($result->getRowCollection()->count());
+            var_dump($result->getRowsGenerator()->valid());
+            // var_dump($result->getRowsGenerator()->current());
+            var_dump($result->getRowsGenerator()->valid());
+            var_dump($result->getRowCollection()->count());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

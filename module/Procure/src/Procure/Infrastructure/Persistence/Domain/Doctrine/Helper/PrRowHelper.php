@@ -284,6 +284,24 @@ class PrRowHelper
         }
     }
 
+    public static function createDefaultRowsGenerator(EntityManager $doctrineEM, $rows)
+    {
+        if ($rows == null) {
+            yield null;
+        }
+
+        foreach ($rows as $r) {
+
+            /**@var \Application\Entity\NmtProcurePrRow $localEnityDoctrine ;*/
+            $localEnityDoctrine = $r[0];
+
+            $localSnapshot = PrMapper::createRowSnapshot($doctrineEM, $localEnityDoctrine);
+            $localEntity = PRRow::constructFromDB($localSnapshot);
+
+            yield $localEntity;
+        }
+    }
+
     /*
      * |=============================
      * | Exe Query

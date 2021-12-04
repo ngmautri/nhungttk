@@ -6,6 +6,7 @@ use Application\Service\AbstractService;
 use Procure\Domain\BaseRowSnapshot;
 use Procure\Domain\DocSnapshot;
 use Procure\Domain\GenericRow;
+use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
@@ -21,7 +22,7 @@ use RuntimeException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterface
 {
@@ -178,7 +179,63 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
             $indexResult->setIsSuccess(True);
             // $this->getLogger()->info($message);
         } catch (Exception $e) {
+
+            $this->getLogger()->error($e->getMessage());
             $this->getLogger()->error($e->getTraceAsString());
+
+            $message = \sprintf('Failed! %s', $e->getMessage());
+            $indexResult->setMessage($message);
+        }
+
+        return $indexResult;
+    }
+
+    public function createIndexDoc(PRDoc $doc)
+    {
+        try {
+
+            $indexResult = new IndexingResult();
+            $indexResult->setIsSuccess(False);
+
+            if (! $doc instanceof PRDoc) {
+                throw new \InvalidArgumentException("PrDoc not given");
+            }
+
+            $collection = $doc->getRowCollection();
+
+            if ($collection->count() == 0) {
+                throw new \InvalidArgumentException("Document row collection empty!");
+            }
+
+            // take long time
+            set_time_limit(1500);
+
+            $index = $this->getIndexer();
+            Analyzer::setDefault(new CaseInsensitive());
+
+            foreach ($collection as $row) {
+
+                if (! $row instanceof PRRow) {
+                    return;
+                }
+
+                $this->_createIndexFromRowSnapshot($index, $row->makeSnapshot());
+            }
+
+            $indexResult = new IndexingResult();
+            $this->_updateIndexingResult($index, $indexResult);
+
+            $m = '[OK] Search index created for PR#%s. Document count:%s';
+            $message = \sprintf($m, $doc->getId(), $indexResult->getDocsCount());
+
+            $indexResult->setMessage($message);
+            $indexResult->setIsSuccess(True);
+            // $this->getLogger()->info($message);
+        } catch (Exception $e) {
+
+            $this->getLogger()->error($e->getMessage());
+            $this->getLogger()->error($e->getTraceAsString());
+
             $message = \sprintf('Failed! %s', $e->getMessage());
             $indexResult->setMessage($message);
         }

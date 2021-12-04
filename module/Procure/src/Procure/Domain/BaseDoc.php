@@ -12,6 +12,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 abstract class BaseDoc extends AbstractDoc
 {
 
+    private $generatorInjected;
+
     protected $rowsGenerator;
 
     protected $lazyRowSnapshotCollection;
@@ -19,8 +21,6 @@ abstract class BaseDoc extends AbstractDoc
     protected $lazyRowSnapshotCollectionReference;
 
     protected $rowCollection;
-
-    private $generatorInjected;
 
     // Addtional attributes
     // =========================
@@ -151,27 +151,6 @@ abstract class BaseDoc extends AbstractDoc
     private function setGeneratorInjected($generatorInjected)
     {
         $this->generatorInjected = $generatorInjected;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRowCollection()
-    {
-        if ($this->rowCollection == null) {
-            $this->rowCollection = new ArrayCollection();
-        }
-        return $this->rowCollection;
-    }
-
-    /**
-     *
-     * @param mixed $rowCollection
-     */
-    protected function setRowCollection($rowCollection)
-    {
-        $this->rowCollection = $rowCollection;
     }
 
     /**

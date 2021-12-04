@@ -6,6 +6,7 @@ use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Procure\Application\Service\PR\PRService;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImpl;
 use Procure\Domain\Event\Pr\PrPosted;
+use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
 
@@ -30,18 +31,27 @@ class UpdateIndexOnPrSubmitted extends AbstractEventHandler
 
         $indexer = new PrSearchIndexImpl();
         $rep = new PRQueryRepositoryImplV1($this->getDoctrineEM());
-        $entity = $rep->getRootEntityByTokenId($event->getTarget()
-            ->getId(), $event->getTarget()
-            ->getToken());
+        $target = $event->getTarget();
+
+        /**
+         *
+         * @var PRDoc $entity
+         */
+        $entity = $rep->getRootEntityByTokenId($target->getId(), $target->getToken());
+        $this->logInfo(\sprintf("%s-%s", $target->getId(), $target->getToken()));
 
         $indexer->setLogger($this->getLogger());
-        $indexer->createDoc($entity->makeSnapshot());
+        $indexingResult = $indexer->createIndexDoc($entity);
 
-        $this->logInfo(\sprintf("Search index for PR#%s created!", $event->getTarget()
-            ->getId()));
+        if (! $indexingResult->getIsSuccess()) {
+            $m = "Search Indexing failed. %s";
+            throw new \RuntimeException(sprintf($m, $indexingResult->getMessage()));
+        }
+
+        $this->logInfo(\sprintf("%s", $indexingResult->getMessage()));
 
         // Clear Cache.
-        $key = \sprintf(PRService::PR_KEY_CACHE, $event->getTarget()->getId());
+        $key = \sprintf(PRService::PR_KEY_CACHE, $target->getId());
         $this->getCache()->deleteItem($key);
         $this->getLogger()->info(\sprintf("%s deleted from cache!", $key));
     }

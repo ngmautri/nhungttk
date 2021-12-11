@@ -35,7 +35,8 @@
 		"zircote/swagger-php" : "2.0.16",
 		"mindplay/annotations" : "~1.3",
 		"doctrine/inflector" : "1.1.0",
-		"cakephp/utility" : "3.9.9"
+		"cakephp/utility" : "3.9.9",
+		"cakephp/filesystem" : "3.10.1"
 	},
 	"config" : {
 		"platform" : {

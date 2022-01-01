@@ -48,6 +48,8 @@ class ImagesTest extends PHPUnit_Framework_TestCase
 
         $img->rotate(- 90);
 
+        $img->text('The quick brown fox jumps over the lazy dog.', 80, 80);
+
         /*
          * // draw transparent text
          * $img->text('ngmautri', 0, 0, function ($font) {

@@ -9,6 +9,7 @@ use Procure\Infrastructure\Persistence\Domain\Doctrine\Helper\PrHeaderHelper;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\Helper\PrRowHelper;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
+use Procure\Infrastructure\Persistence\SQL\Filter\ProcureQuerySqlFilter;
 use Generator;
 
 /**
@@ -165,10 +166,19 @@ class PRQueryRepositoryImplV1 extends AbstractDoctrineRepository implements PrQu
      * {@inheritdoc}
      * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getRootEntityByTokenId()
      */
-    public function getRootEntityByTokenId($id, $token = null)
+    public function getRootEntityByTokenId($id, $token = null, ProcureQuerySqlFilter $filter = null)
     {
         if ($id == null || $token == null) {
             return null;
+        }
+
+        /**
+         *
+         * @var PrRowReportSqlFilter $filter ;
+         */
+        if ($filter == null) {
+            $filter = new PrRowReportSqlFilter();
+            $filter->setBalance(1000);
         }
 
         $criteria = array(
@@ -180,7 +190,7 @@ class PRQueryRepositoryImplV1 extends AbstractDoctrineRepository implements PrQu
             ->getRepository('\Application\Entity\NmtProcurePr')
             ->findOneBy($criteria);
 
-        return $this->_createRootEntity($rootEntityDoctrine, $id);
+        return $this->_createRootEntity($rootEntityDoctrine, $id, $filter);
     }
 
     /**
@@ -194,13 +204,20 @@ class PRQueryRepositoryImplV1 extends AbstractDoctrineRepository implements PrQu
         return $this->_createRootEntity($rootEntityDoctrine, $id);
     }
 
+    /*
+     * |=============================
+     * |Helper
+     * |
+     * |=============================
+     */
+
     /**
      *
      * @param object $rootEntityDoctrine
      * @param int $id
      * @return NULL|void|\Procure\Domain\GoodsReceipt\GRDoc
      */
-    private function _createRootEntity($rootEntityDoctrine, $id)
+    private function _createRootEntity($rootEntityDoctrine, $id, $filter)
     {
         if ($rootEntityDoctrine == null) {
             return null;
@@ -211,8 +228,10 @@ class PRQueryRepositoryImplV1 extends AbstractDoctrineRepository implements PrQu
             return null;
         }
 
+        // $rootSnapshot->totalRowManual = $this->getTotalRowsById($id, $filter);
         $rootEntity = PrFactory::constructFromDB($rootSnapshot);
-        $rootEntity->setRowsGenerator($this->getRowsById($id)); // Important
+        $filter->setPrId($id);
+        $rootEntity->setRowsGenerator($this->getRowsById($id, $filter)); // Important
         return $rootEntity;
     }
 
@@ -221,14 +240,20 @@ class PRQueryRepositoryImplV1 extends AbstractDoctrineRepository implements PrQu
      * @param int $id
      * @return Generator
      */
-    private function getRowsById($id)
+    private function getRowsById($id, $filter)
     {
-        $filter = new PrRowReportSqlFilter();
-        $filter->setPrId($id);
-        $filter->setBalance(1000);
-        $filter->setSortBy('itemName');
-        $filter->setSort('desc');
         $rows = PrRowHelper::getRowsByPrId($this->getDoctrineEM(), $filter);
         return PrRowHelper::createRowsGenerator($this->getDoctrineEM(), $rows);
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return Generator
+     */
+    private function getTotalRowsById($id, $filter)
+    {
+        $filter->setBalance(1000);
+        return PrRowHelper::getTotalRows($this->getDoctrineEM(), $filter);
     }
 }

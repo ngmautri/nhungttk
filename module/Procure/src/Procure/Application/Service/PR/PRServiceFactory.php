@@ -21,7 +21,7 @@ class PRServiceFactory implements FactoryInterface
     {
         $container = $serviceLocator;
 
-        $service = new PRServiceV1();
+        $service = new PRServiceV2();
 
         $sv = $container->get('ControllerPluginManager');
         $service->setControllerPlugin($sv->get('NmtPlugin'));

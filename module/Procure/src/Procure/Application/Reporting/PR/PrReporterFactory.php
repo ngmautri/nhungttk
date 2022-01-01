@@ -23,7 +23,7 @@ class PrReporterFactory implements FactoryInterface
     {
         $container = $serviceLocator;
 
-        $service = new PrReporter();
+        $service = new PrReporterV1();
 
         $sv = $container->get('ControllerPluginManager');
         $service->setControllerPlugin($sv->get('NmtPlugin'));

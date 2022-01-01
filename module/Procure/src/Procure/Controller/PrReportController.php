@@ -2,9 +2,11 @@
 namespace Procure\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Contracts\FormActions;
+use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
 use Application\Domain\Util\Pagination\Paginator;
 use Application\Infrastructure\Persistence\Contracts\SqlKeyWords;
-use Procure\Application\Reporting\PR\PrReporter;
+use Procure\Application\Reporting\PR\PrReporterV1;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Infrastructure\Persistence\Reporting\Filter\PrGrReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
@@ -170,6 +172,107 @@ class PrReportController extends AbstractGenericController
      */
     public function headerStatusAction()
     {
+        // $this->layout("Procure/layout-fullscreen");
+        $viewModel = new ViewModel(array());
+
+        $viewModel->setTemplate("procure/pr-report/header-status");
+        return $viewModel;
+    }
+
+    public function headerStatusResultAction()
+    {
+        $this->layout("layout/user/ajax");
+        $form_action = "/procure/pr-report/header-status-result";
+        $form_title = "Item Serial Map";
+        $action = FormActions::SHOW;
+        $viewTemplete = "/procure/pr-report/header-status-result";
+        $request = $this->getRequest();
+
+        // echo $this->getLocale();
+        $isActive = $this->getGETparam('isActive');
+        $page = $this->getGETparam('page', 1);
+        $perPage = $this->getGETparam('resultPerPage', 20);
+        $docYear = $this->params()->fromQuery('docYear', 2021);
+        $docStatus = $this->params()->fromQuery('docStatus');
+
+        $balance = $this->params()->fromQuery('balance', 100);
+        $sort_by = $this->params()->fromQuery('sortBy', "createdOn");
+        $sort = $this->params()->fromQuery('$sort', "DESC");
+
+        $renderType = $this->getGETparam('render_type', SupportedRenderType::HMTL_TABLE);
+
+        $filterHeader = new PrHeaderReportSqlFilter();
+        $filterHeader->setIsActive($isActive);
+        $filterHeader->setDocYear($docYear);
+        $filterHeader->setBalance($balance);
+        $filterHeader->setSort($sort);
+        $filterHeader->setSortBy($sort_by);
+
+        $filterRows = new PrRowReportSqlFilter();
+        $filterRows->setIsActive($isActive);
+        $filterRows->setDocYear($docYear);
+        $filterRows->setDocStatus($docStatus);
+
+        $render = $this->getPrReporter()->getHeaderCollectionRender($filterHeader, $filterRows, $page, $perPage, $renderType);
+
+        $viewModel = new ViewModel(array(
+            'collectionRender' => $render,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $perPage,
+            'filter' => $filterHeader
+        ));
+
+        $viewModel->setTemplate("procure/pr-report/header-status-result");
+        return $viewModel;
+    }
+
+    public function headerStatusGirdAction()
+    {
+        $isActive = $this->getGETparam('isActive');
+        $page = $this->getGETparam('page', 1);
+        $perPage = $this->getGETparam('resultPerPage', 20);
+        $docYear = $this->params()->fromQuery('docYear', 2021);
+        $docStatus = $this->params()->fromQuery('docStatus');
+
+        $balance = $this->params()->fromQuery('balance', 2);
+        $sort_by = $this->params()->fromQuery('sortBy', "createdOn");
+        $sort = $this->params()->fromQuery('$sort', "DESC");
+        $filterHeader = new PrHeaderReportSqlFilter();
+        $filterHeader->setIsActive($isActive);
+        $filterHeader->setDocYear($docYear);
+        $filterHeader->setBalance($balance);
+        $filterHeader->setSort($sort);
+        $filterHeader->setSortBy($sort_by);
+
+        $filterRows = new PrRowReportSqlFilter();
+        $filterRows->setIsActive($isActive);
+        $filterRows->setDocYear($docYear);
+        $filterRows->setDocStatus($docStatus);
+
+        $render = $this->getPrReporter()->getHeaderCollectionRender($filterHeader, $filterRows, $page, $perPage, SupportedRenderType::AS_ARRAY);
+
+        if ($render == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $a_json_final['data'] = $render->execute();
+        $a_json_final['totalRecords'] = $render->getPaginator()->getTotalResults();
+        $a_json_final['curPage'] = $page;
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
+
+    /**
+     *
+     * @deprecated
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function headerStatus1Action()
+    {
         // echo $this->getLocale();
         $isActive = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
@@ -261,7 +364,7 @@ class PrReportController extends AbstractGenericController
             'filter' => $filterHeader
         ));
 
-        $viewModel->setTemplate("procure/pr-report/dto_list");
+        $viewModel->setTemplate("procure/pr-report/header_report");
         return $viewModel;
     }
 
@@ -582,7 +685,7 @@ class PrReportController extends AbstractGenericController
      */
     /**
      *
-     * @return \Procure\Application\Reporting\PR\PrReporter
+     * @return \Procure\Application\Reporting\PR\PrReporterV1
      */
     public function getPrReporter()
     {
@@ -591,9 +694,9 @@ class PrReportController extends AbstractGenericController
 
     /**
      *
-     * @param PrReporter $prReporter
+     * @param PrReporterV1 $prReporter
      */
-    public function setPrReporter(PrReporter $prReporter)
+    public function setPrReporter(PrReporterV1 $prReporter)
     {
         $this->prReporter = $prReporter;
     }

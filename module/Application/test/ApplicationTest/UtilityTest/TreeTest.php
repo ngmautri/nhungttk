@@ -6,6 +6,11 @@ use Application\Domain\Util\Tree\Test\TestTree;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_TestCase;
 
+/**
+ *
+ * @author Nguyen Mau Tri - Ngmautri@gmail.com
+ *        
+ */
 class TreeTest extends PHPUnit_Framework_TestCase
 {
 

@@ -10,6 +10,7 @@ use Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Infrastructure\Doctrine\SQL\PrSQL;
 use Procure\Infrastructure\Mapper\PrMapper;
+use Procure\Infrastructure\Persistence\SQL\Filter\ProcureQuerySqlFilter;
 
 /**
  *
@@ -171,7 +172,7 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
      * {@inheritdoc}
      * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getRootEntityByTokenId()
      */
-    public function getRootEntityByTokenId($id, $token = null)
+    public function getRootEntityByTokenId($id, $token = null, ProcureQuerySqlFilter $filter = null)
     {
         if ($id == null || $token == null) {
             return null;

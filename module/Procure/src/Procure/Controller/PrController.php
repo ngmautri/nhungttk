@@ -2,14 +2,14 @@
 namespace Procure\Controller;
 
 use Application\Domain\Contracts\FormActions;
-use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Controller\Contracts\ProcureCRUDController;
+use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PrController extends ProcureCRUDController
 {
@@ -40,7 +40,7 @@ class PrController extends ProcureCRUDController
 
     protected function setViewTemplate()
     {
-        $this->viewTemplate = "procure/pr/review-v1";
+        $this->viewTemplate = "procure/pr/review-v2";
     }
 
     protected function setListTemplate()
@@ -48,40 +48,57 @@ class PrController extends ProcureCRUDController
         $this->listTemplate = $this->getBaseUrl() . '/procure/pr/list';
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function view1Action()
     {
-        $this->layout("layout/user/ajax");
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/view";
+        $form_title = "Show Form";
+        $action = FormActions::SHOW;
+        $viewTemplete = $this->getViewTemplate();
         $request = $this->getRequest();
 
         if ($request->getHeader('Referer') == null) {
-            // return $this->redirect()->toRoute('not_found');
+            return $this->redirect()->toRoute('not_found');
         }
 
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/procure/pr/view1";
-        $form_title = "View Purchase Request:";
-        $action = FormActions::SHOW;
-        $viewTemplete = "procure/pr/view-v1";
 
         $id = (int) $this->params()->fromQuery('entity_id');
-        $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByIdFromDB($id, SaveAsSupportedType::OUTPUT_IN_ARRAY);
+        $token = $this->params()->fromQuery('entity_token');
+        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
+
+        $filter = new PrRowReportSqlFilter();
+        $page = 1;
+        $resultPerPage = 10;
+
+        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $resultPerPage);
+
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
+
         $viewModel = new ViewModel(array(
             'action' => $action,
             'form_action' => $form_action,
             'form_title' => $form_title,
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
-            'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(),
+            'rowCollectionRender' => $render,
+            'headerDTO' => $rootEntity->makeSnapshot(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
-            'entity_id' => null,
-            'entity_token' => null
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId(),
+            'companyVO' => $this->getCompanyVO()
         ));
+
         $viewModel->setTemplate($viewTemplete);
         return $viewModel;
     }

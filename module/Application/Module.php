@@ -15,7 +15,7 @@ use Zend\Session\Container;
  * Update
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class Module
 {
@@ -83,6 +83,38 @@ class Module
             $moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
             $controller->layout($moduleNamespace . '/layout-fluid');
         }, 101);
+    }
+
+    /**
+     *
+     * @param MvcEvent $event
+     */
+    private function initUserPreferences(MvcEvent $event)
+    {
+        $serviceManager = $event->getApplication()->getServiceManager();
+        $viewModel = $event->getApplication()
+            ->getMvcEvent()
+            ->getViewModel();
+
+        // Zend\Session\Container
+        $session = new Container('_USER_PREFERENCE_');
+        $translator = $serviceManager->get('translator');
+
+        if ($session->showLeftMenu == null) {
+            $session->showLeftMenu = 'show';
+            $currentLocale = 'en_US';
+        } else {
+            $currentLocale = $session->locale;
+        }
+
+        $viewModel->currentLocale = $currentLocale;
+        $translator->setLocale($currentLocale)->setFallbackLocale('en_US');
+
+    /**
+     *
+     * @todo use in production
+     */
+        // $translator->setCache($serviceManager->get('FileSystemCache'));
     }
 
     /**

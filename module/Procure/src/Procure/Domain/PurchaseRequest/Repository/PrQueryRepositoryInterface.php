@@ -1,6 +1,8 @@
 <?php
 namespace Procure\Domain\PurchaseRequest\Repository;
 
+use Procure\Infrastructure\Persistence\SQL\Filter\ProcureQuerySqlFilter;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -29,7 +31,7 @@ Interface PrQueryRepositoryInterface
      */
     public function getVersionArray($id, $token = null);
 
-    public function getRootEntityByTokenId($id, $token = null);
+    public function getRootEntityByTokenId($id, $token = null, ProcureQuerySqlFilter $filter = null);
 
     public function getRootEntityById($id);
 

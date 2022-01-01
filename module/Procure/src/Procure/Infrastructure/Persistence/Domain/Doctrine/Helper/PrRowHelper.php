@@ -35,7 +35,10 @@ class PrRowHelper
         }
 
         $sql = self::createFullSQL($filter);
-        $sql . self::createSortBy($filter) . self::createLimitOffset($filter);
+        $sql = $sql . self::createSortBy($filter) . self::createLimitOffset($filter);
+
+        // var_dump($sql);
+
         $rsm = self::createFullResultMapping($doctrineEM);
 
         return self::runQuery($doctrineEM, $sql, $rsm);
@@ -66,6 +69,8 @@ class PrRowHelper
         if (! $filter instanceof PrRowReportSqlFilter) {
             return null;
         }
+
+        $filter->resetLimitOffset();
 
         $sql = self::createSQLForTotalCount($filter);
         $f = "select count(*) as total_row from (%s) as t ";

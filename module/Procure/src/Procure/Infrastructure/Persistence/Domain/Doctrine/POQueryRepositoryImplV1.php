@@ -32,7 +32,7 @@ class POQueryRepositoryImplV1 extends AbstractDoctrineRepository implements POQu
      */
     public function getDocMap($id, $token = null, $offset = null, $limit = null)
     {
-        $filter = new PoHeaderReportSqlFilter();
+        $filter = new poheaderreportsqlfilter();
         $filter->setPoId($id);
         $filter->setLimit($limit);
         $filter->setOffset($offset);

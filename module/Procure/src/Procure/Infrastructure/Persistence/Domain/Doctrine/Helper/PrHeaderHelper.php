@@ -20,6 +20,14 @@ use Generator;
 class PrHeaderHelper
 {
 
+    /**
+     * FOR REPORT
+     *
+     * @param EntityManager $doctrineEM
+     * @param PrHeaderReportSqlFilter $filterHeader
+     * @param PrRowReportSqlFilter $filterRows
+     * @return NULL|mixed|\Doctrine\DBAL\Driver\Statement|array|NULL
+     */
     public static function getPRHeader(EntityManager $doctrineEM, PrHeaderReportSqlFilter $filterHeader, PrRowReportSqlFilter $filterRows)
     {
         if (! $doctrineEM instanceof EntityManager) {
@@ -118,6 +126,7 @@ class PrHeaderHelper
 
         $f = "select count(*) as total_row from (%s) as t ";
         $sql = sprintf($f, $sql);
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
@@ -149,7 +158,7 @@ class PrHeaderHelper
         }
 
         if ($filterHeader->getDocYear() > 0) {
-            $sql = $sql . \sprintf(" AND year(nmt_procure_pr.submitted_on) = %s", $filterHeader->getDocYear());
+            $sql = $sql . \sprintf(" AND year(nmt_procure_pr.created_on) = %s", $filterHeader->getDocYear());
         }
 
         $sql = $sql . " GROUP BY nmt_procure_pr.id";

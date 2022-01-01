@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Application\Reporting\ItemSerial\CollectionRender;
+namespace Procure\Application\Reporting\PR\CollectionRender;
 
 use Application\Domain\Util\Collection\Render\AbstractRenderAsParamQuery;
 
@@ -9,7 +9,7 @@ use Application\Domain\Util\Collection\Render\AbstractRenderAsParamQuery;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSerialRenderAsParamQuery extends AbstractRenderAsParamQuery
+class DefaultPrRenderAsParamQuery extends AbstractRenderAsParamQuery
 {
 
     protected function createParamQueryObject()

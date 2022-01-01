@@ -26,8 +26,6 @@ class PrHeaderRepTest extends PHPUnit_Framework_TestCase
             $filterHeader = new PrHeaderReportSqlFilter();
             $filterHeader->setDocYear(2021);
             $filterHeader->setBalance(1);
-            $filterHeader->setOffset(1);
-            $filterHeader->setLimit(10);
 
             $filterRows = new PrRowReportSqlFilter();
             $filterRows->setDocYear(2021);
@@ -39,7 +37,8 @@ class PrHeaderRepTest extends PHPUnit_Framework_TestCase
 
             $n = 0;
             foreach ($r as $doc) {
-                $n ++;
+                var_dump(get_class($doc));
+                echo $doc->getTotalRows();
             }
 
             echo $n;

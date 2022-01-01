@@ -21,7 +21,6 @@ class FileSystemTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        $curDir = FileHelper::;
         $path = $curDir . '/data/Forklift.xlsx';
 
         echo $path;

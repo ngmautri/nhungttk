@@ -1,15 +1,15 @@
 <?php
-namespace ProcureTest\GR\Command;
+namespace ProcureTest\PR\Service;
 
-use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
+use Procure\Application\Reporting\PR\PrReporter;
+use Procure\Application\Reporting\PR\PrReporterV1;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Infrastructure\Persistence\Reporting\Doctrine\PrReportImplV1;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 use PHPUnit_Framework_TestCase;
 
-class QueryRep3Test extends PHPUnit_Framework_TestCase
+class PrReporterV1Test extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -20,22 +20,23 @@ class QueryRep3Test extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         try {
-            /** @var EntityManager $doctrineEM ; */
-            $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+            /** @var PrReporterV1 $reporter ; */
 
-            $rep = new PrReportImplV1($doctrineEM);
+            $reporter = Bootstrap::getServiceManager()->get(PrReporter::class);
 
             $filterHeader = new PrHeaderReportSqlFilter();
-            $filterHeader->setPrId(1455);
             $filterHeader->setDocYear(2021);
-            $filterHeader->setBalance(2);
+            $filterHeader->setBalance(1);
+            $filterHeader->setOffset(1);
+            $filterHeader->setLimit(10);
 
             $filterRows = new PrRowReportSqlFilter();
             $filterRows->setDocYear(2021);
-            $filterRows->setBalance(2);
-            $result = $rep->getListTotal($filterHeader, $filterRows);
-            //
-            var_dump($result);
+            $filterRows->setBalance(100);
+
+            $page = 1;
+            $render = $reporter->getHeaderCollectionRender($filterHeader, $filterRows, $page);
+            var_dump($render->execute());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

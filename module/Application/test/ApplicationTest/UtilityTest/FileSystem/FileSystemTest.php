@@ -7,8 +7,15 @@ use Cake\Filesystem\File;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_TestCase;
 
+/**
+ *
+ * @author Nguyen Mau Tri - Ngmautri@gmail.com
+ *        
+ */
 class FileSystemTest extends PHPUnit_Framework_TestCase
 {
+
+    protected $em;
 
     protected $serviceManager;
 
@@ -16,8 +23,6 @@ class FileSystemTest extends PHPUnit_Framework_TestCase
      *
      * @var EntityManager $em;
      */
-    protected $em;
-
     public function setUp()
     {}
 
@@ -30,6 +35,7 @@ class FileSystemTest extends PHPUnit_Framework_TestCase
         $curDir = dirname(__FILE__);
         $path = dirname($curDir);
 
+        // FixMe
         $path = $path . '/data/BFL.t';
         $path = FolderHelper::linuxPath($path);
         // echo $path;

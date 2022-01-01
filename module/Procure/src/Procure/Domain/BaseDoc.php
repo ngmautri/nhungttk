@@ -176,6 +176,12 @@ abstract class BaseDoc extends AbstractDoc
         $this->generatorInjected = true;
     }
 
+    public function resetRowsGenerator()
+    {
+        $this->rowsGenerator = null;
+        $this->generatorInjected = false;
+    }
+
     public function setLazyRowSnapshotCollectionReference($lazyRowSnapshotCollectionReference)
     {
         $this->lazyRowSnapshotCollectionReference = $lazyRowSnapshotCollectionReference;

@@ -30,7 +30,7 @@ class NewRowsQueryRepTest extends PHPUnit_Framework_TestCase
             $rootEntity->refreshDoc();
 
             var_dump($rootEntity->getRefreshed());
-            var_dump($rootEntity->getBilledAmount());
+            var_dump($rootEntity->getRow());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

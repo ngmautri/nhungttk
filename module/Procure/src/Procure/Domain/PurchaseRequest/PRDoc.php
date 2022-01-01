@@ -118,6 +118,9 @@ final class PRDoc extends GenericPR
 
         // marked as refreshed.
         $this->refreshed = TRUE;
+
+        // reset row generator.
+        $this->resetRowsGenerator();
     }
 
     protected function cloneDoc(CommandOptions $options)

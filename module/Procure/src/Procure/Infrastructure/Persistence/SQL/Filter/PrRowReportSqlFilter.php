@@ -27,6 +27,12 @@ class PrRowReportSqlFilter extends ProcureQuerySqlFilter
 
     public $isActive;
 
+    public function resetLimitOffset()
+    {
+        $this->setLimit(0);
+        $this->setOffset(0);
+    }
+
     public function __toString()
     {
         // $f = \sprintf("PrRowSqlFilter_%s_%s_%s_%s_%s_%s_%s");

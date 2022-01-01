@@ -41,6 +41,54 @@ class POService extends AbstractService implements PoServiceInterface
 
     private $queryRepository;
 
+    public function getRowCollectionRender($filte, $token, $page, $resultPerPage = 10, $renderType = SupportedRenderType::HMTL_TABLE)
+    {
+        $rep = new POQueryRepositoryImplV1($this->getDoctrineEM());
+
+        // create Paginator
+        $totalResults = $rep->getDocMapTotal($id);
+
+        if ($totalResults == 0 or $totalResults == null) {
+            return null;
+        }
+
+        $paginator = new Paginator($totalResults, $page, $resultPerPage);
+
+        // var_dump($paginator);
+
+        $f = "/procure/po/doc-map?entity_id=%s&entity_token=%s";
+        $url = sprintf($f, $id, $token);
+        $paginator->setBaseUrl($url);
+        $paginator->setUrlConnectorSymbol("&");
+        $paginator->setDisplayHTMLDiv("doc_map_div");
+
+        // create collection
+        $collection = $rep->getDocMap($id, $token, $paginator->getOffset(), $paginator->getLimit());
+
+        $render = null;
+        switch ($renderType) {
+
+            case SupportedRenderType::HMTL_TABLE:
+                $render = new DocMapRenderAsHtmlTable($totalResults, $collection);
+                $render->setPaginator($paginator);
+                break;
+
+            case SupportedRenderType::PARAM_QUERY:
+                $render = new TestRenderAsParamQuery($totalResults, $collection);
+                break;
+
+            case SupportedRenderType::AS_ARRAY:
+                $render = new DefaultRenderAsArray($totalResults, $collection);
+                break;
+
+            default:
+                $render = new TestRenderAsParamQuery($totalResults, $collection);
+                break;
+        }
+
+        return $render;
+    }
+
     /**
      *
      * @param int $id

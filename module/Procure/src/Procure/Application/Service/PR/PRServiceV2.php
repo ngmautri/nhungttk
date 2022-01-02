@@ -7,6 +7,7 @@ use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
 use Application\Domain\Util\Collection\Render\DefaultRenderAsArray;
 use Application\Domain\Util\Pagination\Paginator;
 use Application\Service\AbstractService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Procure\Application\Service\Contracts\PrServiceInterface;
 use Procure\Application\Service\PR\Output\Spreadsheet\ExcelBuilder;
 use Procure\Application\Service\PR\Output\Spreadsheet\OpenOfficeBuilder;
@@ -48,7 +49,7 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
 
         $paginator = new Paginator($totalResults, $page, $resultPerPage);
 
-        $f = "/procure/pr/list1?id=%s&token=%s&render_type=%s";
+        $f = "/procure/pr/row-content?entity_id=%s&entity_token=%s&render_type=%s";
         $url = sprintf($f, $rootEntity->getId(), $rootEntity->getToken(), $renderType);
         $paginator->setBaseUrl($url);
         $paginator->setUrlConnectorSymbol("&");
@@ -67,10 +68,12 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
 
         $filter->setSortBy('createdDate');
         $filter->setSort('DESC');
-        $collection = $rootEntity->getRowCollection();
+        $fullCollection = $rootEntity->getRowCollection();
+
+        $collection = new ArrayCollection($fullCollection->slice($filter->getOffset(), $filter->getLimit()));
 
         // $format = "/inventory/item-serial/list1?itemId=%s&render_type=%s&page=%s&resultPerPage=%s";
-        $format = "/procure/pr/list1?id=%s&token=%s&render_type=%s&page=%s&resultPerPage=%s";
+        $format = "/procure/pr/row-content?entity_id=%s&entity_token=%s&render_type=%s&page=%s&resultPerPage=%s";
 
         $excel_url = sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), SupportedRenderType::EXCEL, $page, $resultPerPage);
         $oo_url = sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), SupportedRenderType::OPEN_OFFICE, $page, $resultPerPage);
@@ -100,7 +103,7 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
 
             case SupportedRenderType::PARAM_QUERY:
 
-                $format = '/procure/pr/gird?id=%s&token=%s&pq_rpp=%s';
+                $format = '/procure/pr/row-gird?entity_id=%s&entity_token=%s&pq_rpp=%s';
                 $remoteUrl = sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), $resultPerPage);
 
                 $render = new DefaultPrRowRenderAsParamQuery($totalResults, $collection);

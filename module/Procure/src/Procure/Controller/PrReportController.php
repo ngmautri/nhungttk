@@ -191,7 +191,7 @@ class PrReportController extends AbstractGenericController
         // echo $this->getLocale();
         $isActive = $this->getGETparam('isActive');
         $page = $this->getGETparam('page', 1);
-        $perPage = $this->getGETparam('resultPerPage', 20);
+        $perPage = $this->getGETparam('resultPerPage', 15);
         $docYear = $this->params()->fromQuery('docYear', 2021);
         $docStatus = $this->params()->fromQuery('docStatus');
 
@@ -230,8 +230,8 @@ class PrReportController extends AbstractGenericController
     public function headerStatusGirdAction()
     {
         $isActive = $this->getGETparam('isActive');
-        $page = $this->getGETparam('page', 1);
-        $perPage = $this->getGETparam('resultPerPage', 20);
+        $page = $this->getGETparam('pq_curpage', 1);
+        $perPage = $this->getGETparam('pq_rpp', 15);
         $docYear = $this->params()->fromQuery('docYear', 2021);
         $docStatus = $this->params()->fromQuery('docStatus');
 

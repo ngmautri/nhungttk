@@ -1,0 +1,34 @@
+<?php
+use Inventory\Form\ItemSerial\ItemSerialFilterForm;
+use Procure\Domain\PurchaseRequest\PRDoc;
+
+/**
+ *
+ * @var PRDoc $rootEntity ;
+ * @var ItemSerialFilterForm $form ;
+ */
+
+?>
+
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">VIEW</a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt; padding: 10px 6px 1px 5px">
+		<div id="row_containter"></div>
+	</div>
+</div>
+
+
+<script>
+<?php
+$format = "var row_url = '/procure/pr/row-content?entity_id=%s&entity_token=%s'";
+echo sprintf($format, $rootEntity->getId(), $rootEntity->getToken());
+?>
+</script>
+
+<script>
+	doPaginatorV1(row_url,'row_containter');
+</script>

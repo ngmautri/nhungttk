@@ -22,8 +22,8 @@ class PrService2Test extends PHPUnit_Framework_TestCase
             /** @var PRServiceV2 $sv ; */
             $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\PR\PRService');
 
-            $id = 1454;
-            $token = "4a600b5e-d6bc-43be-86c6-978308aaf746";
+            $id = 1459;
+            $token = "bea38e13-82a8-405b-90d2-751abaf3093c";
 
             $rootEntity = $sv->getDocDetailsByTokenId($id, $token);
             // var_dump($rootEntity->getRowCollection()->current());
@@ -31,7 +31,7 @@ class PrService2Test extends PHPUnit_Framework_TestCase
 
             $page = 1;
             $render = $sv->getRowCollectionRender($rootEntity, $filter, $page);
-            var_dump(get_class($render));
+            var_dump($render);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

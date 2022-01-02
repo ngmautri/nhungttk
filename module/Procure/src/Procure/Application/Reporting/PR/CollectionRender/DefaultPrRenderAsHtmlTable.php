@@ -43,7 +43,7 @@ class DefaultPrRenderAsHtmlTable extends AbstractRenderAsHtmlTable
         $showUrl = '';
         $sysNumber = '';
 
-        $format = "/procure/pr/view?token=%s&entity_id=%s";
+        $format = "/procure/pr/view1?entity_token=%s&entity_id=%s";
         $href = sprintf($format, $element->getToken(), $element->getId());
         $format = '<a target="_blank" href="%s">Show</a>';
         $showUrl = sprintf($format, $href);
@@ -55,7 +55,7 @@ class DefaultPrRenderAsHtmlTable extends AbstractRenderAsHtmlTable
         }
         $progress_div = FormHelper::createProgressDiv($completion, null);
 
-        $cells = $cells . sprintf("<td>%s</td>\n", $progress_div);
+        $cells = $cells . sprintf("<td style='width:80pt;'>%s</td>\n", $progress_div);
         $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getPrAutoNumber()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getPrName()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getTotalRows()));

@@ -2,7 +2,6 @@
 namespace Procure\Application\Service\PR\RowCollectionRender;
 
 use Application\Domain\Util\Collection\Render\AbstractRenderAsHtmlTable;
-use Inventory\Domain\Item\Serial\GenericSerial;
 use Procure\Domain\PurchaseRequest\PRRow;
 
 /**
@@ -25,7 +24,7 @@ class DefaultPrRowRenderAsHtmlTable extends AbstractRenderAsHtmlTable
 
     protected function createRowCell($ele)
     {
-        if (! $ele instanceof GenericSerial) {
+        if (! $ele instanceof PRRow) {
             return null;
         }
 
@@ -39,14 +38,14 @@ class DefaultPrRowRenderAsHtmlTable extends AbstractRenderAsHtmlTable
         $showUrl = '';
         $sysNumber = '';
 
-        $format = "/inventory/item-serial/edit?token=%s&entity_id=%s";
+        $format = "/procure/item-serial/edit?token=%s&entity_id=%s";
         $href = sprintf($format, $element->getToken(), $element->getId());
         $format = '<a target="_blank" href="%s">Show</a>';
         $showUrl = sprintf($format, $href);
 
         $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getItemName()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getRowIdentifer()));
-        $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getCreatedOn()));
+        $cells = $cells . sprintf("<td>%s</td>\n", "");
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getVendorItemCode()));
         $cells = $cells . sprintf("<td>%s</td>\n", $showUrl);
         return $cells;

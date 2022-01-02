@@ -10,12 +10,16 @@ use Inventory\Form\ItemSerial\ItemSerialFilterForm;
  * @var ItemSerialFilterForm $form ;
  */
 
-$format = "<script>
- var previous_url = '%s';
-            </script>";
-echo sprintf($format, $rowCollectionRender->getUrl());
-
 ?>
+
+<script>
+<?php
+$format = "var previous_url = '%s'";
+echo sprintf($format, $rowCollectionRender->getUrl());
+?>
+</script>
+
+
 
 <div id="pr_row_div">
 
@@ -61,14 +65,16 @@ echo sprintf($format, $rowCollectionRender->getUrl());
 if ($rowCollectionRender instanceof AbstractRenderAsParamQuery) :
     // echo $collectionRender->printToolBar();
 
-    $format = "<script> 
- var remote_url = '%s';
- var r_pp = '%s';
-            </script>";
-    echo sprintf($format, $rowCollectionRender->getRemoteUrl(), $rowCollectionRender->getPaginator()->getResultsPerPage());
-
     ?>
     
+ <script> 
+ 
+	<?php
+    $format = "var remote_url = '%s', r_pp = %s";
+    echo sprintf($format, $rowCollectionRender->getRemoteUrl(), $rowCollectionRender->getPaginator()->getResultsPerPage());
+    ?>
+    
+</script>
     
      <div id="pr_row_param"></div>
 
@@ -119,10 +125,17 @@ if ($rowCollectionRender instanceof AbstractRenderAsParamQuery) :
                     return '<button type="button" class="edit_btn">Edit</button > ';
                 },
                 editable: false
-            }, {
+            }, 
+             {
+                dataIndx: "transactionStatus",
+                dataType: "string",
+                title: "Ref.",
+                minWidth: 90
+            },
+            {
                 dataIndx: "rowIdentifer",
                 dataType: "string",
-                title: "Invoice Number",
+                title: "Ref.",
                 minWidth: 90
             }, {
                 dataIndx: "itemName",

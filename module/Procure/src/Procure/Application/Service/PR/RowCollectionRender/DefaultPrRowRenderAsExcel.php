@@ -23,8 +23,8 @@ class DefaultPrRowRenderAsExcel extends AbstractRenderAsSpreadsheet
         }
 
         return [
-            'header1' => $element->getRowIdentifer(),
-            'header2' => $element->getItemName()
+            'Ref' => $element->getRowIdentifer(),
+            'Item Name' => $element->getItemName()
         ];
     }
 

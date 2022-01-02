@@ -2,6 +2,7 @@
 namespace Procure\Controller;
 
 use Application\Domain\Contracts\FormActions;
+use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
 use Procure\Controller\Contracts\ProcureCRUDController;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 use Zend\View\Model\ViewModel;
@@ -13,6 +14,8 @@ use Zend\View\Model\ViewModel;
  */
 class PrController extends ProcureCRUDController
 {
+
+    private $defaultPerPage = 20;
 
     public function __construct()
     {
@@ -54,34 +57,19 @@ class PrController extends ProcureCRUDController
      */
     public function view1Action()
     {
-        $this->layout($this->getDefaultLayout());
-
-        $form_action = $this->getBaseUrl() . "/view";
+        $this->layout("Procure/layout-fluid");
+        $form_action = $this->getBaseUrl() . "/view-v2";
         $form_title = "Show Form";
         $action = FormActions::SHOW;
-        $viewTemplete = $this->getViewTemplate();
         $request = $this->getRequest();
 
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('not_found');
         }
 
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
         $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
-
-        $filter = new PrRowReportSqlFilter();
-        $page = 1;
-        $resultPerPage = 10;
-
-        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $resultPerPage);
-
-        if ($rootEntity == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
 
         $viewModel = new ViewModel(array(
             'action' => $action,
@@ -89,17 +77,79 @@ class PrController extends ProcureCRUDController
             'form_title' => $form_title,
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
-            'rowCollectionRender' => $render,
-            'headerDTO' => $rootEntity->makeSnapshot(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
-            'nmtPlugin' => $nmtPlugin,
             'localCurrencyId' => $this->getLocalCurrencyId(),
             'defaultWarehouseId' => $this->getDefautWarehouseId(),
             'companyVO' => $this->getCompanyVO()
         ));
 
-        $viewModel->setTemplate($viewTemplete);
+        $viewModel->setTemplate("procure/pr/view-v2");
         return $viewModel;
+    }
+
+    public function rowContentAction()
+    {
+        $this->layout("layout/user/ajax");
+        $form_action = "/procure/pr-report/header-status-result";
+        $form_title = "Item Serial Map";
+        $action = FormActions::SHOW;
+        $viewTemplete = "/procure/pr-report/header-status-result";
+        $request = $this->getRequest();
+
+        // echo $this->getLocale();
+        $isActive = $this->getGETparam('isActive');
+        $page = $this->getGETparam('page', 1);
+        $perPage = $this->getGETparam('resultPerPage', $this->defaultPerPage);
+        $balance = $this->params()->fromQuery('balance', 100);
+        $sort_by = $this->params()->fromQuery('sortBy', "createdOn");
+        $sort = $this->params()->fromQuery('$sort', "DESC");
+        $renderType = $this->getGETparam('render_type', SupportedRenderType::HMTL_TABLE);
+
+        $filter = new PrRowReportSqlFilter();
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
+        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, $renderType);
+
+        $viewModel = new ViewModel(array(
+            'rowCollectionRender' => $render,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $perPage,
+            'filter' => $filter
+        ));
+
+        $viewModel->setTemplate("procure/pr/row-content");
+        return $viewModel;
+    }
+
+    public function rowGirdAction()
+    {
+        $filter = new PrRowReportSqlFilter();
+
+        $id = (int) $this->getGETparam('entity_id');
+        $token = $this->getGETparam('entity_token');
+
+        $page = $this->getGETparam('pq_curpage', 1);
+
+        $perPage = $this->getGETparam('pq_rpp', $this->defaultPerPage);
+
+        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
+        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, SupportedRenderType::AS_ARRAY);
+
+        if ($render == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $a_json_final['data'] = $render->execute();
+        $a_json_final['totalRecords'] = $render->getPaginator()->getTotalResults();
+        $a_json_final['curPage'] = $page;
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
     }
 }

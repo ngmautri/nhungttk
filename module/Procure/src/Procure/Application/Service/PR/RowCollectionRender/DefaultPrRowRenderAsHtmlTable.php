@@ -18,8 +18,8 @@ class DefaultPrRowRenderAsHtmlTable extends AbstractRenderAsHtmlTable
         <td><b>Invoice Number</b></td>
         <td><b>No.</b></td>
         <td><b>No2</b></td>
-        <td><b>No3</b></td>       
-        <td><b>Action</b></td>";
+        <td><b>No2</b></td>
+          <td><b>Action</b></td>";
     }
 
     protected function createRowCell($ele)
@@ -34,20 +34,22 @@ class DefaultPrRowRenderAsHtmlTable extends AbstractRenderAsHtmlTable
          */
         $element = $ele->makeSnapshot();
 
+        $element = $this->getFormatter()->format($element);
+
         $cells = '';
         $showUrl = '';
-        $sysNumber = '';
 
         $format = "/procure/item-serial/edit?token=%s&entity_id=%s";
         $href = sprintf($format, $element->getToken(), $element->getId());
         $format = '<a target="_blank" href="%s">Show</a>';
         $showUrl = sprintf($format, $href);
 
-        $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getItemName()));
+        $cells = $cells . sprintf("<td>%s</td>\n", $element->getItemName());
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getRowIdentifer()));
-        $cells = $cells . sprintf("<td>%s</td>\n", "");
+        $cells = $cells . sprintf("<td>%s</td>\n", $element->getConvertedStandardQuantity());
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getVendorItemCode()));
         $cells = $cells . sprintf("<td>%s</td>\n", $showUrl);
+
         return $cells;
     }
 }

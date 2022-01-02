@@ -59,7 +59,7 @@ abstract class AbstractRenderAsHtmlTable extends AbstractCollectionRender
             if ($element == null) {
                 continue;
             }
-            $element = $this->getFormatter()->format($element);
+
             $n ++;
 
             $tableBody = $tableBody . "<tr>\n";

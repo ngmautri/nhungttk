@@ -6,6 +6,7 @@ use Procure\Application\Reporting\AP\Output\ApRowFormatter;
 use Procure\Application\Reporting\AP\Output\SaveAsExcel;
 use Procure\Application\Reporting\AP\Output\SaveAsHTML;
 use Procure\Application\Reporting\AP\Output\SaveAsOpenOffice;
+use Procure\Application\Reporting\AP\Output\Header\APHeadersSaveAsArray;
 use Procure\Application\Reporting\AP\Output\Header\HeaderSaveAsExcel;
 use Procure\Application\Reporting\AP\Output\Header\Spreadsheet\ExcelBuilder;
 use Procure\Application\Reporting\AP\Output\Spreadsheet\OpenOfficeBuilder;
@@ -23,7 +24,7 @@ use Procure\Infrastructure\Persistence\ApReportRepositoryInterface;
  * AP Row Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ApReporter extends AbstractService
 {
@@ -48,7 +49,7 @@ class ApReporter extends AbstractService
         switch ($file_type) {
             case HeadersSaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeadersSaveAsArray();
+                $factory = new APHeadersSaveAsArray();
                 break;
             case HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL:
 

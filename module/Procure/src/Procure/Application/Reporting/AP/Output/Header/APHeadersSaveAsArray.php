@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Service\Output\Header;
+namespace Procure\Application\Reporting\AP\Output\Header;
 
 use Procure\Application\Service\Output\Contract\HeadersSaveAsInterface;
 use Procure\Application\Service\Output\Formatter\Header\AbstractHeaderFormatter;
@@ -9,7 +9,7 @@ use Procure\Application\Service\Output\Formatter\Header\AbstractHeaderFormatter;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class HeadersSaveAsArray implements HeadersSaveAsInterface
+class APHeadersSaveAsArray implements HeadersSaveAsInterface
 {
 
     /**
@@ -25,10 +25,6 @@ class HeadersSaveAsArray implements HeadersSaveAsInterface
 
         $output = array();
         foreach ($headers as $header) {
-
-            if ($header == null) {
-                continue;
-            }
             $output[] = $formatter->format($header);
         }
         return $output;

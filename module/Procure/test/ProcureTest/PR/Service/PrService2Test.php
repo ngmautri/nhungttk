@@ -31,7 +31,7 @@ class PrService2Test extends PHPUnit_Framework_TestCase
 
             $page = 1;
             $render = $sv->getRowCollectionRender($rootEntity, $filter, $page);
-            var_dump($render);
+            var_dump($render->execute());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

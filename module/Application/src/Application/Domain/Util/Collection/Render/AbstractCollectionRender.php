@@ -35,30 +35,6 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
 
     protected $url;
 
-    protected function printResultCount()
-    {
-        if ($this->getPaginator() == null) {
-            return null;
-        }
-
-        if ($this->getPaginator()->getTotalResults() <= $this->getPaginator()->getResultsPerPage()) {
-            $format = "%s records found!";
-            return sprintf($format, $this->getPaginator()->getTotalResults());
-        }
-
-        $format = "Records %s to %s of %s found!";
-        return sprintf($format, $this->getPaginator()->getOffset() + 1, $this->getPaginator()->getOffset() + $this->getPaginator()->getLimit(), $this->getPaginator()->getTotalResults());
-    }
-
-    protected function getOffset()
-    {
-        if ($this->getPaginator() == null) {
-            return 0;
-        }
-
-        return $this->getPaginator()->getOffset();
-    }
-
     /**
      *
      * @param int $collectionCount
@@ -82,6 +58,30 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
         $this->collection = $collection;
         $this->formatter = $formatter;
         $this->filter = $filter;
+    }
+
+    protected function printResultCount()
+    {
+        if ($this->getPaginator() == null) {
+            return null;
+        }
+
+        if ($this->getPaginator()->getTotalResults() <= $this->getPaginator()->getResultsPerPage()) {
+            $format = "%s records found!";
+            return sprintf($format, $this->getPaginator()->getTotalResults());
+        }
+
+        $format = "Records %s to %s of %s found!";
+        return sprintf($format, $this->getPaginator()->getOffset() + 1, $this->getPaginator()->getOffset() + $this->getPaginator()->getLimit(), $this->getPaginator()->getTotalResults());
+    }
+
+    protected function getOffset()
+    {
+        if ($this->getPaginator() == null) {
+            return 0;
+        }
+
+        return $this->getPaginator()->getOffset();
     }
 
     /*
@@ -234,42 +234,6 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
     public function getPaginator()
     {
         return $this->paginator;
-    }
-
-    /**
-     *
-     * @param FilterInterface $filter
-     */
-    public function setFilter(FilterInterface $filter)
-    {
-        $this->filter = $filter;
-    }
-
-    /**
-     *
-     * @param ElementFormatterInterface $formatter
-     */
-    public function setFormatter(ElementFormatterInterface $formatter)
-    {
-        $this->formatter = $formatter;
-    }
-
-    /**
-     *
-     * @param int $collectionCount
-     */
-    public function setCollectionCount($collectionCount)
-    {
-        $this->collectionCount = $collectionCount;
-    }
-
-    /**
-     *
-     * @param \Traversable $collection
-     */
-    public function setCollection($collection)
-    {
-        $this->collection = $collection;
     }
 
     /**

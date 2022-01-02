@@ -142,7 +142,17 @@ if ($rowCollectionRender instanceof AbstractRenderAsParamQuery) :
                 dataType: "string",
                 title: "Item Name",
                 minWidth: 150
-            }];
+            },
+            
+             {
+                dataIndx: "convertedStandardQuantity",
+                dataType: "int",
+                title: "Std Qty",
+                align: "right",
+                minWidth: 100
+            }
+            
+            ];
 
             // Create ParamQuery Object!
             var $grid = $("#pr_row_param").pqGrid(obj)
@@ -177,8 +187,6 @@ if ($rowCollectionRender instanceof AbstractRenderAsParamQuery) :
 endif;
 
 ?>
-
-
 
 
 <div class="modal" id="confirm_remove_row_modal_sm" role="dialog">

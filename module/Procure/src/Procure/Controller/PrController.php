@@ -111,7 +111,7 @@ class PrController extends ProcureCRUDController
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
         $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
-        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, $renderType);
+        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, $renderType, $this->getLocale());
 
         $viewModel = new ViewModel(array(
             'rowCollectionRender' => $render,
@@ -137,7 +137,7 @@ class PrController extends ProcureCRUDController
         $perPage = $this->getGETparam('pq_rpp', $this->defaultPerPage);
 
         $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
-        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, SupportedRenderType::AS_ARRAY);
+        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, SupportedRenderType::AS_ARRAY, $this->getLocale());
 
         if ($render == null) {
             return $this->redirect()->toRoute('not_found');

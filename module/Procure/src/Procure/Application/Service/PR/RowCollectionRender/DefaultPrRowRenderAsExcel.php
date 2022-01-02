@@ -24,7 +24,8 @@ class DefaultPrRowRenderAsExcel extends AbstractRenderAsSpreadsheet
 
         return [
             'Ref' => $element->getRowIdentifer(),
-            'Item Name' => $element->getItemName()
+            'Item Name' => $element->getItemName(),
+            'Qty Name' => $element->getConvertedStandardQuantity()
         ];
     }
 

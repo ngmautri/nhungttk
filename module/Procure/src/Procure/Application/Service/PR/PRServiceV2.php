@@ -14,6 +14,7 @@ use Procure\Application\Service\PR\Output\Spreadsheet\OpenOfficeBuilder;
 use Procure\Application\Service\PR\RowCollectionRender\DefaultPrRowRenderAsExcel;
 use Procure\Application\Service\PR\RowCollectionRender\DefaultPrRowRenderAsHtmlTable;
 use Procure\Application\Service\PR\RowCollectionRender\DefaultPrRowRenderAsParamQuery;
+use Procure\Application\Service\Render\Formatter\RowTextAndNumberFormatter;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
@@ -30,7 +31,7 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
 
     const PR_KEY_CACHE = "pr_%s";
 
-    public function getRowCollectionRender(PRDoc $rootEntity, $filter, $page, $resultPerPage = 10, $renderType = SupportedRenderType::HMTL_TABLE)
+    public function getRowCollectionRender(PRDoc $rootEntity, $filter, $page, $resultPerPage = 10, $renderType = SupportedRenderType::HMTL_TABLE, $locale = 'en_EN')
     {
         if ($rootEntity == null) {
             throw new \InvalidArgumentException("Root Entity is null!");
@@ -91,14 +92,18 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
 
         $render = null;
         $toolbar1 = '';
+
+        // $formatter = new PrRowFormatter(new RowTextAndNumberFormatter());
+        $formatter = new RowTextAndNumberFormatter();
+        $formatter->setLocale($locale);
+
         switch ($renderType) {
 
             case SupportedRenderType::HMTL_TABLE:
-                $render = new DefaultPrRowRenderAsHtmlTable($totalResults, $collection);
+                $render = new DefaultPrRowRenderAsHtmlTable($totalResults, $collection, $formatter);
                 $render->setPaginator($paginator);
                 $render->setUrl(sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), SupportedRenderType::HMTL_TABLE, $page - 1, $resultPerPage));
                 $toolbar1 = $toolbar1 . FormHelper::createButtonForJS('<i class="fa fa-th" aria-hidden="true"></i>', $html_onclick, 'Gird View');
-
                 break;
 
             case SupportedRenderType::PARAM_QUERY:
@@ -106,7 +111,7 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
                 $format = '/procure/pr/row-gird?entity_id=%s&entity_token=%s&pq_rpp=%s';
                 $remoteUrl = sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), $resultPerPage);
 
-                $render = new DefaultPrRowRenderAsParamQuery($totalResults, $collection);
+                $render = new DefaultPrRowRenderAsParamQuery($totalResults, $collection, $formatter);
                 $render->setRemoteUrl($remoteUrl);
                 $render->setPaginator($paginator);
                 $toolbar1 = $toolbar1 . FormHelper::createButtonForJS('<i class="fa fa-list" aria-hidden="true"></i>', $param_onclick, 'Table View');
@@ -130,12 +135,12 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
                 break;
 
             case SupportedRenderType::AS_ARRAY:
-                $render = new DefaultRenderAsArray($totalResults, $collection);
+                $render = new DefaultRenderAsArray($totalResults, $collection, $formatter);
                 $render->setPaginator($paginator);
                 break;
 
             default:
-                $render = new DefaultPrRowRenderAsHtmlTable($totalResults, $collection);
+                $render = new DefaultPrRowRenderAsHtmlTable($totalResults, $collection, $formatter);
                 $render->setPaginator($paginator);
                 break;
         }
@@ -143,6 +148,7 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
         $toolbar = FormHelper::createDropDownBtn($list, '', $toolbar1);
 
         $render->setToolbar($toolbar);
+        $render->setLogger($this->getLogger());
 
         return $render;
     }

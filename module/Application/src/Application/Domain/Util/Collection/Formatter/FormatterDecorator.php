@@ -7,9 +7,9 @@ use Application\Domain\Util\Collection\Contracts\ElementFormatterInterface;
  * Element Decorator
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-abstract class FormatterDecorator implements ElementFormatterInterface
+abstract class FormatterDecorator extends AbstractElementFormatter
 {
 
     protected $formatter;

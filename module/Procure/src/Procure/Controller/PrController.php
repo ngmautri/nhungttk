@@ -15,7 +15,7 @@ use Zend\View\Model\ViewModel;
 class PrController extends ProcureCRUDController
 {
 
-    private $defaultPerPage = 20;
+    private $defaultPerPage = 100;
 
     public function __construct()
     {
@@ -104,7 +104,7 @@ class PrController extends ProcureCRUDController
         $balance = $this->params()->fromQuery('balance', 100);
         $sort_by = $this->params()->fromQuery('sortBy', "createdOn");
         $sort = $this->params()->fromQuery('$sort', "DESC");
-        $renderType = $this->getGETparam('render_type', SupportedRenderType::HMTL_TABLE);
+        $renderType = $this->getGETparam('render_type', SupportedRenderType::PARAM_QUERY);
 
         $filter = new PrRowReportSqlFilter();
 

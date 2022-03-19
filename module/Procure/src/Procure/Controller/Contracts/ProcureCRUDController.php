@@ -45,6 +45,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
     protected $procureService;
 
+    protected $procureServiceV2;
+
     /**
      *
      * @return mixed
@@ -369,7 +371,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
         $request = $this->getRequest();
 
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('not_found');
+            // return $this->redirect()->toRoute('not_found');
         }
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -1333,6 +1335,24 @@ abstract class ProcureCRUDController extends AbstractGenericController
     public function setProcureService(ProcureServiceInterface $procureService)
     {
         $this->procureService = $procureService;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Service\Contracts\ProcureServiceInterface
+     */
+    public function getProcureServiceV2()
+    {
+        return $this->procureServiceV2;
+    }
+
+    /**
+     *
+     * @param ProcureServiceInterface $procureService
+     */
+    public function setProcureServiceV2(ProcureServiceInterface $procureService)
+    {
+        $this->procureServiceV2 = $procureService;
     }
 
     /**

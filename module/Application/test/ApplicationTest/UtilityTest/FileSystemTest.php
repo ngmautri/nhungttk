@@ -1,7 +1,7 @@
 <?php
 namespace ApplicationTest\UtilityTest;
 
-use Cake\Filesystem\File;
+use Cake\Utility\Security;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_TestCase;
 
@@ -21,12 +21,6 @@ class FileSystemTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        $path = $curDir . '/data/Forklift.xlsx';
-
-        echo $path;
-
-        $file = new File($path);
-
-        var_dump($file->exists());
+        var_dump(Security::randomString(50));
     }
 }

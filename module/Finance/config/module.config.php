@@ -88,7 +88,7 @@ return array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'finance_navi' => 'Finance\Service\FinanceNavigationFactory', // <-- add this
-            'Finance\Service\APInvoiceService' => 'Finance\Service\APInvoiceServiceFactory',
+                                                                           // 'Finance\Service\APInvoiceService' => 'Finance\Service\APInvoiceServiceFactory',
             'Finance\Service\JEService' => 'Finance\Service\JEServiceFactory',
             'Finance\Service\AccountService' => 'Finance\Service\AccountServiceFactory'
         )
@@ -98,8 +98,8 @@ return array(
         'factories' => array(
             'Finance\Controller\Index' => 'Finance\Controller\IndexControllerFactory',
             'Finance\Controller\PostingPeriod' => 'Finance\Controller\PostingPeriodControllerFactory',
-            'Finance\Controller\VInvoice' => 'Finance\Controller\VInvoiceControllerFactory',
-            'Finance\Controller\VInvoiceRow' => 'Finance\Controller\VInvoiceRowControllerFactory',
+            // 'Finance\Controller\VInvoice' => 'Finance\Controller\VInvoiceControllerFactory',
+            // 'Finance\Controller\VInvoiceRow' => 'Finance\Controller\VInvoiceRowControllerFactory',
             'Finance\Controller\VInvoiceAttachment' => 'Finance\Controller\VInvoiceAttachmentControllerFactory',
             'Finance\Controller\ActivityLog' => 'Finance\Controller\ActivityLogControllerFactory',
             'Finance\Controller\ChangeLog' => 'Finance\Controller\ChangeLogControllerFactory',

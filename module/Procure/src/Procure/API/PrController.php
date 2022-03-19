@@ -1,15 +1,16 @@
 <?php
 namespace Procure\API;
 
-use Zend\Mvc\Controller\AbstractRestfulController;
 use Doctrine\ORM\EntityManager;
+use Procure\API\Contracts\ProcureRestController;
+use Zend\View\Model\JsonModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrController extends AbstractRestfulController
+class PrController extends ProcureRestController
 {
 
     protected $doctrineEM;
@@ -22,7 +23,7 @@ class PrController extends AbstractRestfulController
     public function get($id)
     {
         $a_json_final = array();
-        $a_json_final['data'] = __METHOD__ . ' hahahha get current data with id =  ' . $id;
+        $a_json_final['data'] = __METHOD__ . ' NMT get current data with id =  ' . $id;
 
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
@@ -49,9 +50,15 @@ class PrController extends AbstractRestfulController
      */
     public function create($data)
     {
-        $response = $this->getResponseWithHeader()->setContent(__METHOD__ . ' create new item of data :
-                                                    <b>' . $data['name'] . '</b>');
-        return $response;
+        $f = "%s create new item of data : %s";
+
+        $this->logInfo(json_encode($data));
+        // $this->$response = $this->getResponseWithHeader()->setContent(sprintf($f, __METHOD__, json_encode($data)));
+        // return $response;
+
+        return new JsonModel(array(
+            'data' => $data
+        ));
     }
 
     public function update($id, $data)
@@ -107,5 +114,4 @@ class PrController extends AbstractRestfulController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-
 }

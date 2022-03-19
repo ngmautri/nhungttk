@@ -4,6 +4,7 @@ namespace Procure\Controller;
 use Procure\Application\Command\Doctrine\PR\Factory\PRCmdHandlerFactory;
 use Procure\Application\EventBus\EventBusService;
 use Procure\Application\Service\PR\PRService;
+use Procure\Application\Service\PR\PRServiceV2;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -35,6 +36,9 @@ class PrControllerFactory implements FactoryInterface
 
         $sv = $sm->get(PRService::class);
         $controller->setProcureService($sv);
+
+        $sv = $sm->get(PRServiceV2::class);
+        $controller->setProcureServiceV2($sv);
 
         $controller->setCmdHandlerFactory(new PRCmdHandlerFactory());
 

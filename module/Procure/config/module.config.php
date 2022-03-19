@@ -30,6 +30,9 @@ use Procure\Application\Reporting\PR\PrReporter;
 use Procure\Application\Reporting\PR\PrReporterFactory;
 use Procure\Application\Reporting\QR\QrReporter;
 use Procure\Application\Reporting\QR\QrReporterFactory;
+use Procure\Application\Service\PR\PRServiceFactory;
+use Procure\Application\Service\PR\PRServiceFactoryV2;
+use Procure\Application\Service\PR\PRServiceV2;
 use Procure\Application\Service\QR\QRService;
 use Procure\Application\Service\QR\QRServiceFactory;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImpl;
@@ -234,7 +237,7 @@ return array(
                 'options' => array(
                     'route' => '/procure/pr-api[/:id]',
                     'constraints' => array(
-                        'id' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                        'id' => '[0-9]+'
                     ),
                     'defaults' => array(
                         'controller' => 'Procure\API\PrController'
@@ -268,23 +271,44 @@ return array(
 
             'Procure\Service\GrListener' => 'Procure\Service\GrListenereFactory',
 
-            'Procure\Service\PrService' => 'Procure\Service\PrServiceFactory',
-            'Procure\Service\QoService' => 'Procure\Service\QoServiceFactory',
-            'Procure\Service\PoService' => 'Procure\Service\PoServiceFactory',
-            'Procure\Service\GrService' => 'Procure\Service\GrServiceFactory',
-            'Procure\Service\APInvoiceService' => 'Procure\Service\APInvoiceServiceFactory',
-            'Procure\Service\ReService' => 'Procure\Service\ReServiceFactory',
-
+            /*
+             * |=============================
+             * |Search Service.
+             * |
+             * |=============================
+             */
             'Procure\Service\PrSearchService' => 'Procure\Service\PrSearchServiceFactory',
             'Procure\Service\QoSearchService' => 'Procure\Service\QoSearchServiceFactory',
             'Procure\Service\PoSearchService' => 'Procure\Service\PoSearchServiceFactory',
             'Procure\Service\GrSearchService' => 'Procure\Service\GrSearchServiceFactory',
             'Procure\Service\ApSearchService' => 'Procure\Service\ApSearchServiceFactory',
+            
+            
+            /*
+             * |=============================
+             * |Application Service.
+             * |
+             * |=============================
+             */
+            'Procure\Application\Service\PR\PRService' => PRServiceFactory::class,
+            PRServiceV2::class => PRServiceFactoryV2::class,
+
+            'Procure\Application\Service\PO\POService' => 'Procure\Application\Service\PO\POServiceFactory',
+            'Procure\Application\Service\GR\GRService' => 'Procure\Application\Service\GR\GRServiceFactory',
+            'Procure\Application\Service\AP\APService' => 'Procure\Application\Service\AP\APServiceFactory',
+            QRService::class => QRServiceFactory::class,
+            UploadPR::class => UploadPRFactory::class,
 
             'Procure\Service\Upload\PrRowUploadService' => 'Procure\Service\Upload\PrRowUploadServiceFactory',
             'Procure\Service\Upload\PrUploadService' => 'Procure\Service\Upload\PrUploadServiceFactory',
 
+            /*
+             * |=============================
+             * |Application Service.
+             * |
             // Repository Service
+             * |=============================
+             */
             'Procure\Infrastructure\Persistence\Doctrine\PRListRepository' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\PRListRepositoryFactory',
             'Procure\Infrastructure\Persistence\Doctrine\POListRepository' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\POListRepositoryFactory',
             'Procure\Infrastructure\Persistence\Doctrine\APRepoterRepositoryImpl' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\APReporterRepositoryImplFactory',
@@ -312,14 +336,14 @@ return array(
             GrReporter::class => GrReporterFactory::class,
             PrReporter::class => PrReporterFactory::class,
 
-            // Appliation Service
-            'Procure\Application\Service\PR\PRService' => 'Procure\Application\Service\PR\PRServiceFactory',
-            'Procure\Application\Service\PO\POService' => 'Procure\Application\Service\PO\POServiceFactory',
-            'Procure\Application\Service\GR\GRService' => 'Procure\Application\Service\GR\GRServiceFactory',
-            'Procure\Application\Service\AP\APService' => 'Procure\Application\Service\AP\APServiceFactory',
-            QRService::class => QRServiceFactory::class,
-            UploadPR::class => UploadPRFactory::class,
-
+            
+            /*
+             * |=============================
+             * |Application Service.
+             * |
+             * |=============================
+             */
+         
             // Search Service
             'Procure\Application\Service\Search\ApSearchService' => 'Procure\Application\Service\Search\ApSearchServiceFactory',
             'Procure\Application\Service\Search\PoSearchService' => 'Procure\Application\Service\Search\PoSearchServiceFactory',
@@ -381,28 +405,28 @@ return array(
             'Procure\Controller\ActivityLog' => 'Procure\Controller\ActivityLogControllerFactory',
 
             'Procure\Controller\Pr' => 'Procure\Controller\PrControllerFactory',
-            'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
+            // 'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
             'Procure\Controller\PrAttachment' => 'Procure\Controller\PrAttachmentControllerFactory',
             'Procure\Controller\PrRowAttachment' => 'Procure\Controller\PrRowAttachmentControllerFactory',
             'Procure\Controller\PrSearch' => 'Procure\Controller\PrSearchControllerFactory',
 
-            'Procure\Controller\Quote' => 'Procure\Controller\QuoteControllerFactory',
-            'Procure\Controller\QuoteRow' => 'Procure\Controller\QuoteRowControllerFactory',
+            // 'Procure\Controller\Quote' => 'Procure\Controller\QuoteControllerFactory',
+            // 'Procure\Controller\QuoteRow' => 'Procure\Controller\QuoteRowControllerFactory',
             'Procure\Controller\QuoteAttachment' => 'Procure\Controller\QuoteAttachmentControllerFactory',
             'Procure\Controller\QuoteSearch' => 'Procure\Controller\QuoteSearchControllerFactory',
 
             'Procure\Controller\Po' => 'Procure\Controller\PoControllerFactory',
-            'Procure\Controller\PoRow' => 'Procure\Controller\PoRowControllerFactory',
+            // 'Procure\Controller\PoRow' => 'Procure\Controller\PoRowControllerFactory',
             'Procure\Controller\PoAttachment' => 'Procure\Controller\PoAttachmentControllerFactory',
             'Procure\Controller\PoSearch' => 'Procure\Controller\PoSearchControllerFactory',
 
             'Procure\Controller\Gr' => 'Procure\Controller\GrControllerFactory',
-            'Procure\Controller\GrRow' => 'Procure\Controller\GrRowControllerFactory',
+            // 'Procure\Controller\GrRow' => 'Procure\Controller\GrRowControllerFactory',
             'Procure\Controller\GrAttachment' => 'Procure\Controller\GrAttachmentControllerFactory',
             'Procure\Controller\GrSearch' => 'Procure\Controller\GrSearchControllerFactory',
 
             'Procure\Controller\Return' => 'Procure\Controller\ReturnControllerFactory',
-            'Procure\Controller\ReturnRow' => 'Procure\Controller\ReturnRowControllerFactory',
+            // 'Procure\Controller\ReturnRow' => 'Procure\Controller\ReturnRowControllerFactory',
             'Procure\Controller\ReturnAttachment' => 'Procure\Controller\ReturnAttachmentControllerFactory',
 
             'Procure\Controller\PriceComparison' => 'Procure\Controller\PriceComparisonControllerFactory',

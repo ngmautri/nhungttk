@@ -27,6 +27,9 @@ class PrControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
+        $sv = $sm->get("ProcureLogger");
+        $controller->setLogger($sv);
+
         return $controller;
     }
 }

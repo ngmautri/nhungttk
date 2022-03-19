@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PRServiceFactory implements FactoryInterface
+class PRServiceFactoryV2 implements FactoryInterface
 {
 
     /**
@@ -21,7 +21,7 @@ class PRServiceFactory implements FactoryInterface
     {
         $container = $serviceLocator;
 
-        $service = new PRServiceV1();
+        $service = new PRServiceV2();
 
         $sv = $container->get('ControllerPluginManager');
         $service->setControllerPlugin($sv->get('NmtPlugin'));

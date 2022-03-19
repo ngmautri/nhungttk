@@ -15,7 +15,7 @@ use Zend\View\Model\ViewModel;
 class PrController extends ProcureCRUDController
 {
 
-    private $defaultPerPage = 100;
+    private $defaultPerPage = 15;
 
     public function __construct()
     {
@@ -69,7 +69,7 @@ class PrController extends ProcureCRUDController
 
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
-        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
+        $rootEntity = $this->getProcureServiceV2()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
 
         $viewModel = new ViewModel(array(
             'action' => $action,
@@ -88,6 +88,10 @@ class PrController extends ProcureCRUDController
         return $viewModel;
     }
 
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
     public function rowContentAction()
     {
         $this->layout("layout/user/ajax");
@@ -111,7 +115,7 @@ class PrController extends ProcureCRUDController
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
         $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
-        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, $renderType, $this->getLocale());
+        $render = $this->getProcureServiceV2()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, $renderType, $this->getLocale());
 
         $viewModel = new ViewModel(array(
             'rowCollectionRender' => $render,
@@ -136,8 +140,8 @@ class PrController extends ProcureCRUDController
 
         $perPage = $this->getGETparam('pq_rpp', $this->defaultPerPage);
 
-        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
-        $render = $this->getProcureService()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, SupportedRenderType::AS_ARRAY, $this->getLocale());
+        $rootEntity = $this->getProcureServiceV2()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
+        $render = $this->getProcureServiceV2()->getRowCollectionRender($rootEntity, $filter, $page, $perPage, SupportedRenderType::AS_ARRAY, $this->getLocale());
 
         if ($render == null) {
             return $this->redirect()->toRoute('not_found');

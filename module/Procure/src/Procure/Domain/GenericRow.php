@@ -119,7 +119,7 @@ abstract class GenericRow extends BaseRow
         // UOM VO
         // ==================
         $this->docUomVO = new Uom($this->getDocUnit(), 'docUomVO');
-        $this->itemStandardUomVO = new Uom($this->getItemStandardUnitName(), 'itemStandardUomVO');
+        $this->itemStandardUomVO = new Uom($this->getItemStandardUnitName(), 'itemStandardUomVO-' . $this->getItemSysNumber());
         $this->uomPairVO = new UomPair($this->itemStandardUomVO, $this->docUomVO, $this->getStandardConvertFactor());
     }
 

@@ -73,6 +73,7 @@ class ItemSerialReporter extends AbstractService
         $filter->setSort('DESC');
         $collection = $rep->getList($filter);
 
+        // set-up: LINK
         $format = "/inventory/item-serial/list1?itemId=%s&render_type=%s&page=%s&resultPerPage=%s";
         $excel_url = sprintf($format, $filter->getItemId(), SupportedRenderType::EXCEL, $page, $resultPerPage);
         $oo_url = sprintf($format, $filter->getItemId(), SupportedRenderType::OPEN_OFFICE, $page, $resultPerPage);

@@ -28,7 +28,8 @@ class FormCodeGenerateTest extends PHPUnit_Framework_TestCase
             ];
 
             // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(ItemSerialSqlFilter::class);
-            $result = GenericDTOAssembler::createFormElementsFor(ItemSerialSqlFilter::class, $properties);
+            // $result = GenericDTOAssembler::createFormElementsFor(ItemSerialSqlFilter::class, $properties);
+            $result = GenericDTOAssembler::createFormElements(ItemSerialSqlFilter::class);
             // $result = GenericDTOAssembler::createFormElementsFunctionFor(ItemSerialSqlFilter::class, $properties);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

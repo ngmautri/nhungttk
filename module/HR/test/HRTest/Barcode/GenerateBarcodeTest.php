@@ -20,7 +20,7 @@ class GenerateBarcodeTest extends PHPUnit_Framework_TestCase
         $root = realpath(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))));
         $folder = $root . self::BACKUP_FOLDER;
 
-        for ($i = 4000; $i < 6000; $i ++) {
+        for ($i = 6000; $i < 10000; $i ++) {
 
             $maxLen = 4;
             $currentLen = strlen($i);

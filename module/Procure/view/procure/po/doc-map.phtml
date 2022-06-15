@@ -11,6 +11,7 @@
  * @var DocMapRenderAsHtmlTable $collectionRender
  */
 use Application\Application\Helper\Form\FormHelper;
+use Fhaculty\Graph\Graph;
 use Procure\Application\Service\PO\Render\DocMapRenderAsHtmlTable;
 ?>
   
@@ -26,3 +27,22 @@ use Procure\Application\Service\PO\Render\DocMapRenderAsHtmlTable;
         endif;
         ?>
     </div>
+    
+<?php
+$graph = new Graph();
+
+$blue = $graph->createVertex("blue");
+$blue->setAttribute('label', 'blue');
+$blue->setAttribute('graphviz.color', 'blue');
+
+$red = $graph->createVertex("red");
+$red->setAttribute('label', 'red');
+$red->setAttribute('graphviz.color', 'red');
+
+$e = $blue->createEdgeTo($red);
+$graph->addEdge($e);
+
+$graphviz = new Graphp\GraphViz\GraphViz();
+// $graphviz->setFormat('png');
+echo $graphviz->createImageHtml($graph);
+?>

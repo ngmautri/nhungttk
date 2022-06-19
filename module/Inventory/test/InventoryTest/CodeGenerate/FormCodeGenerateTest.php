@@ -2,8 +2,8 @@
 namespace InventoryTest\Department\CodeGenerate;
 
 use Application\Application\Contracts\GenericDTOAssembler;
-use Inventory\Infrastructure\Persistence\SQL\Filter\ItemSerialSqlFilter;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
 use PHPUnit_Framework_TestCase;
 
 class FormCodeGenerateTest extends PHPUnit_Framework_TestCase
@@ -29,7 +29,7 @@ class FormCodeGenerateTest extends PHPUnit_Framework_TestCase
 
             // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(ItemSerialSqlFilter::class);
             // $result = GenericDTOAssembler::createFormElementsFor(ItemSerialSqlFilter::class, $properties);
-            $result = GenericDTOAssembler::createFormElements(ItemSerialSqlFilter::class);
+            $result = GenericDTOAssembler::printFieldsAsRequestString(PrHeaderReportSqlFilter::class);
             // $result = GenericDTOAssembler::createFormElementsFunctionFor(ItemSerialSqlFilter::class, $properties);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

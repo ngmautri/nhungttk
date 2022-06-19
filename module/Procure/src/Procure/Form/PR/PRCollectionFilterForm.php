@@ -4,6 +4,7 @@ namespace Procure\Form\PR;
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
 use Application\Form\Helper\DefaultOptions;
+use Procure\Form\Helper\DefaultProcureOptions;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Select;
 
@@ -90,40 +91,43 @@ class PRCollectionFilterForm extends GenericForm
         // ======================================
         // Form Element for {docStatus}
         // ======================================
-        $this->add([
-            'type' => 'text', // to update, if needed
-            'name' => 'docStatus',
-            'attributes' => [
-                'id' => 'docStatus',
-                'class' => "form-control input-sm", // to update, if needed
-                'required' => FALSE // to update, if needed
-            ],
-            'options' => [
-                'label' => Translator::translate('PR Status'), // to update, if needed
-                'label_attributes' => [
-                    'class' => "control-label col-sm-2" // to update, if needed
-                ]
-            ]
-        ]);
-
+        /*
+         * $this->add([
+         * 'type' => 'text', // to update, if needed
+         * 'name' => 'docStatus',
+         * 'attributes' => [
+         * 'id' => 'docStatus',
+         * 'class' => "form-control input-sm", // to update, if needed
+         * 'required' => FALSE // to update, if needed
+         * ],
+         * 'options' => [
+         * 'label' => Translator::translate('PR Status'), // to update, if needed
+         * 'label_attributes' => [
+         * 'class' => "control-label col-sm-2" // to update, if needed
+         * ]
+         * ]
+         * ]);
+         */
         // ======================================
         // Form Element for {balance}
         // ======================================
-        $this->add([
-            'type' => 'text', // to update, if needed
-            'name' => 'balance',
-            'attributes' => [
-                'id' => 'balance',
-                'class' => "form-control input-sm", // to update, if needed
-                'required' => FALSE // to update, if needed
-            ],
-            'options' => [
-                'label' => Translator::translate('balance'), // to update, if needed
-                'label_attributes' => [
-                    'class' => "control-label col-sm-2" // to update, if needed
-                ]
-            ]
-        ]);
+        /*
+         * $this->add([
+         * 'type' => 'text', // to update, if needed
+         * 'name' => 'balance',
+         * 'attributes' => [
+         * 'id' => 'balance',
+         * 'class' => "form-control input-sm", // to update, if needed
+         * 'required' => FALSE // to update, if needed
+         * ],
+         * 'options' => [
+         * 'label' => Translator::translate('balance'), // to update, if needed
+         * 'label_attributes' => [
+         * 'class' => "control-label col-sm-2" // to update, if needed
+         * ]
+         * ]
+         * ]);
+         */
 
         // ======================================
         // Form Element for {isActive}
@@ -278,6 +282,56 @@ class PRCollectionFilterForm extends GenericForm
         // $select->setEmptyOption(Translator::translate('Parent Account Number'));
 
         $select->setValueOptions(DefaultOptions::createMonthOption());
+        // $select->setDisableInArrayValidator(false);
+        $this->add($select);
+
+        // ======================================
+        // Form Element for {Doc Status}
+        // ======================================
+        // select
+        $select = new Select();
+        $select->setName("docStatus");
+        $select->setAttributes([
+            'id' => 'docStatus',
+            'class' => "form-control input-sm chosen-select",
+            'required' => true
+        ]);
+
+        $select->setOptions([
+            'label' => Translator::translate('Status'),
+            'label_attributes' => [
+                'class' => 'control-label col-sm-2'
+            ]
+            // 'empty_option' => 'Please choose a month'
+        ]);
+        // $select->setEmptyOption(Translator::translate('Parent Account Number'));
+
+        $select->setValueOptions(DefaultProcureOptions::createPRDocStatusOption());
+        // $select->setDisableInArrayValidator(false);
+        $this->add($select);
+
+        // ======================================
+        // Form Element for {balance}
+        // ======================================
+        // select
+        $select = new Select();
+        $select->setName("balance");
+        $select->setAttributes([
+            'id' => 'docStatus',
+            'class' => "form-control input-sm chosen-select",
+            'required' => true
+        ]);
+
+        $select->setOptions([
+            'label' => Translator::translate('Balance'),
+            'label_attributes' => [
+                'class' => 'control-label col-sm-2'
+            ]
+            // 'empty_option' => 'Please choose a month'
+        ]);
+        // $select->setEmptyOption(Translator::translate('Parent Account Number'));
+
+        $select->setValueOptions(DefaultProcureOptions::createPRBalanceOption());
         // $select->setDisableInArrayValidator(false);
         $this->add($select);
     }

@@ -125,6 +125,10 @@ class PrRowHelper
             $tmp2 = $tmp2 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
         }
 
+        if ($filter->getDocMonth() > 0) {
+            $tmp2 = $tmp2 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocMonth());
+        }
+
         if ($filter->getItemId() > 0) {
             $tmp2 = $tmp2 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
         }

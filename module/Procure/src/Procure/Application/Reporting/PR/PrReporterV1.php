@@ -67,7 +67,8 @@ class PrReporterV1 extends AbstractService
 
         $paginator = new Paginator($totalResults, $page, $resultPerPage);
 
-        $url = "/procure/pr-report/header-status-result?" . $filterHeader->printGetQuery();
+        $f = "/procure/pr-report/header-status-result?%s&renderType=%s";
+        $url = sprintf($f, $filterHeader->printGetQuery(), $renderType);
         $paginator->setBaseUrl($url);
         $paginator->setUrlConnectorSymbol("&");
 
@@ -84,12 +85,10 @@ class PrReporterV1 extends AbstractService
         }
 
         $collection = $this->getList($filterHeader, $filterRows);
-
-        $format = "/procure/pr-report/header-status-result?" . $filterHeader->printGetQuery();
-        $excel_url = sprintf($format, "", "", SupportedRenderType::EXCEL, $page, $resultPerPage);
-        $oo_url = sprintf($format, "", "", SupportedRenderType::OPEN_OFFICE, $page, $resultPerPage);
-        $table_html_url = sprintf($format, "", "", SupportedRenderType::HMTL_TABLE, $page, $resultPerPage);
-        $param_query_url = sprintf($format, "", "", SupportedRenderType::PARAM_QUERY, $page, $resultPerPage);
+        $excel_url = sprintf($f, $filterHeader->printGetQuery(), SupportedRenderType::EXCEL);
+        $oo_url = sprintf($f, $filterHeader->printGetQuery(), SupportedRenderType::OPEN_OFFICE);
+        $table_html_url = sprintf($f, $filterHeader->printGetQuery(), SupportedRenderType::HMTL_TABLE);
+        $param_query_url = sprintf($f, $filterHeader->printGetQuery(), SupportedRenderType::PARAM_QUERY);
 
         $param_onclick = \sprintf("doPaginatorV1('%s','%s')", $table_html_url, $resultDiv);
         $html_onclick = \sprintf("doPaginatorV1('%s','%s')", $param_query_url, $resultDiv);
@@ -107,7 +106,7 @@ class PrReporterV1 extends AbstractService
             case SupportedRenderType::HMTL_TABLE:
                 $render = new DefaultPrRenderAsHtmlTable($totalResults, $collection);
                 $render->setPaginator($paginator);
-                $render->setUrl(sprintf($format, "", "", SupportedRenderType::HMTL_TABLE, $page - 1, $resultPerPage));
+                $render->setOffset(($paginator->getOffset()));
                 $toolbar1 = $toolbar1 . FormHelper::createButtonForJS('<i class="fa fa-th" aria-hidden="true"></i>', $html_onclick, 'Gird View');
 
                 break;
@@ -120,6 +119,7 @@ class PrReporterV1 extends AbstractService
                 $render = new DefaultPrRowRenderAsParamQuery($totalResults, $collection);
                 $render->setRemoteUrl($remoteUrl);
                 $render->setPaginator($paginator);
+                $render->setOffset(($paginator->getOffset()));
                 $toolbar1 = $toolbar1 . FormHelper::createButtonForJS('<i class="fa fa-list" aria-hidden="true"></i>', $param_onclick, 'Table View');
 
                 break;

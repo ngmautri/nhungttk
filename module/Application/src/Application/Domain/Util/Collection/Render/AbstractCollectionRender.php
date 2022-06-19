@@ -35,6 +35,10 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
 
     protected $url;
 
+    protected $offset;
+
+    protected $limit;
+
     /**
      *
      * @param int $collectionCount
@@ -279,5 +283,32 @@ abstract class AbstractCollectionRender implements CollectionRenderInterface
     public function setUrl($url)
     {
         $this->url = $url;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    /**
+     *
+     * @param mixed $offset
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+    }
+
+    /**
+     *
+     * @param mixed $limit
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
     }
 }

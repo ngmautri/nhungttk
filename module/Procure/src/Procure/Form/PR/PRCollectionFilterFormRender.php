@@ -33,6 +33,12 @@ class PRCollectionFilterFormRender extends AbstractFormRender
         $e = $form->getDocMonth();
         $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
 
+        $e = $form->getDocStatus();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
+
+        $e = $form->getBalance();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
+
         // $e = $form->getDocMonth();
         // $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
 

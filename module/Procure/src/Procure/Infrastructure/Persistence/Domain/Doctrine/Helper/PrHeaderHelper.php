@@ -142,13 +142,62 @@ class PrHeaderHelper
     {
         $sql = PrHeaderSQL::PR_SQL;
 
-        $filterRows->setBalance(100); // take all rows.
         $sql1 = PrRowHelper::createSQLWihoutLastAP($filterRows);
 
         $sql = \sprintf($sql, $sql1);
 
         if ($filterHeader->getDocStatus() == "all") {
             $filterHeader->docStatus = null;
+        }
+
+        if ($filterHeader->getDocStatus() != null) {
+            $sql = $sql . sprintf(" AND nmt_procure_pr.doc_status=  '%s'", $filterHeader->getDocStatus());
+        }
+
+        if ($filterHeader->getIsActive() == 1) {
+            $sql = $sql . " AND nmt_procure_pr.is_active=  1";
+        } elseif ($filterHeader->getIsActive() == - 1) {
+            $sql = $sql . " AND nmt_procure_pr.is_active = 0";
+        }
+
+        if ($filterHeader->getDocYear() > 0) {
+            $sql = $sql . \sprintf(" AND year(nmt_procure_pr.created_on) = %s", $filterHeader->getDocYear());
+        }
+        if ($filterHeader->getDocMonth() > 0) {
+            $sql = $sql . \sprintf(" AND month(nmt_procure_pr.created_on) = %s", $filterHeader->getDocMonth());
+        }
+
+        $sql = $sql . " GROUP BY nmt_procure_pr.id";
+
+        if ($filterHeader->getBalance() == null) {
+            $filterRows->setBalance(100); // take all rows.
+        }
+
+        // fullfiled
+
+        if ($filterHeader->getBalance() == 1) {
+            $sql = $sql . " HAVING total_row <= std_gr_completed";
+        } elseif ($filterHeader->getBalance() == 2) {
+            $sql = $sql . " HAVING total_row > std_gr_completed";
+        }
+
+        return $sql;
+    }
+
+    public static function createListTotalSQL(PrHeaderReportSqlFilter $filterHeader, PrRowReportSqlFilter $filterRows)
+    {
+        $sql = PrHeaderSQL::PR_SQL;
+
+        $sql1 = PrRowHelper::createSQLWihoutLastAP($filterRows);
+
+        $sql = \sprintf($sql, $sql1);
+
+        if ($filterHeader->getDocStatus() == "all") {
+            $filterHeader->docStatus = null;
+        }
+
+        if ($filterHeader->getDocStatus() != null) {
+            $sql = $sql . sprintf(" AND nmt_procure_pr.doc_status=  '%s'", $filterHeader->getDocStatus());
         }
 
         if ($filterHeader->getIsActive() == 1) {
@@ -161,47 +210,20 @@ class PrHeaderHelper
             $sql = $sql . \sprintf(" AND year(nmt_procure_pr.created_on) = %s", $filterHeader->getDocYear());
         }
 
-        $sql = $sql . " GROUP BY nmt_procure_pr.id";
-
-        // fullfiled
-        if ($filterHeader->getBalance() == 1) {
-            $sql = $sql . " HAVING total_row <=  std_gr_completed";
-        } elseif ($filterHeader->getBalance() == 2) {
-            $sql = $sql . " HAVING total_row >  std_gr_completed";
-        }
-        return $sql;
-    }
-
-    public static function createListTotalSQL(PrHeaderReportSqlFilter $filterHeader, PrRowReportSqlFilter $filterRows)
-    {
-        $sql = PrHeaderSQL::PR_SQL;
-
-        $filterRows->setBalance(100); // take all rows.
-        $sql1 = PrRowHelper::createSQLWihoutLastAP($filterRows);
-
-        $sql = \sprintf($sql, $sql1);
-
-        if ($filterHeader->getDocStatus() == "all") {
-            $filterHeader->docStatus = null;
-        }
-
-        if ($filterHeader->getIsActive() == 1) {
-            $sql = $sql . " AND nmt_procure_pr.is_active=  1";
-        } elseif ($filterHeader->getIsActive() == - 1) {
-            $sql = $sql . " AND nmt_procure_pr.is_active = 0";
-        }
-
-        if ($filterHeader->getDocYear() > 0) {
-            $sql = $sql . \sprintf(" AND year(nmt_procure_pr.submitted_on) = %s", $filterHeader->getDocYear());
+        if ($filterHeader->getDocMonth() > 0) {
+            $sql = $sql . \sprintf(" AND month(nmt_procure_pr.created_on) = %s", $filterHeader->getDocMonth());
         }
 
         $sql = $sql . " GROUP BY nmt_procure_pr.id";
 
-        // fullfiled
+        if ($filterHeader->getBalance() == null) {
+            $filterRows->setBalance(100); // take all rows.
+        }
+
         if ($filterHeader->getBalance() == 1) {
-            $sql = $sql . " HAVING total_row <=  std_gr_completed";
+            $sql = $sql . " HAVING total_row <= std_gr_completed";
         } elseif ($filterHeader->getBalance() == 2) {
-            $sql = $sql . " HAVING total_row >  std_gr_completed";
+            $sql = $sql . " HAVING total_row > std_gr_completed";
         }
         return $sql;
     }

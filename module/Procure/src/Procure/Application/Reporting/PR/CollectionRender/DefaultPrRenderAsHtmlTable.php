@@ -17,13 +17,15 @@ class DefaultPrRenderAsHtmlTable extends AbstractRenderAsHtmlTable
     {
         return "
         <td><b>Pr Number</b></td>
+        <td><b>Status</b></td>
         <td><b>No.</b></td>
         <td><b>No2</b></td>
         <td><b>No3</b></td>  
         <td><b>No2</b></td>
-        <td><b>No3</b></td> 
- <td><b>No3</b></td>         
- <td><b>No3</b></td>   
+<td><b>No2</b></td>
+        <td><b>Created</b></td> 
+        <td><b>Submitted</b></td>         
+        <td><b>By</b></td>   
         <td><b>Action</b></td>";
     }
 
@@ -57,11 +59,13 @@ class DefaultPrRenderAsHtmlTable extends AbstractRenderAsHtmlTable
 
         $cells = $cells . sprintf("<td style='width:80pt;'>%s</td>\n", $progress_div);
         $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getPrAutoNumber()));
+        $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getDocStatus()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getPrName()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getTotalRows()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getGrCompletedRows()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getApCompletedRows()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getCreatedOn()));
+        $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getSubmittedOn()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getCreatedByName()));
         $cells = $cells . sprintf("<td>%s</td>\n", $showUrl);
         return $cells;

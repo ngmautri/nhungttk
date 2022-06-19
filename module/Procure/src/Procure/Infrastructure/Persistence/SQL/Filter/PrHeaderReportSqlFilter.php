@@ -25,14 +25,14 @@ class PrHeaderReportSqlFilter extends ProcureQuerySqlFilter
 
     public function printGetQuery()
     {
-        $format = "docYear=%s&docMonth=%s&docStatus=%s&balance=%s&sortBy=%s&sort=%s&limit=%s&offset=%s&resultPerPage=%s&renderType=%s";
-        return \sprintf($format, $this->getdocYear(), $this->getdocMonth(), $this->getdocStatus(), $this->getbalance(), $this->getsortBy(), $this->getsort(), $this->getlimit(), $this->getoffset(), $this->getresultPerPage(), $this->getrenderType());
+        $format = "docYear=%s&docMonth=%s&docStatus=%s&balance=%s&sortBy=%s&sort=%s&limit=%s&offset=%s&resultPerPage=%s";
+        return \sprintf($format, $this->getDocYear(), $this->getDocMonth(), $this->getDocStatus(), $this->getBalance(), $this->getSortBy(), $this->getSort(), $this->getLimit(), $this->getoffset(), $this->getResultPerPage());
     }
 
     public function printFilter()
     {
-        $format = "Year=%s | Month=%s | Balance=%s | Result per page=%s";
-        $t = \sprintf($format, $this->getdocYear(), $this->getdocMonth(), $this->getbalance(), $this->getresultPerPage());
+        $format = "Year=%s | Month=%s | Status=%s |  Balance=%s | Result per page=%s";
+        $t = \sprintf($format, $this->getdocYear(), $this->getdocMonth(), $this->getDocStatus(), $this->getbalance(), $this->getresultPerPage());
         $l = '<hr style="margin: 5pt 1pt 5pt 1pt;">';
 
         $result_msg = sprintf('<div style="color:graytext; padding-top:10pt;">%s</div>', $t);

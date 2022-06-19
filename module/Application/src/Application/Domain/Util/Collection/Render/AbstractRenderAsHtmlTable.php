@@ -33,6 +33,24 @@ abstract class AbstractRenderAsHtmlTable extends AbstractCollectionRender
     </tbody>
 </table>';
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getOffset()
+    {
+        return $this->offset;
+    }
+
+    /**
+     *
+     * @param mixed $offset
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+    }
+
     protected abstract function createHeaderCell();
 
     protected abstract function createRowCell($element);
@@ -63,7 +81,7 @@ abstract class AbstractRenderAsHtmlTable extends AbstractCollectionRender
             $n ++;
 
             $tableBody = $tableBody . "<tr>\n";
-            $tableBody = $tableBody . sprintf("<td>%s</td>\n", $n + $this->getFilter()->getOffset()); // default
+            $tableBody = $tableBody . sprintf("<td>%s</td>\n", $n + $this->getOffset()); // default
             $tableBody = $tableBody . $this->createRowCell($element);
             $tableBody = $tableBody . "</tr>";
         }

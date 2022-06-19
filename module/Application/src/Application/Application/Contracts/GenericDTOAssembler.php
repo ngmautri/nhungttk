@@ -117,6 +117,27 @@ class GenericDTOAssembler
         }
     }
 
+    public static function printFieldsAsRequestString($className)
+    {
+        Assert::notNull($className);
+
+        $entity = new $className();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $itemProperites = $reflectionClass->getProperties();
+        $f = '';
+        $t = '';
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            $f = $f . $propertyName . "=%s&";
+            $t = $t . '$this->get' . $propertyName . "(),";
+        }
+        echo $f;
+        echo "\n\n";
+        echo $t;
+    }
+
     public static function createFormElementsFunction($className)
     {
         Assert::notNull($className);

@@ -200,12 +200,13 @@ class PrReportController extends AbstractGenericController
         $balance = $this->getGETparam('balance');
         $sort_by = $this->getGETparam('sortBy');
         $sort = $this->getGETparam('sort');
-        $renderType = $this->getGETparam('render_type', SupportedRenderType::HMTL_TABLE);
+        $renderType = $this->getGETparam('renderType', SupportedRenderType::HMTL_TABLE);
 
         $filterHeader = new PrHeaderReportSqlFilter();
         $filterHeader->setIsActive($isActive);
         $filterHeader->setDocYear($docYear);
         $filterHeader->setDocMonth($docMonth);
+        $filterHeader->setDocStatus($docStatus);
         $filterHeader->setBalance($balance);
         $filterHeader->setSort($sort);
         $filterHeader->setSortBy($sort_by);
@@ -226,7 +227,7 @@ class PrReportController extends AbstractGenericController
         $filterRows->setDocYear($docYear);
         $filterRows->setDocMonth($docMonth);
         $filterRows->setDocStatus($docStatus);
-        $filterRows->setBalance($balance);
+        $filterRows->setBalance(100); // should take all row.
 
         $render = $this->getPrReporter()->getHeaderCollectionRender($filterHeader, $filterRows, $page, $perPage, $renderType);
 

@@ -1,6 +1,8 @@
 <?php
 namespace Application\Form\Helper;
 
+use Application\Infrastructure\Persistence\Contracts\SqlKeyWords;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -8,6 +10,25 @@ namespace Application\Form\Helper;
  */
 class DefaultOptions
 {
+
+    public static function createSQLSortOption()
+    {
+        $input = [
+            "ACS" => SqlKeyWords::ASC,
+            "DESC" => SqlKeyWords::DESC
+        ];
+        $o = [];
+        foreach ($input as $k => $v) {
+            $tmp = [
+                'value' => $v,
+                'label' => $k
+            ];
+
+            $o[] = $tmp;
+        }
+
+        return $o;
+    }
 
     public static function createResultPerPageOption()
     {
@@ -34,6 +55,12 @@ class DefaultOptions
 
     public static function createYearOption()
     {
+        $tmp = [
+            'value' => 0,
+            'label' => 'all'
+        ];
+        $o[] = $tmp;
+
         for ($y = 2012; $y <= 2030; $y ++) {
 
             $tmp = [
@@ -49,7 +76,7 @@ class DefaultOptions
     {
         $tmp = [
             'value' => 0,
-            'label' => 'Please select month'
+            'label' => 'all'
         ];
         $o[] = $tmp;
 

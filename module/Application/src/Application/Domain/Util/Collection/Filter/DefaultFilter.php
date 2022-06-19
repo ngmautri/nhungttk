@@ -15,7 +15,7 @@ class DefaultFilter implements FilterInterface
 
     private $limit;
 
-    public function __construct($offset, $limit)
+    public function __construct($offset = null, $limit = null)
     {
         $this->offset = $offset;
         $this->limit = $limit;

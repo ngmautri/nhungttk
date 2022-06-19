@@ -33,6 +33,18 @@ class PrRowReportSqlFilter extends ProcureQuerySqlFilter
         $this->setOffset(0);
     }
 
+    public function printGetQueryForPR()
+    {
+        $format = "balance=%s&sortBy=%s&sort=%s&limit=%s&offset=%s&resultPerPage=%s";
+        return \sprintf($format, $this->getBalance(), $this->getSortBy(), $this->getSort(), $this->getLimit(), $this->getoffset(), $this->getResultPerPage());
+    }
+
+    public function printGetQueryForPRReport()
+    {
+        $format = "docYear=%s&docMonth=%s&currentState=%s&docStatus=%s&balance=%s&itemId=%s&prId=%s&rowId=%s&isActive=%s&companyId=%s&sortBy=%s&sort=%s&limit=%s&offset=%s&resultPerPage=%s";
+        return \sprintf($format, $this->getdocYear(), $this->getdocMonth(), $this->getcurrentState(), $this->getdocStatus(), $this->getbalance(), $this->getitemId(), $this->getprId(), $this->getrowId(), $this->getisActive(), $this->getcompanyId(), $this->getsortBy(), $this->getsort(), $this->getlimit(), $this->getoffset(), $this->getresultPerPage());
+    }
+
     public function __toString()
     {
         // $f = \sprintf("PrRowSqlFilter_%s_%s_%s_%s_%s_%s_%s");

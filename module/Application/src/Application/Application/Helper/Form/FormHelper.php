@@ -15,7 +15,7 @@ class FormHelper
 
     public static function echoMessage($msg, $label = FormHelperConst::B_LABEL_DEFAULT)
     {
-        $format = '<h5><span class="label label-%s" style="margin: 5pt 1pt 5pt 1pt; font-size:10pt;">%s</span></h5>';
+        $format = '<h5><span class="label label-%s" style="margin: 5pt 5pt 5pt 5pt; font-size:10pt;">%s</span></h5>';
         echo sprintf($format, $label, $msg);
     }
 

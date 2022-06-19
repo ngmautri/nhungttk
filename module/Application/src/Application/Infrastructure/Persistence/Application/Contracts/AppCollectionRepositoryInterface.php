@@ -6,7 +6,7 @@ use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 Interface AppCollectionRepositoryInterface
 {
@@ -32,5 +32,7 @@ Interface AppCollectionRepositoryInterface
     public function getCostCenterAccountCollection(CompanySqlFilterInterface $filter);
 
     public function getItemAttributeGroupCollection(CompanySqlFilterInterface $filter);
+
+    public function getWHCollection(CompanySqlFilterInterface $filter);
 }
 

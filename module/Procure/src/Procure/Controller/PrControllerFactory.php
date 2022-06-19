@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Controller;
 
+use Application\Application\Service\Shared\DefaultFormOptionCollection;
 use Procure\Application\Command\Doctrine\PR\Factory\PRCmdHandlerFactory;
 use Procure\Application\EventBus\EventBusService;
 use Procure\Application\Service\PR\PRService;
@@ -41,6 +42,9 @@ class PrControllerFactory implements FactoryInterface
         $controller->setProcureServiceV2($sv);
 
         $controller->setCmdHandlerFactory(new PRCmdHandlerFactory());
+
+        $sv = $sm->get(DefaultFormOptionCollection::class);
+        $controller->setFormOptionCollection($sv);
 
         $sv = $sm->get("ProcureLogger");
         $controller->setLogger($sv);

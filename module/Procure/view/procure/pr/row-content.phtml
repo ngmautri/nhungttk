@@ -1,13 +1,15 @@
 <?php
 use Application\Application\Helper\Form\FormHelper;
+use Application\Application\Helper\Form\Bootstrap3\CollapseHelper;
 use Application\Domain\Util\Collection\Render\AbstractCollectionRender;
 use Application\Domain\Util\Collection\Render\AbstractRenderAsParamQuery;
-use Inventory\Form\ItemSerial\ItemSerialFilterForm;
+use Procure\Form\PR\PRRowCollectionFilterForm;
+use Procure\Form\PR\PRRowCollectionFilterFormRender;
 
 /**
  *
- * @var AbstractCollectionRender $rowCollectionRender ;
- * @var ItemSerialFilterForm $form ;
+ * @var AbstractCollectionRender $collectionRender ;
+ * @var PRRowCollectionFilterForm $form ;
  */
 
 ?>
@@ -15,7 +17,7 @@ use Inventory\Form\ItemSerial\ItemSerialFilterForm;
 <script>
 <?php
 $format = "var previous_url = '%s'";
-echo sprintf($format, $rowCollectionRender->getUrl());
+echo sprintf($format, $collectionRender->getUrl());
 ?>
 </script>
 
@@ -23,28 +25,26 @@ echo sprintf($format, $rowCollectionRender->getUrl());
 
 <div id="pr_row_div">
 
-<h5>PR Row:</h5>
+<h5>Lines:</h5>
 
-        <?php
+          <?php
 
-        /*
-         * $showTitle = '<span style="font-size:8pt"><i class="fa fa-chevron-down" aria-hidden="true"></i> Filter</span>';
-         * $hideTitle = '<span <span style="font-size:8pt"><i class="fa fa-chevron-up" aria-hidden="true"></i> Filter</span>';
-         * $collapseId = 'test_id';
-         * $content = $form->renderForView($this, new ItemSerialFilterFormRender());
-         */
+        $showTitle = '<span style="font-size:8pt"><i class="fa fa-chevron-down" aria-hidden="true"></i> Filter</span>';
+        $hideTitle = '<span <span style="font-size:8pt"><i class="fa fa-chevron-up" aria-hidden="true"></i> Filter</span>';
+        $collapseId = 'test_id';
+        $content = $form->renderForView($this, new PRRowCollectionFilterFormRender());
 
-        // $filterBtn = CollapseHelper::drawBasisCollapse($showTitle, $hideTitle, $collapseId, $content);
-        // echo FormHelper::drawLine();
+        $filterBtn = CollapseHelper::drawBasisCollapse($showTitle, $hideTitle, $collapseId, $content);
 
-        if ($rowCollectionRender != null) :
+        if ($collectionRender != null) :
 
-            // $currentToolBar = $rowCollectionRender->printToolBar();
-            // $toolbar = FormHelper::preAppendToCurrentToolbar($currentToolBar, $filterBtn);
-            // $rowCollectionRender->setToolbar($toolbar);
-            echo $rowCollectionRender->printToolBar() . FormHelper::drawLine();
-            echo $rowCollectionRender->execute();
-            echo $rowCollectionRender->printAjaxPaginator();
+            $currentToolBar = $collectionRender->printToolBar();
+            $toolbar = FormHelper::preAppendToCurrentToolbar($currentToolBar, $filterBtn);
+            $collectionRender->setToolbar($toolbar);
+
+            echo $collectionRender->printToolBar() . FormHelper::drawLine();
+            echo $collectionRender->execute();
+            echo $collectionRender->printAjaxPaginator();
         else :
             echo FormHelper::echoMessage("Nothing found !");
         endif;
@@ -62,7 +62,7 @@ echo sprintf($format, $rowCollectionRender->getUrl());
  * |=============================
  */
 
-if ($rowCollectionRender instanceof AbstractRenderAsParamQuery) :
+if ($collectionRender instanceof AbstractRenderAsParamQuery) :
     // echo $collectionRender->printToolBar();
 
     ?>
@@ -71,7 +71,7 @@ if ($rowCollectionRender instanceof AbstractRenderAsParamQuery) :
  
 	<?php
     $format = "var remote_url = '%s', r_pp = %s";
-    echo sprintf($format, $rowCollectionRender->getRemoteUrl(), $rowCollectionRender->getPaginator()->getResultsPerPage());
+    echo sprintf($format, $collectionRender->getRemoteUrl(), $collectionRender->getPaginator()->getResultsPerPage());
     ?>
     
 </script>
@@ -129,8 +129,8 @@ if ($rowCollectionRender instanceof AbstractRenderAsParamQuery) :
              {
                 dataIndx: "transactionStatus",
                 dataType: "string",
-                title: "Ref.",
-                minWidth: 90
+                title: "Status",
+                minWidth: 80
             },
             {
                 dataIndx: "rowIdentifer",
@@ -141,7 +141,7 @@ if ($rowCollectionRender instanceof AbstractRenderAsParamQuery) :
                 dataIndx: "itemName",
                 dataType: "string",
                 title: "Item Name",
-                minWidth: 150
+                minWidth: 300
             },
             
              {
@@ -149,7 +149,7 @@ if ($rowCollectionRender instanceof AbstractRenderAsParamQuery) :
                 dataType: "int",
                 title: "Std Qty",
                 align: "right",
-                minWidth: 100
+                minWidth: 80
             }
             
             ];

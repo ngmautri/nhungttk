@@ -3,7 +3,7 @@ namespace InventoryTest\Department\CodeGenerate;
 
 use Application\Application\Contracts\GenericDTOAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
+use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 use PHPUnit_Framework_TestCase;
 
 class FormCodeGenerateTest extends PHPUnit_Framework_TestCase
@@ -29,7 +29,9 @@ class FormCodeGenerateTest extends PHPUnit_Framework_TestCase
 
             // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(ItemSerialSqlFilter::class);
             // $result = GenericDTOAssembler::createFormElementsFor(ItemSerialSqlFilter::class, $properties);
-            $result = GenericDTOAssembler::printFieldsAsRequestString(PrHeaderReportSqlFilter::class);
+            // $result = GenericDTOAssembler::printFieldsAsRequestString(PrRowReportSqlFilter::class);
+            $result = GenericDTOAssembler::createFormElements(PrRowReportSqlFilter::class);
+
             // $result = GenericDTOAssembler::createFormElementsFunctionFor(ItemSerialSqlFilter::class, $properties);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

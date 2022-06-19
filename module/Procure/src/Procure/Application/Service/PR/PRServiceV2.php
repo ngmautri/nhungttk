@@ -5,6 +5,7 @@ use Application\Application\Helper\Form\FormHelper;
 use Application\Application\Helper\Form\FormHelperConst;
 use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
 use Application\Domain\Util\Collection\Render\DefaultRenderAsArray;
+use Application\Domain\Util\Collection\Render\DefaultRenderForEmptyCollection;
 use Application\Domain\Util\Pagination\Paginator;
 use Application\Service\AbstractService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -45,13 +46,27 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
         $totalResults = $rootEntity->getTotalRows();
 
         if ($totalResults == null or $totalResults == 0) {
-            return null;
+            return new DefaultRenderForEmptyCollection("PR has no content!");
+        }
+
+        $fullCollection = $rootEntity->getRowCollection()->filter(function ($entry) use ($filter) {
+
+            if ($filter->getBalance() == 100) {
+                return true;
+            } else {
+                return $entry->getTransactionStatus() == $filter->getBalance();
+            }
+        });
+
+        $totalResults = $fullCollection->count();
+        if ($totalResults == null or $totalResults == 0) {
+            return new DefaultRenderForEmptyCollection(sprintf("No line '%s'", $filter->getBalance()));
         }
 
         $paginator = new Paginator($totalResults, $page, $resultPerPage);
 
-        $f = "/procure/pr/row-content?entity_id=%s&entity_token=%s&render_type=%s";
-        $url = sprintf($f, $rootEntity->getId(), $rootEntity->getToken(), $renderType);
+        $f = "/procure/pr/row-content?entity_id=%s&entity_token=%s&balance=%s&renderType=%s";
+        $url = sprintf($f, $rootEntity->getId(), $rootEntity->getToken(), $filter->getBalance(), $renderType);
         $paginator->setBaseUrl($url);
         $paginator->setUrlConnectorSymbol("&");
 
@@ -69,12 +84,11 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
 
         $filter->setSortBy('createdDate');
         $filter->setSort('DESC');
-        $fullCollection = $rootEntity->getRowCollection();
 
         $collection = new ArrayCollection($fullCollection->slice($filter->getOffset(), $filter->getLimit()));
 
         // $format = "/inventory/item-serial/list1?itemId=%s&render_type=%s&page=%s&resultPerPage=%s";
-        $format = "/procure/pr/row-content?entity_id=%s&entity_token=%s&render_type=%s&page=%s&resultPerPage=%s";
+        $format = "/procure/pr/row-content?entity_id=%s&entity_token=%s&renderType=%s&page=%s&resultPerPage=%s";
 
         $excel_url = sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), SupportedRenderType::EXCEL, $page, $resultPerPage);
         $oo_url = sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), SupportedRenderType::OPEN_OFFICE, $page, $resultPerPage);
@@ -102,14 +116,15 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
             case SupportedRenderType::HMTL_TABLE:
                 $render = new DefaultPrRowRenderAsHtmlTable($totalResults, $collection, $formatter);
                 $render->setPaginator($paginator);
+                $render->setOffset($paginator->getOffset());
                 $render->setUrl(sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), SupportedRenderType::HMTL_TABLE, $page - 1, $resultPerPage));
                 $toolbar1 = $toolbar1 . FormHelper::createButtonForJS('<i class="fa fa-th" aria-hidden="true"></i>', $html_onclick, 'Gird View');
                 break;
 
             case SupportedRenderType::PARAM_QUERY:
 
-                $format = '/procure/pr/row-gird?entity_id=%s&entity_token=%s&pq_rpp=%s';
-                $remoteUrl = sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), $resultPerPage);
+                $format = '/procure/pr/row-gird?entity_id=%s&entity_token=%s&pq_rpp=%s&balance=%s';
+                $remoteUrl = sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), $resultPerPage, $filter->getBalance());
 
                 $render = new DefaultPrRowRenderAsParamQuery($totalResults, $collection, $formatter);
                 $render->setRemoteUrl($remoteUrl);

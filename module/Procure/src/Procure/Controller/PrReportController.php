@@ -175,6 +175,7 @@ class PrReportController extends AbstractGenericController
     public function headerStatusAction()
     {
         // $this->layout("Procure/layout-fullscreen");
+        // $this->layout("layout/fluid");
         $viewModel = new ViewModel(array());
 
         $viewModel->setTemplate("procure/pr-report/header-status");
@@ -194,12 +195,12 @@ class PrReportController extends AbstractGenericController
         $isActive = $this->getGETparam('isActive');
         $page = $this->getGETparam('page', 1);
         $perPage = $this->getGETparam('resultPerPage', 10);
-        $docYear = $this->getGETparam('docYear', date('Y'));
+        $docYear = $this->getGETparam('docYear');
         $docMonth = $this->getGETparam('docMonth');
         $docStatus = $this->getGETparam('docStatus');
-        $balance = $this->getGETparam('balance');
-        $sort_by = $this->getGETparam('sortBy');
-        $sort = $this->getGETparam('sort');
+        $balance = $this->getGETparam('balance', 2);
+        $sort_by = $this->getGETparam('sortBy', "createdOn");
+        $sort = $this->getGETparam('sort', 'DESC');
         $renderType = $this->getGETparam('renderType', SupportedRenderType::HMTL_TABLE);
 
         $filterHeader = new PrHeaderReportSqlFilter();

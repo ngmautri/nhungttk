@@ -3,13 +3,14 @@ namespace Application\Infrastructure\Persistence\Application\Doctrine;
 
 use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
 use Application\Entity\NmtInventoryAttributeGroup;
+use Application\Entity\NmtInventoryWarehouse;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Application\Infrastructure\Persistence\Application\Contracts\AppCollectionRepositoryInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class AppCollectionRepositoryImpl extends AbstractDoctrineRepository implements AppCollectionRepositoryInterface
 {
@@ -98,6 +99,26 @@ class AppCollectionRepositoryImpl extends AbstractDoctrineRepository implements 
          * @var NmtInventoryAttributeGroup $list
          */
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryAttributeGroup')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
+
+    public function getWHCollection(CompanySqlFilterInterface $filter)
+    {
+        $criteria = [];
+
+        if ($filter->getCompanyId() > 0) {
+            $criteria = [
+                'company' => $filter->getCompanyId()
+            ];
+        }
+
+        $sort_criteria = [];
+
+        /**
+         *
+         * @var NmtInventoryWarehouse $list
+         */
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findBy($criteria, $sort_criteria);
         return $list;
     }
 }

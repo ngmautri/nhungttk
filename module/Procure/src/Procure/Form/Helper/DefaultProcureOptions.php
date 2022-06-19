@@ -60,4 +60,30 @@ class DefaultProcureOptions
 
         return $o;
     }
+
+    public static function createPRRowBalanceOption()
+    {
+        $input = [
+            "completed" => 'completed',
+            "pending" => 'pending',
+            "quoted" => 'quoted'
+        ];
+
+        $tmp = [
+            'value' => 100,
+            'label' => 'all'
+        ];
+        $o[] = $tmp;
+
+        foreach ($input as $k => $v) {
+            $tmp = [
+                'value' => $v,
+                'label' => $k
+            ];
+
+            $o[] = $tmp;
+        }
+
+        return $o;
+    }
 }

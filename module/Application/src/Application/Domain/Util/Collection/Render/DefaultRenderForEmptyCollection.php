@@ -2,6 +2,7 @@
 namespace Application\Domain\Util\Collection\Render;
 
 use Application\Application\Helper\Form\FormHelper;
+use Application\Application\Helper\Form\FormHelperConst;
 use Application\Domain\Util\Translator;
 use Application\Domain\Util\Collection\Contracts\CollectionRenderInterface;
 
@@ -17,10 +18,13 @@ class DefaultRenderForEmptyCollection implements CollectionRenderInterface
 
     protected $toolbar;
 
-    function __construct()
+    protected $message;
+
+    function __construct($message = null)
     {
         $f = "<div>%s %s</div>";
         $this->toolbar = sprintf($f, FormHelper::POST_PRE, FormHelper::POST_AFTER);
+        $this->message = $message;
     }
 
     /**
@@ -47,8 +51,11 @@ class DefaultRenderForEmptyCollection implements CollectionRenderInterface
 
     public function execute()
     {
-        $t = Translator::translate("No thing found!");
-        return FormHelper::echoMessage($t);
+        $t = $this->message;
+        if ($t == null) {
+            $t = Translator::translate("No thing found. Please try with other criteria!");
+        }
+        return FormHelper::echoMessage($t, FormHelperConst::B_LABEL_WARNING);
     }
 
     public function getUrl()

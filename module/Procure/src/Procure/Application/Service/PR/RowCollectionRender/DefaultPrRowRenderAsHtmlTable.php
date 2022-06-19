@@ -15,11 +15,12 @@ class DefaultPrRowRenderAsHtmlTable extends AbstractRenderAsHtmlTable
     protected function createHeaderCell()
     {
         return "
-        <td><b>Invoice Number</b></td>
+        <td><b>Status</b></td>
+        <td><b>No.</b></td>
         <td><b>No.</b></td>
         <td><b>No2</b></td>
         <td><b>No2</b></td>
-          <td><b>Action</b></td>";
+        <td><b>Action</b></td>";
     }
 
     protected function createRowCell($ele)
@@ -43,7 +44,7 @@ class DefaultPrRowRenderAsHtmlTable extends AbstractRenderAsHtmlTable
         $href = sprintf($format, $element->getToken(), $element->getId());
         $format = '<a target="_blank" href="%s">Show</a>';
         $showUrl = sprintf($format, $href);
-
+        $cells = $cells . sprintf("<td>%s</td>\n", $element->getTransactionStatus());
         $cells = $cells . sprintf("<td>%s</td>\n", $element->getItemName());
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getRowIdentifer()));
         $cells = $cells . sprintf("<td>%s</td>\n", $element->getConvertedStandardQuantity());

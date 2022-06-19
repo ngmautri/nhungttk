@@ -8,6 +8,7 @@ use Application\Domain\Contracts\Repository\CompanySqlFilterInterface;
 use Application\Entity\MlaUsers;
 use Application\Entity\NmtApplicationCountry;
 use Application\Entity\NmtInventoryAttributeGroup;
+use Application\Entity\NmtInventoryWarehouse;
 use Application\Infrastructure\Persistence\Application\Contracts\AppCollectionRepositoryInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -15,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * default collection
  *
  * @author Nguyen Mau Tri
- *
+ *        
  */
 class DefaultFormOptionCollection extends AbstractService implements FormOptionCollectionInterface
 {
@@ -127,6 +128,25 @@ class DefaultFormOptionCollection extends AbstractService implements FormOptionC
         return $this->appCollectionRepository;
     }
 
+    public function getWHCollection(CompanySqlFilterInterface $filter)
+    {
+        $list = $this->getAppCollectionRepository()->getWHCollection($filter);
+
+        $result = new ArrayCollection();
+        if ($list == null) {
+            return $result;
+        }
+
+        /**
+         *
+         * @var NmtInventoryWarehouse $l ;
+         */
+        foreach ($list as $l) {
+            $result->add($this->createElement($l->getId(), \sprintf('%s %s', $l->getWhName(), $l->getWhCode())));
+        }
+        return $result;
+    }
+
     /**
      *
      * @param AppCollectionRepositoryInterface $appCollectionRepository
@@ -135,6 +155,13 @@ class DefaultFormOptionCollection extends AbstractService implements FormOptionC
     {
         $this->appCollectionRepository = $appCollectionRepository;
     }
+
+    /*
+     * |=============================
+     * |Private
+     * |
+     * |=============================
+     */
 
     /**
      *

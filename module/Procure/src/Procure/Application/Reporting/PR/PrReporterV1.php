@@ -6,6 +6,7 @@ use Application\Application\Helper\Form\FormHelperConst;
 use Application\Application\Service\Document\Spreadsheet\DefaultExcelBuilder;
 use Application\Application\Service\Document\Spreadsheet\DefaultOpenOfficeBuilder;
 use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
+use Application\Domain\Util\Collection\Render\DefaultRenderForEmptyCollection;
 use Application\Domain\Util\Pagination\Paginator;
 use Application\Service\AbstractService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +31,7 @@ use Procure\Infrastructure\Persistence\Reporting\PrReportRepositoryInterface;
 use Procure\Infrastructure\Persistence\Reporting\Contracts\PrGrReportInterface;
 use Procure\Infrastructure\Persistence\Reporting\Contracts\ProcureAppSqlFilterInterface;
 use Procure\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
+use Procure\Infrastructure\Persistence\SQL\Filter\PrHeaderReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
 
 /**
@@ -51,18 +53,21 @@ class PrReporterV1 extends AbstractService
 
     public function getHeaderCollectionRender(SqlFilterInterface $filterHeader, SqlFilterInterface $filterRows, $page, $resultPerPage = 10, $renderType = SupportedRenderType::HMTL_TABLE)
     {
+        if (! $filterHeader instanceof PrHeaderReportSqlFilter) {
+            return null;
+        }
 
         // create Paginator
         $totalResults = $this->getListTotal($filterHeader, $filterRows);
 
         if ($totalResults == null or $totalResults == 0) {
-            return null;
+            $render = new DefaultRenderForEmptyCollection();
+            return $render;
         }
 
         $paginator = new Paginator($totalResults, $page, $resultPerPage);
 
-        $f = "/procure/pr-report/header-status-result?id=%s&token=%s&render_type=%s";
-        $url = sprintf($f, "", "", $renderType);
+        $url = "/procure/pr-report/header-status-result?" . $filterHeader->printGetQuery();
         $paginator->setBaseUrl($url);
         $paginator->setUrlConnectorSymbol("&");
 
@@ -80,9 +85,7 @@ class PrReporterV1 extends AbstractService
 
         $collection = $this->getList($filterHeader, $filterRows);
 
-        // $format = "/inventory/item-serial/list1?itemId=%s&render_type=%s&page=%s&resultPerPage=%s";
-        $format = "/procure/pr-report/header-status-result?id=%s&token=%s&render_type=%s&page=%s&resultPerPage=%s";
-
+        $format = "/procure/pr-report/header-status-result?" . $filterHeader->printGetQuery();
         $excel_url = sprintf($format, "", "", SupportedRenderType::EXCEL, $page, $resultPerPage);
         $oo_url = sprintf($format, "", "", SupportedRenderType::OPEN_OFFICE, $page, $resultPerPage);
         $table_html_url = sprintf($format, "", "", SupportedRenderType::HMTL_TABLE, $page, $resultPerPage);

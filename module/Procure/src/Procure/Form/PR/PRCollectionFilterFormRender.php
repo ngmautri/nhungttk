@@ -3,7 +3,6 @@ namespace Procure\Form\PR;
 
 use Application\Form\Contracts\GenericForm;
 use Application\Form\Render\AbstractFormRender;
-use Inventory\Form\ItemSerial\ItemSerialFilterForm;
 use Zend\Form\View\Helper\FormLabel;
 use Zend\View\Renderer\PhpRenderer;
 
@@ -22,14 +21,17 @@ class PRCollectionFilterFormRender extends AbstractFormRender
      */
     public function doRendering(GenericForm $form, PhpRenderer $viewRender)
     {
-        if (! $form instanceof ItemSerialFilterForm) {
-            throw new \InvalidArgumentException(\sprintf("ItemSerialFilterForm not given", ""));
+        if (! $form instanceof PRCollectionFilterForm) {
+            throw new \InvalidArgumentException(\sprintf("PRCollectionFilterForm not given", ""));
         }
 
         $labelHelper = new FormLabel();
 
-        $e = $form->getItemId();
-        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
+        $e = $form->getDocYear();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
+
+        $e = $form->getDocMonth();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
 
         // $e = $form->getDocMonth();
         // $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
@@ -37,8 +39,8 @@ class PRCollectionFilterFormRender extends AbstractFormRender
         $e = $form->getResultPerPage();
         $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
 
-        $url = '/inventory/item-serial/list1';
-        $resultDiv = 'item_serial_div';
+        $url = '/procure/pr-report/header-status-result';
+        $resultDiv = 'result_div';
         $label = 'Filter';
 
         $otherBtn = $this->submitButtonWithCustomResultDiv($form, $viewRender, $url, $resultDiv, $label);

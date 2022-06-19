@@ -1,8 +1,10 @@
 <?php
 use Application\Application\Helper\Form\FormHelper;
+use Application\Application\Helper\Form\Bootstrap3\CollapseHelper;
 use Application\Domain\Util\Collection\Render\AbstractCollectionRender;
 use Application\Domain\Util\Collection\Render\AbstractRenderAsParamQuery;
 use Inventory\Form\ItemSerial\ItemSerialFilterForm;
+use Procure\Form\PR\PRCollectionFilterFormRender;
 
 /**
  *
@@ -13,8 +15,10 @@ use Inventory\Form\ItemSerial\ItemSerialFilterForm;
 $format = "<script>
  var previous_url = '%s';
             </script>";
-// echo sprintf($format, $collectionRender->getUrl());
 
+if ($collectionRender != null) {
+    echo sprintf($format, $collectionRender->getUrl());
+}
 ?>
 
 <div id="result_div">
@@ -23,21 +27,21 @@ $format = "<script>
 
         <?php
 
-        /*
-         * $showTitle = '<span style="font-size:8pt"><i class="fa fa-chevron-down" aria-hidden="true"></i> Filter</span>';
-         * $hideTitle = '<span <span style="font-size:8pt"><i class="fa fa-chevron-up" aria-hidden="true"></i> Filter</span>';
-         * $collapseId = 'test_id';
-         * $content = $form->renderForView($this, new ItemSerialFilterFormRender());
-         */
+        echo $filter->printFilter();
 
-        // $filterBtn = CollapseHelper::drawBasisCollapse($showTitle, $hideTitle, $collapseId, $content);
-        // echo FormHelper::drawLine();
+        $showTitle = '<span style="font-size:8pt"><i class="fa fa-chevron-down" aria-hidden="true"></i> Filter</span>';
+        $hideTitle = '<span <span style="font-size:8pt"><i class="fa fa-chevron-up" aria-hidden="true"></i> Filter</span>';
+        $collapseId = 'test_id';
+        $content = $form->renderForView($this, new PRCollectionFilterFormRender());
+
+        $filterBtn = CollapseHelper::drawBasisCollapse($showTitle, $hideTitle, $collapseId, $content);
 
         if ($collectionRender != null) :
 
-            // $currentToolBar = $rowCollectionRender->printToolBar();
-            // $toolbar = FormHelper::preAppendToCurrentToolbar($currentToolBar, $filterBtn);
-            // $rowCollectionRender->setToolbar($toolbar);
+            $currentToolBar = $collectionRender->printToolBar();
+            $toolbar = FormHelper::preAppendToCurrentToolbar($currentToolBar, $filterBtn);
+            $collectionRender->setToolbar($toolbar);
+
             echo $collectionRender->printToolBar() . FormHelper::drawLine();
             echo $collectionRender->execute();
             echo $collectionRender->printAjaxPaginator();

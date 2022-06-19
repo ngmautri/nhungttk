@@ -6,11 +6,10 @@ use Procure\Infrastructure\Persistence\SQL\Contract\SqlFilterInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ProcureQuerySqlFilter implements SqlFilterInterface
 {
-
 
     public $companyId;
 
@@ -21,7 +20,46 @@ class ProcureQuerySqlFilter implements SqlFilterInterface
     public $limit;
 
     public $offset;
- 
+
+    public $resultPerPage;
+
+    public $renderType;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getResultPerPage()
+    {
+        return $this->resultPerPage;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRenderType()
+    {
+        return $this->renderType;
+    }
+
+    /**
+     *
+     * @param mixed $resultPerPage
+     */
+    public function setResultPerPage($resultPerPage)
+    {
+        $this->resultPerPage = $resultPerPage;
+    }
+
+    /**
+     *
+     * @param mixed $renderType
+     */
+    public function setRenderType($renderType)
+    {
+        $this->renderType = $renderType;
+    }
 
     /**
      *

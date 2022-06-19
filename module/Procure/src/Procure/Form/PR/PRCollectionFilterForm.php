@@ -48,40 +48,44 @@ class PRCollectionFilterForm extends GenericForm
         // ======================================
         // Form Element for {docYear}
         // ======================================
-        $this->add([
-            'type' => 'text', // to update, if needed
-            'name' => 'docYear',
-            'attributes' => [
-                'id' => 'docYear',
-                'class' => "form-control input-sm", // to update, if needed
-                'required' => FALSE // to update, if needed
-            ],
-            'options' => [
-                'label' => Translator::translate('docYear'), // to update, if needed
-                'label_attributes' => [
-                    'class' => "control-label col-sm-2" // to update, if needed
-                ]
-            ]
-        ]);
+        /*
+         * $this->add([
+         * 'type' => 'text', // to update, if needed
+         * 'name' => 'docYear',
+         * 'attributes' => [
+         * 'id' => 'docYear',
+         * 'class' => "form-control input-sm", // to update, if needed
+         * 'required' => FALSE // to update, if needed
+         * ],
+         * 'options' => [
+         * 'label' => Translator::translate('Doc Year'), // to update, if needed
+         * 'label_attributes' => [
+         * 'class' => "control-label col-sm-2" // to update, if needed
+         * ]
+         * ]
+         * ]);
+         */
 
         // ======================================
         // Form Element for {docMonth}
         // ======================================
-        $this->add([
-            'type' => 'text', // to update, if needed
-            'name' => 'docMonth',
-            'attributes' => [
-                'id' => 'docMonth',
-                'class' => "form-control input-sm", // to update, if needed
-                'required' => FALSE // to update, if needed
-            ],
-            'options' => [
-                'label' => Translator::translate('docMonth'), // to update, if needed
-                'label_attributes' => [
-                    'class' => "control-label col-sm-2" // to update, if needed
-                ]
-            ]
-        ]);
+        /*
+         * $this->add([
+         * 'type' => 'text', // to update, if needed
+         * 'name' => 'docMonth',
+         * 'attributes' => [
+         * 'id' => 'docMonth',
+         * 'class' => "form-control input-sm", // to update, if needed
+         * 'required' => FALSE // to update, if needed
+         * ],
+         * 'options' => [
+         * 'label' => Translator::translate('docMonth'), // to update, if needed
+         * 'label_attributes' => [
+         * 'class' => "control-label col-sm-2" // to update, if needed
+         * ]
+         * ]
+         * ]);
+         */
 
         // ======================================
         // Form Element for {docStatus}
@@ -224,6 +228,56 @@ class PRCollectionFilterForm extends GenericForm
         // $select->setEmptyOption(Translator::translate('Parent Account Number'));
 
         $select->setValueOptions(DefaultOptions::createResultPerPageOption());
+        // $select->setDisableInArrayValidator(false);
+        $this->add($select);
+
+        // ======================================
+        // Form Element for {Doc Year}
+        // ======================================
+
+        // select
+        $select = new Select();
+        $select->setName("docYear");
+        $select->setAttributes([
+            'id' => 'docYear',
+            'class' => "form-control input-sm chosen-select",
+            'required' => true
+        ]);
+
+        $select->setOptions([
+            'label' => Translator::translate('Year'),
+            'label_attributes' => [
+                'class' => 'control-label col-sm-2'
+            ]
+        ]);
+        // $select->setEmptyOption(Translator::translate('Parent Account Number'));
+
+        $select->setValueOptions(DefaultOptions::createYearOption());
+        // $select->setDisableInArrayValidator(false);
+        $this->add($select);
+
+        // ======================================
+        // Form Element for {Doc Month}
+        // ======================================
+        // select
+        $select = new Select();
+        $select->setName("docMonth");
+        $select->setAttributes([
+            'id' => 'docYear',
+            'class' => "form-control input-sm chosen-select",
+            'required' => true
+        ]);
+
+        $select->setOptions([
+            'label' => Translator::translate('Month'),
+            'label_attributes' => [
+                'class' => 'control-label col-sm-2'
+            ]
+            // 'empty_option' => 'Please choose a month'
+        ]);
+        // $select->setEmptyOption(Translator::translate('Parent Account Number'));
+
+        $select->setValueOptions(DefaultOptions::createMonthOption());
         // $select->setDisableInArrayValidator(false);
         $this->add($select);
     }

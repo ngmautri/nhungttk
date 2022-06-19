@@ -113,9 +113,8 @@ class PrReporterV1 extends AbstractService
 
             case SupportedRenderType::PARAM_QUERY:
 
-                $format = '/procure/pr-report/header-status-gird?id=%s&token=%s&pq_rpp=%s';
-                $remoteUrl = sprintf($format, "", "", $resultPerPage);
-
+                $format = '/procure/pr-report/header-status-gird?pq_rpp=%s&%s';
+                $remoteUrl = sprintf($format, $resultPerPage, $filterHeader->printGetQuery());
                 $render = new DefaultPrRowRenderAsParamQuery($totalResults, $collection);
                 $render->setRemoteUrl($remoteUrl);
                 $render->setPaginator($paginator);

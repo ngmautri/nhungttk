@@ -213,7 +213,7 @@ class PrReportController extends AbstractGenericController
         $filterHeader->setResultPerPage($perPage);
 
         $form = new PRCollectionFilterForm("pr_filter_form");
-        $form->setAction($form_action . "?render_type=" . $renderType);
+        $form->setAction($form_action . "?renderType=" . $renderType);
         $form->setHydrator(new Reflection());
         $form->setRedirectUrl('/procure/pr-report/header-status');
         $form->setFormAction($action);
@@ -249,15 +249,20 @@ class PrReportController extends AbstractGenericController
         $isActive = $this->getGETparam('isActive');
         $page = $this->getGETparam('pq_curpage', 1);
         $perPage = $this->getGETparam('pq_rpp', 15);
-        $docYear = $this->params()->fromQuery('docYear', 2021);
-        $docStatus = $this->params()->fromQuery('docStatus');
+        $isActive = $this->getGETparam('isActive');
+        $page = $this->getGETparam('page', 1);
+        $perPage = $this->getGETparam('resultPerPage', 10);
+        $docYear = $this->getGETparam('docYear', date('Y'));
+        $docMonth = $this->getGETparam('docMonth');
+        $docStatus = $this->getGETparam('docStatus');
+        $balance = $this->getGETparam('balance');
+        $sort_by = $this->getGETparam('sortBy');
+        $sort = $this->getGETparam('sort');
 
-        $balance = $this->params()->fromQuery('balance', 2);
-        $sort_by = $this->params()->fromQuery('sortBy', "createdOn");
-        $sort = $this->params()->fromQuery('$sort', "DESC");
         $filterHeader = new PrHeaderReportSqlFilter();
         $filterHeader->setIsActive($isActive);
         $filterHeader->setDocYear($docYear);
+        $filterHeader->setDocMonth($docMonth);
         $filterHeader->setBalance($balance);
         $filterHeader->setSort($sort);
         $filterHeader->setSortBy($sort_by);
@@ -265,7 +270,9 @@ class PrReportController extends AbstractGenericController
         $filterRows = new PrRowReportSqlFilter();
         $filterRows->setIsActive($isActive);
         $filterRows->setDocYear($docYear);
+        $filterRows->setDocMonth($docMonth);
         $filterRows->setDocStatus($docStatus);
+        $filterRows->setBalance(100); // should take all row.
 
         $render = $this->getPrReporter()->getHeaderCollectionRender($filterHeader, $filterRows, $page, $perPage, SupportedRenderType::AS_ARRAY);
 

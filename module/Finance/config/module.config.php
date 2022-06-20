@@ -98,8 +98,11 @@ return array(
         'factories' => array(
             'Finance\Controller\Index' => 'Finance\Controller\IndexControllerFactory',
             'Finance\Controller\PostingPeriod' => 'Finance\Controller\PostingPeriodControllerFactory',
-            // 'Finance\Controller\VInvoice' => 'Finance\Controller\VInvoiceControllerFactory',
-            // 'Finance\Controller\VInvoiceRow' => 'Finance\Controller\VInvoiceRowControllerFactory',
+
+            // to delete
+            'Finance\Controller\VInvoice' => 'Finance\Controller\VInvoiceControllerFactory',
+            'Finance\Controller\VInvoiceRow' => 'Finance\Controller\VInvoiceRowControllerFactory',
+
             'Finance\Controller\VInvoiceAttachment' => 'Finance\Controller\VInvoiceAttachmentControllerFactory',
             'Finance\Controller\ActivityLog' => 'Finance\Controller\ActivityLogControllerFactory',
             'Finance\Controller\ChangeLog' => 'Finance\Controller\ChangeLogControllerFactory',

@@ -410,8 +410,8 @@ return array(
             'Procure\Controller\PrRowAttachment' => 'Procure\Controller\PrRowAttachmentControllerFactory',
             'Procure\Controller\PrSearch' => 'Procure\Controller\PrSearchControllerFactory',
 
-            // 'Procure\Controller\Quote' => 'Procure\Controller\QuoteControllerFactory',
-            // 'Procure\Controller\QuoteRow' => 'Procure\Controller\QuoteRowControllerFactory',
+            'Procure\Controller\Quote' => 'Procure\Controller\QuoteControllerFactory',
+            'Procure\Controller\QuoteRow' => 'Procure\Controller\QuoteRowControllerFactory',
             'Procure\Controller\QuoteAttachment' => 'Procure\Controller\QuoteAttachmentControllerFactory',
             'Procure\Controller\QuoteSearch' => 'Procure\Controller\QuoteSearchControllerFactory',
 

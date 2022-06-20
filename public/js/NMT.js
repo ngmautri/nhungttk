@@ -68,7 +68,7 @@ function submitAjaxForm(url, form_id){
 	});
 }
 
-function submitAjaxGETForm(form_id){
+function submitAjaxGETForm(form_id,result_div){
 	var form_id_tmp;
 
 	form_id_tmp = 'form#' + form_id;
@@ -89,12 +89,16 @@ function submitAjaxGETForm(form_id){
 		
 		// Get all the forms elements and their values in one step
 	
-		sendRequest(action, type, data);
+		sendRequest(action, type, data,result_div);
 	
 	});
 }
 
-function sendRequest(action, type, data) {
+function sendRequest(action, type, data,result_div) {
+	
+	var result_div_tmp;
+	result_div_tmp = '#' + result_div;
+
 
 	$("#overlay").fadeIn(300);
 	console.log(action);
@@ -110,14 +114,14 @@ function sendRequest(action, type, data) {
 		
 	})
 	.success(function( returnedHtml ) {
-		$( "#item_serial_div" ).html( returnedHtml);
+		$( result_div_tmp ).html( returnedHtml);
 		
 	})
 	.done(function( returnedHtml ) {		
 		$("#overlay").fadeOut(300);
 	})
 	.fail(function(returnedHtml) {
-		$( "#item_serial_div" ).html( "Failed!" + returnedHtml );
+		$( result_div_tmp ).html( "Failed!" + returnedHtml );
 	});
 }
 

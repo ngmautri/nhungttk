@@ -405,7 +405,7 @@ return array(
             'Procure\Controller\ActivityLog' => 'Procure\Controller\ActivityLogControllerFactory',
 
             'Procure\Controller\Pr' => 'Procure\Controller\PrControllerFactory',
-            // 'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
+            'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
             'Procure\Controller\PrAttachment' => 'Procure\Controller\PrAttachmentControllerFactory',
             'Procure\Controller\PrRowAttachment' => 'Procure\Controller\PrRowAttachmentControllerFactory',
             'Procure\Controller\PrSearch' => 'Procure\Controller\PrSearchControllerFactory',
@@ -416,12 +416,12 @@ return array(
             'Procure\Controller\QuoteSearch' => 'Procure\Controller\QuoteSearchControllerFactory',
 
             'Procure\Controller\Po' => 'Procure\Controller\PoControllerFactory',
-            // 'Procure\Controller\PoRow' => 'Procure\Controller\PoRowControllerFactory',
+            'Procure\Controller\PoRow' => 'Procure\Controller\PoRowControllerFactory',
             'Procure\Controller\PoAttachment' => 'Procure\Controller\PoAttachmentControllerFactory',
             'Procure\Controller\PoSearch' => 'Procure\Controller\PoSearchControllerFactory',
 
             'Procure\Controller\Gr' => 'Procure\Controller\GrControllerFactory',
-            // 'Procure\Controller\GrRow' => 'Procure\Controller\GrRowControllerFactory',
+            'Procure\Controller\GrRow' => 'Procure\Controller\GrRowControllerFactory',
             'Procure\Controller\GrAttachment' => 'Procure\Controller\GrAttachmentControllerFactory',
             'Procure\Controller\GrSearch' => 'Procure\Controller\GrSearchControllerFactory',
 

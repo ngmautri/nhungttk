@@ -290,6 +290,15 @@ return array(
              * |
              * |=============================
              */
+            
+            // Old Service to delete.
+            'Procure\Service\PrService' => 'Procure\Service\PrServiceFactory',
+            'Procure\Service\QoService' => 'Procure\Service\QoServiceFactory',
+            'Procure\Service\PoService' => 'Procure\Service\PoServiceFactory',
+            'Procure\Service\GrService' => 'Procure\Service\GrServiceFactory',
+            'Procure\Service\APInvoiceService' => 'Procure\Service\APInvoiceServiceFactory',
+            'Procure\Service\ReService' => 'Procure\Service\ReServiceFactory',
+
             'Procure\Application\Service\PR\PRService' => PRServiceFactory::class,
             PRServiceV2::class => PRServiceFactoryV2::class,
 

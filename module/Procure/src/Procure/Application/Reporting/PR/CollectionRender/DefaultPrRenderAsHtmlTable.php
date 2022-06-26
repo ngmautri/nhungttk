@@ -47,8 +47,9 @@ class DefaultPrRenderAsHtmlTable extends AbstractRenderAsHtmlTable
 
         $format = "/procure/pr/view1?entity_token=%s&entity_id=%s";
         $href = sprintf($format, $element->getToken(), $element->getId());
-        $format = '<a target="_blank" href="%s">Show</a>';
-        $showUrl = sprintf($format, $href);
+        // $format = '<a target="_blank" href="%s">%s</a>';
+        $format = '<a href="%s">%s</a>';
+        sprintf($format, $href, "show");
 
         if ($element->getTotalRows() > 0) {
             $completion = $element->getGrCompletedRows() / $element->getTotalRows();
@@ -58,7 +59,7 @@ class DefaultPrRenderAsHtmlTable extends AbstractRenderAsHtmlTable
         $progress_div = FormHelper::createProgressDiv($completion, null);
 
         $cells = $cells . sprintf("<td style='width:80pt;'>%s</td>\n", $progress_div);
-        $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getPrAutoNumber()));
+        $cells = $cells . sprintf("<td>%s</td>\n", sprintf($format, $href, \ucwords($element->getPrAutoNumber())));
         $cells = $cells . sprintf("<td>%s</td>\n", \ucwords($element->getDocStatus()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getPrName()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getTotalRows()));
@@ -67,7 +68,7 @@ class DefaultPrRenderAsHtmlTable extends AbstractRenderAsHtmlTable
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getCreatedOn()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getSubmittedOn()));
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getCreatedByName()));
-        $cells = $cells . sprintf("<td>%s</td>\n", $showUrl);
+        $cells = $cells . sprintf("<td>%s</td>\n", sprintf($format, $href, "show"));
         return $cells;
     }
 }

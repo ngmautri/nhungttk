@@ -1,5 +1,6 @@
 <?php
 use Inventory\Form\ItemSerial\ItemSerialFilterForm;
+use Procure\Application\Helper\Toolbar;
 use Procure\Domain\PurchaseRequest\PRDoc;
 
 /**
@@ -10,16 +11,65 @@ use Procure\Domain\PurchaseRequest\PRDoc;
 
 ?>
 
+<div id="wrapper" class="toggled">
 
-<div id="tabs" style="font-size: 9.5pt">
-	<ul>
-		<li><a href="#general">VIEW</a></li>
-	</ul>
-
-	<div id="general" style="font-size: 9pt; padding: 10px 6px 1px 5px">
-		<div id="row_containter"></div>
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+		<?=$this->summary;?>
+		<!-- Sidebar -->
 	</div>
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+
+		<!-- /#page-container -->
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle">
+				<span title="Hide Menu"> <i class="fa fa-chevron-left"
+					aria-hidden="true"></i> Menu <span>
+			
+			</a>
+
+
+			<div id="tabs" style="font-size: 9.5pt">
+				<ul>
+					<li><a href="#general">VIEW</a></li>
+				</ul>
+
+				<div id="general" style="font-size: 9pt; padding: 10px 6px 1px 5px">
+
+					<!-- ======== TOOL BAR ======= -->
+					<div style="position: relative; float: right;">
+    <?php
+    echo Toolbar::showToolbarPR($rootEntity->makeSnapshot(), $action, $this);
+    ?>
+					<!-- ======== TOOL BAR ======= -->
+					 </div>
+					<hr>
+					<a href="#doc_header" class="" data-toggle="collapse">HEADER</a>
+					<div id="doc_header" class="collapse">
+						<div id="header">
+							<p1>hearder here</p1>
+						</div>
+					</div>
+
+					<div id="row_containter"></div>
+
+				</div>
+			</div>
+
+			<!-- /#page-container -->
+		</div>
+
+		<!-- Page Content -->
+	</div>
+
+	<!-- /#wrapper -->
 </div>
+
 
 
 <script>

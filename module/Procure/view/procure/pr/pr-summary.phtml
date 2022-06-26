@@ -1,0 +1,85 @@
+ <?php
+use Application\Application\Helper\Form\FormHelper;
+use Application\Domain\Shared\Constants;
+use Procure\Domain\PurchaseRequest\PRDoc;
+
+/**
+ *
+ * @var PRDoc $rootEntity ;
+ *      ==============================
+ */
+$alert = "info";
+$transactionStatus = "";
+
+if (! $rootEntity == null) {
+    if ($rootEntity->getCompletedRows() == $rootEntity->getTotalRows()) {
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $rootEntity->getTransactionStatus());
+        $alert = "success";
+    }
+}
+
+?>
+
+
+	<a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt"
+			class="btn btn-default btn-sm" href="/procure/pr-report/header-status"> <small><i
+				class="fa fa-chevron-left" aria-hidden="true"></i></small>&nbsp;&nbsp;&nbsp;&nbsp;<?php
+
+    echo $this->translate("PR List");
+    ?></a>
+
+<hr>
+<span style="color: gray; margin: 10pt 10pt 10pt 10pt">
+       <?php
+    echo $this->translate('Summary:');
+    ?></span>
+<div class="alert alert-<?php
+
+echo $alert;
+?>" role="alert"
+	style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
+	<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
+		<li><b><?php
+
+if (! $rootEntity == null) :
+    echo sprintf("PR #%s (Version #%s)", $rootEntity->getSysNumber(), $rootEntity->getRevisionNo()); endif;
+
+?></b> <span style="color: black;"> <br><?php
+echo ($rootEntity !== null) ? $rootEntity->getDocNumber() : "";
+?></span></li>
+		<li>-----</li>
+		<li>Status: <?php
+
+if (! $rootEntity == null) :
+    echo $rootEntity->getDocStatus(); endif;
+
+?> </li>
+
+  		<li>Total rows: <?php
+
+    echo ($rootEntity->getTotalRows());
+    ?></li>
+		
+		<li>-----</li>
+		<li>Created by: <?php
+echo $rootEntity->getCreatedByName();
+echo FormHelper::createProgressDiv($rootEntity->getCompletedRows() / $rootEntity->getTotalRows(), "completed");
+;
+?></li>
+	</ul>
+</div>
+<?php
+if ($action == Constants::FORM_ACTION_REVIEW) :
+    ?>
+<div class="alert alert-warning" role="alert"
+	style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt; color: graytext;">
+	<i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
+			<?php
+
+    echo $this->translate('Please post when PO /Contract is signed. Document can\'t be changed anymore when posted! <br> ');
+    ?>
+		</div>
+<?php endif;
+
+?>
+<hr>

@@ -11,49 +11,97 @@
 
 		<a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt"
 			class="btn btn-default btn-sm" href="/procure/po/list"> <small><i
-				class="fa fa-chevron-left" aria-hidden="true"></i></small>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate("PO List");?></a>
+				class="fa fa-chevron-left" aria-hidden="true"></i></small>&nbsp;&nbsp;&nbsp;&nbsp;<?php
+
+echo $this->translate("PO List");
+    ?></a>
 
 <?php
 if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
     $current_step = "STEP3";
     include (ROOT . '/module/Procure/view/procure/create-wizard.php');
     endif;
+
 ?>
   					
   		<hr>
-		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php echo $this->translate('Summary:'); ?></span>
+		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
+
+echo $this->translate('Summary:');
+?></span>
 
 		<div class="alert alert-info" role="alert"
 			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
 			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-				<li><b><?php if (!$headerDTO == null): echo $headerDTO->vendorName; endif;?></b></li>
+				<li><b><?php
+
+if (! $headerDTO == null) :
+        echo $headerDTO->vendorName; endif;
+
+    ?></b></li>
 				<li>-----</li>
 
-				<li><?php if (!$headerDTO == null): echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;?> </li>
+				<li><?php
 
-				<li>Total rows: <?php echo ($headerDTO->totalRows);?></li>
-				<li>Status:<?php if (!$headerDTO == null): echo $headerDTO->getTransactionStatus(); endif;?> </li>
+if (! $headerDTO == null) :
+        echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;
+
+    ?> </li>
+
+				<li>Total rows: <?php
+
+echo ($headerDTO->totalRows);
+    ?></li>
+				<li>Status:<?php
+
+if (! $headerDTO == null) :
+        echo $headerDTO->getTransactionStatus(); endif;
+
+    ?> </li>
 
 				<li>-----</li>
 
-				<li>Net: <?php echo number_format($headerDTO->netAmount,2) . " " . $headerDTO->currencyIso3 ;?></li>
-				<li>Tax: <?php echo number_format($headerDTO->taxAmount,2);?></li>
-				<li>Gross: <?php echo number_format($headerDTO->grossAmount,2) . " " . $headerDTO->currencyIso3;?></li>
-				<li>Billed: <?php echo number_format($headerDTO->getBilledAmount(),2) . " " . $headerDTO->currencyIso3;?></li>
+				<li>Net: <?php
+
+echo number_format($headerDTO->netAmount, 2) . " " . $headerDTO->currencyIso3;
+    ?></li>
+				<li>Tax: <?php
+
+echo number_format($headerDTO->taxAmount, 2);
+    ?></li>
+				<li>Gross: <?php
+
+echo number_format($headerDTO->grossAmount, 2) . " " . $headerDTO->currencyIso3;
+    ?></li>
+				<li>Billed: <?php
+
+echo number_format($headerDTO->getBilledAmount(), 2) . " " . $headerDTO->currencyIso3;
+    ?></li>
 				<li>-----</li>
 
-				<li>Created by: <?php echo $headerDTO->getCreatedByName();?></li>
+				<li>Created by: <?php
+
+echo $headerDTO->getCreatedByName();
+    ?></li>
 
 			</ul>
 		</div>
 		
-	<?php if($action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+	<?php
+
+if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+    ?>
 		<div class="alert alert-warning" role="alert"
 			style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt; color: graytext;">
 			<i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
-			<?php echo $this->translate('Please post when PO /Contract is signed. Document can\'t be changed anymore when posted! <br> ');?>
+			<?php
+
+echo $this->translate('Please post when PO /Contract is signed. Document can\'t be changed anymore when posted! <br> ');
+    ?>
 		</div>
-	<?php endif;?>
+	<?php endif;
+
+?>
 	</div>
 	<!-- /#sidebar-wrapper -->
 
@@ -71,26 +119,58 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 			<div id="tabs" style="font-size: 9.5pt">
 				<ul>
 					<li><a href="#general"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;<?php echo $form_title;?></a></li>
+								aria-hidden="true"></i></small>&nbsp;<?php
+
+echo $form_title;
+        ?></a></li>
 					<li><a
-						href="/procure/po-attachment/get-pictures?token=<?php echo (!$headerDTO->currencyIso3 == null)? $headerDTO->token:"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->id:"";?>"><span
+						href="/procure/po-attachment/get-pictures?token=<?php
+
+echo (! $headerDTO->currencyIso3 == null) ? $headerDTO->token : "";
+    ?>&target_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->id : "";
+    ?>"><span
 							class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
 					<li><a href="#logistic"><small><i class="fa fa-calculator"
 								aria-hidden="true"></i></small>&nbsp;Logistic</a></li>
 					<li><a href="#accounting"><small><i class="fa fa-calculator"
 								aria-hidden="true"></i></small>&nbsp;Accounting</a></li>
 					<li><a
-						href="/procure/po/status?token=<?php echo (!$headerDTO == null)? $headerDTO->token:"";?>&entity_id=<?php echo (!$headerDTO == null)? $headerDTO->id:"";?>"><span
+						href="/procure/po/status?token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->token : "";
+    ?>&entity_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->id : "";
+    ?>"><span
 							class="glyphicon glyphicon-picture"></span></span>&nbsp;Status</a></li>
 
 
 
 					<li><a
-						href="/procure/po-attachment/list1?token=<?php echo (!$headerDTO == null)? $headerDTO->token:"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->id:"";?>">
+						href="/procure/po-attachment/list1?token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->token : "";
+    ?>&target_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->id : "";
+    ?>">
 							<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment
 					</a></li>
 					<li><a
-						href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&object_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>&class_name=<?php echo (!$headerDTO == null)? get_class($headerDTO):"";?>"><span
+						href="<?php
+
+echo $this->baseUrl?>/procure/change-log/list1?object_token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+    ?>&object_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+    ?>&class_name=<?php
+
+echo (! $headerDTO == null) ? get_class($headerDTO) : "";
+    ?>"><span
 							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 				</ul>
 
@@ -113,65 +193,144 @@ if (count($errors) > 0) {
 ?>
 	
  			<form id="Posting_Form" class="form-horizontal"
-						action="<?php echo $action;?>" method="post"
+						action="<?php
+
+echo $action;
+    ?>" method="post"
 						enctype="multipart/form-data">
 						<input type="hidden" name="redirectUrl"
-							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							value="<?php
+
+echo $redirectUrl?>" /> <input type="hidden"
 							name="entity_id"
-							value="<?php echo (!$headerDTO == null)? $headerDTO->id:"";?>" />
+							value="<?php
+
+echo (! $headerDTO == null) ? $headerDTO->id : "";
+    ?>" />
 						<input type="hidden" name="token"
-							value="<?php echo (!$headerDTO == null)? $headerDTO->id:"";?>" />
+							value="<?php
+
+echo (! $headerDTO == null) ? $headerDTO->id : "";
+    ?>" />
 
 						<div style="position: relative; float: right;">
 							
-							<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+							<?php
+
+if ($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+        ?>
 							<a class="btn btn-primary btn-sm" style="color: white"
 								onclick="confirmPost();" href="javascript:;"><i
-								class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
+								class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php
+
+echo $this->translate('Post');
+        ?></a>
 											
-							<?php endif;?>
+							<?php endif;
+
+    ?>
 							
-				<?php if($action == \Application\Model\Constants::FORM_ACTION_SHOW):?>
+				<?php
+
+if ($action == \Application\Model\Constants::FORM_ACTION_SHOW) :
+        ?>
 					<?php
 
         if ($headerDTO->docStatus == \Application\Model\Constants::DOC_STATUS_DRAFT) :
             $url = sprintf('/procure/po/review1?token=%s&entity_id=%s', $headerDTO->token, $headerDTO->id);
             ?>
-<a class="btn btn-default btn-sm" href="<?php echo $url;?>"
-								title="<?php echo $this->translate('Review PO');?>"> <i
-								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Review");?>
+<a class="btn btn-default btn-sm" href="<?php
+
+echo $url;
+            ?>"
+								title="<?php
+
+echo $this->translate('Review PO');
+            ?>"> <i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php
+
+echo $this->translate("Review");
+            ?>
 </a>
-					<?php endif;?>
+					<?php endif;
+
+        ?>
 					
-					<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED):?>
+					<?php
+
+if ($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) :
+            ?>
 					
-							<a title="<?php echo $this->translate("Pay P/O");?>"
+							<a title="<?php
+
+echo $this->translate("Pay P/O");
+            ?>"
 								class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/payment/outgoing/pay-po?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>">
+								href="<?php
+
+echo $this->baseUrl?>/payment/outgoing/pay-po?token=<?php
+
+echo (! $headerDTO == null) ? $DTO->getToken() : "";
+            ?>&target_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+            ?>">
 								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Pay
 							</a> <a
-								title="<?php echo $this->translate("Create Good Receipt from this P/O");?>"
+								title="<?php
+
+echo $this->translate("Create Good Receipt from this P/O");
+            ?>"
 								class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/gr/copy-from-po?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&source_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>">
+								href="<?php
+
+echo $this->baseUrl?>/procure/gr/copy-from-po?token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+            ?>&source_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+            ?>">
 								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Goods
 								Receipt
 							</a> <a
-								title="<?php echo $this->translate("Create A/P Invoice from this P/O");?>"
+								title="<?php
+
+echo $this->translate("Create A/P Invoice from this P/O");
+            ?>"
 								class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/copy-from-po?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>">
+								href="<?php
+
+echo $this->baseUrl?>/finance/v-invoice/copy-from-po?token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+            ?>&target_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+            ?>">
 								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;A/P
 								Invoice
 							</a>      	
-					<?php endif;?>
+					<?php endif;
+
+        ?>
 					
-				<?php endif;?>
+				<?php endif;
+
+    ?>
 							
 						</div>
 
 						<fieldset>
 							<legend style="font-size: 9.5pt; color: gray;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$headerDTO == null)? $headerDTO->getSysNumber():"";?> <?php echo (!$headerDTO == null)? $headerDTO->getInvoiceNo():"";?>)</a>
+								<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getSysNumber() : "";
+        ?> <?php
+
+echo (! $headerDTO == null) ? $headerDTO->getInvoiceNo() : "";
+        ?>)</a>
 							</legend>
 							<div id="invoice_header" class="collapse">
 
@@ -181,17 +340,32 @@ if (count($errors) > 0) {
 										<select name="currentState" class="form-control input-sm">
 											<option value="">Please Select</option>
 											<option
-												<?php if($headerDTO->getCurrentState()=="draftPo"): echo "selected"; endif ?>
+												<?php
+
+if ($headerDTO->getCurrentState() == "draftPo") :
+                echo "selected"; endif ?>
+            
 												value="draftPo">Draft</option>
 											<option
-												<?php if($headerDTO->getCurrentState()=="finalPo"): echo "selected"; endif ?>
+												<?php
+
+if ($headerDTO->getCurrentState() == "finalPo") :
+                echo "selected"; endif ?>
+            
 												value="finalPo">Final</option>
 										</select>
 									</div>
 
 									<div class="col-sm-3">
 										<input
-											<?php if(!$headerDTO== null): echo ($headerDTO->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											<?php
+
+if (! $headerDTO == null) :
+            echo ($headerDTO->getIsActive() == "1") ? "checked" : "";
+        else :
+            echo "checked";
+        endif;
+        ?>
 											type="checkbox" name="isActive" value="1">&nbsp;Is
 										Active&nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -205,11 +379,21 @@ if (count($errors) > 0) {
 										<input class="form-control input-sm input-sm" type="text"
 											id="vendor_name_1" placeholder="Enter term to search vendor"
 											name="vendor_name"
-											value="<?php if (!$headerDTO == null):  echo $headerDTO->getVendorName() ;endif;?>">
+											value="<?php
+
+if (! $headerDTO == null) :
+            echo $headerDTO->getVendorName();endif;
+
+        ?>">
 
 										<input type="hidden" id="vendor_id" placeholder=""
 											name="vendor_id"
-											value="<?php if (!$headerDTO == null): echo $headerDTO->getVendor();endif;?>">
+											value="<?php
+
+if (! $headerDTO == null) :
+            echo $headerDTO->getVendor();endif;
+
+        ?>">
 									</div>
 									<div class="col-sm-3">
 
@@ -224,13 +408,21 @@ if (count($errors) > 0) {
 									<div class="col-sm-3">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="contractNo" name="contractNo"
-											value="<?php echo (!$headerDTO == null)? $headerDTO->getContractNo():"";?>">
+											value="<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getContractNo() : "";
+        ?>">
 									</div>
 									<label class="control-label col-sm-2">Contract /PO Date:</label>
 									<div class="col-sm-3">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="contractDate" name="contractDate"
-											value="<?php if(!$headerDTO == null): echo ($headerDTO->getContractDate() !== null); endif;?>">
+											value="<?php
+
+if (! $headerDTO == null) :
+            echo ($headerDTO->getContractDate() !== null); endif;
+
+        ?>">
 									</div>
 								</div>
 
@@ -266,13 +458,19 @@ if (count($errors) > 0) {
 									<div class="col-sm-3">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="exchangeRate" name="exchangeRate"
-											value="<?php echo (!$headerDTO == null)? $headerDTO->getExchangeRate():"";?>">
+											value="<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getExchangeRate() : "";
+        ?>">
 									</div>
 								</div>
 
 								<div class="form-group margin-bottom required">
 
-									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
+									<label class="control-label col-sm-2"><?php
+
+echo $this->translate("Incoterm");
+        ?>:</label>
 									<div class="col-sm-3">
 										<select name="incoterm_id" class="form-control input-sm">
 											<option value="">Select Incoterm</option>
@@ -298,21 +496,33 @@ if (count($errors) > 0) {
    					</select>
 									</div>
 
-									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
+									<label class="control-label col-sm-2"><?php
+
+echo $this->translate("Incoterm Place");
+        ?>:</label>
 									<div class="col-sm-3">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="incotermPlace" name="incotermPlace"
-											value="<?php echo (!$headerDTO == null)? $headerDTO->getIncotermPlace():"";?>">
+											value="<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getIncotermPlace() : "";
+        ?>">
 									</div>
 
 								</div>
 
 								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
+									<label class="control-label col-sm-2"><?php
+
+echo $this->translate("Payment Term");
+        ?>:</label>
 									<div class="col-sm-5">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="paymentTerm" name="paymentTerm"
-											value="<?php echo (!$headerDTO == null)? $headerDTO->getPaymentTerm():"";?>">
+											value="<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getPaymentTerm() : "";
+        ?>">
 									</div>
 								</div>
 
@@ -321,7 +531,10 @@ if (count($errors) > 0) {
 									<div class="col-sm-8">
 										<input class="form-control input-sm" type="text"
 											placeholder="" name="remarks"
-											value="<?php echo (!$headerDTO == null)? $headerDTO->getRemarks():"";?>">
+											value="<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getRemarks() : "";
+        ?>">
 									</div>
 								</div>
 							</div>
@@ -349,41 +562,93 @@ if (count($errors) > 0) {
 										</button>
 										<a
 											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-											title="<?php echo $this->translate("Refresh");?>"
+											title="<?php
+
+echo $this->translate("Refresh");
+        ?>"
 											class="btn btn-default btn-sm" href="javascript:;"
 											onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
 											aria-hidden="true"></i>&nbsp;
-										</a> <a <?php echo $this->translate("Full Screen");?>
+										</a> <a <?php
+
+echo $this->translate("Full Screen");
+        ?>
 											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
 											class="btn btn-default btn-sm" href="javascript:;"
-											onclick="showJqueryDialog('Contract /PO: <?php echo $headerDTO->getSysNumber().' - '. $headerDTO->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $headerDTO->getToken() ?>&entity_id=<?php echo $headerDTO->getId() ?>','j_loaded_data',true);"><i
+											onclick="showJqueryDialog('Contract /PO: <?php
+
+echo $headerDTO->getSysNumber() . ' - ' . $headerDTO->getContractNo();
+        ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php
+
+echo $headerDTO->getToken()?>&entity_id=<?php
+
+echo $headerDTO->getId()?>','j_loaded_data',true);"><i
 											class="fa fa-window-maximize" aria-hidden="true"></i></a>
 
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php echo (!$headerDTO == null)? $headerDTO->getSysNumber():"";?> // </strong></span>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php
+
+echo (! $headerDTO == null) ? $headerDTO->getSysNumber() : "";
+        ?> // </strong></span>
 
 										<span class=""
 											style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
-						Net amount: <?php echo number_format($headerDTO->getNetAmount(),2) . " " . $headerDTO->getCurrencyIso3() ;?>
-                        &nbsp;|&nbsp;Tax amount: <?php echo number_format($headerDTO->getTaxAmount(),2);?>
-                        &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($headerDTO->getGrossAmount(),2) . "</b> " .$headerDTO->getCurrencyIso3();?>
-                        &nbsp;|&nbsp;Total rows:<?php echo ($headerDTO->getTotalActiveRows());?>
+						Net amount: <?php
+
+echo number_format($headerDTO->getNetAmount(), 2) . " " . $headerDTO->getCurrencyIso3();
+    ?>
+                        &nbsp;|&nbsp;Tax amount: <?php
+
+echo number_format($headerDTO->getTaxAmount(), 2);
+                        ?>
+                        &nbsp;|&nbsp;Gross amount: <?php
+
+echo "<b>" . number_format($headerDTO->getGrossAmount(), 2) . "</b> " . $headerDTO->getCurrencyIso3();
+                        ?>
+                        &nbsp;|&nbsp;Total rows:<?php
+
+echo ($headerDTO->getTotalActiveRows());
+                        ?>
 					</span>
 
 
 										<ul style="font-size: 9.5pt;" class="dropdown-menu"
 											aria-labelledby="dropdownMenu1">
 											<li><a target="_blank" class=""
-												href="<?php echo $this->baseUrl ?>/procure/po-row/print-pdf?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>">
+												href="<?php
+
+echo $this->baseUrl?>/procure/po-row/print-pdf?token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+            ?>&target_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+            ?>">
 													<i class="fa fa-file-pdf-o" aria-hidden="true"></i>
 													&nbsp;PDF
 											</a></li>
 											<li><a class=""
-												href="<?php echo $this->baseUrl ?>/procure/po-row/download?format=xlsx&token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>">
+												href="<?php
+
+echo $this->baseUrl?>/procure/po-row/download?format=xlsx&token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+            ?>&target_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+            ?>">
 													<i class="fa fa-file-excel-o" aria-hidden="true"></i>
 													&nbsp;Excel (*.xlxs)
 											</a></li>
 											<li><a class=""
-												href="<?php echo $this->baseUrl ?>/procure/po-row/download?format=ods&token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>">
+												href="<?php
+
+echo $this->baseUrl?>/procure/po-row/download?format=ods&token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+            ?>&target_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+            ?>">
 													<i class="fa fa-file-excel-o" aria-hidden="true"></i>
 													&nbsp;Open Office (*.ods)
 											</a></li>
@@ -425,15 +690,24 @@ if (count($errors) > 0) {
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body" id="b_modal_sm_body">
-				<h5>#<?php echo$this->translate('PO will be posted!');?></h5>
+				<h5>#<?php
+
+echo $this->translate('PO will be posted!');
+    ?></h5>
 
 				<div class="alert alert-warning">
-					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+					<strong>[Info]</strong> <?php
+
+echo $this->translate('Document can\'t be changed anymore when posted!');
+    ?>
 					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
 				</div>
-				<p><?php echo $this->translate('Do you want to continue?');?></p>
+				<p><?php
+
+echo $this->translate('Do you want to continue?');
+    ?></p>
 			</div>
 			<div class="modal-footer">
 				<button onclick="doPosting();" type="button"
@@ -447,20 +721,36 @@ if (count($errors) > 0) {
 
 <script>
 
-var data = <?php echo json_encode($po->getRowsOutPut()) ; ?>
+var data = <?php
+
+echo json_encode($po->getRowsOutPut());
+?>
     
 $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
-<?php if($action == \Application\Model\Constants::FORM_ACTION_SHOW):?>
+<?php
+
+if ($action == \Application\Model\Constants::FORM_ACTION_SHOW) :
+    ?>
 $("#Posting_Form :input").attr("disabled", "disabled");
-<?php endif;?>
+<?php endif;
+
+?>
 
 function confirmPost() {
  	$('#confirm_modal_sm').modal();
 }
 
 function doPosting() {
-	//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&entity_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>"
+	//var url="<?php
+
+echo $this->baseUrl?>/finance/v-invoice/post?token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+?>&entity_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+?>"
 	//window.location = url;
 	$('#confirm_modal_sm').modal('hide');
 	submitForm('Posting_Form');
@@ -576,11 +866,20 @@ $( "#vendor_name_1" ).autocomplete({
 			//draggable:true,
 			sortable: true,
 			freezeCols:1,
-           	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+           	<?php
+
+if ($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+                ?>
            	hoverMode: 'cell',
-       		<?php else:?>
+       		<?php
+
+else :
+                ?>
        		hoverMode: 'row',
-           	<?php endif;?>
+           	<?php
+
+endif;
+            ?>
 		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
 		  	editModel: {
                 allowInvalid: true,
@@ -593,22 +892,36 @@ $( "#vendor_name_1" ).autocomplete({
 
 				  	  toolbar: {
               
-                    	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+                    	<?php
+
+if ($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+                        ?>
                         items: [
                         	
                         { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
                             { "click": function (evt, ui) {
                                 var $grid = $(this).closest('.pq-grid');
-            redirectUrl="/procure/po-row/add?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>";
+            redirectUrl="/procure/po-row/add?token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+                        ?>&target_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+                        ?>";
               window.location.href= redirectUrl;
                              }
                             }
                         ]
                         }
                         ]
-                    	<?php endif;?>
+                    	<?php endif;
 
-                     	<?php if($action == \Application\Model\Constants::FORM_ACTION_SHOW):?>
+                    ?>
+
+                     	<?php
+
+if ($action == \Application\Model\Constants::FORM_ACTION_SHOW) :
+                        ?>
                       	items: [
                             { type: 'button', icon: 'ui-icon-refresh', label: '', listeners: [
                                 { "click": function (evt, ui) {
@@ -618,7 +931,9 @@ $( "#vendor_name_1" ).autocomplete({
                             ]
                             }
                         ]
-                     	<?php endif;?>
+                     	<?php endif;
+
+                    ?>
                         
                     
                 },
@@ -692,7 +1007,10 @@ $( "#vendor_name_1" ).autocomplete({
                       success: function (changes) {
                           //commit the changes.
                       
-                      	  if(changes.status == <?php echo \Application\Model\Constants::AJAX_FAILED;?>){
+                      	  if(changes.status == <?php
+
+echo \Application\Model\Constants::AJAX_FAILED;
+                        ?>){
                       		$("#global-notice").text(changes.message).show();
                       	  }else{
                       		$("#global-notice").text("[OK] Updated...").show();  
@@ -717,7 +1035,10 @@ $( "#vendor_name_1" ).autocomplete({
 
     obj.colModel = [
    
-    	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+    	<?php
+
+if ($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+        ?>
         
        { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
@@ -728,10 +1049,13 @@ $( "#vendor_name_1" ).autocomplete({
        },
 
        
-       <?php endif;?>
+       <?php endif;
+
+    ?>
 
 
-       <?php  //$rowDTO->convertedStandardQuantity;?>
+       <?php 
+// $rowDTO->convertedStandardQuantity; ?>
        
        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
    	{ title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },		
@@ -744,13 +1068,22 @@ $( "#vendor_name_1" ).autocomplete({
        { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
        { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
        
-      	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+      	<?php
+
+if ($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+        ?>
         { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
         { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
-        <?php else:?>
+        <?php
+
+else :
+        ?>
         { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
         { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
-       	<?php endif;?>
+       	<?php
+
+endif;
+    ?>
 
        
        { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
@@ -780,7 +1113,13 @@ $( "#vendor_name_1" ).autocomplete({
               location: "remote",
               method: "GET",
               recIndx: "row_id	",
-              url: "/procure/po-row/gird?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>",
+              url: "/procure/po-row/gird?token=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+            ?>&target_id=<?php
+
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+            ?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }

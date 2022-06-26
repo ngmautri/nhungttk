@@ -88,7 +88,9 @@ class PrController extends ProcureCRUDController
      */
     public function view1Action()
     {
-        $this->layout("Procure/layout-fluid");
+        // $this->layout("Procure/layout-fluid");
+        $this->layout($this->getDefaultLayout());
+
         $form_action = $this->getBaseUrl() . "/view-v2";
         $form_title = "Show Form";
         $action = FormActions::SHOW;
@@ -102,7 +104,7 @@ class PrController extends ProcureCRUDController
         $token = $this->params()->fromQuery('entity_token');
         $rootEntity = $this->getProcureServiceV2()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
 
-        $viewModel = new ViewModel(array(
+        $variables = [
             'action' => $action,
             'form_action' => $form_action,
             'form_title' => $form_title,
@@ -113,8 +115,13 @@ class PrController extends ProcureCRUDController
             'localCurrencyId' => $this->getLocalCurrencyId(),
             'defaultWarehouseId' => $this->getDefautWarehouseId(),
             'companyVO' => $this->getCompanyVO()
-        ));
+        ];
 
+        $summaryViewModel = new ViewModel($variables);
+        $summaryViewModel->setTemplate("procure/pr/pr-summary");
+
+        $viewModel = new ViewModel($variables);
+        $viewModel->addChild($summaryViewModel, 'summary');
         $viewModel->setTemplate("procure/pr/view-v2");
         return $viewModel;
     }

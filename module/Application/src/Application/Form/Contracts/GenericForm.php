@@ -41,6 +41,12 @@ abstract class GenericForm extends Form
      * |
      * |=============================
      */
+    public function setAction($url)
+    {
+        $this->setAttribute('action', $url);
+        return $this;
+    }
+
     public function refresh()
     {
         $this->addElements();

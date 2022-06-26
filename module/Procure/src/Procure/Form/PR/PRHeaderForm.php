@@ -3,8 +3,7 @@ namespace Procure\Form\PR;
 
 use Application\Domain\Util\Translator;
 use Application\Form\Contracts\GenericForm;
-use Application\Form\Helper\DefaultOptions;
-use Procure\Form\Helper\DefaultProcureOptions;
+use Application\Form\Helper\OptionsHelperFactory;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Select;
 
@@ -24,8 +23,9 @@ class PRHeaderForm extends GenericForm
     {
         parent::__construct($id);
         $this->id = $id;
-        $this->setAttribute('method', 'get');
+        $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
+        $this->addRootElement();
     }
 
     public function setAction($url)
@@ -48,7 +48,101 @@ class PRHeaderForm extends GenericForm
      */
     protected function addElements()
     {
-        // no thing
+        // ======================================
+        // Form Element for {prNumber}
+        // ======================================
+        $this->add([
+            'type' => 'text', // to update, if needed
+            'name' => 'prNumber',
+            'attributes' => [
+                'id' => 'prNumber',
+                'class' => "form-control input-sm", // to update, if needed
+                'required' => FALSE // to update, if needed
+            ],
+            'options' => [
+                'label' => Translator::translate('Purchase Request No.'), // to update, if needed
+                'label_attributes' => [
+                    'class' => "control-label col-sm-2" // to update, if needed
+                ]
+            ]
+        ]);
+
+        // ======================================
+        // Form Element for {keywords}
+        // ======================================
+        $this->add([
+            'type' => 'text', // to update, if needed
+            'name' => 'keywords',
+            'attributes' => [
+                'id' => 'keywords',
+                'class' => "form-control input-sm", // to update, if needed
+                'required' => FALSE // to update, if needed
+            ],
+            'options' => [
+                'label' => Translator::translate('Keywords'), // to update, if needed
+                'label_attributes' => [
+                    'class' => "control-label col-sm-2" // to update, if needed
+                ]
+            ]
+        ]);
+
+        // ======================================
+        // Form Element for {remarks}
+        // ======================================
+        $this->add([
+            'type' => 'textarea', // to update, if needed
+            'name' => 'remarks',
+            'attributes' => [
+                'id' => 'remarks',
+                'class' => "form-control input-sm", // to update, if needed
+                'required' => FALSE, // to update, if needed
+                'rows' => 2
+            ],
+            'options' => [
+                'label' => Translator::translate('Description'), // to update, if needed
+                'label_attributes' => [
+                    'class' => "control-label col-sm-2" // to update, if needed
+                ]
+            ]
+        ]);
+
+        // ======================================
+        // Form Element for {isActive}
+        // ======================================
+        $this->add([
+            'type' => 'text', // to update, if needed
+            'name' => 'isActive',
+            'attributes' => [
+                'id' => 'isActive',
+                'class' => "form-control input-sm", // to update, if needed
+                'required' => FALSE // to update, if needed
+            ],
+            'options' => [
+                'label' => Translator::translate('isActive'), // to update, if needed
+                'label_attributes' => [
+                    'class' => "control-label col-sm-2" // to update, if needed
+                ]
+            ]
+        ]);
+
+        // ======================================
+        // Form Element for {docDate}
+        // ======================================
+        $this->add([
+            'type' => 'text', // to update, if needed
+            'name' => 'docDate',
+            'attributes' => [
+                'id' => 'docDate',
+                'class' => "form-control input-sm", // to update, if needed
+                'required' => FALSE // to update, if needed
+            ],
+            'options' => [
+                'label' => Translator::translate('PR Date'), // to update, if needed
+                'label_attributes' => [
+                    'class' => "control-label col-sm-2" // to update, if needed
+                ]
+            ]
+        ]);
     }
 
     /*
@@ -67,79 +161,60 @@ class PRHeaderForm extends GenericForm
     {
 
         // ======================================
-        // Form Element for {renderType}
+        // Form Element for {id}
         // ======================================
         $this->add([
             'type' => Hidden::class, // to update, if needed
-            'name' => 'renderType'
+            'name' => 'id'
         ]);
 
         // ======================================
-        // Form Element for {resultPerPage}
+        // Form Element for {Department}
         // ======================================
 
-        // select
+        // SELECT
         $select = new Select();
-        $select->setName("resultPerPage");
+        $select->setName("department");
         $select->setAttributes([
-            'id' => 'resultPerPage',
+            'id' => 'department',
             'class' => "form-control input-sm chosen-select",
             'required' => true
         ]);
 
         $select->setOptions([
-            'label' => Translator::translate('Result Per Page'),
+            'label' => Translator::translate('Department'),
             'label_attributes' => [
-                'class' => 'control-label col-sm-2'
+                'class' => "control-label col-sm-2"
             ]
         ]);
-        // $select->setEmptyOption(Translator::translate('Parent Account Number'));
-        $select->setValueOptions(DefaultOptions::createResultPerPageOption());
-        // $select->setDisableInArrayValidator(false);
+
+        $o = OptionsHelperFactory::createDepartmentOptions1($this->getDepartmentOptions());
+        $select->setEmptyOption(Translator::translate('-'));
+        $select->setValueOptions($o);
         $this->add($select);
 
         // ======================================
-        // Form Element for {balance}
+        // Form Element for {WH}
         // ======================================
-        // select
+
         $select = new Select();
-        $select->setName("balance");
+        $select->setName("warehouse");
         $select->setAttributes([
-            'id' => 'balance',
+            'id' => 'warehouse',
             'class' => "form-control input-sm chosen-select",
             'required' => true
         ]);
 
         $select->setOptions([
-            'label' => Translator::translate('Status'),
+            'label' => Translator::translate('Warehouse'),
             'label_attributes' => [
-                'class' => 'control-label col-sm-2'
-            ]
-            // 'empty_option' => 'Please choose a month'
-        ]);
-        $select->setValueOptions(DefaultProcureOptions::createPRRowBalanceOption());
-        $this->add($select);
-
-        // ======================================
-        // Form Element for {Sort}
-        // ======================================
-        // select
-        $select = new Select();
-        $select->setName("Sort");
-        $select->setAttributes([
-            'id' => 'docStatus',
-            'class' => "form-control input-sm chosen-select",
-            'required' => true
-        ]);
-
-        $select->setOptions([
-            'label' => Translator::translate('Sort'),
-            'label_attributes' => [
-                'class' => 'control-label col-sm-2'
+                'class' => "control-label col-sm-2"
             ]
         ]);
 
-        $select->setValueOptions(DefaultOptions::createSQLSortOption());
+        $select->setEmptyOption(Translator::translate('-'));
+        $o = OptionsHelperFactory::createValueOptions($this->getWhOptions());
+        $select->setValueOptions($o);
         $this->add($select);
     }
 
@@ -150,19 +225,44 @@ class PRHeaderForm extends GenericForm
      * |
      * |=============================
      */
-    public function getBalance()
+    public function getPrNumber()
     {
-        return $this->get("balance");
+        return $this->get("prNumber");
     }
 
-    public function getSortBy()
+    public function getKeywords()
     {
-        return $this->get("sortBy");
+        return $this->get("keywords");
     }
 
-    public function getSort()
+    public function getSubmittedOn()
     {
-        return $this->get("sort");
+        return $this->get("submittedOn");
+    }
+
+    public function getDepartment()
+    {
+        return $this->get("department");
+    }
+
+    public function getRemarks()
+    {
+        return $this->get("remarks");
+    }
+
+    public function getIsActive()
+    {
+        return $this->get("isActive");
+    }
+
+    public function getWarehouse()
+    {
+        return $this->get("warehouse");
+    }
+
+    public function getDocDate()
+    {
+        return $this->get("docDate");
     }
 
     /*
@@ -172,10 +272,6 @@ class PRHeaderForm extends GenericForm
      * |
      * |=============================
      */
-    public function getResultPerPage()
-    {
-        return $this->get("resultPerPage");
-    }
 
     /**
      *

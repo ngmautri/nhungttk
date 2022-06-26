@@ -1,12 +1,17 @@
 <?php
 namespace Procure\Controller;
 
+use Application\Application\Command\TransactionalCommandHandler;
+use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\Service\Department\Tree\DepartmentTree;
-use Application\Application\Service\Department\Tree\Output\PureDepartmentWithRootForOptionFormatter;
+use Application\Application\Service\Department\Tree\Output\DepartmentWithOneLevelForOptionFormatter1;
 use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
+use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Controller\Contracts\ProcureCRUDController;
+use Procure\Domain\DocSnapshot;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Form\PR\PRHeaderForm;
 use Procure\Form\PR\PRRowCollectionFilterForm;
 use Procure\Infrastructure\Persistence\SQL\Filter\PrRowReportSqlFilter;
@@ -57,6 +62,12 @@ class PrController extends ProcureCRUDController
         $this->listTemplate = $this->getBaseUrl() . '/procure/pr/list';
     }
 
+    /**
+     *
+     * @param string $form_action
+     * @param string $action
+     * @return \Procure\Form\PR\PRHeaderForm
+     */
     private function _createRootForm($form_action, $action)
     {
         $form = new PRHeaderForm("pr_create_form");
@@ -71,7 +82,7 @@ class PrController extends ProcureCRUDController
         $root = $builder->createTree(1, 0);
 
         // set up department
-        $departmentOptions = $root->display(new PureDepartmentWithRootForOptionFormatter());
+        $departmentOptions = $root->display(new DepartmentWithOneLevelForOptionFormatter1());
         $form->setDepartmentOptions($departmentOptions);
 
         $filter = new CompanyQuerySqlFilter();
@@ -80,6 +91,116 @@ class PrController extends ProcureCRUDController
         $form->setWhOptions($collection->getWHCollection($filter));
         $form->refresh();
         return $form;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Controller\Contracts\ProcureCRUDController::createAction()
+     */
+    public function createAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/create";
+        $form_title = "Create Form";
+        $action = FormActions::ADD;
+        $viewTemplete = $this->getBaseUrl() . "/crud-header-view";
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $form = $this->_createRootForm($form_action, $action);
+
+        $prg = $this->prg($form_action, true);
+
+        $modelViewVariables = [
+            'errors' => null,
+            'redirectUrl' => null,
+            'entity_id' => null,
+            'entity_token' => null,
+            'version' => null,
+            'headerDTO' => null,
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'action' => $action,
+            'sharedCollection' => $this->getSharedCollection(),
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId(),
+            'companyVO' => $this->getCompanyVO(),
+            'form' => $form
+        ];
+
+        $wizardModelVariables = [
+            'current_step' => "STEP1"
+        ];
+
+        $wizardModel = new ViewModel($wizardModelVariables);
+        $wizardModel->setTemplate($this->getBaseUrl() . "/pr-create-wizard");
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $snapshot = new PRSnapshot();
+            $countryId = $this->getCompanyVO()->getCountry();
+            $snapshot->setCompany($countryId);
+            $form->bind($snapshot);
+
+            $viewModel = new ViewModel($modelViewVariables);
+            $viewModel->setTemplate($viewTemplete);
+
+            $viewModel->addChild($wizardModel, 'wizard');
+
+            return $viewModel;
+        }
+
+        $notification = null;
+        try {
+
+            $data = $prg;
+
+            // var_dump($data);
+
+            $options = new CreateHeaderCmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
+            $cmdHandler = $this->getCmdHandlerFactory()->getCreateHeaderCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
+            $cmd->execute();
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+        }
+
+        $notification = $cmd->getNotification();
+        if ($notification->hasErrors()) {
+
+            $form->bind($cmd->getOutput());
+
+            $modelViewVariables['errors'] = $notification->getErrors();
+            $modelViewVariables['headerDTO'] = $cmd->getOutput();
+            $viewModel = new ViewModel($modelViewVariables);
+            $viewModel->setTemplate($viewTemplete);
+            $viewModel->addChild($wizardModel, 'wizard');
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+
+        $header = $cmd->getOutput();
+
+        if ($header instanceof DocSnapshot) {
+            $redirectUrl = sprintf($this->getBaseUrl() . "/add-row?target_token=%s&target_id=%s", $header->getToken(), $header->getId());
+        } else {
+            $redirectUrl = $this->getBaseUrl() . "/list";
+        }
+
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**
@@ -110,6 +231,7 @@ class PrController extends ProcureCRUDController
             'form_title' => $form_title,
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
+            'headerDTO' => $rootEntity->makeSnapshot(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'localCurrencyId' => $this->getLocalCurrencyId(),
@@ -120,8 +242,12 @@ class PrController extends ProcureCRUDController
         $summaryViewModel = new ViewModel($variables);
         $summaryViewModel->setTemplate("procure/pr/pr-summary");
 
+        $headerViewModel = new ViewModel($variables);
+        $headerViewModel->setTemplate("procure/pr/header-form");
+
         $viewModel = new ViewModel($variables);
         $viewModel->addChild($summaryViewModel, 'summary');
+        $viewModel->addChild($headerViewModel, 'header');
         $viewModel->setTemplate("procure/pr/view-v2");
         return $viewModel;
     }

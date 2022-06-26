@@ -217,6 +217,7 @@ class PrDefinition
         "isActive",
         "prNumber",
         "keywords",
+        "docDate",
         "submittedOn",
         "department",
         "warehouse",

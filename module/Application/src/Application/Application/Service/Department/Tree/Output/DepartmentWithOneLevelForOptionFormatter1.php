@@ -8,9 +8,9 @@ use Application\Domain\Util\Tree\Output\AbstractFormatter;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-class DepartmentWithOneLevelForOptionFormatter extends AbstractFormatter
+class DepartmentWithOneLevelForOptionFormatter1 extends AbstractFormatter
 {
 
     /**
@@ -29,10 +29,10 @@ class DepartmentWithOneLevelForOptionFormatter extends AbstractFormatter
 
         if (! $node->isLeaf()) {
 
-            $format = '<span style="color:black"> %s </span>';
+            $format = '%s';
 
             if ($level == 1) {
-                $format = '<span style="color:navy; font-weight: bold;"> %s</span>';
+                $format = '%s';
             }
 
             $txt = $txt . " " . $this->addLevel($level) . sprintf($format, $node->getNodeName());
@@ -51,14 +51,14 @@ class DepartmentWithOneLevelForOptionFormatter extends AbstractFormatter
             }
         } else {
 
-            $format = '<span style="color:black"> %s </span>';
+            $format = '%s';
 
             if ($level == 1) {
-                $format = '<span style="color:navy; font-weight: bold;"> %s</span>';
+                $format = '%s';
             }
 
             if ($level == 2) {
-                $format = '<span style="color:navy"> %s </span>';
+                $format = '%s';
             }
 
             $txt = $txt . " " . $this->addLevel($level) . sprintf($format, $node->getNodeName());

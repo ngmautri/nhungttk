@@ -98,11 +98,6 @@ class OptionsHelperFactory
         return $tmp;
     }
 
-    /**
-     *
-     * @param array $list
-     * @return NULL|mixed[][]
-     */
     public static function createValueOptions($list)
     {
         if ($list == null) {

@@ -477,6 +477,23 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
         $prg = $this->prg($form_action, true);
 
+        $modelViewVariables = [
+            'errors' => null,
+            'redirectUrl' => null,
+            'entity_id' => null,
+            'entity_token' => null,
+            'version' => null,
+            'headerDTO' => null,
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'action' => $action,
+            'sharedCollection' => $this->getSharedCollection(),
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId(),
+            'companyVO' => $this->getCompanyVO()
+        ];
+
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
             return $prg;
@@ -484,22 +501,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
 
-            $viewModel = new ViewModel(array(
-                'errors' => null,
-                'redirectUrl' => null,
-                'entity_id' => null,
-                'entity_token' => null,
-                'version' => null,
-                'headerDTO' => null,
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'action' => $action,
-                'sharedCollection' => $this->getSharedCollection(),
-                'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId(),
-                'companyVO' => $this->getCompanyVO()
-            ));
+            $viewModel = new ViewModel($modelViewVariables);
 
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
@@ -525,22 +527,10 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
         $notification = $cmd->getNotification();
         if ($notification->hasErrors()) {
-            $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
-                'redirectUrl' => null,
-                'entity_id' => null,
-                'entity_token' => null,
-                'version' => null,
-                'headerDTO' => $cmd->getOutput(),
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'action' => $action,
-                'sharedCollection' => $this->getSharedCollection(),
-                'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId(),
-                'companyVO' => $this->getCompanyVO()
-            ));
+
+            $modelViewVariables['errors'] = $notification->getErrors();
+            $modelViewVariables['headerDTO'] = $cmd->getOutput();
+            $viewModel = new ViewModel($modelViewVariables);
 
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;

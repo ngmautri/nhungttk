@@ -142,7 +142,7 @@ class DefaultFormOptionCollection extends AbstractService implements FormOptionC
          * @var NmtInventoryWarehouse $l ;
          */
         foreach ($list as $l) {
-            $result->add($this->createElement($l->getId(), \sprintf('%s %s', $l->getWhName(), $l->getWhCode())));
+            $result->add($this->createElement($l->getId(), \sprintf('%s %s', $l->getWhName(), "")));
         }
         return $result;
     }

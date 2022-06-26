@@ -11,7 +11,7 @@ use Zend\Form\Element\Select;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class WarehouseForm extends GenericForm
 {
@@ -27,12 +27,6 @@ class WarehouseForm extends GenericForm
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
         $this->addRootElement();
-    }
-
-    public function setAction($url)
-    {
-        $this->setAttribute('action', $url);
-        return $this;
     }
 
     /**

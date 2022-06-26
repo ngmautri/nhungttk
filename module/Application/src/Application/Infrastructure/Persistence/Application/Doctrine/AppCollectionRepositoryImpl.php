@@ -102,13 +102,19 @@ class AppCollectionRepositoryImpl extends AbstractDoctrineRepository implements 
         return $list;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Infrastructure\Persistence\Application\Contracts\AppCollectionRepositoryInterface::getWHCollection()
+     */
     public function getWHCollection(CompanySqlFilterInterface $filter)
     {
         $criteria = [];
 
         if ($filter->getCompanyId() > 0) {
             $criteria = [
-                'company' => $filter->getCompanyId()
+                'company' => $filter->getCompanyId(),
+                'isLocked' => null
             ];
         }
 

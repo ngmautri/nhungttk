@@ -16,6 +16,7 @@ use Procure\Application\Service\PR\RowCollectionRender\DefaultPrRowRenderAsExcel
 use Procure\Application\Service\PR\RowCollectionRender\DefaultPrRowRenderAsHtmlTable;
 use Procure\Application\Service\PR\RowCollectionRender\DefaultPrRowRenderAsParamQuery;
 use Procure\Application\Service\Render\Formatter\RowTextAndNumberFormatter;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Infrastructure\Persistence\Domain\Doctrine\PRQueryRepositoryImplV1;
@@ -45,8 +46,15 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
         // create Paginator
         $totalResults = $rootEntity->getTotalRows();
 
+        $f = '/procure/pr/add-row?target_id=%s&target_token=%s';
+        $add_row_url = sprintf($f, $rootEntity->getId(), $rootEntity->getToken());
+
         if ($totalResults == null or $totalResults == 0) {
-            return new DefaultRenderForEmptyCollection("PR has no content!");
+            $render = new DefaultRenderForEmptyCollection("PR has no content!");
+
+            $toolbar1 = FormHelper::createButton("Add new line", "add new line", $add_row_url, 'fa fa-plus');
+            $render->setToolbar($toolbar1);
+            return $render;
         }
 
         $fullCollection = $rootEntity->getRowCollection()->filter(function ($entry) use ($filter) {
@@ -118,7 +126,13 @@ class PRServiceV2 extends AbstractService implements PrServiceInterface
                 $render->setPaginator($paginator);
                 $render->setOffset($paginator->getOffset());
                 $render->setUrl(sprintf($format, $rootEntity->getId(), $rootEntity->getToken(), SupportedRenderType::HMTL_TABLE, $page - 1, $resultPerPage));
+
+                if ($rootEntity->getDocStatus() == ProcureDocStatus::DRAFT) {
+                    $toolbar1 = $toolbar1 . FormHelper::createButton("Add New Row", "add new PR row", $add_row_url, 'fa fa-plus');
+                }
+
                 $toolbar1 = $toolbar1 . FormHelper::createButtonForJS('<i class="fa fa-th" aria-hidden="true"></i>', $html_onclick, 'Gird View');
+
                 break;
 
             case SupportedRenderType::PARAM_QUERY:

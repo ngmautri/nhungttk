@@ -45,14 +45,14 @@ class FormHelper
         if ($list == null) {
             return;
         }
-        $dropDown = '<div tyle="font-size: 9pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;">';
+        $dropDown = '<div style="margin-bottom: 1pt; margin-left: 2pt; padding: 3pt 5pt 3pt 5pt;">';
         $dropDown = $dropDown . '<div class="dropdown">';
         $dropDown = $dropDown . $other_pre;
         $dropDown = $dropDown . self::POST_PRE;
-        $dropDown = $dropDown . '<button style="color: black; padding: 3pt 5pt 3pt 5pt;; color: black; font-size: 9.5pt" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">';
+        $dropDown = $dropDown . '<button style="margin-bottom: 1pt; margin-left: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">';
         $dropDown = $dropDown . '<i class="fa fa-download" aria-hidden="true"></i>&nbsp;Download&nbsp;<span class="caret"></span></button>';
 
-        $dropDown = $dropDown . '<ul style="font-size: 9.5pt; style="color: black;" class="dropdown-menu" aria-labelledby="dropdownMenu1">';
+        $dropDown = $dropDown . '<ul style="font-size: 9pt; style="color: black;" class="dropdown-menu" aria-labelledby="dropdownMenu1">';
 
         foreach ($list as $l) {
 
@@ -100,8 +100,8 @@ class FormHelper
 
     public static function createButton($name, $title, $url, $icon)
     {
-        $btn = '<a style="font-size: 8.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="%s" title="%s" >%s</a>';
-        $btn1 = '<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="%s" title="%s" ><small><i class="%s"></i></small> %s</a>';
+        $btn = '<a style="margin-bottom: 1pt; margin-left: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="%s" title="%s" >%s</a>';
+        $btn1 = '<a style="margin-bottom: 1pt; margin-left: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="%s" title="%s" ><small><i class="%s"></i></small> %s</a>';
 
         if ($icon !== null) {
             return sprintf($btn1, $url, $title, $icon, $name);

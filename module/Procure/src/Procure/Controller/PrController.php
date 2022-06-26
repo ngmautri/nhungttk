@@ -9,6 +9,7 @@ use Application\Domain\Contracts\FormActions;
 use Application\Domain\Util\Collection\Contracts\SupportedRenderType;
 use Application\Infrastructure\Persistence\Domain\Doctrine\Filter\CompanyQuerySqlFilter;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
+use Procure\Application\Command\Options\PostCmdOptions;
 use Procure\Controller\Contracts\ProcureCRUDController;
 use Procure\Domain\DocSnapshot;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
@@ -93,6 +94,183 @@ class PrController extends ProcureCRUDController
         return $form;
     }
 
+    public function reviewAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/review";
+        $form_title = "Edit Form";
+        $action = FormActions::REVIEW;
+        $viewTemplete = $this->getViewTemplate();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $prg = $this->prg($form_action, true);
+
+        $form = $this->_createRootForm($form_action, $action);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $this->layout("Procure/layout-fullscreen");
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+
+            $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($entity_id, $entity_token, null, $this->getLocale());
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $headerDTO = $rootEntity->makeSnapshot();
+            $form->bind($headerDTO);
+            // $form->disableForm();
+
+            $variables = [
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $headerDTO,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO(),
+                'form' => $form
+            ];
+
+            $viewModel = new ViewModel($variables);
+            $viewModel->setTemplate("procure/pr/view-v2");
+
+            $sideBarButtonViewModel = new ViewModel();
+            $sideBarButtonViewModel->setTemplate("procure/pr/sidebar-buttons");
+            $viewModel->addChild($sideBarButtonViewModel, 'sidebar_buttons');
+
+            $summaryViewModel = new ViewModel($variables);
+            $summaryViewModel->setTemplate("procure/pr/pr-summary");
+            $viewModel->addChild($summaryViewModel, 'summary');
+
+            $headerFormModel = new ViewModel($variables);
+            $headerFormModel->setTemplate("procure/pr/header-form");
+            $viewModel->addChild($headerFormModel, 'header_form');
+
+            $wizardModelVariables = [
+                'current_step' => "STEP3"
+            ];
+            $wizardModel = new ViewModel($variables);
+            $wizardModel->setVariables($wizardModelVariables);
+            $wizardModel->setTemplate($this->getBaseUrl() . "/pr-create-wizard");
+            $viewModel->addChild($wizardModel, 'wizard');
+
+            $confirmPostingModel = new ViewModel();
+            $confirmPostingModel->setTemplate("procure/common/posting-modal");
+            $viewModel->addChild($confirmPostingModel, 'confirm_posting');
+
+            return $viewModel;
+        }
+
+        // POSTING
+        // ====================================
+        try {
+
+            $data = $prg;
+            $entity_id = $data['id'];
+            $entity_token = $data['token'];
+            $version = $data['revisionNo'];
+
+            $rootEntity = $this->procureService->getDocDetailsByTokenId($entity_id, $entity_token, null, $this->getLocale());
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new PostCmdOptions($this->getCompanyVO(), $rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+            $cmdHandler = $this->getCmdHandlerFactory()->getPostCmdHandler();
+
+            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->execute();
+
+            $msg = sprintf($cmd->getNotification()->successMessage());
+            $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+            $this->logException($e);
+            $msg = $e->getMessage();
+            $redirectUrl = sprintf($this->getBaseUrl() . "/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        }
+
+        if ($cmd->getNotification()->hasErrors()) {
+            $headerDTO = $rootEntity->makeSnapshot();
+
+            $form->bind($headerDTO);
+
+            $variables = [
+                'errors' => $cmd->getNotification()->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $headerDTO,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO(),
+                'form' => $form
+            ];
+
+            $viewModel = new ViewModel($variables);
+            $viewModel->setTemplate("procure/pr/view-v2");
+
+            $summaryViewModel = new ViewModel($variables);
+            $summaryViewModel->setTemplate("procure/pr/pr-summary");
+
+            $headerFormModel = new ViewModel($variables);
+            $headerFormModel->setTemplate("procure/pr/header-form");
+
+            $viewModel->addChild($summaryViewModel, 'summary');
+            $viewModel->addChild($headerFormModel, 'header_form');
+
+            $wizardModelVariables = [
+                'current_step' => "STEP3"
+            ];
+            $wizardModel = new ViewModel($variables);
+            $wizardModel->setVariables($wizardModelVariables);
+            $wizardModel->setTemplate($this->getBaseUrl() . "/pr-create-wizard");
+            $viewModel->addChild($wizardModel, 'wizard');
+
+            $confirmPostingModel = new ViewModel();
+            $confirmPostingModel->setTemplate("procure/common/posting-modal");
+            $viewModel->addChild($confirmPostingModel, 'confirm_posting');
+
+            return $viewModel;
+        }
+
+        $this->layout("layout/user/ajax");
+        $this->flashMessenger()->addMessage($msg);
+        $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+
+        $this->logInfo($msg);
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
     /**
      *
      * {@inheritdoc}
@@ -114,12 +292,15 @@ class PrController extends ProcureCRUDController
 
         $prg = $this->prg($form_action, true);
 
+        // Model Variable
+
         $modelViewVariables = [
             'errors' => null,
             'redirectUrl' => null,
             'entity_id' => null,
             'entity_token' => null,
             'version' => null,
+            'rootEntity' => null,
             'headerDTO' => null,
             'nmtPlugin' => $nmtPlugin,
             'form_action' => $form_action,
@@ -136,8 +317,12 @@ class PrController extends ProcureCRUDController
             'current_step' => "STEP1"
         ];
 
-        $wizardModel = new ViewModel($wizardModelVariables);
+        $wizardModel = new ViewModel($modelViewVariables);
+        $wizardModel->setVariables($wizardModelVariables);
         $wizardModel->setTemplate($this->getBaseUrl() . "/pr-create-wizard");
+
+        $headerFormModel = new ViewModel();
+        $headerFormModel->setTemplate($this->getBaseUrl() . "/header-form");
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -155,6 +340,13 @@ class PrController extends ProcureCRUDController
             $viewModel->setTemplate($viewTemplete);
 
             $viewModel->addChild($wizardModel, 'wizard');
+
+            $headerFormModel->setVariables($modelViewVariables);
+            $viewModel->addChild($headerFormModel, 'header_form');
+
+            $sideBarButtonViewModel = new ViewModel();
+            $sideBarButtonViewModel->setTemplate("procure/pr/sidebar-buttons");
+            $viewModel->addChild($sideBarButtonViewModel, 'sidebar_buttons');
 
             return $viewModel;
         }
@@ -181,12 +373,20 @@ class PrController extends ProcureCRUDController
         if ($notification->hasErrors()) {
 
             $form->bind($cmd->getOutput());
-
             $modelViewVariables['errors'] = $notification->getErrors();
             $modelViewVariables['headerDTO'] = $cmd->getOutput();
+
             $viewModel = new ViewModel($modelViewVariables);
             $viewModel->setTemplate($viewTemplete);
             $viewModel->addChild($wizardModel, 'wizard');
+
+            $headerFormModel->setVariables($modelViewVariables);
+            $viewModel->addChild($headerFormModel, 'header_form');
+
+            $sideBarButtonViewModel = new ViewModel();
+            $sideBarButtonViewModel->setTemplate("procure/pr/sidebar-buttons");
+            $viewModel->addChild($sideBarButtonViewModel, 'sidebar_buttons');
+
             return $viewModel;
         }
 
@@ -225,30 +425,43 @@ class PrController extends ProcureCRUDController
         $token = $this->params()->fromQuery('entity_token');
         $rootEntity = $this->getProcureServiceV2()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
 
+        $headerDTO = $rootEntity->makeSnapshot();
+
+        $form = $this->_createRootForm($form_action, $action);
+        $form->bind($headerDTO);
+        $form->disableForm();
+
         $variables = [
+            'errors' => null,
             'action' => $action,
             'form_action' => $form_action,
             'form_title' => $form_title,
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
-            'headerDTO' => $rootEntity->makeSnapshot(),
-            'errors' => null,
+            'headerDTO' => $headerDTO,
             'version' => $rootEntity->getRevisionNo(),
             'localCurrencyId' => $this->getLocalCurrencyId(),
             'defaultWarehouseId' => $this->getDefautWarehouseId(),
-            'companyVO' => $this->getCompanyVO()
+            'companyVO' => $this->getCompanyVO(),
+            'form' => $form
         ];
+
+        $viewModel = new ViewModel($variables);
+        $viewModel->setTemplate("procure/pr/view-v2");
+
+        $sideBarButtonViewModel = new ViewModel();
+        $sideBarButtonViewModel->setTemplate("procure/pr/sidebar-buttons");
+        $viewModel->addChild($sideBarButtonViewModel, 'sidebar_buttons');
 
         $summaryViewModel = new ViewModel($variables);
         $summaryViewModel->setTemplate("procure/pr/pr-summary");
 
-        $headerViewModel = new ViewModel($variables);
-        $headerViewModel->setTemplate("procure/pr/header-form");
+        $headerFormModel = new ViewModel($variables);
+        $headerFormModel->setTemplate("procure/pr/header-form");
 
-        $viewModel = new ViewModel($variables);
         $viewModel->addChild($summaryViewModel, 'summary');
-        $viewModel->addChild($headerViewModel, 'header');
-        $viewModel->setTemplate("procure/pr/view-v2");
+        $viewModel->addChild($headerFormModel, 'header_form');
+
         return $viewModel;
     }
 
@@ -262,7 +475,7 @@ class PrController extends ProcureCRUDController
         $form_action = "/procure/pr/row-content";
         $action = FormActions::SHOW;
         $viewTemplete = "/procure/pr/row-content";
-        $request = $this->getRequest();
+        // $request = $this->getRequest();
 
         // echo $this->getLocale();
         $isActive = $this->getGETparam('isActive');
@@ -295,16 +508,27 @@ class PrController extends ProcureCRUDController
         $form->refresh();
         $form->bind($filter);
 
-        $viewModel = new ViewModel(array(
+        $viewModelVariables = [
             'collectionRender' => $render,
             'sort_by' => $sort_by,
             'sort' => $sort,
             'per_pape' => $perPage,
             'filter' => $filter,
-            'form' => $form
-        ));
+            'form' => $form,
+            'rootEntity' => $rootEntity
+        ];
 
+        $viewModel = new ViewModel($viewModelVariables);
         $viewModel->setTemplate("procure/pr/row-content");
+
+        $rowGirdModel = new ViewModel($viewModelVariables);
+        $rowGirdModel->setTemplate("procure/pr/row-gird");
+        $viewModel->addChild($rowGirdModel, 'row_gird');
+
+        // $removeModalModel = new ViewModel();
+        // $removeModalModel->setTemplate("procure/common/remove-modal");
+        // $viewModel->addChild($removeModalModel, 'remove_modal');
+
         return $viewModel;
     }
 

@@ -1,0 +1,40 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+// ===========================================================
+?>
+
+<div class="modal" id="confirm_posting_modal_sm" role="dialog">
+   <div class="modal-dialog modal-md">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+         </div>
+         <div class="modal-body" id="b_modal_sm_body">
+            <h5><?php
+
+            echo $this->translate('Document will be posted!');
+            ?></h5>
+            <div class="alert alert-warning">
+               <strong>[Info]</strong> <?php
+
+            echo $this->translate('Document can\'t be changed anymore when posted!');
+            ?>
+            </div>
+            <p><?php
+
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+         </div>
+         <div class="modal-footer">
+            <button onclick="doPosting();" type="button" class="btn btn-primary btn-sm">YES</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
+</div>
+ 

@@ -176,9 +176,9 @@ class PrHeaderHelper
         // fullfiled
 
         if ($filterHeader->getBalance() == 1) {
-            $sql = $sql . " HAVING total_row <= std_gr_completed";
+            $sql = $sql . " HAVING total_row <= std_gr_completed AND total_row >0";
         } elseif ($filterHeader->getBalance() == 2) {
-            $sql = $sql . " HAVING total_row > std_gr_completed";
+            $sql = $sql . " HAVING total_row > std_gr_completed OR total_row =0";
         }
 
         return $sql;
@@ -221,9 +221,9 @@ class PrHeaderHelper
         }
 
         if ($filterHeader->getBalance() == 1) {
-            $sql = $sql . " HAVING total_row <= std_gr_completed";
+            $sql = $sql . " HAVING total_row <= std_gr_completed AND total_row >0";
         } elseif ($filterHeader->getBalance() == 2) {
-            $sql = $sql . " HAVING total_row > std_gr_completed";
+            $sql = $sql . " HAVING total_row > std_gr_completed OR total_row =0";
         }
         return $sql;
     }

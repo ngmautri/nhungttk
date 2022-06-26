@@ -4,17 +4,15 @@ namespace Procure\Application\Helper;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\DTO\Pr\PrDTO;
-use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
-use Procure\Domain\QuotationRequest\QRSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-class Toolbar
+class Toolbar11
 {
 
     public static function showToolbarAP(ApDTO $headerDTO, $action, $view)

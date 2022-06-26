@@ -1,0 +1,274 @@
+<?php
+use Application\Application\Helper\Form\FormHelper;
+use Application\Application\Helper\Form\Bootstrap3\CollapseHelper;
+use Application\Domain\Util\Collection\Render\AbstractCollectionRender;
+use Application\Domain\Util\Collection\Render\AbstractRenderAsParamQuery;
+use Procure\Form\PR\PRRowCollectionFilterForm;
+use Procure\Form\PR\PRRowCollectionFilterFormRender;
+
+/**
+ *
+ * @var AbstractCollectionRender $collectionRender ;
+ * @var PRRowCollectionFilterForm $form ;
+ */
+
+?>
+
+<script>
+<?php
+$format = "var previous_url = '%s'";
+echo sprintf($format, $collectionRender->getUrl());
+?>
+</script>
+
+
+
+<div id="pr_row_div">
+
+
+          <?php
+
+        $showTitle = '<span style="font-size:8pt"><i class="fa fa-chevron-down" aria-hidden="true"></i> Filter</span>';
+        $hideTitle = '<span <span style="font-size:8pt"><i class="fa fa-chevron-up" aria-hidden="true"></i> Filter</span>';
+        $collapseId = 'test_id';
+        $content = $form->renderForView($this, new PRRowCollectionFilterFormRender());
+
+        $filterBtn = CollapseHelper::drawBasisCollapse($showTitle, $hideTitle, $collapseId, $content);
+
+        if ($collectionRender != null) :
+
+            $currentToolBar = $collectionRender->printToolBar();
+            $toolbar = FormHelper::preAppendToCurrentToolbar($currentToolBar, $filterBtn);
+            $collectionRender->setToolbar($toolbar);
+
+            echo $collectionRender->printToolBar() . FormHelper::drawLine();
+            echo $collectionRender->execute();
+            echo $collectionRender->printAjaxPaginator();
+        else :
+            echo FormHelper::echoMessage("Nothing found !");
+        endif;
+        ?>
+   
+
+
+
+
+<?php
+/*
+ * |=============================
+ * |PARAM QUERY
+ * |
+ * |=============================
+ */
+
+if ($collectionRender instanceof AbstractRenderAsParamQuery) :
+    // echo $collectionRender->printToolBar();
+
+    ?>
+    
+ <script> 
+ 
+	<?php
+    $format = "var remote_url = '%s', r_pp = %s";
+    echo sprintf($format, $collectionRender->getRemoteUrl(), $collectionRender->getPaginator()->getResultsPerPage());
+    ?>
+    
+</script>
+    
+     <div id="pr_row_param"></div>
+
+<script>
+            /* 
+             * |=============================
+             * |PARAM QUERY
+             * |
+             * |=============================
+             */
+            var obj = {
+                height: $(window).height()-280,
+                width: 'auto',
+                showTop: true,
+                collapsible: true,
+                showHeader: true,
+                showBottom: true,
+                editable: true,
+                wrap: false,
+                pageModel: {
+                    type: "remote",
+                    rPP: r_pp,
+                    strRpp: "{0}"
+                }
+            };
+
+            /*
+             * |=============================
+             * |DATA MODEL
+             * |
+             * |=============================
+             */
+            obj.dataModel = {
+                location: "remote",
+                url: remote_url
+            };
+
+            /*   
+             * |=============================
+             * |COLS MODEL
+             * |
+             * |=============================
+             */
+            obj.colModel = [{
+                dataType: "string",
+                title: "Edit",
+                render: function(ui) {
+                    return '<button type="button" class="edit_btn">Edit</button > ';
+                },
+                editable: false
+            }, 
+             {
+                dataIndx: "transactionStatus",
+                dataType: "string",
+                title: "Status",
+                minWidth: 80
+            },
+            {
+                dataIndx: "rowIdentifer",
+                dataType: "string",
+                title: "Ref.",
+                minWidth: 90
+            }, {
+                dataIndx: "itemName",
+                dataType: "string",
+                title: "Item Name",
+                minWidth: 300
+            },
+            
+             {
+                dataIndx: "convertedStandardQuantity",
+                dataType: "int",
+                title: "Std Qty",
+                align: "right",
+                minWidth: 80
+            }
+            
+            ];
+
+            // Create ParamQuery Object!
+            var $grid = $("#pr_row_param").pqGrid(obj)
+
+            $grid.on('pqgridrefresh pqgridrefreshrow', function() {
+                //debugger;
+                var $grid = $(this);
+
+                $grid.find("button.edit_btn").button({})
+                    .unbind("click")
+                    .bind("click", function(evt) {
+
+                        var $tr = $(this).closest("tr"),
+                            rowIndx = $grid.pqGrid("getRowIndx", {
+                                $tr: $tr
+                            }).rowIndx;
+
+                        rowData = $grid.pqGrid("getRowData", {
+                                rowIndx: rowIndx
+                            }),
+                            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+                        redirectUrl = '';
+                        //alert(redirectUrl);
+                        window.location.href = redirectUrl;
+                    });
+
+
+            });
+        </script>
+<?php 
+endif;
+
+?>
+
+
+<!-- REMOVE MODAL -->
+<div class="modal" id="confirm_remove_row_modal_sm" role="dialog">
+   <?=$this->remove_modal;?>
+</div>
+<!-- REMOVE MODAL -->
+
+
+
+<script>
+
+    $("#checkAll").click(function () {
+        $('input:checkbox').not(this).prop('checked', this.checked);
+        showDeleteButton();
+    });
+
+    $(".checkbox1").change(function() {   
+        showDeleteButton();            
+    });
+
+    function showDeleteButton(){
+        var checkedNum = $('input[name="ids[]"]:checked').length;
+        
+
+        $('#deleteBtn').show();
+        if(!checkedNum){
+            $('#deleteBtn').hide();
+        }     
+ 
+    }
+
+    function countCheckedBox() {
+        var checkedNum = $('input[name="ids[]"]:checked').length;
+        alert(checkedNum);       
+    }
+
+    function confirmRemove() {
+      $('#confirm_remove_row_modal_sm').modal();
+     
+    }
+
+    function doRemoving() {
+
+        $('#confirm_remove_row_modal_sm').modal('hide');
+        $('#overlay').fadeIn(300);
+        var checkedBox = $('input[name="ids[]"]:checked');
+        var ids=[];
+        console.log(checkedBox);
+        
+        
+        for (let i = 0; i < checkedBox.length; i++) {
+            ids[i] = checkedBox[i].value;
+        }
+        console.log(ids);
+
+        $.ajax({
+            type: 'POST',
+            url: '/inventory/item-serial/remove',
+            dataType: 'json',
+            data: {
+                  ids: ids
+            },
+            success: function(msg) {
+                // /alert(msg.data);
+                //need to refresh;
+                //alert(previous_url);
+                doPaginatorV1(previous_url,'item_serial_div');
+                
+            },
+            fail: function(msg) {
+                alert('failed');
+            },
+            done: function() {
+                $('#overlay').fadeOut(300);
+            }
+         });
+        
+    }
+
+
+</script>
+
+</div>
+  
+  

@@ -1,7 +1,7 @@
 <?php
 namespace Application\Application\Service\Department\Tree\Output;
 
-use Application\Application\DTO\Company\Department\DepartmentForOptionDTO;
+use Application\Application\DTO\Common\FormOptionDTO;
 use Application\Domain\Util\Tree\Node\AbstractBaseNode;
 use Application\Domain\Util\Tree\Output\AbstractFormatter;
 
@@ -23,9 +23,9 @@ class DepartmentWithOneLevelForOptionFormatter1 extends AbstractFormatter
         $results = [];
         $txt = '';
 
-        $n = new DepartmentForOptionDTO();
-        $n->setDepartmentName($node->getNodeName());
-        $n->setDepartmentCode($node->getNodeCode());
+        $n = new FormOptionDTO();
+        $n->setValue($node->getId());
+        $n->setName($node->getNodeName());
 
         if (! $node->isLeaf()) {
 
@@ -37,7 +37,7 @@ class DepartmentWithOneLevelForOptionFormatter1 extends AbstractFormatter
 
             $txt = $txt . " " . $this->addLevel($level) . sprintf($format, $node->getNodeName());
 
-            $n->setDepartmentShowName($txt);
+            // $n->setDepartmentShowName($txt);
 
             if ($level == 1) {
                 $results[] = $n;
@@ -62,7 +62,7 @@ class DepartmentWithOneLevelForOptionFormatter1 extends AbstractFormatter
             }
 
             $txt = $txt . " " . $this->addLevel($level) . sprintf($format, $node->getNodeName());
-            $n->setDepartmentShowName($txt);
+            // $n->setDepartmentShowName($txt);
             if ($level == 1) {
                 $results[] = $n;
             }

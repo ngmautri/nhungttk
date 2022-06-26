@@ -267,7 +267,7 @@ abstract class AbstractFormRender implements FormRenderInterface
 
         $cssClass = 'btn btn-default btn-sm';
 
-        $b = sprintf(' <button type="submit" class="%s" style="color: black; font-size:9pt;" onclick="submitAjaxGETForm(\'%s\',\'%s\');" href="javascript:;">
+        $b = sprintf(' <button type="submit" class="%s" style="margin-bottom: 1pt; margin-left: 2pt; padding: 3pt 5pt 3pt 5pt;" onclick="submitAjaxGETForm(\'%s\',\'%s\');" href="javascript:;">
         <i class="fa fa-filter" aria-hidden="true"></i> &nbsp;%s</button>', $cssClass, $form->getId(), $resultDiv, $this->createLabel($label, $viewRender));
 
         return sprintf($html, "<label class=\"control-label col-sm-2\" for=\"inputTag\"></label>", $b);

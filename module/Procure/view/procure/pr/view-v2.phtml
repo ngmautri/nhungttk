@@ -1,20 +1,56 @@
 <?php
+use Application\Application\Helper\Form\FormHelper;
 use Inventory\Form\ItemSerial\ItemSerialFilterForm;
 use Procure\Application\Helper\Toolbar;
 use Procure\Domain\PurchaseRequest\PRDoc;
 
 /**
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ *        
  * @var PRDoc $rootEntity ;
  * @var ItemSerialFilterForm $form ;
  */
+// ===========================================================
 
+$tabs = null;
+
+if (! $headerDTO == null) {
+
+    $picture_url = sprintf($this->baseUrl . "/procure/pr-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $format = '/inventory/item-picture/list1?token=%s&target_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $picturesTab = sprintf('<a title="Picture" href="%s"><span class="glyphicon glyphicon-picture"></span>&nbsp;(%s)</a></li></a>', $picture_url, '');
+
+    $format = '/inventory/item-attachment/list1?token=%s&target_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $attachment_url = sprintf($this->baseUrl . "/procure/pr-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $attachTab = sprintf('<a title="Serial" href="%s"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;(%s)</a></li></a>', $attachment_url, '');
+
+    $format = '/inventory/change-log/list1?object_token=%s&object_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $logTab = sprintf('<a title="Change Log" href="%s"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li></a>', $log_url);
+
+    $tabsList = [
+        // $logisticTab,
+        $picturesTab,
+        $attachTab,
+        $logTab
+    ];
+
+    $tabs = FormHelper::createTabs($tabsList);
+}
 ?>
 
 <div id="wrapper" class="toggled">
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+		
+		<?=$this->sidebar_buttons;?>
+		<?=$this->wizard;?>
 		<?=$this->summary;?>
 		<!-- Sidebar -->
 	</div>
@@ -36,6 +72,9 @@ use Procure\Domain\PurchaseRequest\PRDoc;
 			<div id="tabs" style="font-size: 9.5pt">
 				<ul>
 					<li><a href="#general">VIEW</a></li>
+						<?php
+    echo $tabs;
+    ?>
 				</ul>
 
 				<div id="general" style="font-size: 9pt; padding: 10px 6px 1px 5px">
@@ -47,11 +86,11 @@ use Procure\Domain\PurchaseRequest\PRDoc;
     ?>
 					<!-- ======== TOOL BAR ======= -->
 					 </div>
-					<hr>
-					<a href="#doc_header" class="" data-toggle="collapse">HEADER</a>
+					<hr>					<a href="#doc_header" class="" data-toggle="collapse">HEADER</a>
 					<div id="doc_header" class="collapse in">
 						<div id="header">
-								<?=$this->header;?>
+								<?=$this->header_form;?>
+									
 						</div>
 					</div>
 
@@ -81,3 +120,22 @@ echo sprintf($format, $rootEntity->getId(), $rootEntity->getToken());
 <script>
 	doPaginatorV1(row_url,'row_containter');
 </script>
+
+<!-- Confirm Posting -->
+<?=$this->confirm_posting;?>
+<!-- Confirm Posting -->
+
+
+<script>
+function confirmPost() {
+ 	$('#confirm_posting_modal_sm').modal();
+}
+
+function doPosting() {
+   $('#confirm_posting_modal_sm').modal('hide');
+   $('#b_modal_no_header').modal();
+   submitForm('pr_create_form');
+}
+</script>
+	
+	

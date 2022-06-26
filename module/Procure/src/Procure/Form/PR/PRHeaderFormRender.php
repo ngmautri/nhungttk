@@ -27,10 +27,18 @@ class PRHeaderFormRender extends AbstractFormRender
 
         $labelHelper = new FormLabel();
 
+        $e = $form->getEntityId();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
+        $e = $form->getEntityToken();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
+
+        $e = $form->getRevisionNo();
+        $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', false);
+
         $e = $form->getPrNumber();
         $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
 
-        $e = $form->getDocDate();
+        $e = $form->getSubmittedOn();
         $this->drawAndAppendElement($e, $labelHelper, $viewRender, 'col-sm-2', true);
 
         $e = $form->getKeywords();

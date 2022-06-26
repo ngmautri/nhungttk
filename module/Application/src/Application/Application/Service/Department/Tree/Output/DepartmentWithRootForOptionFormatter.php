@@ -1,7 +1,7 @@
 <?php
 namespace Application\Application\Service\Department\Tree\Output;
 
-use Application\Application\DTO\Company\Department\DepartmentForOptionDTO;
+use Application\Application\DTO\Common\FormOptionDTO;
 use Application\Domain\Company\Contracts\DefaultDepartment;
 use Application\Domain\Util\Tree\Node\AbstractBaseNode;
 use Application\Domain\Util\Tree\Output\AbstractFormatter;
@@ -9,7 +9,7 @@ use Application\Domain\Util\Tree\Output\AbstractFormatter;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class DepartmentWithRootForOptionFormatter extends AbstractFormatter
 {
@@ -24,8 +24,8 @@ class DepartmentWithRootForOptionFormatter extends AbstractFormatter
         $results = [];
         $txt = '';
 
-        $n = new DepartmentForOptionDTO();
-        $n->setDepartmentName($node->getNodeName());
+        $n = new FormOptionDTO();
+        $n->setV($node->getNodeName());
         $n->setDepartmentCode($node->getNodeCode());
 
         if (! $node->isLeaf()) {

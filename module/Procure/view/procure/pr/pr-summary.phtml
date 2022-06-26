@@ -9,26 +9,23 @@ use Procure\Domain\PurchaseRequest\PRDoc;
  *      ==============================
  */
 $alert = "info";
+$completion = 0;
 $transactionStatus = "";
 
 if (! $rootEntity == null) {
-    if ($rootEntity->getCompletedRows() == $rootEntity->getTotalRows()) {
-        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $rootEntity->getTransactionStatus());
-        $alert = "success";
+
+    if ($rootEntity->getTotalRows() > 0) {
+        $completion = $rootEntity->getCompletedRows() / $rootEntity->getTotalRows();
+        if ($rootEntity->getCompletedRows() == $rootEntity->getTotalRows()) {
+            $transactionStatus = sprintf('<span style="color:green;">%s</span>', $rootEntity->getTransactionStatus());
+            $alert = "success";
+        }
     }
 }
 
 ?>
 
 
-	<a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt"
-			class="btn btn-default btn-sm" href="/procure/pr-report/header-status"> <small><i
-				class="fa fa-chevron-left" aria-hidden="true"></i></small>&nbsp;&nbsp;&nbsp;&nbsp;<?php
-
-    echo $this->translate("PR List");
-    ?></a>
-
-<hr>
 <span style="color: gray; margin: 10pt 10pt 10pt 10pt">
        <?php
     echo $this->translate('Summary:');
@@ -63,7 +60,8 @@ if (! $rootEntity == null) :
 		<li>-----</li>
 		<li>Created by: <?php
 echo $rootEntity->getCreatedByName();
-echo FormHelper::createProgressDiv($rootEntity->getCompletedRows() / $rootEntity->getTotalRows(), "completed");
+
+echo FormHelper::createProgressDiv($completion, "completed");
 ;
 ?></li>
 	</ul>

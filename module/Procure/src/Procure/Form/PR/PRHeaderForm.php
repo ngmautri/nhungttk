@@ -130,7 +130,7 @@ class PRHeaderForm extends GenericForm
         // ======================================
         $this->add([
             'type' => 'text', // to update, if needed
-            'name' => 'docDate',
+            'name' => 'submittedOn',
             'attributes' => [
                 'id' => 'docDate',
                 'class' => "form-control input-sm", // to update, if needed
@@ -169,6 +169,17 @@ class PRHeaderForm extends GenericForm
         ]);
 
         // ======================================
+        $this->add([
+            'type' => Hidden::class, // to update, if needed
+            'name' => 'token'
+        ]);
+
+        $this->add([
+            'type' => Hidden::class, // to update, if needed
+            'name' => 'revisionNo'
+        ]);
+
+        // ======================================
         // Form Element for {Department}
         // ======================================
 
@@ -188,7 +199,7 @@ class PRHeaderForm extends GenericForm
             ]
         ]);
 
-        $o = OptionsHelperFactory::createDepartmentOptions1($this->getDepartmentOptions());
+        $o = OptionsHelperFactory::createValueOptions($this->getDepartmentOptions());
         $select->setEmptyOption(Translator::translate('-'));
         $select->setValueOptions($o);
         $this->add($select);
@@ -260,11 +271,6 @@ class PRHeaderForm extends GenericForm
         return $this->get("warehouse");
     }
 
-    public function getDocDate()
-    {
-        return $this->get("docDate");
-    }
-
     /*
      * |=============================
      * | Function to get Form Elements
@@ -272,6 +278,20 @@ class PRHeaderForm extends GenericForm
      * |
      * |=============================
      */
+    public function getRevisionNo()
+    {
+        return $this->get("revisionNo");
+    }
+
+    public function getEntityToken()
+    {
+        return $this->get("token");
+    }
+
+    public function getEntityId()
+    {
+        return $this->get("id");
+    }
 
     /**
      *

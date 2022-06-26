@@ -1,0 +1,199 @@
+<?php
+use Application\Domain\Util\Collection\Render\AbstractCollectionRender;
+use Application\Domain\Util\Collection\Render\AbstractRenderAsParamQuery;
+use Procure\Domain\Contracts\ProcureDocStatus;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Form\PR\PRRowCollectionFilterForm;
+
+/**
+ * *
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ *        
+ * @var AbstractCollectionRender $collectionRender ;
+ * @var PRRowCollectionFilterForm $form ;
+ * @var PRDoc $rootEntity ;
+ */
+// =========================================================
+?>
+
+
+<?php
+/*
+ * |=============================
+ * |PARAM QUERY
+ * |
+ * |=============================
+ */
+
+if ($collectionRender instanceof AbstractRenderAsParamQuery) :
+    // echo $collectionRender->printToolBar();
+
+    ?>
+
+<script> 
+ 
+	<?php
+    $format = "var remote_url = '%s', r_pp = %s;";
+    echo sprintf($format, $collectionRender->getRemoteUrl(), $collectionRender->getPaginator()->getResultsPerPage());
+
+    $add_row_url = null;
+    $draft = true;
+
+    if ($rootEntity != null) {
+        $f = '/procure/pr/add-row?target_id=%s&target_token=%s';
+        $add_row_url = sprintf($f, $rootEntity->getId(), $rootEntity->getToken());
+        if ($rootEntity->getDocStatus() == ProcureDocStatus::POSTED) {
+            $add_row_url = null;
+            $draft = false;
+        }
+    }
+
+    $format = "var add_row_url = '%s';";
+    echo sprintf($format, $add_row_url);
+
+    ?>
+     	var toolbar = {
+    	                    items: [
+                            { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners:
+                                [
+                                    { "click": function (evt, ui) {
+                                        var $grid = $(this).closest('.pq-grid');
+                                        redirectUrl= add_row_url	
+                                        window.location.href= redirectUrl;
+                                        }
+                                      }
+                                  ]
+                                  }
+                               ]
+                       }; 
+</script>
+
+
+<?php
+    if ($draft == false) {
+        echo "<script>";
+        echo 'toolbar = null;';
+        echo "</script>";
+    }
+    ?>
+
+
+<div id="pr_row_param"></div>
+
+<script>
+	             /* 
+             * |=============================
+             * |PARAM QUERY
+             * |
+             * |=============================
+             */
+            var obj = {
+             	//title : 'Lines:',
+                height: $(window).height()-280,
+                showTitle : false,
+                width: 'auto',
+                showTop: true,
+                collapsible: true,
+                //showHeader: true,
+                showBottom: true,
+                editable: true,
+                wrap: false,
+                pageModel: {
+                    type: "remote",
+                    rPP: r_pp,
+                    strRpp: "{0}"
+                },
+                toolbar:toolbar
+                
+            };
+
+            /*
+             * |=============================
+             * |DATA MODEL
+             * |
+             * |=============================
+             */
+            obj.dataModel = {
+                location: "remote",
+                url: remote_url
+            };
+
+            /*   
+             * |=============================
+             * |COLS MODEL
+             * |
+             * |=============================
+             */
+            obj.colModel = [{
+                dataType: "string",
+                title: "Edit",
+                render: function(ui) {
+                    return '<button type="button" class="edit_btn">Edit</button > ';
+                },
+                editable: false
+            }, 
+             {
+                dataIndx: "transactionStatus",
+                dataType: "string",
+                title: "Status",
+                minWidth: 80
+            },
+            {
+                dataIndx: "rowIdentifer",
+                dataType: "string",
+                title: "Ref.",
+                minWidth: 90
+            }, {
+                dataIndx: "itemName",
+                dataType: "string",
+                title: "Item Name",
+                minWidth: 300
+            },
+            
+             {
+                dataIndx: "convertedStandardQuantity",
+                dataType: "int",
+                title: "Std Qty",
+                align: "right",
+                minWidth: 80
+            }
+            
+            ];
+
+            // Create ParamQuery Object!
+            var $grid = $("#pr_row_param").pqGrid(obj)
+
+            $grid.on('pqgridrefresh pqgridrefreshrow', function() {
+                //debugger;
+                var $grid = $(this);
+
+                $grid.find("button.edit_btn").button({})
+                    .unbind("click")
+                    .bind("click", function(evt) {
+
+                        var $tr = $(this).closest("tr"),
+                            rowIndx = $grid.pqGrid("getRowIndx", {
+                                $tr: $tr
+                            }).rowIndx;
+
+                        rowData = $grid.pqGrid("getRowData", {
+                                rowIndx: rowIndx
+                            }),
+                            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+                        redirectUrl = '';
+                        //alert(redirectUrl);
+                        window.location.href = redirectUrl;
+                    });
+
+
+            });
+        </script>
+<?php 
+endif;
+
+?>
+
+  

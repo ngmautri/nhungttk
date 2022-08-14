@@ -58,27 +58,32 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
                 $localEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
             }
+            // ======= QUANTITY ==========
 
             // ======= CONVERSION FACTORY ==========
             if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
                 $localEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
             }
+            // ======= CONVERSION FACTORY ==========
 
             // ======= EDT Date ==========
 
             $spec = $this->sharedSpecificationFactory->getDateSpecification();
             if (! $spec->isSatisfiedBy($localEntity->getEdt())) {
                 $localEntity->addError("EDT Date is not correct or empty");
+                $localEntity->addError(\sprintf("EDT Date is not correct or empty - %s", $localEntity->getEdt()));
             } else {
                 $edt = new \DateTime($localEntity->getEdt());
                 $today = new \DateTime();
 
                 if ($edt < $today) {
-                    $localEntity->addError(\sprintf("EDT date is in the past. Today is %s", \date_format($today, "Y-m-d")));
+                    // $localEntity->addError(\sprintf("EDT date is in the past. Today is %s", \date_format($today, "Y-m-d")));
+                    $localEntity->addError("EDT date is in the past");
                 } elseif ($edt < $today->modify("1 days")) {
                     $localEntity->addError(\sprintf("EDT date is invalid! It required at least 01 days for buying!"));
                 }
             }
+            // ======= EDT Date ==========
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }

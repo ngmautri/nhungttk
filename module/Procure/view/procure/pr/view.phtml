@@ -1,15 +1,30 @@
-<?php   /**@var \Application\Entity\NmtProcurePr $entity ;*/ ?>
+<?php
+
+/**@var \Application\Entity\NmtProcurePr $entity ;*/
+?>
 
 <div>
-	<h4><?php echo (!$entity == null)?$entity->getPrNumber():"";?>
-<span style="color: gray; font-size: 10pt"><?php echo (!$entity == null)? " // PR #" . $entity->getPrAutoNumber() :"";?></span>
+	<h4><?php
+
+echo (! $entity == null) ? $entity->getPrNumber() : "";
+?>
+<span style="color: gray; font-size: 10pt"><?php
+
+echo (! $entity == null) ? " // PR #" . $entity->getPrAutoNumber() : "";
+?></span>
 	</h4>
 </div>
 
 
 
 <!-- 
-<img class= "img-rounded" width="100" height="100" src="/procure/pr/get-pqcode-png?id=<?php  echo $entity->getId();?>&token=<?php  echo $entity->getToken();?>"/>
+<img class= "img-rounded" width="100" height="100" src="/procure/pr/get-pqcode-png?id=<?php
+
+echo $entity->getId();
+?>&token=<?php
+
+echo $entity->getToken();
+?>"/>
  -->
 
 <div id="tabs" style="font-size: 9.5pt">
@@ -17,14 +32,53 @@
 		<li><a href="#general"><i class="glyphicon glyphicon-shopping-cart"></i>&nbsp;Purchase
 				Request</a></li>
 		<li><a
-			href="/procure/pr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
-				class="glyphicon glyphicon-picture"></span>&nbsp;Picture<?php if($total_picture!==null): echo sprintf('&nbsp;(%s)',$total_picture); endif;?></a></li>
+			href="/procure/pr-attachment/get-pictures?token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+?>&checksum=<?php
+
+echo (! $entity == null) ? $entity->getChecksum() : "";
+?>&target_id=<?php
+
+echo (! $entity == null) ? $entity->getID() : "";
+?>"><small></small><span
+				class="glyphicon glyphicon-picture"></span>&nbsp;Picture<?php
+
+if ($total_picture !== null) :
+        echo sprintf('&nbsp;(%s)', $total_picture); endif;
+
+    ?></a></li>
 		<li><a
-			href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment<?php if($total_attachment!==null): echo sprintf('&nbsp;(%s)',$total_attachment); endif;?>
+			href="/procure/pr-attachment/list1?token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+?>&checksum=<?php
+
+echo (! $entity == null) ? $entity->getChecksum() : "";
+?>&target_id=<?php
+
+echo (! $entity == null) ? $entity->getID() : "";
+?>">
+				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment<?php
+
+if ($total_attachment !== null) :
+        echo sprintf('&nbsp;(%s)', $total_attachment); endif;
+
+    ?>
 		</a></li>
 		<li><a
-			href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+			href="<?php
+
+echo $this->baseUrl?>/procure/change-log/list1?object_token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+?>&object_id=<?php
+
+echo (! $entity == null) ? $entity->getId() : "";
+?>&class_name=<?php
+
+echo (! $entity == null) ? get_class($entity) : "";
+?>"><span
 				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 	</ul>
 
@@ -34,32 +88,68 @@
 
 
 			<a class="btn btn-default btn-sm"
-				href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
+				href="<?php
+
+echo $this->baseUrl?>/procure/pr/edit?token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+    ?>&entity_id=<?php
+
+echo (! $entity == null) ? $entity->getId() : "";
+    ?>&checksum=<?php
+
+echo (! $entity == null) ? $entity->getChecksum() : "";
+    ?>"><small><i
 					class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a> <a
 				class="btn btn-default btn-sm"
-				href="<?php echo $this->baseUrl ?>/procure/pr-attachment/upload-pictures?token=<?php echo (!$entity== null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity== null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity== null)? $entity->getID():"";?>"><small><i
+				href="<?php
+
+echo $this->baseUrl?>/procure/pr-attachment/upload-pictures?token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+    ?>&checksum=<?php
+
+echo (! $entity == null) ? $entity->getChecksum() : "";
+    ?>&target_id=<?php
+
+echo (! $entity == null) ? $entity->getID() : "";
+    ?>"><small><i
 					class="fa fa-upload" aria-hidden="true"></i></small>&nbsp;Upload
 				picture</a>
 		</div>
 		<form id="Create_PR_Form" class="form-horizontal" action=""
 			method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl; ?>" />
+				value="<?php
+
+echo $redirectUrl;
+    ?>" />
 
 
 			<fieldset>
 				<legend style="font-size: 9pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 					<a style="font-size: 9pt; color: gray;" href="#pr_header" class=""
-						data-toggle="collapse">PR HEADER: <?php echo (!$entity == null)? "(". $entity->getPrName() .")" :"";?></a>
+						data-toggle="collapse">PR HEADER: <?php
+
+echo (! $entity == null) ? "(" . $entity->getPrName() . ")" : "";
+    ?></a>
 				</legend>
 				<div id="pr_header" class="collapse">
 
 					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2"><?php echo $this->translate('PR#'); ?>:</label>
+						<label class="control-label col-sm-2"><?php
+
+echo $this->translate('PR#');
+    ?>:</label>
 						<div class="col-sm-3">
 							<input disabled class="form-control input-sm" type="text"
-								value="<?php if(!$entity == null): echo $entity->getPrAutoNumber(); endif;?>" />
+								value="<?php
+
+if (! $entity == null) :
+            echo $entity->getPrAutoNumber(); endif;
+
+        ?>" />
 						</div>
 						<div class="col-sm-4"></div>
 					</div>
@@ -69,14 +159,31 @@
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
 								name="prNumber"
-								value="<?php echo (!$entity == null)? $entity->getPrNumber():"";?>">
+								value="<?php
+
+echo (! $entity == null) ? $entity->getPrNumber() : "";
+        ?>">
 						</div>
 						<div class="col-sm-4">
 							<input
-								<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								<?php
+
+if (! $entity == null) :
+            echo ($entity->getIsActive() == "1") ? "checked" : "";
+        else :
+            echo "checked";
+        endif;
+        ?>
 								type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 							<input
-								<?php if(!$entity == null): echo ($entity->getIsDraft()== "1")?"checked":""; else: echo "checked"; endif;?>
+								<?php
+
+if (! $entity == null) :
+            echo ($entity->getIsDraft() == "1") ? "checked" : "";
+        else :
+            echo "checked";
+        endif;
+        ?>
 								type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
 
 						</div>
@@ -87,14 +194,20 @@
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
 								id="prName" name="prName"
-								value="<?php echo (!$entity == null)? $entity->getPrName():"";?>">
+								value="<?php
+
+echo (! $entity == null) ? $entity->getPrName() : "";
+        ?>">
 						</div>
 
 						<label class="control-label col-sm-2">Keywords:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
 								id="keywords" name="keywords"
-								value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
+								value="<?php
+
+echo (! $entity == null) ? $entity->getKeywords() : "";
+        ?>">
 						</div>
 					</div>
 
@@ -103,7 +216,14 @@
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" id="submittedOn"
 								name="submittedOn"
-								value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo date_format($entity->getSubmittedOn(),"Y-m-d"); endif; endif;?>"
+								value="<?php
+
+if (! $entity == null) :
+            if ($entity->getSubmittedOn() !== null) :
+                echo date_format($entity->getSubmittedOn(), "Y-m-d"); endif; endif;
+
+
+        ?>"
 								placeholder=" lease select" />
 						</div>
 					</div>
@@ -113,7 +233,10 @@
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
 								id="totalRowManual" name="totalRowManual"
-								value="<?php echo (!$entity == null)? $entity->getTotalRowManual():"";?>">
+								value="<?php
+
+echo (! $entity == null) ? $entity->getTotalRowManual() : "";
+        ?>">
 						</div>
 
 					</div>
@@ -124,12 +247,26 @@
 							<input disabled class="form-control input-sm" type="text"
 								id="department_name" placeholder="Please select!"
 								name="deparment_name"
-								value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeName(); endif;endif;?>">
+								value="<?php
+
+if (! $entity == null) :
+            if ($entity->getDepartment() !== null) :
+                echo $entity->getDepartment()->getNodeName(); endif;endif;
+
+
+        ?>">
 
 							<input type="hidden" class="form-control input-sm"
 								id="department_name_selected" placeholder="Please select!"
 								name="department_id"
-								value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeId(); endif;endif;?>">
+								value="<?php
+
+if (! $entity == null) :
+            if ($entity->getDepartment() !== null) :
+                echo $entity->getDepartment()->getNodeId(); endif;endif;
+
+
+        ?>">
 						</div>
 
 						<a style="color: #0080ff;" href="javascript:;"
@@ -140,11 +277,17 @@
 
 					<div class="form-group margin-bottom required">
 
-						<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
+						<label class="control-label col-sm-2"><?php
+
+echo $this->translate("Target Warehouse");
+    ?>:</label>
 						<div class="col-sm-3">
 							<select tabindex="9" name="target_wh_id" id="target_wh_id"
 								class="form-control input-sm">
-								<option value=""><?php echo $this->translate("Select Warehouse");?></option>
+								<option value=""><?php
+
+echo $this->translate("Select Warehouse");
+        ?></option>
    	    							<?php
             $wh_list = $nmtPlugin->warehouseList();
 
@@ -180,7 +323,10 @@
 						<div class="col-sm-8">
 							<input class="form-control input-sm" type="text" placeholder=""
 								name="itemDescription"
-								value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+								value="<?php
+
+echo (! $entity == null) ? $entity->getRemarks() : "";
+        ?>">
 						</div>
 					</div>
 				</div>
@@ -210,31 +356,70 @@
 							</button>
 							<a
 								style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-								title="<?php echo $this->translate("Refresh");?>"
+								title="<?php
+
+echo $this->translate("Refresh");
+        ?>"
 								class="btn btn-default btn-sm" href="javascript:;"
 								onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
 								aria-hidden="true"></i>&nbsp;
 							</a> <a
 								style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-								title="<?php echo $this->translate("Full Screen");?>"
+								title="<?php
+
+echo $this->translate("Full Screen");
+        ?>"
 								class="btn btn-default btn-sm" href="javascript:;"
-								onclick="showJqueryDialog('<?php echo $entity->getPrAutoNumber().' - '. $entity->getPrNumber() ; ?>','1850',$(window).height()-50,'/procure/pr/show1?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>&checksum=<?php echo $entity->getChecksum() ?>','j_loaded_data',true);">&nbsp;<i
+								onclick="showJqueryDialog('<?php
+
+echo $entity->getPrAutoNumber() . ' - ' . $entity->getPrNumber();
+        ?>','1850',$(window).height()-50,'/procure/pr/show1?token=<?php
+
+echo $entity->getToken()?>&entity_id=<?php
+
+echo $entity->getId()?>&checksum=<?php
+
+echo $entity->getChecksum()?>','j_loaded_data',true);">&nbsp;<i
 								class="fa fa-window-maximize" aria-hidden="true"></i>&nbsp;
 							</a>
 
 							<ul style="font-size: 9.5pt;" class="dropdown-menu"
 								aria-labelledby="dropdownMenu1">
 								<li><a target="_blank" class=""
-									href="<?php echo $this->baseUrl ?>/procure/pr-row/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+									href="<?php
+
+echo $this->baseUrl?>/procure/pr-row/print-pdf?token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+        ?>&target_id=<?php
+
+echo (! $entity == null) ? $entity->getId() : "";
+        ?>">
 										<i class="fa fa-file-pdf-o" aria-hidden="true"></i> &nbsp;PDF
 								</a></li>
 								<li><a class=""
-									href="<?php echo $this->baseUrl ?>/procure/pr-row/download?format=xlsx&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+									href="<?php
+
+echo $this->baseUrl?>/procure/pr-row/download?format=xlsx&token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+        ?>&target_id=<?php
+
+echo (! $entity == null) ? $entity->getId() : "";
+        ?>">
 										<i class="fa fa-file-excel-o" aria-hidden="true"></i>
 										&nbsp;Excel (*.xlxs)
 								</a></li>
 								<li><a class=""
-									href="<?php echo $this->baseUrl ?>/procure/pr-row/download?format=ods&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+									href="<?php
+
+echo $this->baseUrl?>/procure/pr-row/download?format=ods&token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+        ?>&target_id=<?php
+
+echo (! $entity == null) ? $entity->getId() : "";
+        ?>">
 										<i class="fa fa-file-excel-o" aria-hidden="true"></i>
 										&nbsp;Open Office (*.ods)
 								</a></li>
@@ -254,7 +439,9 @@
 
 <script>
 
-	//loadPrRow('<?php echo $this->baseUrl . '/procure/pr-row/row?target_id='. $entity->getId().'&token='.$entity->getToken().'&checksum='.$entity->getChecksum()?>');
+	//loadPrRow('<?php
+
+echo $this->baseUrl . '/procure/pr-row/row?target_id=' . $entity->getId() . '&token=' . $entity->getToken() . '&checksum=' . $entity->getChecksum()?>');
 	$("#Create_PR_Form :input").attr("disabled", "disabled");
 
 
@@ -412,7 +599,16 @@
                                 var $grid = $(this).closest('.pq-grid');
                                 //addRow($grid);
                                 
-   		     redirectUrl="/procure/pr-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>";
+   		     redirectUrl="/procure/pr-row/add?token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+        ?>&target_id=<?php
+
+echo (! $entity == null) ? $entity->getId() : "";
+        ?>&checksum=<?php
+
+echo (! $entity == null) ? $entity->getChecksum() : "";
+        ?>";
               window.location.href= redirectUrl;
                                  
                                 //debugger;
@@ -546,7 +742,13 @@
               location: "remote",
               method: "GET",
               recIndx: "row_id",
-              url: "/procure/pr-row/pr-gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+              url: "/procure/pr-row/pr-gird?token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+            ?>&target_id=<?php
+
+echo (! $entity == null) ? $entity->getId() : "";
+            ?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }

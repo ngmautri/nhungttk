@@ -20,18 +20,18 @@ class PrService2Test extends PHPUnit_Framework_TestCase
         try {
 
             /** @var PRServiceV2 $sv ; */
-            $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\PR\PRService');
+            $sv = Bootstrap::getServiceManager()->get(PRServiceV2::class);
 
-            $id = 1459;
-            $token = "bea38e13-82a8-405b-90d2-751abaf3093c";
+            $id = 1436;
+            $token = "fdcc6590-801b-4ee4-985e-caf1abefbaf7";
 
             $rootEntity = $sv->getDocDetailsByTokenId($id, $token);
             // var_dump($rootEntity->getRowCollection()->current());
             $filter = new PrRowReportSqlFilter();
 
-            $page = 1;
-            $render = $sv->getRowCollectionRender($rootEntity, $filter, $page);
-            var_dump($render->execute());
+            // $page = 1;
+            // $render = $sv->getRowCollectionRender($rootEntity, $filter, $page);
+            // var_dump($render->execute());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

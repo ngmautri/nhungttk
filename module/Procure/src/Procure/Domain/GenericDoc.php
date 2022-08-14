@@ -242,7 +242,7 @@ abstract class GenericDoc extends BaseDoc
 
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());
-            return;
+            return $this;
         }
     }
 

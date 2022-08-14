@@ -7,13 +7,14 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Mvc\I18n\Translator;
 use Exception;
 
 /**
  * All Service shall extend this.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class AbstractService implements EventManagerAwareInterface
 {
@@ -29,6 +30,8 @@ abstract class AbstractService implements EventManagerAwareInterface
     protected $cache;
 
     protected $logger;
+
+    protected $translator;
 
     protected function logInfo($message)
     {
@@ -200,5 +203,36 @@ abstract class AbstractService implements EventManagerAwareInterface
     public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     *
+     * @return \Zend\Mvc\I18n\Translator
+     */
+    public function getTranslator()
+    {
+        return $this->translator;
+    }
+
+    /**
+     *
+     * @param Translator $translator
+     */
+    public function setTranslator(Translator $translator)
+    {
+        $this->translator = $translator;
+    }
+
+    public function translate($message, $locale = null)
+    {
+        $t = $this->getTranslator();
+
+        if ($t == null) {
+            return $message;
+        }
+
+        $t = $this->getTranslator();
+        $t->setLocale($locale);
+        return $t->translate($message);
     }
 }

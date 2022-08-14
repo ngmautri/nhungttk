@@ -20,6 +20,11 @@ class PRRowSnapshotAssembler
      * |
      * |=============================
      */
+    public static function updateDefaultInlineIncludedFieldsFromArray(AbstractDTO $target, $source)
+    {
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, PrRowDefinition::$defaultInineIncludedFields);
+    }
+
     public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $target, $source)
     {
         return GenericObjectAssembler::updateIncludedFieldsFromArray($target, $source, PrRowDefinition::$defaultIncludedFields);

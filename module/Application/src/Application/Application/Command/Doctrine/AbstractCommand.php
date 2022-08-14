@@ -326,4 +326,13 @@ abstract class AbstractCommand implements CommandInterface
             $this->logger->alert($message);
         }
     }
+
+    /**
+     *
+     * @param mixed $output
+     */
+    public function setOutput($output)
+    {
+        $this->output = $output;
+    }
 }

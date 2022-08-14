@@ -147,7 +147,7 @@ class GenericRowSnapshotModifier
         }
 
         if ($snapshot->hasErrors()) {
-            throw new \InvalidArgumentException($snapshot->getErrorMessage(false));
+            throw new \InvalidArgumentException($snapshot->getErrorMessage(true));
         }
 
         $snapshot->docQuantity = $parsedDocQuantity;

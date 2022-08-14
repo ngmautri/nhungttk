@@ -23,16 +23,15 @@ class PrServiceTest extends PHPUnit_Framework_TestCase
         try {
 
             /** @var PRService $sv ; */
-            $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\PR\PRService');
+            $sv = Bootstrap::getServiceManager()->get(PRService::class);
 
             $id = 1165;
-            $token = "e35fCqL7Be_JewXNMm_fZsseg93ehgYN";
+            $token = "fdcc6590-801b-4ee4-985e-caf1abefbaf7";
 
             $id = 1123;
             $token = "kKXsCBJre__Re87TdMH6tyZH_T7FatqR";
 
             $rootEntity = $sv->getDocDetailsByTokenId($id, $token);
-            var_dump($rootEntity->getRowsOutput());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

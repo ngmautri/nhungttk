@@ -898,11 +898,16 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $notification = $cmd->getNotification();
         } catch (\Exception $e) {
 
+            $this->logException($e);
+
             $notification = new Notification();
             $notification->addError($e->getMessage());
         }
 
         if ($notification->hasErrors()) {
+
+            // var_dump($rootDTO);
+
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
@@ -1055,6 +1060,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
         // $this->getLogger()->info(\serialize($to_update));
         $response = $this->getResponse();
+        $result = [];
 
         try {
             foreach ($to_update as $a) {
@@ -1065,6 +1071,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 $entity_token = $a['token'];
                 $version = $a['docRevisionNo'];
                 // $version = $a['docVersion'];
+
+                $this->logInfo("Getting Entity");
 
                 $result = $this->getProcureService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
 
@@ -1095,24 +1103,39 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 $cmdHandler = $this->getCmdHandlerFactory()->getInlineUpdateRowCmdHandler();
                 $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
                 $cmd = new GenericCommand($this->getDoctrineEM(), $a, $options, $cmdHanderDecorator, $this->getEventBusService());
-                $cmd->execute();
+                $cmd->setLogger($this->getLogger());
 
+                $this->logInfo("CMD running");
+                $cmd->execute();
                 $notification = $cmd->getNotification();
             }
         } catch (\Exception $e) {
             $notification = new Notification();
             $notification->addError($e->getMessage());
-            $this->getLogger()->error($e->getMessage());
+            $this->logInfo($notification->errorMessage());
 
             $response->setStatusCode(Response::STATUS_CODE_400);
             $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-            $response->setContent(\json_encode("[Failed] Doc not updated.Please see log!"));
+
+            $result['message'] = "[Failed] Doc not updated.Please see log!";
+            // $result['data'] = $to_update;
+
+            $response->setContent(\json_encode("failed"));
             return $response;
         }
 
         $response->setStatusCode(Response::STATUS_CODE_200);
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(\json_encode("[OK] Doc row updated!"));
+
+        $result['message'] = "[OK] Doc row updated!";
+        $tmp[] = $cmd->getOutput();
+        $result['data'] = $tmp;
+
+        // $this->logInfo(\json_encode($cmd->getOutput()));
+
+        $response->setContent(\json_encode($result));
+        // $response->setContent(\json_encode("ok"));
+
         return $response;
     }
 

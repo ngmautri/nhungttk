@@ -65,9 +65,66 @@ if ($collectionRender instanceof AbstractRenderAsParamQuery) :
                                         }
                                       }
                                   ]
-                                  }
-                               ]
+                             },
+                             { type: 'separator' },
+                             
+                             { type: 'button', icon: 'ui-icon-refresh', label: 'Refresh', listeners:
+                                [
+                                    { "click": function (evt, ui) {
+                                        refreshGird();
+                                        }
+                                      }
+                                  ]
+                             },
+                                                              
+                            ]
+                               
+                               
+                               
                        }; 
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+        var dateEditor = function (ui) {
+            var $inp = ui.$cell.find("input"),
+                $grid = $(this),
+                validate = function (that) {
+                    var valid = $grid.pqGrid("isValid", {
+                        dataIndx: ui.dataIndx,
+                        value: $inp.val(),
+                        rowIndx: ui.rowIndx
+                    }).valid;
+                    if (!valid) {
+                        that.firstOpen = false;
+                    }
+                };
+
+            //initialize the editor
+            $inp
+            .on("input", function (evt) {
+                validate(this);
+            })
+            .datepicker({
+                changeMonth: true,
+                changeYear: true,
+                showAnim: '',
+                firstDay: 1, dateFormat: 'yy-mm-dd',
+                onSelect: function () {
+                    this.firstOpen = true;
+                    validate(this);
+                },
+                beforeShow: function (input, inst) {
+                    return !this.firstOpen;
+                },
+                onClose: function () {
+                    this.focus();
+                }
+            });
+        }
 </script>
 
 
@@ -100,12 +157,109 @@ if ($collectionRender instanceof AbstractRenderAsParamQuery) :
                 showBottom: true,
                 editable: true,
                 wrap: false,
+               //virtualX: true,
+                numberCell: {show:true },
+                hwrap: false,
+                 editor: { select: true },
+      	        trackModel: { on: true }, //to turn on the track changes.            
+       			historyModel: {
+                	checkEditableAdd: true
+            	},
                 pageModel: {
                     type: "remote",
                     rPP: r_pp,
                     strRpp: "{0}"
                 },
-                toolbar:toolbar
+                toolbar:toolbar,
+                 editModel: {
+                    //allowInvalid: true,
+                    saveKey: $.ui.keyCode.ENTER,
+                    uponSave: 'next'
+           		 },
+                change: function (evt, ui) {
+
+                if (ui.source == 'commit' || ui.source == 'rollback') {
+                    return;
+                }
+                console.log(ui);
+                var $grid = $(this),
+                    grid = $grid.pqGrid('getInstance').grid;
+                var rowList = ui.rowList,
+                    addList = [],
+                    recIndx = grid.option('dataModel').recIndx,
+                    deleteList = [],
+                    updateList = [];
+
+                for (var i = 0; i < rowList.length; i++) {
+                    var obj = rowList[i],
+                        rowIndx = obj.rowIndx,
+                        newRow = obj.newRow,
+                        type = obj.type,
+                        rowData = obj.rowData;
+                     if (type == 'add') {
+                        var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
+                        if (valid) {
+                            addList.push(newRow);
+                        }
+                    }
+                    else if (type == 'update') {
+                        var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
+                        if (valid) {
+                            if (rowData[recIndx] == null) {
+                                addList.push(rowData);
+                            }
+                            //else if (grid.isDirty({rowData: rowData})) {
+                            else {
+                                updateList.push(rowData);
+                          		//alert(rowData[recIndx]  + "remarks: " + rowData.id);
+
+                            }
+                        }
+                    }
+                  }
+
+                  if (addList.length || updateList.length || deleteList.length) {
+    				var sent_list = JSON.stringify({
+                        updateList: updateList,
+                        addList: addList,
+                        deleteList: deleteList
+                    });
+    	                     //alert(sent_list);
+                      $.ajax({
+                          url: '/procure/pr/inline-update-row',
+                          data: {
+                              sent_list: sent_list
+                          },
+                          dataType: "json",
+                          type: "POST",
+                          async: true,
+                          beforeSend: function (jqXHR, settings) {
+                           },
+                          success: function (data, textStatus, jqXHR ) {
+                              //commit the changes.
+                              grid.commit({ type: 'update', rows: data['data'] });
+                             grid.commit({ type: 'add', rows: data['data'] });
+                              refreshGird();                              
+                              $("#global-notice").text(data['message'] + ' ' + textStatus).show();                        	  
+                        	  grid.refreshRow({ rowIndx: rowIndx });
+                          },
+                          error: function (response, status, error) {
+                            $("#global-notice").text(response['message'] + ' ' + status).show();    
+                             alert(error);
+                          },
+                          complete: function (data) {
+                              //$(".saving", $grid).hide();
+                              
+                              //alert(data['message']);
+                              
+                              $("#global-notice").delay(2200).fadeOut(500);
+                         	  //refreshGird();                         	 
+                         	 //location.reload();
+                          }
+                      });
+                  }
+                //alert(updateList.length);
+           		 },
                 
             };
 
@@ -128,28 +282,42 @@ if ($collectionRender instanceof AbstractRenderAsParamQuery) :
              */
             obj.colModel = [{
                 dataType: "string",
-                title: "Edit",
+                title: "Action",
+                minWidth: 150,
                 render: function(ui) {
-                    return '<button type="button" class="edit_btn">Edit</button > ';
+		    		return '<button type="button" class="edit_btn">Edit </button>&nbsp;<button style="color:red" type="button" class="remove_btn">Remove</button>';
                 },
                 editable: false
+            },
+             {
+                dataIndx: "docRevisionNo",
+                dataType: "string",
+                title: "V",
+                minWidth: 50,editable:false	
             }, 
              {
                 dataIndx: "transactionStatus",
                 dataType: "string",
                 title: "Status",
-                minWidth: 80
+                minWidth: 80,editable:false
             },
             {
                 dataIndx: "rowIdentifer",
                 dataType: "string",
                 title: "Ref.",
-                minWidth: 90
+                minWidth: 90,editable:false
             }, {
                 dataIndx: "itemName",
                 dataType: "string",
                 title: "Item Name",
-                minWidth: 300
+                minWidth: 300,editable:false
+            },
+             {
+                dataIndx: "docQuantity",
+                dataType: "int",
+                title: "Doc Qty",
+                align: "right",
+                minWidth: 80, editable: true
             },
             
              {
@@ -157,7 +325,33 @@ if ($collectionRender instanceof AbstractRenderAsParamQuery) :
                 dataType: "int",
                 title: "Std Qty",
                 align: "right",
-                minWidth: 80
+                minWidth: 80, editable: false
+            },
+               {
+                dataIndx: "edt",editable: true,
+                dataType: "date",
+                title: "Edt",
+                align: "right",
+                minWidth: 80,
+                
+                 editor: {
+		            type: 'textbox',
+		            init: dateEditor
+		        },
+		        render: function (ui) {
+		            //return "hello";
+		            var cellData = ui.cellData;
+		            if (cellData) {
+		                return $.datepicker.formatDate('yy-mm-dd', new Date(cellData));
+		            }
+		            else {
+		                return "";
+		            }
+		        },
+		        validations: [
+                    //{ type: 'regexp', value: '^[0-9]{2}/[0-9]{2}/[0-9]{4}$', msg: 'Not in mm/dd/yyyy format' }
+                    { type: 'regexp', value: '^[0-9]{4}\-[0-9]{2}-[0-9]{2}$', msg: 'Not in yyyy-mm-dd format' }
+                ]
             }
             
             ];
@@ -165,31 +359,50 @@ if ($collectionRender instanceof AbstractRenderAsParamQuery) :
             // Create ParamQuery Object!
             var $grid = $("#pr_row_param").pqGrid(obj)
 
-            $grid.on('pqgridrefresh pqgridrefreshrow', function() {
+
+ 		 $grid.on('pqgridrefresh pqgridrefreshrow', function () {
                 //debugger;
                 var $grid = $(this);
-
+    
                 $grid.find("button.edit_btn").button({})
-                    .unbind("click")
-                    .bind("click", function(evt) {
+                .unbind("click")
+                .bind("click", function (evt) {
+    
+                    var $tr = $(this).closest("tr"),
+                    rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+    
+                    rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+                    recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+    
+                    redirectUrl="/procure/pr/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
+                  	//alert(redirectUrl);
+        			window.location.href = redirectUrl;
+                });
+    
+                //$grid.find("button.remove_btn").button({ icons: { primary: 'ui-icon-scissors'} })
+                $grid.find("button.remove_btn").button({})
+                .unbind("click")
+                .bind("click", function (evt) {
+    
+                    var $tr = $(this).closest("tr"),
+                    rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+    
+                    rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+                    recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+    
+                    redirectUrl="/procure/pr/remove-row?ver="+rowData['docRevisionNo']+"&entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
+                    //alert(redirectUrl);
+                    confirmRemoveRow(redirectUrl);
+    
+                });
+         });
+         
+         
+        function refreshGird(){
+        	$( "#pr_row_param" ).pqGrid( "refreshDataAndView" )
+        }
 
-                        var $tr = $(this).closest("tr"),
-                            rowIndx = $grid.pqGrid("getRowIndx", {
-                                $tr: $tr
-                            }).rowIndx;
-
-                        rowData = $grid.pqGrid("getRowData", {
-                                rowIndx: rowIndx
-                            }),
-                            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-
-                        redirectUrl = '';
-                        //alert(redirectUrl);
-                        window.location.href = redirectUrl;
-                    });
-
-
-            });
+         
         </script>
 <?php 
 endif;

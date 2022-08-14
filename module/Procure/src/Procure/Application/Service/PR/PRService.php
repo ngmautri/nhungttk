@@ -250,7 +250,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
             $localEntity = $rootEntity->getRowbyTokenId($entity_id, $entity_token);
 
             if ($localEntity instanceof PRRow) {
-                $localDTO = $localEntity->makeDetailsDTO();
+                $localDTO = $localEntity->makeSnapshot();
             }
         }
 

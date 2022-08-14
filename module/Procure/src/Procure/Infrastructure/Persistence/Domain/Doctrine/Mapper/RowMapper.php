@@ -287,6 +287,7 @@ class RowMapper
         $snapshot->docId = $snapshot->pr;
         $snapshot->docToken = $entity->getToken();
         $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->docRevisionNo = $entity->getRevisionNo();
 
         if (! $entity->getSubmittedOn() == null) {
             $snapshot->docDate = $entity->getSubmittedOn()->format("Y-m-d");

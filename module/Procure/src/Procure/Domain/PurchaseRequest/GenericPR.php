@@ -6,6 +6,7 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Pr\PrDTO;
+use Procure\Domain\GenericRow;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Pr\PrPosted;
 use Procure\Domain\Event\Pr\PrRowAdded;
@@ -183,7 +184,7 @@ abstract class GenericPR extends BasePR
      * @throws \RuntimeException
      * @return \Procure\Domain\PurchaseRequest\PRRowSnapshot
      */
-    public function updateRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
+    public function updateRowFrom(GenericRow $row, PRRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
@@ -194,8 +195,17 @@ abstract class GenericPR extends BasePR
         $snapshot->markAsChange($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
         $validationService = ValidatorFactory::create($sharedService);
 
-        $row = PRRow::createFromSnapshot($this, $snapshot);
-        $this->validateRow($row, $validationService->getRowValidators());
+        $updatedRow = PRRow::createFromSnapshot($this, $snapshot);
+
+        if ($updatedRow->getId() != $row->getId()) {
+            throw new \RuntimeException("ID not matched!");
+        }
+
+        // update row.
+        // PRRowSnapshotAssembler::updateDefaultFieldsFrom($row, $snapshot);
+        // $row->updateRowStatus();
+
+        $this->validateRow($updatedRow, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getNotification()->errorMessage());
@@ -209,7 +219,7 @@ abstract class GenericPR extends BasePR
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $localSnapshot = $rep->storeRow($this, $row);
+        $localSnapshot = $rep->storeRow($this, $updatedRow);
 
         Assert::notNull($localSnapshot, sprintf("Error occured when creating PR Row #%s", $this->getId()));
 

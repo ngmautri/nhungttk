@@ -3,7 +3,6 @@ namespace Procure\Application\Command\Doctrine\PR;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
-use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
@@ -12,6 +11,7 @@ use Procure\Application\Service\PR\PRRowSnapshotModifier;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
+use Procure\Domain\PurchaseRequest\PRRowSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
@@ -45,30 +45,22 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
         Assert::isInstanceOf($cmd->getOptions(), UpdateRowCmdOptions::class);
         $options = $cmd->getOptions();
 
+        $rootEntity = $options->getRootEntity();
+        Assert::isInstanceOf($rootEntity, PRDoc::class);
+
+        $localEntity = $options->getLocalEntity();
+        Assert::isInstanceOf($localEntity, PRRow::class);
+
         try {
-            $rootEntity = $options->getRootEntity();
-            $localEntity = $options->getLocalEntity();
-
-            $version = $options->getVersion();
-
+            $cmd->logInfo("Start Execution!");
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $incluedFields = [
-                "faRemarks",
-                "remarks",
-                "rowNumber",
-                "docQuantity",
-                "docUnit",
-                "docUnitPrice",
-                "conversionFactor"
-            ];
-
-            // $newSnapshot = PRRowSnapshotAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $incluedFields);
-            $newSnapshot = GenericObjectAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $incluedFields);
-
+            $newSnapshot = PRRowSnapshotAssembler::updateDefaultInlineIncludedFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
+
+            $cmd->logInfo("Modify new snapshort");
             $newSnapshot = PRRowSnapshotModifier::modify($newSnapshot, $cmd->getDoctrineEM(), $options->getLocale());
 
             $changeLog = $snapshot->compare($newSnapshot);
@@ -77,6 +69,7 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
                 $cmd->addError("Nothing change on PO#" . $rootEntity->getId());
                 return;
             }
+            $cmd->logInfo("Start updating!");
 
             $params = [
                 "rowId" => $row->getId(),
@@ -85,7 +78,11 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
-            $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);
+            $new = $rootEntity->updateRowFrom($row, $newSnapshot, $options, $params, $sharedService);
+
+            $this->setOutput($new);
+
+            $cmd->logInfo($new->getConvertedStandardQuantity());
 
             // event dispatch
             // ================
@@ -93,15 +90,16 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
             // ================
-
             // Check Version
             // ==============
             VersionChecker::checkPRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
 
-            $m = sprintf("PR #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
-            $cmd->addSuccess($m);
+            $cmd->addSuccess(\sprintf("PO #%s updated", $rootEntity->getId()));
+            $cmd->logInfo(\sprintf("PO #%s updated", $rootEntity->getId()));
         } catch (\Exception $e) {
+            $cmd->logInfo($e->getMessage());
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

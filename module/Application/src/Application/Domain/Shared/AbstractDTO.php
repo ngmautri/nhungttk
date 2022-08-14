@@ -6,7 +6,7 @@ use Application\Notification;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class AbstractDTO
 {
@@ -350,7 +350,7 @@ abstract class AbstractDTO
                                     );
                                 }
                             } catch (\Exception $e) {
-                                echo $e->getMessage();
+                                // echo "Compare Object: " . $e->getMessage();
                             }
                         }
                     }

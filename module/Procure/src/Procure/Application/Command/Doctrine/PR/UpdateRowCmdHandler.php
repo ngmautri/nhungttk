@@ -17,7 +17,7 @@ use Webmozart\Assert\Assert;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UpdateRowCmdHandler extends AbstractCommandHandler
 {
@@ -37,8 +37,8 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
          * @var PRRowSnapshot $snapshot ;
          * @var PRRowSnapshot $newSnapshot ;
          * @var PRRow $row ;
-         *
-         *
+         *     
+         *     
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
         Assert::notNull($cmd->getData(), 'Input data emty!');
@@ -52,7 +52,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
         Assert::isInstanceOf($localEntity, PRRow::class);
 
         try {
-
+            $cmd->logInfo("Start Execution!");
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
@@ -60,6 +60,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $newSnapshot = PRRowSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
 
+            $cmd->logInfo("Modify new snapshort");
             $newSnapshot = PRRowSnapshotModifier::modify($newSnapshot, $cmd->getDoctrineEM(), $options->getLocale());
 
             $changeLog = $snapshot->compare($newSnapshot);
@@ -68,6 +69,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 $cmd->addError("Nothing change on PO#" . $rootEntity->getId());
                 return;
             }
+            $cmd->logInfo("Start updating!");
 
             $params = [
                 "rowId" => $row->getId(),
@@ -76,7 +78,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
-            $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);
+            $rootEntity->updateRowFrom($row, $newSnapshot, $options, $params, $sharedService);
 
             // event dispatch
             // ================
@@ -90,9 +92,10 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             // ===============
 
             $cmd->addSuccess(\sprintf("PO #%s updated", $rootEntity->getId()));
+            $cmd->logInfo(\sprintf("PO #%s updated", $rootEntity->getId()));
         } catch (\Exception $e) {
+            $cmd->logInfo($e->getMessage());
             $cmd->addError($e->getMessage());
-
             throw new \RuntimeException($e->getMessage());
         }
     }

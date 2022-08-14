@@ -365,4 +365,9 @@ class PrRowDefinition
         "remarks",
         "edt"
     ];
+
+    public static $defaultInineIncludedFields = [
+        "docQuantity",
+        "edt"
+    ];
 }

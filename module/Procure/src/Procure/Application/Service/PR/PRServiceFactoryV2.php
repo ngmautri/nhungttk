@@ -35,6 +35,9 @@ class PRServiceFactoryV2 implements FactoryInterface
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);
 
+        $sv = $container->get("translator");
+        $service->setTranslator($sv);
+
         return $service;
     }
 }

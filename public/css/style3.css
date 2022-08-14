@@ -85,3 +85,18 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 <!-- jquery UI -->
 .dialogClass a:hover{background-color: #0080c0;color: #ffffff;}
 .modal-body a:hover{background-color: #0080c0;color: #ffffff;}
+
+
+button.delete_btn
+{
+    margin:-3px 0px;
+}
+
+button.remove_btn
+{
+    margin:-3px 0px;
+}
+
+
+
+

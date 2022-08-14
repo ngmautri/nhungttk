@@ -83,7 +83,7 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
-            $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);
+            $newRowSnapshot = $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);
 
             // event dispatch
             // ================
@@ -99,6 +99,7 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
 
             $m = sprintf("PO #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
             $cmd->addSuccess($m);
+            $this->setOutput($newRowSnapshot);
         } catch (\Exception $e) {
             $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());

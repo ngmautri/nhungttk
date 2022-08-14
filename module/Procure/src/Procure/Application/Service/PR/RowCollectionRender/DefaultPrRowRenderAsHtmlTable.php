@@ -15,6 +15,7 @@ class DefaultPrRowRenderAsHtmlTable extends AbstractRenderAsHtmlTable
     protected function createHeaderCell()
     {
         return "
+        <td><b>Ver</b></td>
         <td><b>Status</b></td>
         <td><b>No.</b></td>
         <td><b>No.</b></td>
@@ -44,6 +45,7 @@ class DefaultPrRowRenderAsHtmlTable extends AbstractRenderAsHtmlTable
         $href = sprintf($format, $element->getToken(), $element->getId());
         $format = '<a target="_blank" href="%s">Show</a>';
         $showUrl = sprintf($format, $href);
+        $cells = $cells . sprintf("<td>%s</td>\n", $element->getDocVersion());
         $cells = $cells . sprintf("<td>%s</td>\n", $element->getTransactionStatus());
         $cells = $cells . sprintf("<td>%s</td>\n", $element->getItemName());
         $cells = $cells . sprintf("<td>%s</td>\n", \strtoupper($element->getRowIdentifer()));

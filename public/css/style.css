@@ -541,4 +541,10 @@ ul.pagination li a:hover:not (.active ) {
   }
 }
 
+button.remove_btn
+{
+    margin:-3px 0px;
+}
+
+
 

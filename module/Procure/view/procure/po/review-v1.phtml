@@ -96,8 +96,8 @@ if (! $headerDTO == null) {
     $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
-     $doc_map_url = sprintf($this->baseUrl . "/procure/po/doc-map?&entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
-  
+    $doc_map_url = sprintf($this->baseUrl . "/procure/po/doc-map?&entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
     $save_as_pdf = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_excel = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
@@ -213,8 +213,8 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                <li>
                   <a href="<?php
 
-echo $doc_map_url;
-?>">
+                echo $doc_map_url;
+                ?>">
                      <small>
                         <i class="fa fa-sitemap" aria-hidden="false"></i>
                      </small>
@@ -323,6 +323,48 @@ echo $doc_map_url;
 
                                 if ($headerDTO->getCurrentState() == "draftPo") :
                                     echo "selected"; endif ?>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
 
 
 
@@ -362,6 +404,48 @@ echo $doc_map_url;
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
 
 
 
@@ -1099,6 +1183,7 @@ echo sprintf('var review_url="%s";', $review_url)?>
     			//draggable:true,
     			sortable: true,
     			freezeCols:1,
+    			trackModel: { on: true }, //to turn on the track changes.        
     			hoverMode: '<?php
 
     echo $hoverMode;
@@ -1227,7 +1312,13 @@ echo sprintf('var review_url="%s";', $review_url)?>
                            },
                           success: function (data, textStatus, jqXHR ) {
                               //commit the changes.
-                        	  $("#global-notice").text(data + ' ' + textStatus).show();
+                              grid.commit({ type: 'update', rows: data['data'] });
+                              
+                              alert(data['data'][0].docId);
+                              //grid.commit({ type: 'add', rows: data['rows'] });
+                              
+                        	  $("#global-notice").text(data['message'] + ' ' + textStatus).show();                        	  
+                        	  //grid.refreshRow({ rowIndx: rowIndx });
                           },
                           error: function (response, status, error) {
                               alert(status);
@@ -1236,7 +1327,8 @@ echo sprintf('var review_url="%s";', $review_url)?>
                               //$(".saving", $grid).hide();
                               $("#global-notice").delay(2200).fadeOut(500);
                          	  refreshGird();
-                         	 location.reload();
+                         	  $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+                         	 //location.reload();
                           }
                       });
                   }

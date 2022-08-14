@@ -9,7 +9,6 @@ use ProcureTest\Bootstrap;
 use Procure\Application\Command\TestTransactionalCommandHandler;
 use Procure\Application\Command\Doctrine\PR\UpdateRowCmdHandler;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
-use Procure\Application\DTO\Gr\GrRowDTO;
 use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 
@@ -41,15 +40,17 @@ class UpdateRowCmdTest extends PHPUnit_Framework_TestCase
             $userId = 39;
 
             $data = [
-                'remarks' => 'test1'
+                'remarks' => 'test1',
+                // 'edt' => '2021-09-30',
+                'docQuantity' => 19
             ];
 
-            $rootEntityId = "1359";
-            $rootEntityToken = "53571e71-d11d-4112-a585-d80d5ed405eb";
-            $version = 18;
+            $rootEntityId = "1436";
+            $rootEntityToken = "fdcc6590-801b-4ee4-985e-caf1abefbaf7";
+            $version = 37;
 
-            $entityId = 10098;
-            $entityToken = "29cee3fa-8be9-402d-bc2a-76249112189c";
+            $entityId = 11899;
+            $entityToken = "80a77651-0f22-4b63-93d4-7666ad08ced7";
 
             $rep = new PRQueryRepositoryImpl($this->doctrineEM);
             $rootEntity = $rep->getRootEntityByTokenId($rootEntityId, $rootEntityToken);

@@ -8,11 +8,10 @@ use Inventory\Domain\Exception\InvalidArgumentException;
 
 /**
  *
- * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class HRSpecificationFactoryImpl extends AbstractIndividualSpecificationFactory
+class IndividualSpecificationFactoryImpl extends AbstractIndividualSpecificationFactory
 {
 
     protected $doctrineEM;
@@ -46,6 +45,13 @@ class HRSpecificationFactoryImpl extends AbstractIndividualSpecificationFactory
     {
         $this->doctrineEM = $doctrineEM;
     }
+
+    /*
+     * |=============================
+     * |Implementation
+     * |
+     * |=============================
+     */
 
     /**
      *

@@ -1,8 +1,48 @@
 <?php
+use HR\Application\EventBus\EventBusService;
+use HR\Application\EventBus\EventBusServiceFactory;
+use HR\Application\EventBus\HandlerMapper;
+use HR\Application\EventBus\HandlerMapperFactory;
+use HR\Application\EventBus\Handler\Individual\OnIndividualCreatedCreateIndex;
+use HR\Application\EventBus\Handler\Individual\OnIndividualUpdatedUpdateIndex;
+use HR\Application\EventBus\Handler\Individual\Factory\OnIndividualCreatedCreateIndexFactory;
+use HR\Application\EventBus\Handler\Individual\Factory\OnIndividualUpdatedUpdateIndexFactory;
 use HR\Application\Service\Upload\Employee\UploadEmployee;
 use HR\Application\Service\Upload\Employee\UploadEmployeeFactory;
 
 return array(
+
+    'service_manager' => array(
+        'factories' => array(
+
+            'HR\Service\EmployeeSearchService' => 'HR\Service\EmployeeSearchServiceFactory',
+            'hr_navi' => 'HR\Service\HrNavigationFactory', // <-- add this,
+
+            /*
+             * |=================================
+             * | Event Bus
+             * |
+             * |==================================
+             */
+
+            // Event Handler Resolver
+            HandlerMapper::class => HandlerMapperFactory::class,
+            EventBusService::class => EventBusServiceFactory::class,
+
+            // Event Handler
+            OnIndividualCreatedCreateIndex::class => OnIndividualCreatedCreateIndexFactory::class,
+            OnIndividualUpdatedUpdateIndex::class => OnIndividualUpdatedUpdateIndexFactory::class,
+            
+            /*
+             * |=================================
+             * |Services
+             * |
+             * |==================================
+             */
+            UploadEmployee::class => UploadEmployeeFactory::class
+        )
+    ),
+
     'navigation' => array(
         'hr_navi' => array(
             array(
@@ -100,16 +140,6 @@ return array(
                     )
                 )
             )
-        )
-    ),
-
-    'service_manager' => array(
-        'factories' => array(
-
-            'HR\Service\EmployeeSearchService' => 'HR\Service\EmployeeSearchServiceFactory',
-            'hr_navi' => 'HR\Service\HrNavigationFactory', // <-- add this,
-
-            UploadEmployee::class => UploadEmployeeFactory::class
         )
     ),
 

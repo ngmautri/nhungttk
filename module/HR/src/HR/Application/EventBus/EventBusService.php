@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\EventBus;
+namespace HR\Application\EventBus;
 
 use Application\Application\EventBus\PsrHandlerResolver;
 use Application\Domain\EventBus\EventBus;
@@ -26,7 +26,7 @@ class EventBusService implements EventBusServiceInterface
 
     protected $doctrineEM;
 
-    protected $queueName = "mla.procure";
+    protected $queueName = "mla.hr";
 
     protected $logger;
 

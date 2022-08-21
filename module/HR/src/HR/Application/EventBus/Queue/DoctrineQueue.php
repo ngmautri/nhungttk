@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\EventBus\Queue;
+namespace HR\Application\EventBus\Queue;
 
 use Application\Application\Event\AbstractEvent;
 use Application\Domain\EventBus\Event\EventInterface;

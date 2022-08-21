@@ -3,6 +3,7 @@ namespace HR\Domain\Employee;
 
 use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
+use HR\Application\Service\Search\ZendSearch\Individual\IndividualSearchIndexImpl;
 use HR\Domain\Employee\Definition\IndividualDefinition;
 
 /**
@@ -79,7 +80,7 @@ class IndividualSnapshotAssembler
 
     /*
      * |=================================
-     * | step 1: Create Individual Doc Index
+     * | Search Index
      * |
      * |==================================
      */
@@ -96,5 +97,36 @@ class IndividualSnapshotAssembler
 
             print \sprintf("\n\$doc->addField(Field::text('%s', %s));", $propertyName, $v);
         }
+    }
+
+    public static function createFromQueryHit($hit)
+    {
+        if ($hit == null) {
+            return;
+        }
+
+        $snapshort = new IndividualSnapshot();
+        $reflectionClass = new \ReflectionClass($snapshort);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if ($hit->__isset($propertyName)) {
+                $snapshort->$propertyName = $hit->$propertyName;
+            }
+        }
+
+        /**
+         * __createMainPart
+         *
+         * @see IndividualSearchIndexImpl
+         */
+
+        if ($hit->__isset("individual_id")) {
+            $snapshort->id = $hit->individual_id; // important
+        }
+
+        return $snapshort;
     }
 }

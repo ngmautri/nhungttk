@@ -10,7 +10,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Symfony\Component\Stopwatch\Stopwatch;
 use PHPUnit_Framework_TestCase;
 
-class CreateIndexTest extends PHPUnit_Framework_TestCase
+class CreateIndividualIndexTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -28,6 +28,7 @@ class CreateIndexTest extends PHPUnit_Framework_TestCase
             $indexer = new IndividualSearchIndexImpl($doctrineEM);
 
             $snapshot = new IndividualSnapshot();
+            $snapshot->id = 1950;
             $snapshot->firstName = "Nguyen";
             $snapshot->lastName = "Mau Tri";
             $snapshot->employeeCode = "0651";

@@ -4,7 +4,6 @@ namespace HR\Domain\Service;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use HR\Domain\Service\Contracts\PostingServiceInterface;
 use HR\Domain\Service\Contracts\SharedServiceInterface;
-use HR\Domain\Validator\AbstractHrSpecificationFactory;
 use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 
@@ -12,7 +11,7 @@ use InvalidArgumentException;
  * HR Domain Service
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class SharedService implements SharedServiceInterface
 {
@@ -65,9 +64,9 @@ class SharedService implements SharedServiceInterface
 
     /**
      *
-     * @param AbstractHrSpecificationFactory $domainSpecificationFactory
+     * @param HRDomainSpecificationFactory $domainSpecificationFactory
      */
-    public function setDomainSpecificationFactory(AbstractHrSpecificationFactory $domainSpecificationFactory)
+    public function setDomainSpecificationFactory(HRDomainSpecificationFactory $domainSpecificationFactory)
     {
         $this->domainSpecificationFactory = $domainSpecificationFactory;
     }
@@ -79,15 +78,6 @@ class SharedService implements SharedServiceInterface
     public function getSharedSpecificationFactory()
     {
         return $this->sharedSpecificationFactory;
-    }
-
-    /**
-     *
-     * @return \Procure\Domain\Service\Contracts\FXServiceInterface
-     */
-    public function getFxService()
-    {
-        return $this->fxService;
     }
 
     /**

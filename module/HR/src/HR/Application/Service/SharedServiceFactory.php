@@ -2,7 +2,8 @@
 namespace HR\Application\Service;
 
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
-use HR\Application\Specification\Zend\HRSpecificationFactoryImpl;
+use HR\Application\Specification\Zend\IndividualSpecificationFactoryImpl;
+use HR\Domain\Service\HRDomainSpecificationFactory;
 use HR\Domain\Service\IndividualPostingService;
 use HR\Domain\Service\SharedService;
 use HR\Infrastructure\Persistence\Domain\Doctrine\IndividualCmdRepositoryImpl;
@@ -12,7 +13,7 @@ use Psr\Log\LoggerInterface;
  * Shared Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class SharedServiceFactory
 {
@@ -36,7 +37,11 @@ class SharedServiceFactory
         $postingService = new IndividualPostingService($cmdRepository);
 
         $sharedService = new SharedService($sharedSpecificationFactory, $postingService);
-        $sharedService->setDomainSpecificationFactory(new HRSpecificationFactoryImpl($doctrineEM));
+
+        $domainSpecificationFactory = new HRDomainSpecificationFactory();
+        $domainSpecificationFactory->setIndividualSpecificationFactory(new IndividualSpecificationFactoryImpl($doctrineEM));
+
+        $sharedService->setDomainSpecificationFactory($domainSpecificationFactory);
         $sharedService->setLogger($logger);
         return $sharedService;
     }

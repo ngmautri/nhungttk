@@ -1,17 +1,10 @@
 <?php
-namespace Procure\Application\EventBus;
+namespace HR\Application\EventBus;
 
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
-use Inventory\Application\EventBus\Handler\Item\OnProcureGrPostedCreateSerialNo;
-use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrPostedCreateWhGr;
-use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrReversedCreateWhGi;
-use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
-use Procure\Application\EventBus\Handler\GR\OnApPostedCreateGrByWarehouse;
-use Procure\Application\EventBus\Handler\GR\OnApReversedCreateGrReversalByWarehouse;
-use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
-use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
-use Procure\Application\EventBus\Handler\QR\UpdateIndexOnQrPosted;
+use HR\Application\EventBus\Handler\Individual\OnIndividualCreatedCreateIndex;
+use HR\Application\EventBus\Handler\Individual\OnIndividualUpdatedUpdateIndex;
 
 /**
  *
@@ -28,18 +21,8 @@ class HandlerMapper extends AbstractService
     protected function setUpMapper()
     {
         $handlers = [
-            UpdateIndexOnPrSubmitted::class,
-            UpdateIndexOnPoPosted::class,
-            UpdateIndexOnApPosted::class,
-            UpdateIndexOnQrPosted::class,
-
-            OnApPostedCreateGrByWarehouse::class,
-            OnApReversedCreateGrReversalByWarehouse::class,
-
-            OnProcureGrPostedCreateWhGr::class,
-            OnProcureGrPostedCreateSerialNo::class,
-
-            OnProcureGrReversedCreateWhGi::class
+            OnIndividualCreatedCreateIndex::class,
+            OnIndividualUpdatedUpdateIndex::class
         ];
 
         $this->handlers = $handlers;

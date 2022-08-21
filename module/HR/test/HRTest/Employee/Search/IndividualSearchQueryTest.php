@@ -8,7 +8,7 @@ use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
-class ItemSearchQueryTest extends PHPUnit_Framework_TestCase
+class IndividualSearchQueryTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -24,9 +24,9 @@ class ItemSearchQueryTest extends PHPUnit_Framework_TestCase
 
             $searcher = new IndividualSearchQueryImpl();
             $queryFilter = new IndividualQueryFilter();
-            $results = $searcher->search("mau
-*", $queryFilter);
-            var_dump(($results));
+            $results = $searcher->search("itemDescription", $queryFilter);
+            $results->echoField("employeeCode");
+            $results->echoField("individual_id");
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

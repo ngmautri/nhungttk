@@ -12,7 +12,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class DefaultIndividualValidator extends AbstractIndividualValidator implements IndividualValidatorInterface
 {

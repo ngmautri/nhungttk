@@ -253,7 +253,8 @@ class IndividualSearchIndexImpl extends AbstractService implements IndividualSea
          * |==================================
          *
          */
-        // $doc->addField(Field::unIndexed('id', $snapshot->getId()));
+        $doc->addField(Field::unIndexed('
+', $snapshot->getId())); // important
         $doc->addField(Field::unIndexed('company', $snapshot->getCompany()));
         $doc->addField(Field::unIndexed('revisionNo', $snapshot->getRevisionNo()));
         $doc->addField(Field::unIndexed('version', $snapshot->getVersion()));

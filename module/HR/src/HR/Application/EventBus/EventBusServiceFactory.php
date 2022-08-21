@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\EventBus;
+namespace HR\Application\EventBus;
 
 use Application\Application\EventBus\PsrHandlerResolver;
 use Zend\ServiceManager\FactoryInterface;

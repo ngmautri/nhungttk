@@ -2,6 +2,7 @@
 namespace HR\Domain\Employee\Factory;
 
 use Application\Application\Event\DefaultParameter;
+use Application\Domain\Contracts\ValidationContext;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use HR\Domain\Contracts\IndividualType;
@@ -24,7 +25,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class IndividualFactory
 {
@@ -84,7 +85,7 @@ class IndividualFactory
             throw new \InvalidArgumentException($individual->getNotification()->errorMessage());
         }
 
-        $validators = ValidatorFactory::create($individualTypeId, $sharedService);
+        $validators = ValidatorFactory::create($individualTypeId, $sharedService, false, ValidationContext::CREATE);
         $individual->validate($validators);
 
         if ($individual->hasErrors()) {

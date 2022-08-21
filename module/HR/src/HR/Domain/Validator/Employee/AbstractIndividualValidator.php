@@ -2,13 +2,13 @@
 namespace HR\Domain\Validator\Employee;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory as SharedSpecsFactory;
+use HR\Domain\Service\HRDomainSpecificationFactory;
 use InvalidArgumentException;
-use HR\Domain\Validator\AbstractHrSpecificationFactory;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class AbstractIndividualValidator
 {
@@ -19,10 +19,11 @@ abstract class AbstractIndividualValidator
 
     /**
      *
-     * @param \Application\Domain\Shared\Specification\AbstractSpecificationFactory $sharedSpecsFactory
-     * @throws \Procure\Domain\Exception\PoInvalidArgumentException
+     * @param SharedSpecsFactory $sharedSpecsFactory
+     * @param HRDomainSpecificationFactory $domainSpecificationFactory
+     * @throws InvalidArgumentException
      */
-    public function __construct(SharedSpecsFactory $sharedSpecsFactory, AbstractHrSpecificationFactory $domainSpecificationFactory = null)
+    public function __construct(SharedSpecsFactory $sharedSpecsFactory, HRDomainSpecificationFactory $domainSpecificationFactory = null)
     {
         if (! $sharedSpecsFactory instanceof SharedSpecsFactory) {
             throw new InvalidArgumentException("Shared Specification is required");
@@ -43,7 +44,7 @@ abstract class AbstractIndividualValidator
 
     /**
      *
-     * @return \HR\Domain\Validator\AbstractHrSpecificationFactory
+     * @return \HR\Domain\Service\HRDomainSpecificationFactory
      */
     public function getDomainSpecificationFactory()
     {

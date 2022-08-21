@@ -2,7 +2,7 @@
 namespace HRTest\Specification;
 
 use Doctrine\ORM\EntityManager;
-use HR\Application\Specification\Zend\HRSpecificationFactoryImpl;
+use HR\Application\Specification\Zend\IndividualSpecificationFactoryImpl;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
@@ -28,11 +28,11 @@ class SpecsTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            $factory = new HRSpecificationFactoryImpl($doctrineEM);
+            $factory = new IndividualSpecificationFactoryImpl($doctrineEM);
             $spec = $factory->getEmployeeCodeExitsSpecification();
             $subject = array(
                 "companyId" => 1,
-                "employeeCode" => '0651'
+                "employeeCode" => '6000'
             );
             var_dump($spec->isSatisfiedBy($subject));
         } catch (InvalidArgumentException $e) {

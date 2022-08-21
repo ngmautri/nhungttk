@@ -3,35 +3,15 @@ namespace HR\Domain\Employee;
 
 use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
+use HR\Domain\Employee\Definition\IndividualDefinition;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class IndividualSnapshotAssembler
 {
-
-    private static $defaultIncludedFields = [
-        "firtName",
-        "middleName",
-        "lastName",
-        "birthday",
-        "remarks"
-    ];
-
-    private static $defaultExcludedFields = [
-        "id",
-        "token",
-        "createdBy",
-        "createdOn",
-        "lastChangeOn",
-        "lastChangeBy",
-        "sysNumber",
-        "company",
-        "individualType",
-        "revisionNo"
-    ];
 
     public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)
     {
@@ -45,7 +25,7 @@ class IndividualSnapshotAssembler
 
     public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, IndividualDefinition::$defaultIncludedFields);
     }
 
     public static function updateExcludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
@@ -55,7 +35,7 @@ class IndividualSnapshotAssembler
 
     public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultExcludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, IndividualDefinition::$defaultExcludedFields);
     }
 
     // from Object
@@ -72,7 +52,7 @@ class IndividualSnapshotAssembler
 
     public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, IndividualDefinition::$defaultIncludedFields);
     }
 
     public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
@@ -82,14 +62,14 @@ class IndividualSnapshotAssembler
 
     public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
     {
-        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, IndividualDefinition::$defaultExcludedFields);
     }
 
     // Entity from Object
     // =============================
     public static function updateEntityExcludedDefaultFieldsFrom(BaseIndividual $snapShot, $data)
     {
-        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, IndividualDefinition::$defaultExcludedFields);
     }
 
     public static function updateEntityAllFieldsFrom(BaseIndividual $snapShot, $data)

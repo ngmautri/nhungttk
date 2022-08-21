@@ -5,7 +5,7 @@ namespace HR\Domain\Contracts;
  * Contract Type
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class LabourContractType
 {
@@ -15,4 +15,6 @@ class LabourContractType
     const TC = 'TC';
 
     const SC = 'SC';
+
+    const PC = 'PC';
 }

@@ -2,17 +2,9 @@
 namespace InventoryTest\Item\CodeGenerate;
 
 use Application\Application\Contracts\GenericSnapshotAssembler;
-use Application\Entity\NmtInventoryItem;
-use Inventory\Domain\Item\AbstractItem;
+use Application\Entity\HrIndividual;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
-use Inventory\Domain\Item\GenericItem;
-use Inventory\Domain\Item\GenericItemSnapshot;
-use Application\Entity\HrIndividual;
-use HR\Domain\Employee\AbstractIndividual;
-use HR\Domain\Employee\BaseEmployee;
-use HR\Domain\Employee\BaseIndividual;
-use HR\Domain\Employee\BaseIndividualSnapshot;
 
 class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
 {
@@ -24,10 +16,21 @@ class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            // $result = GenericSnapshotAssembler::findMissingProps(HrIndividual::class, AbstractIndividual::class);
-            // $result = GenericSnapshotAssembler::createAllSnapshotProps(AbstractIndividual::class);
+            try {
 
-            $result = GenericSnapshotAssembler::createSnapshotProps(BaseIndividual::class, AbstractIndividual::class);
+                // $result = GenericSnapshotAssembler::findMissingProps(NmtProcurePr::class, BaseDoc::class);
+                // $result = GenericSnapshotAssembler::findMissingProps(NmtProcurePrRow::class, AbstractRow::class);
+
+                // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(ChartSnapshot::class);
+                // $result = GenericSnapshotAssembler::createAllSnapshotProps(GenericRow::class);
+                // $result = GenericSnapshotAssembler::createAllSnapshotPropsExclude(PRRow::class, RowSnapshot::class);
+
+                $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(HrIndividual::class);
+
+                // \var_dump(($result));
+            } catch (InvalidArgumentException $e) {
+                echo $e->getMessage();
+            }
 
             // \var_dump(($result));
         } catch (InvalidArgumentException $e) {

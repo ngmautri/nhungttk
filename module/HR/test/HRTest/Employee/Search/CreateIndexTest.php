@@ -1,10 +1,10 @@
 <?php
-namespace InventoryTest\Item\Search;
+namespace HRTest\Item\Search;
 
+use Application\Domain\Shared\Person\Gender;
 use Doctrine\ORM\EntityManager;
-use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
-use Inventory\Infrastructure\Persistence\Doctrine\ItemReportRepositoryImpl;
-use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
+use HR\Application\Service\Search\ZendSearch\Individual\IndividualSearchIndexImpl;
+use HR\Domain\Employee\IndividualSnapshot;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -25,18 +25,16 @@ class CreateIndexTest extends PHPUnit_Framework_TestCase
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
             $stopWatch = new Stopwatch();
-            $rep = new ItemReportRepositoryImpl($doctrineEM);
+            $indexer = new IndividualSearchIndexImpl($doctrineEM);
 
-            $filter = new ItemReportSqlFilter();
-            $filter->setIsActive(1);
-            $sort = null;
-            $sort_by = null;
-            $limit = null;
-            $offset = null;
-            $results = $rep->getItemList($filter, $sort_by, $sort, $limit, $offset);
+            $snapshot = new IndividualSnapshot();
+            $snapshot->firstName = "Nguyen";
+            $snapshot->lastName = "Mau Tri";
+            $snapshot->employeeCode = "0651";
+            $snapshot->gender = Gender::MALE;
 
-            $indexer = new ItemSearchIndexImpl();
-            $r = $indexer->createIndex($results);
+            $timer = $stopWatch->start("test");
+            $r = $indexer->createDoc($snapshot);
             var_dump($r);
             $r = $indexer->optimizeIndex();
             var_dump($r);

@@ -2,12 +2,10 @@
 namespace HR\Application\Service\Search\ZendSearch\Individual;
 
 use Application\Application\Service\Search\Contracts\IndexingResult;
-use Application\Entity\NmtInventoryItemPicture;
 use Application\Service\AbstractService;
 use HR\Domain\Employee\IndividualSnapshot;
 use HR\Domain\Service\Search\IndividualSearchIndexInterface;
 use Inventory\Domain\Item\GenericItem;
-use Inventory\Domain\Item\ItemSnapshot;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\SearchIndexInterface;
@@ -147,8 +145,8 @@ class IndividualSearchIndexImpl extends AbstractService implements IndividualSea
 
             $indexResult = new IndexingResult();
 
-            if (! $snapshot instanceof ItemSnapshot) {
-                throw new \InvalidArgumentException("ItemSnapshot not given");
+            if (! $snapshot instanceof IndividualSnapshot) {
+                throw new \InvalidArgumentException("IndividualSnapshot not given");
             }
 
             // take long time
@@ -247,20 +245,6 @@ class IndividualSearchIndexImpl extends AbstractService implements IndividualSea
          * |
          * |==================================
          */
-        $pictureList = $snapshot->getPictureList();
-
-        $thumbnail_file = null;
-
-        if ($pictureList != null) {
-            $lastPic = $pictureList->last();
-
-            if ($lastPic instanceof NmtInventoryItemPicture) {
-                $thumbnail_file = "/thumbnail/item/" . $lastPic->getFolderRelative() . "thumbnail_200_" . $lastPic->getFileName();
-                $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
-            }
-        }
-
-        $doc->addField(Field::UnIndexed('item_thumbnail', $thumbnail_file));
 
         /*
          * |=================================
@@ -268,18 +252,65 @@ class IndividualSearchIndexImpl extends AbstractService implements IndividualSea
          * |
          * |==================================
          *
-         * /*
+         */
+        // $doc->addField(Field::unIndexed('id', $snapshot->getId()));
+        $doc->addField(Field::unIndexed('company', $snapshot->getCompany()));
+        $doc->addField(Field::unIndexed('revisionNo', $snapshot->getRevisionNo()));
+        $doc->addField(Field::unIndexed('version', $snapshot->getVersion()));
+        $doc->addField(Field::unIndexed('sysNumber', $snapshot->getSysNumber()));
+        $doc->addField(Field::unIndexed('token', $snapshot->getToken()));
+        $doc->addField(Field::unIndexed('uuid', $snapshot->getUuid()));
+        $doc->addField(Field::unIndexed('gender', $snapshot->getGender()));
+        $doc->addField(Field::unIndexed('birthday', $snapshot->getBirthday()));
+        $doc->addField(Field::unIndexed('lastStatusId', $snapshot->getLastStatusId()));
+        $doc->addField(Field::unIndexed('passportIssuePlace', $snapshot->getPassportIssuePlace()));
+        $doc->addField(Field::unIndexed('passportIssueDate', $snapshot->getPassportIssueDate()));
+        $doc->addField(Field::unIndexed('passportExpiredDate', $snapshot->getPassportExpiredDate()));
+        $doc->addField(Field::unIndexed('workPermitNo', $snapshot->getWorkPermitNo()));
+        $doc->addField(Field::unIndexed('workPermitDate', $snapshot->getWorkPermitDate()));
+        $doc->addField(Field::unIndexed('workPermitExpiredDate', $snapshot->getWorkPermitExpiredDate()));
+        $doc->addField(Field::unIndexed('familyBookNo', $snapshot->getFamilyBookNo()));
+        $doc->addField(Field::unIndexed('personalIdNumber', $snapshot->getPersonalIdNumber()));
+        $doc->addField(Field::unIndexed('nationality', $snapshot->getNationality()));
+
+        // $doc->addField(Field::text('createdOn', $snapshot->getCreatedOn()));
+        // $doc->addField(Field::text('lastChangeOn', $snapshot->getLastChangeOn()));
+        // $doc->addField(Field::text('createdBy', $snapshot->getCreatedBy()));
+        // $doc->addField(Field::text('lastChangeBy', $snapshot->getLastChangeBy()));
+
+        /*
+         *
+         *
          * |=================================
          * | Keywords Fields
          * |
          * |==================================
          */
+        $doc->addField(Field::keyword('employeeStatus', $snapshot->getEmployeeStatus()));
+        $doc->addField(Field::keyword('employeeCode', $snapshot->getEmployeeCode()));
+        $doc->addField(Field::keyword('passportNo', $snapshot->getPassportNo()));
+        $doc->addField(Field::keyword('familyBookNo', $snapshot->getFamilyBookNo()));
+        $doc->addField(Field::keyword('ssoNumber', $snapshot->getSsoNumber()));
+        $doc->addField(Field::keyword('individualType', $snapshot->getIndividualType()));
+        $doc->addField(Field::keyword('ssoNumber', $snapshot->getSsoNumber()));
+
         /*
          * |=================================
          * | Text Fields
          * |
          * |==================================
          */
+
+        $doc->addField(Field::text('individualName', $snapshot->getIndividualName()));
+        $doc->addField(Field::text('individualNameLocal', $snapshot->getIndividualNameLocal()));
+        $doc->addField(Field::text('firstName', $snapshot->getFirstName()));
+        $doc->addField(Field::text('firstNameLocal', $snapshot->getFirstNameLocal()));
+        $doc->addField(Field::text('middleName', $snapshot->getMiddleName()));
+        $doc->addField(Field::text('middleNameLocal', $snapshot->getMiddleNameLocal()));
+        $doc->addField(Field::text('lastName', $snapshot->getLastName()));
+        $doc->addField(Field::text('lastNameLocal', $snapshot->getLastNameLocal()));
+        $doc->addField(Field::text('nickName', $snapshot->getNickName()));
+        $doc->addField(Field::text('remarks', $snapshot->getRemarks()));
 
         return $doc;
     }

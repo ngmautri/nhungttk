@@ -4,8 +4,8 @@ namespace HR\Application\Service\Search\ZendSearch\Individual;
 use Application\Application\Service\Search\Contracts\QueryFilterInterface;
 use Application\Application\Service\Search\Contracts\SearchResult;
 use Application\Service\AbstractService;
+use HR\Application\Service\Search\ZendSearch\Individual\Filter\IndividualQueryFilter;
 use HR\Domain\Service\Search\IndividualSearchQueryInterface;
-use Inventory\Application\Service\Search\ZendSearch\Item\Filter\ItemQueryFilter;
 use Inventory\Domain\Item\ItemSnapshotAssembler;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Index\Term;
@@ -184,16 +184,18 @@ class IndividualSearchQueryImpl extends AbstractService implements IndividualSea
             }
         }
 
-        if ($filter instanceof ItemQueryFilter) {
+        if ($filter instanceof IndividualQueryFilter) {
 
-            if ($filter->getIsFixedAsset() == 1) {
-
-                $format = \sprintf(SearchIndexer::FIXED_ASSET_VALUE);
-                $v = \sprintf($format, $filter->getIsFixedAsset());
-
-                $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term($v, SearchIndexer::FIXED_ASSET_KEY));
-                $final_query->addSubquery($subquery, true);
-            }
+            /*
+             * if ($filter->getIsEmployee() == 1) {
+             *
+             * $format = \sprintf(SearchIndexer::FIXED_ASSET_VALUE);
+             * $v = \sprintf($format, $filter->getIsFixedAsset());
+             *
+             * $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term($v, SearchIndexer::FIXED_ASSET_KEY));
+             * $final_query->addSubquery($subquery, true);
+             * }
+             */
         }
 
         return $final_query;

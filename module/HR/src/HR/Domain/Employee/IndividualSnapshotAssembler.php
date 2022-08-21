@@ -76,4 +76,25 @@ class IndividualSnapshotAssembler
     {
         return GenericObjectAssembler::updateAllFieldsFrom($snapShot, $data);
     }
+
+    /*
+     * |=================================
+     * | step 1: Create Individual Doc Index
+     * |
+     * |==================================
+     */
+    public static function createIndexDoc()
+    {
+        $entity = new IndividualSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            $v = \sprintf("\$snapshot->get%s()", ucfirst($propertyName));
+
+            print \sprintf("\n\$doc->addField(Field::text('%s', %s));", $propertyName, $v);
+        }
+    }
 }

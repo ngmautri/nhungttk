@@ -1,8 +1,7 @@
 <?php
 namespace InventoryTest\Item\CodeGenerate;
 
-use Application\Application\Contracts\GenericSnapshotAssembler;
-use Application\Entity\HrIndividual;
+use HR\Domain\Employee\IndividualSnapshotAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
@@ -25,7 +24,8 @@ class SnapshotCodeGenerateTest extends PHPUnit_Framework_TestCase
                 // $result = GenericSnapshotAssembler::createAllSnapshotProps(GenericRow::class);
                 // $result = GenericSnapshotAssembler::createAllSnapshotPropsExclude(PRRow::class, RowSnapshot::class);
 
-                $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(HrIndividual::class);
+                // $result = GenericSnapshotAssembler::printAllSnapshotPropsInArrayFormat(HrIndividual::class);
+                $result = IndividualSnapshotAssembler::createIndexDoc();
 
                 // \var_dump(($result));
             } catch (InvalidArgumentException $e) {

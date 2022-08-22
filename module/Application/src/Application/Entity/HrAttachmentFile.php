@@ -155,6 +155,34 @@ class HrAttachmentFile
     private $lastChangeOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="dir_name", type="string", length=255, nullable=true)
+     */
+    private $dirName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="base_name", type="string", length=45, nullable=true)
+     */
+    private $baseName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="extension", type="string", length=10, nullable=true)
+     */
+    private $extension;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mime", type="string", length=100, nullable=true)
+     */
+    private $mime;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -650,6 +678,102 @@ class HrAttachmentFile
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
+    }
+
+    /**
+     * Set dirName
+     *
+     * @param string $dirName
+     *
+     * @return HrAttachmentFile
+     */
+    public function setDirName($dirName)
+    {
+        $this->dirName = $dirName;
+
+        return $this;
+    }
+
+    /**
+     * Get dirName
+     *
+     * @return string
+     */
+    public function getDirName()
+    {
+        return $this->dirName;
+    }
+
+    /**
+     * Set baseName
+     *
+     * @param string $baseName
+     *
+     * @return HrAttachmentFile
+     */
+    public function setBaseName($baseName)
+    {
+        $this->baseName = $baseName;
+
+        return $this;
+    }
+
+    /**
+     * Get baseName
+     *
+     * @return string
+     */
+    public function getBaseName()
+    {
+        return $this->baseName;
+    }
+
+    /**
+     * Set extension
+     *
+     * @param string $extension
+     *
+     * @return HrAttachmentFile
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
+
+        return $this;
+    }
+
+    /**
+     * Get extension
+     *
+     * @return string
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * Set mime
+     *
+     * @param string $mime
+     *
+     * @return HrAttachmentFile
+     */
+    public function setMime($mime)
+    {
+        $this->mime = $mime;
+
+        return $this;
+    }
+
+    /**
+     * Get mime
+     *
+     * @return string
+     */
+    public function getMime()
+    {
+        return $this->mime;
     }
 
     /**

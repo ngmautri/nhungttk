@@ -38,9 +38,10 @@ class FileSystemTest extends PHPUnit_Framework_TestCase
         // FixMe
         $path = $path_root . '/TestData/BFL.t';
         $path = FolderHelper::linuxPath($path);
-        echo $path . "\n";
+        // echo $path . "\n";
 
-        // $file = new File($path);
+        $file = new File($path);
+        var_dump($file->info());
 
         $folder1 = $path_root . '/TestData';
 
@@ -49,7 +50,7 @@ class FileSystemTest extends PHPUnit_Framework_TestCase
 
         foreach ($folder_content[1] as $f) {
             $file = new File($folder1 . "/" . $f);
-            echo $file->name() . "--" . $file->md5() . "--" . $file->size() . "\n";
+            // echo $file->name() . "--" . $file->md5() . "--" . $file->size() . "\n";
         }
     }
 }

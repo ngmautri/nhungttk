@@ -1,14 +1,12 @@
 <?php
 namespace Application\Application\Service\Attachment;
 
+use Application\DTO\Attachment\AttachmentDTO;
+use Application\Infrastructure\Mapper\AttachmentMapper;
 use Doctrine\ORM\EntityManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Math\Rand;
-use Zend\Validator\Date;
-use Application\Infrastructure\Mapper\AttachmentMapper;
-use Application\Domain\Attachment\AttachmentSnapshot;
-use Application\DTO\Attachment\AttachmentDTO;
 
 /**
  * Attachment Service
@@ -169,7 +167,10 @@ abstract class AbstractAttachmentService implements EventManagerAwareInterface
                 $errors[] = $ext . $this->controllerPlugin->translate(' not supported, please choose a "jpeg","jpg","png","pdf","xlsx","xlx", "docx"!');
             }
 
-            // Set Global
+            /**
+             *
+             * @todo: to make global variable
+             */
             if ($file_size > 10485760) {
                 $errors[] = $this->controllerPlugin->translate('File size must be 10 MB');
             }

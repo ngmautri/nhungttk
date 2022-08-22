@@ -170,7 +170,7 @@ if ($this->user !== null) :
 
 
 <!-- HR MENU -->
-<!-- <li
+<li
 	class="dropdown <?php
 
     if ($current_module == "HR") :
@@ -184,8 +184,6 @@ if ($this->user !== null) :
     include (ROOT . '/module/Application/view/hr_menu.php');
     ?>
 						  </li>
- -->
-
 <!-- OTHER MENU -->
 <li
 	class="dropdown <?php

@@ -8,7 +8,7 @@ use PHPUnit_Framework_TestCase;
  * Person Name
  *
  * @author nguyen mau tri - ngmautri@gmail.com
- *
+ *        
  */
 class BirthdayTest extends PHPUnit_Framework_TestCase
 {
@@ -17,7 +17,7 @@ class BirthdayTest extends PHPUnit_Framework_TestCase
 
     public function testCreateOK()
     {
-        $birthday = new Birthday('1979-01-22');
+        $birthday = new Birthday('1950-1-1');
         $this->assertInstanceOf(Birthday::class, $birthday);
 
         \var_dump($birthday->getAgeYear());

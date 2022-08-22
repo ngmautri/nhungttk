@@ -4,6 +4,7 @@ namespace ApplicationTest\UtilityTest\FileSystem;
 use Application\Domain\Util\FileSystem\FileHelper;
 use Application\Domain\Util\FileSystem\FolderHelper;
 use Cake\Filesystem\File;
+use Cake\Filesystem\Folder;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_TestCase;
 
@@ -31,17 +32,24 @@ class FileSystemTest extends PHPUnit_Framework_TestCase
         var_dump(FileHelper::makePathFromFileName("b3303a67-5e34-4ada-ba4b-df6ebf69fa76_61a372beba9c3"));
 
         var_dump(FileHelper::generateNameAndPath());
-
         $curDir = dirname(__FILE__);
-        $path = dirname($curDir);
+        $path_root = dirname($curDir);
 
         // FixMe
-        $path = $path . '/data/BFL.t';
+        $path = $path_root . '/TestData/BFL.t';
         $path = FolderHelper::linuxPath($path);
-        // echo $path;
+        echo $path . "\n";
 
-        $file = new File($path);
+        // $file = new File($path);
 
-        var_dump($file->info());
+        $folder1 = $path_root . '/TestData';
+
+        $folder = new Folder($folder1);
+        $folder_content = $folder->read();
+
+        foreach ($folder_content[1] as $f) {
+            $file = new File($folder1 . "/" . $f);
+            echo $file->name() . "--" . $file->md5() . "--" . $file->size() . "\n";
+        }
     }
 }

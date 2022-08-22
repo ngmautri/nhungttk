@@ -33,7 +33,7 @@ class UploadEmployeeTest extends PHPUnit_Framework_TestCase
             $uploader = Bootstrap::getServiceManager()->get(UploadEmployee::class);
             $uploader->setUserId(39);
             $uploader->setCompanyId(1);
-            $file = $root . "/HRTest/Data/hr_individuals.xlsx";
+            $file = $root . "/HRTest/InputData/hr_individuals-3.xlsx";
             $trx = $uploader->run($file);
         } catch (\Exception $e) {
             var_dump($e->getMessage());

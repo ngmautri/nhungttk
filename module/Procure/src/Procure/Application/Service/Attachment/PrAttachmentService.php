@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Attachment;
+namespace Procure\Application\Service\Attachment;
 
 use Application\Application\Service\Attachment\AbstractAttachmentService;
 

@@ -1,5 +1,5 @@
 <?php
-namespace HR\Application\Command\Doctrine\Employee;
+namespace HR\Application\Command\Doctrine\Individual;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
@@ -7,16 +7,14 @@ use Application\Domain\Shared\Command\CommandInterface;
 use HR\Application\Command\Options\CreateIndividualCmdOptions;
 use HR\Application\Service\SharedServiceFactory;
 use HR\Domain\Employee\BaseIndividual;
-use HR\Domain\Employee\IndividualSnapshot;
-use HR\Domain\Employee\IndividualSnapshotAssembler;
+use HR\Domain\Employee\BaseIndividualSnapshot;
 use HR\Domain\Employee\Factory\IndividualFactory;
 use Webmozart\Assert\Assert;
-use HR\Domain\Employee\BaseIndividualSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class CreateIndividualFromDTOCmdHandler extends AbstractCommandHandler
 {

@@ -2,9 +2,9 @@
 namespace HR\Application\Service\Upload\Employee;
 
 use Application\Application\Command\Doctrine\GenericCommand;
-use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
+use Application\Infrastructure\Persistence\Domain\Doctrine\CompanyQueryRepositoryImpl;
 use HR\Application\Command\TransactionalCommandHandler;
-use HR\Application\Command\Doctrine\Employee\CreateIndividualFromDTOCmdHandler;
+use HR\Application\Command\Doctrine\Individual\CreateIndividualFromDTOCmdHandler;
 use HR\Application\Command\Options\CreateIndividualCmdOptions;
 use HR\Application\DTO\Employee\IndividualDTO;
 use HR\Application\Service\Upload\Employee\Contracts\AbstractEmployeeUpload;
@@ -15,7 +15,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UploadEmployee extends AbstractEmployeeUpload
 {
@@ -33,10 +33,12 @@ class UploadEmployee extends AbstractEmployeeUpload
         $companyVO = ($rep->getById($this->getCompanyId())
             ->createValueObject());
 
+        $r = 0;
+
         try {
 
             // take long time
-            set_time_limit(3500);
+            set_time_limit(5500);
 
             foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
                 // echo $worksheet->getTitle();
@@ -61,6 +63,7 @@ class UploadEmployee extends AbstractEmployeeUpload
                     $snapshot->company = $this->getCompanyId();
 
                     $n ++;
+                    $r ++;
                     // new A=1
                     for ($col = 1; $col < $highestColumnIndex + 1; ++ $col) {
 
@@ -116,12 +119,13 @@ class UploadEmployee extends AbstractEmployeeUpload
                     $cmdHandler = new CreateIndividualFromDTOCmdHandler();
                     $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
                     $cmd = new GenericCommand($this->getDoctrineEM(), $snapshot, $options, $cmdHandlerDecorator, $this->getEventBusService());
+                    // $cmd = new GenericCommand($this->getDoctrineEM(), $snapshot, $options, $cmdHandlerDecorator);
                     $cmd->execute();
                 }
             }
         } catch (\Exception $e) {
             $this->logException($e, false);
-            throw new \RuntimeException("Upload failed. The file might be not wrong.");
+            throw new \RuntimeException("Upload failed. The file might be not wrong.row => " . $r);
         }
     }
 }

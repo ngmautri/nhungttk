@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureClearingDoc
  *
- * @ORM\Table(name="nmt_procure_clearing_doc", indexes={@ORM\Index(name="nmt_procure_clearing_doc_FK01_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_clearing_doc_FK02_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_procure_clearing_doc", indexes={@ORM\Index(name="nmt_procure_clearing_doc_FK01_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class NmtProcureClearingDoc
@@ -45,9 +45,9 @@ class NmtProcureClearingDoc
     /**
      * @var integer
      *
-     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     * @ORM\Column(name="revsions_no", type="integer", nullable=true)
      */
-    private $revisionNo;
+    private $revsionsNo;
 
     /**
      * @var string
@@ -55,41 +55,6 @@ class NmtProcureClearingDoc
      * @ORM\Column(name="doc_type", type="string", length=45, nullable=true)
      */
     private $docType;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="doc_date", type="datetime", nullable=true)
-     */
-    private $docDate;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="doc_number", type="string", length=45, nullable=true)
-     */
-    private $docNumber;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
-     */
-    private $sysNumber;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
-     */
-    private $lastChangeOn;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
-     */
-    private $docStatus;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -100,16 +65,6 @@ class NmtProcureClearingDoc
      * })
      */
     private $createdBy;
-
-    /**
-     * @var \Application\Entity\MlaUsers
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
-     * })
-     */
-    private $lastChangeBy;
 
 
 
@@ -196,27 +151,27 @@ class NmtProcureClearingDoc
     }
 
     /**
-     * Set revisionNo
+     * Set revsionsNo
      *
-     * @param integer $revisionNo
+     * @param integer $revsionsNo
      *
      * @return NmtProcureClearingDoc
      */
-    public function setRevisionNo($revisionNo)
+    public function setRevsionsNo($revsionsNo)
     {
-        $this->revisionNo = $revisionNo;
+        $this->revsionsNo = $revsionsNo;
 
         return $this;
     }
 
     /**
-     * Get revisionNo
+     * Get revsionsNo
      *
      * @return integer
      */
-    public function getRevisionNo()
+    public function getRevsionsNo()
     {
-        return $this->revisionNo;
+        return $this->revsionsNo;
     }
 
     /**
@@ -244,126 +199,6 @@ class NmtProcureClearingDoc
     }
 
     /**
-     * Set docDate
-     *
-     * @param \DateTime $docDate
-     *
-     * @return NmtProcureClearingDoc
-     */
-    public function setDocDate($docDate)
-    {
-        $this->docDate = $docDate;
-
-        return $this;
-    }
-
-    /**
-     * Get docDate
-     *
-     * @return \DateTime
-     */
-    public function getDocDate()
-    {
-        return $this->docDate;
-    }
-
-    /**
-     * Set docNumber
-     *
-     * @param string $docNumber
-     *
-     * @return NmtProcureClearingDoc
-     */
-    public function setDocNumber($docNumber)
-    {
-        $this->docNumber = $docNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get docNumber
-     *
-     * @return string
-     */
-    public function getDocNumber()
-    {
-        return $this->docNumber;
-    }
-
-    /**
-     * Set sysNumber
-     *
-     * @param string $sysNumber
-     *
-     * @return NmtProcureClearingDoc
-     */
-    public function setSysNumber($sysNumber)
-    {
-        $this->sysNumber = $sysNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get sysNumber
-     *
-     * @return string
-     */
-    public function getSysNumber()
-    {
-        return $this->sysNumber;
-    }
-
-    /**
-     * Set lastChangeOn
-     *
-     * @param \DateTime $lastChangeOn
-     *
-     * @return NmtProcureClearingDoc
-     */
-    public function setLastChangeOn($lastChangeOn)
-    {
-        $this->lastChangeOn = $lastChangeOn;
-
-        return $this;
-    }
-
-    /**
-     * Get lastChangeOn
-     *
-     * @return \DateTime
-     */
-    public function getLastChangeOn()
-    {
-        return $this->lastChangeOn;
-    }
-
-    /**
-     * Set docStatus
-     *
-     * @param string $docStatus
-     *
-     * @return NmtProcureClearingDoc
-     */
-    public function setDocStatus($docStatus)
-    {
-        $this->docStatus = $docStatus;
-
-        return $this;
-    }
-
-    /**
-     * Get docStatus
-     *
-     * @return string
-     */
-    public function getDocStatus()
-    {
-        return $this->docStatus;
-    }
-
-    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -385,29 +220,5 @@ class NmtProcureClearingDoc
     public function getCreatedBy()
     {
         return $this->createdBy;
-    }
-
-    /**
-     * Set lastChangeBy
-     *
-     * @param \Application\Entity\MlaUsers $lastChangeBy
-     *
-     * @return NmtProcureClearingDoc
-     */
-    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastChangeBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getLastChangeBy()
-    {
-        return $this->lastChangeBy;
     }
 }

@@ -1,14 +1,14 @@
 <?php
 namespace HR\Application\Service\Upload\Employee;
 
-use Inventory\Application\Eventbus\EventBusService;
+use HR\Application\EventBus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UploadEmployeeFactory implements FactoryInterface
 {

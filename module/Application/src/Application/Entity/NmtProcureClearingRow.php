@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureClearingRow
  *
- * @ORM\Table(name="nmt_procure_clearing_row", indexes={@ORM\Index(name="nmt_procure_clearing_row_FK02_idx", columns={"pr_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK03_idx", columns={"qo_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK04_idx", columns={"po_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK05_idx", columns={"gr_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK06_idx", columns={"ap_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK07_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_clearing_row_FK01_idx", columns={"doc_id"}), @ORM\Index(name="nmt_procure_clearing_row_FK08_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_procure_clearing_row", indexes={@ORM\Index(name="nmt_procure_clearing_row_FK02_idx", columns={"pr_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK03_idx", columns={"qo_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK04_idx", columns={"po_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK05_idx", columns={"gr_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK06_idx", columns={"ap_row"}), @ORM\Index(name="nmt_procure_clearing_row_FK07_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_clearing_row_FK01_idx", columns={"doc_id"})})
  * @ORM\Entity
  */
 class NmtProcureClearingRow
@@ -55,34 +55,6 @@ class NmtProcureClearingRow
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
-     */
-    private $rowIdentifer;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="revision_no", type="integer", nullable=true)
-     */
-    private $revisionNo;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="doc_version", type="integer", nullable=true)
-     */
-    private $docVersion;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
-     */
-    private $lastChangeOn;
 
     /**
      * @var \Application\Entity\NmtProcureClearingDoc
@@ -153,16 +125,6 @@ class NmtProcureClearingRow
      * })
      */
     private $createdBy;
-
-    /**
-     * @var \Application\Entity\MlaUsers
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
-     * })
-     */
-    private $lastChangeBy;
 
 
 
@@ -294,102 +256,6 @@ class NmtProcureClearingRow
     public function getRemarks()
     {
         return $this->remarks;
-    }
-
-    /**
-     * Set rowIdentifer
-     *
-     * @param string $rowIdentifer
-     *
-     * @return NmtProcureClearingRow
-     */
-    public function setRowIdentifer($rowIdentifer)
-    {
-        $this->rowIdentifer = $rowIdentifer;
-
-        return $this;
-    }
-
-    /**
-     * Get rowIdentifer
-     *
-     * @return string
-     */
-    public function getRowIdentifer()
-    {
-        return $this->rowIdentifer;
-    }
-
-    /**
-     * Set revisionNo
-     *
-     * @param integer $revisionNo
-     *
-     * @return NmtProcureClearingRow
-     */
-    public function setRevisionNo($revisionNo)
-    {
-        $this->revisionNo = $revisionNo;
-
-        return $this;
-    }
-
-    /**
-     * Get revisionNo
-     *
-     * @return integer
-     */
-    public function getRevisionNo()
-    {
-        return $this->revisionNo;
-    }
-
-    /**
-     * Set docVersion
-     *
-     * @param integer $docVersion
-     *
-     * @return NmtProcureClearingRow
-     */
-    public function setDocVersion($docVersion)
-    {
-        $this->docVersion = $docVersion;
-
-        return $this;
-    }
-
-    /**
-     * Get docVersion
-     *
-     * @return integer
-     */
-    public function getDocVersion()
-    {
-        return $this->docVersion;
-    }
-
-    /**
-     * Set lastChangeOn
-     *
-     * @param \DateTime $lastChangeOn
-     *
-     * @return NmtProcureClearingRow
-     */
-    public function setLastChangeOn($lastChangeOn)
-    {
-        $this->lastChangeOn = $lastChangeOn;
-
-        return $this;
-    }
-
-    /**
-     * Get lastChangeOn
-     *
-     * @return \DateTime
-     */
-    public function getLastChangeOn()
-    {
-        return $this->lastChangeOn;
     }
 
     /**
@@ -558,29 +424,5 @@ class NmtProcureClearingRow
     public function getCreatedBy()
     {
         return $this->createdBy;
-    }
-
-    /**
-     * Set lastChangeBy
-     *
-     * @param \Application\Entity\MlaUsers $lastChangeBy
-     *
-     * @return NmtProcureClearingRow
-     */
-    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastChangeBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getLastChangeBy()
-    {
-        return $this->lastChangeBy;
     }
 }

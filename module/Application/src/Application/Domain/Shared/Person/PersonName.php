@@ -2,14 +2,14 @@
 namespace Application\Domain\Shared\Person;
 
 use Application\Domain\Shared\ValueObject;
-use Webmozart\Assert\Assert;
-use Application\Domain\Util\Translator;
 use Application\Domain\Util\OutputMessage;
+use Application\Domain\Util\Translator;
+use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 final class PersonName extends ValueObject
 {
@@ -39,9 +39,9 @@ final class PersonName extends ValueObject
             Assert::regex($last_name, $pattern, OutputMessage::error(Translator::translate("Last name has invalid character"), $last_name));
         }
 
-        Assert::maxLength($first_name, 30, \sprintf('%s! [%s]', Translator::translate("First name too long (max.30 character)"), $first_name));
-        Assert::maxLength($middle_name, 30, \sprintf('%s! [%s]', Translator::translate("Middle name too long (max.30 character)"), $middle_name));
-        Assert::maxLength($last_name, 30, \sprintf('%s! [%s]', Translator::translate("Last name too long (max.30 character)"), $last_name));
+        Assert::maxLength($first_name, 50, \sprintf('%s! [%s]', Translator::translate("First name too long (max.50 character)"), $first_name));
+        Assert::maxLength($middle_name, 50, \sprintf('%s! [%s]', Translator::translate("Middle name too long (max.50 character)"), $middle_name));
+        Assert::maxLength($last_name, 50, \sprintf('%s! [%s]', Translator::translate("Last name too long (max.50 character)"), $last_name));
 
         $this->firstName = $first_name;
         $this->middleName = $middle_name;

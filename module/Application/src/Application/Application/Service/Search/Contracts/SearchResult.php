@@ -18,6 +18,19 @@ class SearchResult
 
     protected $hits;
 
+    public function echoField($fieldName)
+    {
+        if (! $this->hasHits()) {
+            return;
+        }
+
+        foreach ($this->getHits() as $hit) {
+            if ($hit->__isset($fieldName)) {
+                echo $hit->$fieldName . "\n";
+            }
+        }
+    }
+
     /**
      *
      * @return mixed

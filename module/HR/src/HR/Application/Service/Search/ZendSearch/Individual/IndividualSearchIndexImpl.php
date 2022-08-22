@@ -303,13 +303,18 @@ class IndividualSearchIndexImpl extends AbstractService implements IndividualSea
          */
 
         $doc->addField(Field::text('individualName', $snapshot->getIndividualName()));
-        $doc->addField(Field::text('individualNameLocal', $snapshot->getIndividualNameLocal()));
+
+        /**
+         *
+         * @todo: to fixe UTF issue
+         */
+        // $doc->addField(Field::text('individualNameLocal', $snapshot->getIndividualNameLocal())); // UTF issue
         $doc->addField(Field::text('firstName', $snapshot->getFirstName()));
-        $doc->addField(Field::text('firstNameLocal', $snapshot->getFirstNameLocal()));
+        // $doc->addField(Field::text('firstNameLocal', $snapshot->getFirstNameLocal()));
         $doc->addField(Field::text('middleName', $snapshot->getMiddleName()));
-        $doc->addField(Field::text('middleNameLocal', $snapshot->getMiddleNameLocal()));
+        // $doc->addField(Field::text('middleNameLocal', $snapshot->getMiddleNameLocal()));
         $doc->addField(Field::text('lastName', $snapshot->getLastName()));
-        $doc->addField(Field::text('lastNameLocal', $snapshot->getLastNameLocal()));
+        // $doc->addField(Field::text('lastNameLocal', $snapshot->getLastNameLocal()));
         $doc->addField(Field::text('nickName', $snapshot->getNickName()));
         $doc->addField(Field::text('remarks', $snapshot->getRemarks()));
 

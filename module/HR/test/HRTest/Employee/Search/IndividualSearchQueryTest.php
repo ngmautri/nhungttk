@@ -24,9 +24,10 @@ class IndividualSearchQueryTest extends PHPUnit_Framework_TestCase
 
             $searcher = new IndividualSearchQueryImpl();
             $queryFilter = new IndividualQueryFilter();
-            $results = $searcher->search("itemDescription", $queryFilter);
+            $results = $searcher->search("pay*", $queryFilter);
             $results->echoField("employeeCode");
             $results->echoField("individual_id");
+            $results->echoField("firstName");
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

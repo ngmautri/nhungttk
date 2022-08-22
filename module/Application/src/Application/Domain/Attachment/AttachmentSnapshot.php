@@ -1,107 +1,41 @@
 <?php
-namespace Application\Domain\Attachment;
+namespace Application\Domain\Attachment\
 
-use Application\Domain\Shared\AbstractValueObject;
+use Application\Domain\Shared\AbstractDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class AttachmentSnapshot extends AbstractValueObject
+class AttachmentSnapshot extends AbstractDTO
 {
 
+    /*
+     * |=============================
+     * | Application\Domain\Attachment\AbstractAttachment
+     * |
+     * |=============================
+     */
     public $id;
 
-    public $documentSubject;
-
-    public $keywords;
-
-    public $isPicture;
-
-    public $isContract;
-
-    public $signingDate;
-
-    public $validFrom;
-
-    public $validTo;
-
-    public $url;
-
-    public $filetype;
-
-    public $filename;
-
-    public $filenameOriginal;
-
-    public $filePassword;
-
-    public $size;
-
-    public $visibility;
-
-    public $folder;
-
-    public $attachmentFolder;
-
-    public $folderRelative;
-
-    public $checksum;
+    public $uuid;
 
     public $token;
 
+    public $subject;
+
     public $isActive;
-
-    public $markedForDeletion;
-
-    public $remarks;
 
     public $createdOn;
 
     public $lastChangeOn;
 
-    public $changeFor;
-
-    public $prRowId;
-
-    public $targetClass;
-
-    public $targetId;
-
-    public $targetToken;
-
-    public $fileExtension;
-
-    public $fileExits;
-
-    public $uuid;
+    public $remarks;
 
     public $createdBy;
 
-    public $item;
-
-    public $po;
-
-    public $poRow;
-
-    public $qo;
-
-    public $company;
-
     public $lastChangeBy;
-
-    public $project;
-
-    public $employee;
-
-    public $vendor;
-
-    public $itemPurchasing;
-
-    public $pr;
-
-    public $vInvoice;
 
     /**
      *
@@ -116,162 +50,9 @@ class AttachmentSnapshot extends AbstractValueObject
      *
      * @return mixed
      */
-    public function getDocumentSubject()
+    public function getUuid()
     {
-        return $this->documentSubject;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getKeywords()
-    {
-        return $this->keywords;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsPicture()
-    {
-        return $this->isPicture;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsContract()
-    {
-        return $this->isContract;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getSigningDate()
-    {
-        return $this->signingDate;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getValidFrom()
-    {
-        return $this->validFrom;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getValidTo()
-    {
-        return $this->validTo;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFiletype()
-    {
-        return $this->filetype;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFilename()
-    {
-        return $this->filename;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFilenameOriginal()
-    {
-        return $this->filenameOriginal;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFilePassword()
-    {
-        return $this->filePassword;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getSize()
-    {
-        return $this->size;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getVisibility()
-    {
-        return $this->visibility;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFolder()
-    {
-        return $this->folder;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getAttachmentFolder()
-    {
-        return $this->attachmentFolder;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFolderRelative()
-    {
-        return $this->folderRelative;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getChecksum()
-    {
-        return $this->checksum;
+        return $this->uuid;
     }
 
     /**
@@ -287,27 +68,18 @@ class AttachmentSnapshot extends AbstractValueObject
      *
      * @return mixed
      */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getIsActive()
     {
         return $this->isActive;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getMarkedForDeletion()
-    {
-        return $this->markedForDeletion;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRemarks()
-    {
-        return $this->remarks;
     }
 
     /**
@@ -332,72 +104,9 @@ class AttachmentSnapshot extends AbstractValueObject
      *
      * @return mixed
      */
-    public function getChangeFor()
+    public function getRemarks()
     {
-        return $this->changeFor;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPrRowId()
-    {
-        return $this->prRowId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getTargetClass()
-    {
-        return $this->targetClass;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getTargetId()
-    {
-        return $this->targetId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getTargetToken()
-    {
-        return $this->targetToken;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFileExtension()
-    {
-        return $this->fileExtension;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFileExits()
-    {
-        return $this->fileExits;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getUuid()
-    {
-        return $this->uuid;
+        return $this->remarks;
     }
 
     /**
@@ -413,51 +122,6 @@ class AttachmentSnapshot extends AbstractValueObject
      *
      * @return mixed
      */
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPo()
-    {
-        return $this->po;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPoRow()
-    {
-        return $this->poRow;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getQo()
-    {
-        return $this->qo;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
@@ -465,55 +129,91 @@ class AttachmentSnapshot extends AbstractValueObject
 
     /**
      *
-     * @return mixed
+     * @param mixed $id
      */
-    public function getProject()
+    public function setId($id)
     {
-        return $this->project;
+        $this->id = $id;
     }
 
     /**
      *
-     * @return mixed
+     * @param mixed $uuid
      */
-    public function getEmployee()
+    public function setUuid($uuid)
     {
-        return $this->employee;
+        $this->uuid = $uuid;
     }
 
     /**
      *
-     * @return mixed
+     * @param mixed $token
      */
-    public function getVendor()
+    public function setToken($token)
     {
-        return $this->vendor;
+        $this->token = $token;
     }
 
     /**
      *
-     * @return mixed
+     * @param mixed $subject
      */
-    public function getItemPurchasing()
+    public function setSubject($subject)
     {
-        return $this->itemPurchasing;
+        $this->subject = $subject;
     }
 
     /**
      *
-     * @return mixed
+     * @param mixed $isActive
      */
-    public function getPr()
+    public function setIsActive($isActive)
     {
-        return $this->pr;
+        $this->isActive = $isActive;
     }
 
     /**
      *
-     * @return mixed
+     * @param mixed $createdOn
      */
-    public function getVInvoice()
+    public function setCreatedOn($createdOn)
     {
-        return $this->vInvoice;
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeOn
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+    }
+
+    /**
+     *
+     * @param mixed $remarks
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     *
+     * @param mixed $createdBy
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeBy
+     */
+    public function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
     }
 }

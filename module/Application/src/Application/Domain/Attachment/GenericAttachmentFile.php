@@ -6,10 +6,6 @@ namespace Application\Domain\Attachment;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface AttachmentQueryRepInterface
+abstract class GenericAttachmentFile extends AbstractAttachmentFile
 {
-
-    public function findAll();
-
-    public function getById($id);
 }

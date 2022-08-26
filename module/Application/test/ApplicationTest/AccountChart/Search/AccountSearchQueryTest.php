@@ -7,7 +7,7 @@ use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
-class SearchQueryTest extends PHPUnit_Framework_TestCase
+class AccountSearchQueryTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;

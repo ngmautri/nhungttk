@@ -1,7 +1,6 @@
 <?php
 namespace Application\Domain\Attachment\Validator;
 
-use Application\Domain\Attachment\Contracts\AttachmentDefaultValidator;
 use Application\Domain\Attachment\Service\AttachmentValidationService;
 use Application\Domain\Attachment\Validator\Contracts\AttachmentValidatorCollection;
 use Application\Domain\Service\Contracts\SharedServiceInterface;

@@ -1,8 +1,8 @@
 <?php
 namespace Application\Domain\Attachment\Contracts;
 
-use Application\Domain\Attachment\GenericAttachment;
-use Application\Domain\Attachment\GenericAttachmentFile;
+use Application\Domain\Attachment\BaseAttachment;
+use Application\Domain\Attachment\BaseAttachmentFile;
 
 /**
  *
@@ -12,6 +12,6 @@ use Application\Domain\Attachment\GenericAttachmentFile;
 interface AttachmentFileValidatorInterface
 {
 
-    public function validate(GenericAttachment $rootEntity, GenericAttachmentFile $localEntity);
+    public function validate(BaseAttachment $rootEntity, BaseAttachmentFile $localEntity);
 }
 

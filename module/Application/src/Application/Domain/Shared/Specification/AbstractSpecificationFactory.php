@@ -39,6 +39,8 @@ abstract class AbstractSpecificationFactory
 
     abstract function getUserExitsSpecification();
 
+    abstract function getCompanyUserExSpecification();
+
     abstract function getCostCenterExitsSpecification();
 
     abstract function getMeasureUnitExitsSpecification();

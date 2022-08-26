@@ -9,7 +9,7 @@ use Exception;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ChartDefaultValidator extends AbstractValidator implements ChartValidatorInterface
 {
@@ -56,7 +56,7 @@ class ChartDefaultValidator extends AbstractValidator implements ChartValidatorI
             }
 
             // User
-            $spec = $this->getSharedSpecificationFactory()->getUserExitsSpecification();
+            $spec = $this->getSharedSpecificationFactory()->getCompanyUserExSpecification();
 
             // Created by
             if ($rootEntity->getCreatedBy() > 0) {

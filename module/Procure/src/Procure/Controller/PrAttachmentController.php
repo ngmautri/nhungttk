@@ -1,15 +1,13 @@
 <?php
 namespace Procure\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
-use Application\Domain\Util\Pagination\Paginator;
+use Application\AppSettings;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Entity\NmtApplicationAttachment;
 use Zend\Http\Headers;
-use Zend\Validator\Date;
 use Zend\Math\Rand;
-use Application\Controller\Contracts\AbstractGenericController;
+use Zend\Validator\Date;
+use Zend\View\Model\ViewModel;
 
 /**
  *
@@ -31,8 +29,7 @@ class PrAttachmentController extends AbstractGenericController
 
     const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
-     protected $attachmentService;
-    
+    protected $attachmentService;
 
     /*
      * Defaul Action
@@ -303,8 +300,8 @@ class PrAttachmentController extends AbstractGenericController
                             $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg","jpg","png","pdf","xlsx","xlx", "docx"!';
                         }
 
-                        if ($file_size > 10485760) {
-                            $errors[] = 'File size must be excately 2 MB';
+                        if ($file_size > AppSettings::MAX_FILE_SIZE) {
+                            $errors[] = 'File size must be excately 10 MB';
                         }
 
                         $checksum = md5_file($file_tmp);
@@ -582,7 +579,7 @@ class PrAttachmentController extends AbstractGenericController
         $pic = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
         if ($pic instanceof \Application\Entity\NmtApplicationAttachment) {
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . $pic->getFileName();
-        $imageContent = file_get_contents($this->modifyPath($pic_folder));
+            $imageContent = file_get_contents($this->modifyPath($pic_folder));
 
             $response = $this->getResponse();
 
@@ -1027,7 +1024,7 @@ class PrAttachmentController extends AbstractGenericController
             'entity' => null
         ));
     }
-    
+
     /**
      *
      * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
@@ -1036,37 +1033,37 @@ class PrAttachmentController extends AbstractGenericController
     {
         $request = $this->getRequest();
         $this->layout("layout/user/ajax");
-        
+
         if ($request->isPost()) {
-            
+
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
-            
+
             $errors = array();
-            //$data = $request->getPost();
-            
+            // $data = $request->getPost();
+
             $data = $_POST;
-            
+
             $redirectUrl = null;
             $target_id = $data['target_id'];
             $target_token = $data['token'];
-            
+
             $criteria = array(
                 'id' => $target_id,
                 'token' => $target_token
             );
-            
+
             /**
              *
              * @todo : Change Target
              * @var \Application\Entity\NmtProcurePr $target ;
-             *
+             *     
              */
             $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
-            
+
             if (! $target instanceof \Application\Entity\NmtProcurePr) {
-                
+
                 $errors[] = 'Target object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!' . $target_id);
                 $viewModel = new ViewModel(array(
@@ -1076,32 +1073,32 @@ class PrAttachmentController extends AbstractGenericController
                     'target' => null,
                     'entity' => null
                 ));
-                
+
                 $viewModel->setTemplate("procure/pr-attachment/upload1");
                 return $viewModel;
             }
-            
+
             $attachments = null;
             if (isset($_FILES['attachments'])) {
                 $attachments = $_FILES['attachments'];
             }
-            
+
             $errors = $this->getAttachmentService()->doUploading(null, $target_id, $target_token, $data, $attachments, $u, TRUE);
-            
+
             $data = array();
-            
+
             if (count($errors) > 0) {
-                
+
                 $data['message'] = $errors[0];
                 $response = $this->getResponse();
                 $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
                 $response->setContent(json_encode($data));
                 return $response;
             }
-            
+
             $m = sprintf('[OK] Attachment for PR  #%s added.', $target->getPrAutoNumber());
             $this->flashMessenger()->addMessage($m);
-            
+
             $createdOn = new \DateTime();
             // Trigger Activity Log . AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
@@ -1110,47 +1107,45 @@ class PrAttachmentController extends AbstractGenericController
                 'createdBy' => $u,
                 'createdOn' => $createdOn
             ));
-            //return $this->redirect()->toUrl($redirectUrl);
-            
-            
-          
+            // return $this->redirect()->toUrl($redirectUrl);
+
             $data['message'] = $m;
             $response = $this->getResponse();
             $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
             $response->setContent(json_encode($data));
             return $response;
         }
-        
+
         // NO POST
         // Initiating....................
         // ================================
-        
+
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+                ->getHeader('Referer')
+                ->getUri();
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
-        
+
         $criteria = array(
             'id' => $id,
             'token' => $token
         );
-        
+
         /**
          *
          * @todo : Change Target
          * @var \Application\Entity\NmtProcurePr $target ;
          */
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
-        
+
         if ($target instanceof \Application\Entity\NmtProcurePr) {
-            
+
             $viewModel = new ViewModel(array(
                 'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                 'redirectUrl' => $redirectUrl,
@@ -1158,7 +1153,7 @@ class PrAttachmentController extends AbstractGenericController
                 'target' => $target,
                 'entity' => null
             ));
-            
+
             $viewModel->setTemplate("procure/pr-attachment/upload1");
             return $viewModel;
         }
@@ -1493,12 +1488,10 @@ class PrAttachmentController extends AbstractGenericController
         if ($request->isPost()) {
 
             $errors = array();
-            
-            
+
             $pictures = $_POST['pictures'];
-            //$pictures = $_FILES['pictures'];
-                      
-            
+            // $pictures = $_FILES['pictures'];
+
             $target_id = $_POST['target_id'];
             $checksum = $_POST['checksum'];
             $token = $_POST['token'];
@@ -1535,15 +1528,14 @@ class PrAttachmentController extends AbstractGenericController
                 $n = 0;
                 foreach ($pictures as $p) {
                     $n ++;
-                    
-                    
+
                     $filetype = $p[0];
-                    //$filetype = $p['type'];
-                    
+                    // $filetype = $p['type'];
+
                     $original_filename = $p[2];
-                    //$original_filename = $p['name'];
-                    
-                    $ext='';
+                    // $original_filename = $p['name'];
+
+                    $ext = '';
 
                     if (preg_match('/(jpg|jpeg)$/', $filetype)) {
                         $ext = 'jpg';
@@ -1692,12 +1684,14 @@ class PrAttachmentController extends AbstractGenericController
         // Initiate...............
         // ========================
 
-     /*    $redirectUrl = null;
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        } else {
-            $redirectUrl = $request->getHeader('Referer')->getUri();
-        } */
+        /*
+         * $redirectUrl = null;
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('access_denied');
+         * } else {
+         * $redirectUrl = $request->getHeader('Referer')->getUri();
+         * }
+         */
 
         $id = (int) $this->params()->fromQuery('target_id');
         $checksum = $this->params()->fromQuery('checksum');
@@ -1811,21 +1805,19 @@ class PrAttachmentController extends AbstractGenericController
         ));
     }
 
-  
-    
-  /**
-   * 
-   * @return \Procure\Service\Upload\PrUploadService
-   */
+    /**
+     *
+     * @return \Procure\Service\Upload\PrUploadService
+     */
     public function getAttachmentService()
     {
         return $this->attachmentService;
     }
-    
-   /**
-    * 
-    * @param \Procure\Service\Upload\PrUploadService $attachmentService
-    */
+
+    /**
+     *
+     * @param \Procure\Service\Upload\PrUploadService $attachmentService
+     */
     public function setAttachmentService(\Procure\Service\Upload\PrUploadService $attachmentService)
     {
         $this->attachmentService = $attachmentService;

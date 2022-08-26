@@ -13,7 +13,7 @@ use RuntimeException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class DefaultHeaderValidator extends AbstractValidator implements HeaderValidatorInterface
 {
@@ -52,7 +52,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             }
 
             // ===== USER ID =======
-            $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
+            $spec = $this->sharedSpecificationFactory->getCompanyUserExSpecification();
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),
                 "userId" => $rootEntity->getCreatedBy()

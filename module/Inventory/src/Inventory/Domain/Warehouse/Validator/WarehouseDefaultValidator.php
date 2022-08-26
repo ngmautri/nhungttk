@@ -56,7 +56,7 @@ class WarehouseDefaultValidator extends AbstractValidator implements WarehouseVa
             }
 
             // User
-            $spec = $this->getSharedSpecificationFactory()->getUserExitsSpecification();
+            $spec = $this->getSharedSpecificationFactory()->getCompanyUserExSpecification();
 
             // Controller
             if ($rootEntity->getWhController() > 0) {

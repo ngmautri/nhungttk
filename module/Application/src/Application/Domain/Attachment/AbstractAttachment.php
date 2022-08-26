@@ -1,14 +1,14 @@
 <?php
 namespace Application\Domain\Attachment;
 
-use Application\Domain\Shared\AggregateRoot;
+use Application\Domain\Shared\AbstractEntity;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractAttachment extends AggregateRoot
+abstract class AbstractAttachment extends AbstractEntity
 {
 
     protected $id;

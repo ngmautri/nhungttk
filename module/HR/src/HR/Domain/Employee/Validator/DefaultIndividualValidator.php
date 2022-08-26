@@ -41,7 +41,7 @@ class DefaultIndividualValidator extends AbstractIndividualValidator implements 
             }
 
             // ===== USER ID =======
-            $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
+            $spec = $this->sharedSpecificationFactory->getCompanyUserExSpecification();
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),
                 "userId" => $rootEntity->getCreatedBy()

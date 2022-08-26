@@ -2,12 +2,12 @@
 namespace Procure\Domain\AccountPayable\Validator\Header;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
+use Application\Domain\Util\Translator;
 use Procure\Domain\AbstractDoc;
 use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\HeaderValidatorInterface;
-use Application\Domain\Util\Translator;
 
 /**
  *
@@ -68,7 +68,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             }
 
             // ===== USER ID =======
-            $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
+            $spec = $this->sharedSpecificationFactory->getCompanyUserExSpecification();
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),
                 "userId" => $rootEntity->getCreatedBy()
@@ -87,12 +87,9 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                     $rootEntity->addError(Translator::translate("User is not identified for this transaction. #" . $rootEntity->getLastchangeBy()));
                 }
             }
-              
         } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());
         }
     }
-    
-    
 }
 

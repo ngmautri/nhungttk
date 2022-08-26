@@ -82,7 +82,7 @@ class DefaultValidator extends AbstractAssociationValidator implements Associati
             }
 
             // ===== USER ID =======
-            $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
+            $spec = $this->sharedSpecificationFactory->getCompanyUserExSpecification();
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),
                 "userId" => $rootEntity->getCreatedBy()

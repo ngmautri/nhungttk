@@ -81,7 +81,7 @@ class LocationDefaultValidator extends AbstractValidator implements LocationVali
                 }
             }
 
-            $spec = $this->getSharedSpecificationFactory()->getUserExitsSpecification();
+            $spec = $this->getSharedSpecificationFactory()->getCompanyUserExSpecification();
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),
                 "userId" => $localEntity->getCreatedBy()

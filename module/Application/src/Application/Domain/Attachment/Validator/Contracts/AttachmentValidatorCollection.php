@@ -1,9 +1,7 @@
 <?php
 namespace Application\Domain\Attachment\Validator\Contracts;
 
-use Application\Domain\Attachment\GenericAttachment;
-use Application\Domain\Company\Brand\Validator\Contracts\AttachmentValidatorInterface;
-use Application\Domain\Company\Brand\Validator\Contracts\BrandValidatorInterface;
+use Application\Domain\Attachment\BaseAttachment;
 use InvalidArgumentException;
 
 /**
@@ -11,7 +9,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class AttachmentValidatorCollection implements BrandValidatorInterface
+class AttachmentValidatorCollection implements AttachmentValidatorInterface
 
 {
 
@@ -23,7 +21,7 @@ class AttachmentValidatorCollection implements BrandValidatorInterface
 
     public function add(AttachmentValidatorInterface $validator)
     {
-        if (! $validator instanceof BrandValidatorInterface) {
+        if (! $validator instanceof AttachmentValidatorInterface) {
             throw new InvalidArgumentException("AttachmentValidatorInterface is required!");
         }
 
@@ -35,7 +33,7 @@ class AttachmentValidatorCollection implements BrandValidatorInterface
      * {@inheritdoc}
      * @see \Application\Domain\Company\Brand\Validator\Contracts\BrandValidatorInterface::validate()
      */
-    public function validate(GenericAttachment $rootEntity)
+    public function validate(BaseAttachment $rootEntity)
     {
         if (count($this->validators) == 0) {
             throw new InvalidArgumentException("GenericAttachment is required! but no is given.");

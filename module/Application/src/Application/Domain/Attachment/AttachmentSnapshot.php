@@ -1,5 +1,5 @@
 <?php
-namespace Application\Domain\Attachment\
+namespace Application\Domain\Attachment;
 
 use Application\Domain\Shared\AbstractDTO;
 

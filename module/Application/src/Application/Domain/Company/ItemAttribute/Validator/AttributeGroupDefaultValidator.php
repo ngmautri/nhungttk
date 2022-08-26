@@ -9,7 +9,7 @@ use Exception;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class AttributeGroupDefaultValidator extends AbstractValidator implements ItemAttributeGroupValidatorInterface
 {
@@ -56,7 +56,7 @@ class AttributeGroupDefaultValidator extends AbstractValidator implements ItemAt
             }
 
             // User
-            $spec = $this->getSharedSpecificationFactory()->getUserExitsSpecification();
+            $spec = $this->getSharedSpecificationFactory()->getCompanyUserExSpecification();
 
             // Created by
             if ($rootEntity->getCreatedBy() > 0) {

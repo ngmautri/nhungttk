@@ -29,7 +29,7 @@ abstract class AggregateRoot
      * @param string $err
      * @return \Application\Domain\Shared\AggregateRoot
      */
-    public function addError(string $err)
+    public function addError($err)
     {
         if ($err == null)
             return $this;
@@ -44,7 +44,7 @@ abstract class AggregateRoot
      * @param string $mes
      * @return \Application\Domain\Shared\AggregateRoot
      */
-    public function addWaring(string $mes)
+    public function addWaring($mes)
     {
         if ($mes == null)
             return $this;

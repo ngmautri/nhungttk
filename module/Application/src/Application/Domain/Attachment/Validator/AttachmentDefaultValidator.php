@@ -1,8 +1,9 @@
 <?php
-namespace Application\Domain\Attachment\Contracts;
+namespace Application\Domain\Attachment\Validator;
 
+use Application\Domain\Attachment\BaseAttachment;
 use Application\Domain\Attachment\GenericAttachment;
-use Application\Domain\Company\Brand\Validator\Contracts\AttachmentValidatorInterface;
+use Application\Domain\Attachment\Validator\Contracts\AttachmentValidatorInterface;
 use Application\Domain\Company\Validator\Contracts\AbstractValidator;
 use Application\Domain\Util\OutputMessage;
 use Application\Domain\Util\Translator;
@@ -19,9 +20,9 @@ class AttachmentDefaultValidator extends AbstractValidator implements Attachment
     /**
      *
      * {@inheritdoc}
-     * @see \Application\Domain\Company\Brand\Validator\Contracts\AttachmentValidatorInterface::validate()
+     * @see \Application\Domain\Attachment\Validator\Contracts\AttachmentValidatorInterface::validate()
      */
-    public function validate(GenericAttachment $rootEntity)
+    public function validate(BaseAttachment $rootEntity)
     {
         if (! $rootEntity instanceof GenericAttachment) {
             $rootEntity->addError("GenericAttachment object not found");
@@ -31,7 +32,7 @@ class AttachmentDefaultValidator extends AbstractValidator implements Attachment
         try {
 
             $spec = $this->getSharedSpecificationFactory()->getNullorBlankSpecification();
-            if (! $spec->isSatisfiedBy($rootEntity->getSubject())) {
+            if ($spec->isSatisfiedBy($rootEntity->getSubject())) {
                 $m = Translator::translate("Attachment subject empty");
                 $rootEntity->addError(OutputMessage::error($m, ($rootEntity->getSubject())));
             }
@@ -43,7 +44,6 @@ class AttachmentDefaultValidator extends AbstractValidator implements Attachment
             if ($rootEntity->getCreatedBy() > 0) {
 
                 $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
                     "userId" => $rootEntity->getCreatedBy()
                 );
 
@@ -56,7 +56,6 @@ class AttachmentDefaultValidator extends AbstractValidator implements Attachment
             if ($rootEntity->getLastChangeBy() > 0) {
 
                 $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
                     "userId" => $rootEntity->getLastChangeBy()
                 );
 

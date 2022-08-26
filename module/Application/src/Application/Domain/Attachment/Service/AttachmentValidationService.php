@@ -20,7 +20,7 @@ class AttachmentValidationService implements AttachmentValidationServiceInterfac
 
     public function __construct(AttachmentValidatorCollection $attachmentValidators, AttachmentFileValidatorCollection $attachmentFileValidators = null)
     {
-        if ($attachmentFileValidators == null) {
+        if ($attachmentValidators == null) {
             throw new InvalidArgumentException("Attachment Validator(s) is required");
         }
 

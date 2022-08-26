@@ -1,6 +1,8 @@
 <?php
 namespace Application\Domain\Util\FileSystem;
 
+use Cake\Filesystem\File;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -8,6 +10,16 @@ namespace Application\Domain\Util\FileSystem;
  */
 class MimeType
 {
+
+    const IMAGE_TYPE = [
+        "jpeg",
+        "jpeg jpg",
+        "jpg",
+        "png",
+        "bmp",
+        "gif",
+        "webp"
+    ];
 
     const COMMON_TYPE = [
         "audio/aac" => [
@@ -104,7 +116,7 @@ class MimeType
         ],
         "image/jpeg" => [
             "description" => "JPEG images",
-            "extention" => "jpeg jpg"
+            "extention" => "jpeg"
         ],
         "text/javascript (Specifications: HTML and its reasoning, and IETF)" => [
             "description" => "JavaScript",
@@ -299,6 +311,46 @@ class MimeType
     static public function get($file_type)
     {
         return self::COMMON_TYPE[$file_type];
+    }
+
+    static public function isImage1($file_type)
+    {
+        $e = self::COMMON_TYPE[$file_type];
+
+        // var_dump($e);
+
+        if (isset($e["extention"])) {
+            return in_array($e["extention"], self::IMAGE_TYPE);
+        }
+        return false;
+    }
+
+    static public function isPicture($file_type)
+    {
+        if (preg_match('(image)', $file_type)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param string $path
+     * @return boolean
+     */
+    static public function isImage($path)
+    {
+        $file = new File($path);
+        if (! $file->exists()) {
+            return false;
+        }
+        $file_type = $file->mime();
+
+        if (! $file_type) {
+            return false;
+        }
+
+        return self::isPicture($file_type);
     }
 }
 

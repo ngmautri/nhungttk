@@ -9,7 +9,7 @@ use Exception;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class CompanyDefaultValidator extends AbstractValidator implements CompanyValidatorInterface
 {
@@ -56,7 +56,7 @@ class CompanyDefaultValidator extends AbstractValidator implements CompanyValida
             }
 
             // User
-            $spec = $this->getSharedSpecificationFactory()->getUserExitsSpecification();
+            $spec = $this->getSharedSpecificationFactory()->getCompanyUserExSpecification();
 
             // Created by
             if ($rootEntity->getCreatedBy() > 0) {

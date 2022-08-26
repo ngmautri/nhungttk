@@ -1,7 +1,7 @@
 <?php
-namespace Application\Domain\Company\Brand\Validator\Contracts;
+namespace Application\Domain\Attachment\Validator\Contracts;
 
-use Application\Domain\Attachment\GenericAttachment;
+use Application\Domain\Attachment\BaseAttachment;
 
 /**
  *
@@ -11,7 +11,7 @@ use Application\Domain\Attachment\GenericAttachment;
 interface AttachmentValidatorInterface
 {
 
-    public function validate(GenericAttachment $rootEntity);
+    public function validate(BaseAttachment $rootEntity);
 }
 
 

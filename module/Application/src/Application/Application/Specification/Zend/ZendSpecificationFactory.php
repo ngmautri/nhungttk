@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManager;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ZendSpecificationFactory extends AbstractSpecificationFactory
 {
@@ -294,4 +294,7 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new NoneNegativeNumberSpecification($this->doctrineEM);
     }
+
+    public function getCompanyUserExSpecification()
+    {}
 }

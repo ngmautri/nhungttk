@@ -68,7 +68,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             }
 
             // ===== USER ID =======
-            $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
+            $spec = $this->sharedSpecificationFactory->getCompanyUserExSpecification();
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),
                 "userId" => $rootEntity->getCreatedBy()
@@ -87,12 +87,9 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                     $rootEntity->addError("User is not identified for this transaction. #" . $rootEntity->getLastchangeBy());
                 }
             }
-              
         } catch (GrCreateException $e) {
             $rootEntity->addError($e->getMessage());
         }
     }
-    
-    
 }
 

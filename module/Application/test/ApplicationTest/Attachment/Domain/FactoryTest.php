@@ -33,7 +33,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             $options = new CmdOptions($companyVO, 39, __METHOD__);
 
             $snapshot = new BaseAttachmentSnapshot();
-            $snapshot->subject = "test";
+            $snapshot->subject = "testdsf";
             $snapshot->createdBy = 39;
 
             $rootEntity = AttachmentFactory::createFrom($snapshot, $options, $sharedService);
